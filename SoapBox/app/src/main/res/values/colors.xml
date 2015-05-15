@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="login_button">#FDAB4F</color>
+    <color name="chat_me">#86D9FF</color>
+    <color name="chat_1">#FFC486</color>
+    <color name="chat_2">#FFC586</color>
+    <color name="chat_3">#CAECA2</color>
+    <color name="chat_4">#6CE8EF</color>
+    <color name="chat_5">#FFB5C8</color>
+    <color name="chat_6">#E6B5FF</color>
+</resources>

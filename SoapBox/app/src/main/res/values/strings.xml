@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SoapBox</string>
+    <string name="action_subscribe">Subscribe</string>
+    <string name="action_unsubscribe">Unsubscribe</string>
+    <string name="action_delete">Delete</string>
+    <string name="title_activity_main">SoapBox</string>
+
+    <string name="topic_list_header_subscriptions">Subscriptions</string>
+    <string name="topic_list_header_other_topics">Other Topics</string>
+
+    <string name="desc_powered_by_message">Powered by Magnet Message</string>
+    <string name="desc_soapbox_logo">SoapBox logo</string>
+    <string name="title_activity_topic_list">SoapBox</string>
+    <string name="title_activity_topic_item_list">TopicItemListActivity</string>
+
+    <string name="ic_back"><![CDATA[<]]></string>
+    <string name="ic_cancel">Cancel</string>
+    <string name="chat_me">Me - </string>
+
+    <string name="dlg_signout_title">Sign Out</string>
+    <string name="dlg_signout_message">You must be signed in to post to topics.  Continue to sign out?</string>
+    <string name="dlg_signout_ok">OK</string>
+    <string name="dlg_signout_cancel">Cancel</string>
+    <string name="title_activity_topic_add">TopicAddActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="error_topic_name_required">Topic name is required.</string>
+    <string name="error_topic_already_exists">Topic already exists.</string>
+    <string name="error_unable_to_delete_topic">Unable to delete topic: </string>
+    <string name="dlg_delete_title">Delete topic?</string>
+    <string name="dlg_delete_ok">OK</string>
+    <string name="dlg_delete_cancel">Cancel</string>
+</resources>

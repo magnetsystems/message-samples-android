@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="topic_tags">
+        <item>announcements</item>
+        <item>food</item>
+        <item>funny</item>
+        <item>local events</item>
+        <item>scheduling</item>
+        <item>testing</item>
+    </string-array>
+</resources>

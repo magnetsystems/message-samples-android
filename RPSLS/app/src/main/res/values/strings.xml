@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RPSLS</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">RPSLS</string>
+    <string name="desc_rpsls_logo">RPSLS</string>
+
+    <string name="choice_rock">rock</string>
+    <string name="choice_paper">paper</string>
+    <string name="choice_scissors">scissors</string>
+    <string name="choice_lizard">lizard</string>
+    <string name="choice_spock">Spock</string>
+
+    <string name="choice1_desc">choice1</string>
+    <string name="choice2_desc">choice2</string>
+    <string name="choice3_desc">choice3</string>
+    <string name="choice4_desc">choice4</string>
+    <string name="choice5_desc">choice5</string>
+
+    <string name="how_cuts">cuts</string>
+    <string name="how_covers">covers</string>
+    <string name="how_crushes">crushes</string>
+    <string name="how_poisons">poisons</string>
+    <string name="how_smashes">smashes</string>
+    <string name="how_decapitates">decapitates</string>
+    <string name="how_eats">eats</string>
+    <string name="how_disproves">disproves</string>
+    <string name="how_vaporizes">vaporizes</string>
+
+    <string name="outcome_wins">wins</string>
+    <string name="outcome_losses">losses</string>
+    <string name="outcome_draws">draws</string>
+    <string name="btn_find_opponent">Find Opponent</string>
+    <string name="btn_invite">Invite</string>
+    <string name="label_available_players">Available players:</string>
+    <string name="btn_back">Go back</string>
+    <string name="user_record">record: </string>
+    <string name="title_activity_game">GameActivity</string>
+
+    <string name="btn_go_back">Go back</string>
+    <string name="result_image_description">result image</string>
+
+    <string name="invitation_from">Invitation from %s</string>
+    <string name="accept_invitation_prompt">Would you like to accept this invitation?</string>
+    <string name="btn_accept">Accept</string>
+    <string name="btn_reject">Reject</string>
+
+    <string name="invitation_accepted">Invitation accepted</string>
+    <string name="starting_game">Starting game against %s</string>
+    <string name="btn_ok">OK</string>
+    <string name="title_login">LoginActivity</string>
+</resources>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:paddingTop="5dp"
+              android:paddingBottom="5dp"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+    >
+  <TextView
+      android:id="@+id/topic_name"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="5"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:text="The rain in Spain"
+      android:textSize="18sp"
+      android:singleLine="true"
+      android:ellipsize="end"
+      />
+  <TextView
+      android:id="@+id/new_item_count"
+      android:layout_width="35dp"
+      android:layout_height="35dp"
+      android:gravity="center"
+      android:text="100"
+      android:textColor="#FFFFFF"
+      android:background="@drawable/topic_list_badge"
+      />
+  <TextView
+      android:layout_width="20dp"
+      android:layout_height="40dp"
+      android:layout_marginLeft="10dp"
+      android:layout_marginRight="10dp"
+      android:gravity="center"
+      android:textColor="@android:color/darker_gray"
+      android:textSize="18sp"
+      android:text=">"
+      android:singleLine="true"
+      />
+</LinearLayout>
