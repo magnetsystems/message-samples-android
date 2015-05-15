@@ -1,15 +1,15 @@
 package com.magnet.demo.mmx.soapbox;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.common.Log;
-
 import android.app.Application;
 
+/**
+ * Extension of the android Application where the wakeup
+ * listener can be registered (if used by the application).
+ */
 public class MyApplication extends Application {
   public void onCreate() {
     super.onCreate();
-    MMXClient.registerWakeupListener(this, MyWakeupListener.class);
-    Log.setLoggable(null, Log.VERBOSE);
+    //MMXClient.registerWakeupListener(this, MyWakeupListener.class);
     //MMXClient.setWakeupInterval(this, 60 * 1000);
   }
 }

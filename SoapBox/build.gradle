@@ -17,12 +17,7 @@ allprojects {
         jcenter()
         mavenLocal()
         maven {
-            url "http://dev-repo.magnet.com:8081/artifactory/everything"
-//            url "https://repo.magnet.com/artifactory/public"
-            credentials {
-                username = "${devUser}" 
-                password = "${devPassword}"
-            }
+            url "https://repo.magnet.com/artifactory/public"
         }
     }
 }

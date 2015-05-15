@@ -3,6 +3,12 @@ package com.magnet.demo.mmx.soapbox;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+/**
+ * A way to store/retrieve a simple user profile within the application.
+ * This implementation persists the username/password in the app
+ * shared prefs.  This is just for convenience and any credential
+ * storage mechanism may be used.
+ */
 public final class MyProfile extends UserProfile {
   private static final String TAG = MyProfile.class.getSimpleName();
   private static final String PREFERENCES_NAME = "MyProfile";
