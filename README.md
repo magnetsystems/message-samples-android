@@ -1,4 +1,4 @@
-<img style="margin:10px" src="https://testwww.magnet.com/wp-content/uploads/2015/05/sampleapps.png"
+<img style="margin:10px" src="https://www.magnet.com/wp-content/uploads/2015/05/sampleapps.png"
  alt="rest2mobile logo" title="MMXAndroidSamples"/ width="200" align="right">
 
 # Magnet Message Android Sample Apps
@@ -6,7 +6,7 @@
 Magnet Message is a powerful, open source mobile messaging framework enabling real-time user engagement for your mobile apps. Send relevant and targeted communications to customers or employees. These sample Android apps serve as introductory sample code - get familiar with our API, extend our samples and get coding today.
 
 ## Rock Paper Scissors Lizard Spock
-<img style="margin:10px" src="https://testwww.magnet.com/wp-content/uploads/2015/04/spock.png"
+<img style="margin:10px" src="https://www.magnet.com/wp-content/uploads/2015/04/spock.png"
  alt="RPSLS logo" width="200"  align="right" title="RPSLS"/>
 
 We created a Rock Paper Scissors Lizard Spock game as popularized by the show “Big Bang Theory”. If you aren’t already a fan, check out the [rules](http://www.samkass.com/theories/RPSSL.html). Install, build, run, play, repeat. Oh, and learn more about how Magnet Message handles core message passing and the publish/subscribe dynamic.
@@ -79,7 +79,7 @@ you may not use this software except in compliance with the License.
 
 ## Copyright
 
-Copyright © 2014 Magnet Systems, Inc. All rights reserved.
+Copyright © 2015 Magnet Systems, Inc. All rights reserved.
 
 [website]: http://www.magnet.com/
 [techdoc]: https://www.magnet.com/documentation-home/
