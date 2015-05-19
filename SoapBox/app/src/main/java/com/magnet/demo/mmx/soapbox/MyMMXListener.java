@@ -42,6 +42,12 @@ public class MyMMXListener extends AbstractMMXListener {
   @Override
   public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
     Log.d(TAG, "onConnectionEvent(): " + connectionEvent);
+    switch (connectionEvent) {
+      case CONNECTED:
+        //provision the topics when we are connected to ensure that we are subscribed
+        TopicsManager.getInstance(mApplicationContext).provisionTopics();
+        break;
+    }
     super.onConnectionEvent(mmxClient, connectionEvent);
   }
 

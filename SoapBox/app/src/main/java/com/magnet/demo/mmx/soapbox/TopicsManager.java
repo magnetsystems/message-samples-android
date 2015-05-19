@@ -44,7 +44,6 @@ public class TopicsManager {
   private TopicsManager(Context context) {
     mContext = context.getApplicationContext();
     mClient = MMXClient.getInstance(context, R.raw.soapbox);
-    provisionTopics();
   }
 
   /**
@@ -219,7 +218,7 @@ public class TopicsManager {
   /**
    * Provisions the pre-defined topics and subscriptions for this app.
    */
-  private void provisionTopics() {
+  public void provisionTopics() {
     MMXTask<Void> provisionTask = new MMXTask<Void>(mClient) {
       @Override
       public Void doRun(MMXClient mmxClient) throws Throwable {
