@@ -22,10 +22,13 @@ import android.widget.Toast;
 
 import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.MMXTask;
+import com.magnet.mmx.client.common.MMXErrorMessage;
 import com.magnet.mmx.client.common.MMXException;
+import com.magnet.mmx.client.common.MMXMessage;
 import com.magnet.mmx.client.common.MMXSubscription;
 import com.magnet.mmx.client.common.MMXTopicInfo;
 import com.magnet.mmx.client.common.MMXTopicSearchResult;
+import com.magnet.mmx.client.common.MMXid;
 import com.magnet.mmx.protocol.MMXTopic;
 import com.magnet.mmx.protocol.SearchAction;
 import com.magnet.mmx.protocol.TopicAction;
@@ -61,6 +64,37 @@ public class TopicListActivity extends Activity {
     }
   };
 
+  /**
+   * Use this listener to be notified when we receive a message for a topic that we're subscribed to
+   * so that we can update the counts.  NOTE:  onPubSubItemReceived() will only be called when messages
+   * are published to subscribed topics.
+   */
+  private MMXClient.MMXListener mMMXListener = new MMXClient.MMXListener() {
+    public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
+
+    }
+
+    public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String s) {
+
+    }
+
+    public void onSendFailed(MMXClient mmxClient, String s) {
+
+    }
+
+    public void onMessageDelivered(MMXClient mmxClient, MMXid mmXid, String s) {
+
+    }
+
+    public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
+      updateTopicList();
+    }
+
+    public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage mmxErrorMessage) {
+
+    }
+  };
+
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_topic_list);
@@ -93,6 +127,11 @@ public class TopicListActivity extends Activity {
     mListView = (ListView) findViewById(R.id.topics_list);
     mListView.setOnItemClickListener(mOnItemClickListener);
     mClient = MMXClient.getInstance(this, R.raw.soapbox);
+    MyMMXListener.getInstance(this).registerListener(mMMXListener);
+  }
+
+  protected void onDestroy() {
+    MyMMXListener.getInstance(this).unregisterListener(mMMXListener);
   }
 
   protected void onResume() {
