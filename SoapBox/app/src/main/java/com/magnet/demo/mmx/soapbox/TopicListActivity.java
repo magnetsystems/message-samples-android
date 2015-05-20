@@ -132,6 +132,8 @@ public class TopicListActivity extends Activity {
 
   protected void onDestroy() {
     MyMMXListener.getInstance(this).unregisterListener(mMMXListener);
+    super.onDestroy();
+
   }
 
   protected void onResume() {
