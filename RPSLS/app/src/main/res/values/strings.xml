@@ -49,4 +49,6 @@
     <string name="starting_game">Starting game against %s</string>
     <string name="btn_ok">OK</string>
     <string name="title_login">LoginActivity</string>
+
+    <string name="title_activity_splash">RPSLS</string>
 </resources>
