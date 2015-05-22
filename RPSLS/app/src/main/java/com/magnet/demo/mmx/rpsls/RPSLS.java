@@ -337,18 +337,22 @@ public class RPSLS {
      * @param isAvailable whether or not the current user is available
      */
     public static void publishAvailability(Context context, MMXClient client, boolean isAvailable) {
-      MMXPubSubManager psm = client.getPubSubManager();
-      MyProfile profile = MyProfile.getInstance(context);
-      MMXPayload payload = new MMXPayload("This is the message to publish availability or unavailability");
-      payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
-      setProfileToPayload(profile, payload);
-      payload.setMetaData(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
-      payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-      try {
-        String messageId = psm.publish(getTopic(), payload);
-        Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
-      } catch (MMXException e) {
-        Log.e(TAG, "publishAvailability(): unable to publish availability", e);
+      if (client.isConnected()) {
+        MMXPubSubManager psm = client.getPubSubManager();
+        MyProfile profile = MyProfile.getInstance(context);
+        MMXPayload payload = new MMXPayload("This is the message to publish availability or unavailability");
+        payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
+        setProfileToPayload(profile, payload);
+        payload.setMetaData(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
+        payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        try {
+          String messageId = psm.publish(getTopic(), payload);
+          Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
+        } catch (Exception e) {
+          Log.e(TAG, "publishAvailability(): unable to publish availability", e);
+        }
+      } else {
+        Log.e(TAG, "publishAvailability(): not publishing because we are not connected.");
       }
     }
 
