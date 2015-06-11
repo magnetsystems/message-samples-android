@@ -48,6 +48,7 @@
                     android:scaleType="centerInside"
                     android:contentDescription="@string/choice1_desc"
                     android:onClick="doChoice"
+                    android:background="@android:color/transparent"
                     />
             </LinearLayout>
 
@@ -73,6 +74,7 @@
                         android:scaleType="centerInside"
                         android:contentDescription="@string/choice2_desc"
                         android:onClick="doChoice"
+                        android:background="@android:color/transparent"
                         />
                 </FrameLayout>
                 <FrameLayout
@@ -88,6 +90,7 @@
                         android:scaleType="centerInside"
                         android:contentDescription="@string/choice3_desc"
                         android:onClick="doChoice"
+                        android:background="@android:color/transparent"
                         />
                 </FrameLayout>
             </LinearLayout>
@@ -116,6 +119,7 @@
                         android:scaleType="centerInside"
                         android:contentDescription="@string/choice4_desc"
                         android:onClick="doChoice"
+                        android:background="@android:color/transparent"
                         />
                 </FrameLayout>
                 <FrameLayout
@@ -130,6 +134,7 @@
                         android:scaleType="centerInside"
                         android:contentDescription="@string/choice5_desc"
                         android:onClick="doChoice"
+                        android:background="@android:color/transparent"
                         android:layout_gravity="center_horizontal"/>
                 </FrameLayout>
             </LinearLayout>
@@ -204,10 +209,10 @@
                 />
             <ImageView
                 android:id="@+id/resultImage"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
                 android:layout_weight="2"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center_horizontal|top"
                 android:scaleType="centerInside"
                 android:contentDescription="@string/result_image_description"
                 />

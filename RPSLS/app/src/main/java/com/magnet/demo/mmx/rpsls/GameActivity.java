@@ -155,23 +155,23 @@ public class GameActivity extends Activity {
     if (result != null) {
       switch (result.outcome) {
         case WIN:
-          sb.append("Congratulations! You WON!\n");
-          sb.append(result.myChoice);
-          sb.append(" ");
-          sb.append(result.how);
-          sb.append(" ");
-          sb.append(result.opponentChoice);
+          sb.append("Congratulations! You WON!");
+//          sb.append(result.myChoice);
+//          sb.append(" ");
+//          sb.append(result.how);
+//          sb.append(" ");
+//          sb.append(result.opponentChoice);
           break;
         case LOSS:
-          sb.append("Sorry! You LOST!\n");
-          sb.append(result.opponentChoice);
-          sb.append(" ");
-          sb.append(result.how);
-          sb.append(" ");
-          sb.append(result.myChoice);
+          sb.append("Sorry! You LOST!");
+//          sb.append(result.opponentChoice);
+//          sb.append(" ");
+//          sb.append(result.how);
+//          sb.append(" ");
+//          sb.append(result.myChoice);
           break;
         case DRAW:
-          sb.append("Even Steven.  Nobody won...\n");
+          sb.append("Even Steven.  Nobody won...");
           break;
       }
     } else {

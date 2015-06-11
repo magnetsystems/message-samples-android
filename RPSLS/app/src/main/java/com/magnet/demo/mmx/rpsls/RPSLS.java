@@ -337,7 +337,6 @@ public class RPSLS {
      * @param isAvailable whether or not the current user is available
      */
     public static void publishAvailability(Context context, MMXClient client, boolean isAvailable) {
-      if (client.isConnected()) {
         MMXPubSubManager psm = client.getPubSubManager();
         MyProfile profile = MyProfile.getInstance(context);
         MMXPayload payload = new MMXPayload("This is the message to publish availability or unavailability");
@@ -351,9 +350,6 @@ public class RPSLS {
         } catch (Exception e) {
           Log.e(TAG, "publishAvailability(): unable to publish availability", e);
         }
-      } else {
-        Log.e(TAG, "publishAvailability(): not publishing because we are not connected.");
-      }
     }
 
     /**
@@ -829,7 +825,7 @@ public class RPSLS {
           outcome = Outcome.DRAW;
         }
         MyProfile.getInstance(context).incrementCount(choice, outcome);
-        return new Result(outcome, how != null ? how.getHow() : null, choice, mOpponentChoice, how != null ? how.getResourceId() : 0);
+        return new Result(outcome, how != null ? how.getHow() : null, choice, mOpponentChoice, how != null ? how.getResourceId() : R.drawable.draw);
       } else {
         return null;
       }

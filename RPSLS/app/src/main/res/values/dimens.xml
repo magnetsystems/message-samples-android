@@ -4,6 +4,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="choice_image_btn_width">100dp</dimen>
-    <dimen name="choice_image_btn_length">100dp</dimen>
+    <dimen name="choice_image_btn_width">120dp</dimen>
+    <dimen name="choice_image_btn_length">120dp</dimen>
 </resources>
