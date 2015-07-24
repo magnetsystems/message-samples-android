@@ -33,6 +33,7 @@ import com.magnet.mmx.protocol.MMXTopic;
 import com.magnet.mmx.protocol.TopicAction;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -115,7 +116,7 @@ public class TopicItemListActivity extends Activity {
           @Override
           public List<MMXMessage> doRun(MMXClient mmxClient) throws Throwable {
             return mClient.getPubSubManager().getItems(mTopic,
-                    new TopicAction.FetchOptions().setMaxItems(25).setAscending(true));
+                    new TopicAction.FetchOptions().setMaxItems(25).setAscending(false));
           }
 
           @Override
@@ -129,7 +130,11 @@ public class TopicItemListActivity extends Activity {
 
           @Override
           public void onResult(List<MMXMessage> result) {
-            mTopicItems = result;
+            //reverse the list
+            mTopicItems = new ArrayList<MMXMessage>();
+            for (int i=result.size(); --i>=0;) {
+              mTopicItems.add(result.get(i));
+            }
             updateListView();
             synchronized (TopicItemListActivity.this) {
               mTask = null;
