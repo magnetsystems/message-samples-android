@@ -135,6 +135,7 @@ public class TopicItemListActivity extends Activity {
             for (int i=result.size(); --i>=0;) {
               mTopicItems.add(result.get(i));
             }
+            mScrollToBottom.set(true);
             updateListView();
             synchronized (TopicItemListActivity.this) {
               mTask = null;
