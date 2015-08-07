@@ -331,7 +331,7 @@ public class TopicItemListActivity extends Activity {
       int colorResId = 0;
       String authorStr = message.getPayload().getMetaData(KEY_USERNAME, null);
       if (authorStr == null) {
-        authorStr = message.getFrom().getUserId();
+        authorStr = getContext().getString(R.string.chat_unknown);
       }
       switch (type) {
         case TYPE_ME:

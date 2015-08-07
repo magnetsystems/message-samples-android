@@ -17,6 +17,7 @@
     <string name="ic_back"><![CDATA[<]]></string>
     <string name="ic_cancel">Cancel</string>
     <string name="chat_me">Me - </string>
+    <string name="chat_unknown">Unknown</string>
 
     <string name="dlg_signout_title">Sign Out</string>
     <string name="dlg_signout_message">You must be signed in to post to topics.  Continue to sign out?</string>
