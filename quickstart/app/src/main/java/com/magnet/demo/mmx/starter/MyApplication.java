@@ -15,8 +15,17 @@
 package com.magnet.demo.mmx.starter;
 
 import com.magnet.mmx.client.MMXClient;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.api.MagnetMessage;
+import com.magnet.mmx.client.common.MMXid;
 
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.media.RingtoneManager;
+
+import java.util.Date;
 
 /**
  * Quick-start application extending the android Application class.  It registers
@@ -32,10 +41,25 @@ import android.app.Application;
  */
 public class MyApplication extends Application {
   private final static boolean WAKEUP_BY_TIMER = false;
+  private int mNoteId = 0;
+
+  private MagnetMessage.OnMessageReceivedListener mListener =
+          new MagnetMessage.OnMessageReceivedListener() {
+    public boolean onMessageReceived(MMXMessage mmxMessage) {
+      MyMessageStore.addMessage(mmxMessage, null,
+              new Date(), true);
+      doNotify(mmxMessage);
+      return false;
+    }
+  };
   
   public void onCreate() {
     super.onCreate();
-    
+
+    MagnetMessage.init(this, R.raw.quickstart);
+    MagnetMessage.registerListener(mListener);
+    MagnetMessage.startSession(null);
+
     // register a wakeup listener for GCM and/or timer.
     MMXClient.registerWakeupListener(this, MyWakeupListener.class);
     
@@ -44,4 +68,16 @@ public class MyApplication extends Application {
       MMXClient.setWakeupInterval(this, 60 * 1000);
     }
   }
+
+  private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {
+    String messageText = message.getContent().get("foo").toString();
+    MMXid from = message.getSender();
+    NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+    Notification note = new Notification.Builder(this).setAutoCancel(true)
+            .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
+            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+            .setContentTitle("Message from " + from.getUserId()).setContentText(messageText).build();
+    noteMgr.notify(mNoteId++, note);
+  }
+
 }

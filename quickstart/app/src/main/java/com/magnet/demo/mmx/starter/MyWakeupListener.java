@@ -16,9 +16,11 @@ package com.magnet.demo.mmx.starter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
-import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.MMXClient.MMXWakeupListener;
+import com.magnet.mmx.client.api.MMXUser;
+import com.magnet.mmx.client.api.MagnetMessage;
 
 /**
  * This listener is registered during Application.onCreate() to handle GCM and
@@ -34,10 +36,29 @@ public class MyWakeupListener implements MMXWakeupListener {
   public void onWakeupReceived(final Context applicationContext, Intent intent) {
     if (ENABLE_RECONNECTION) {
       // TODO: Upon receiving a wakeup, the application may choose to connect.
-      MyMMXListener myListener = MyMMXListener.getInstance(applicationContext);
-      MMXClient client = MMXClient.getInstance(applicationContext, R.raw.quickstart);
-      client.connectWithCredentials(MyActivity.QUICKSTART_USERNAME, 
-          MyActivity.QUICKSTART_PASSWORD, myListener, null);
+      MagnetMessage.startSession(new MagnetMessage.OnFinishedListener<Void>() {
+        @Override
+        public void onSuccess(Void aVoid) {
+          Log.d(TAG, "onWakeupReceived():  MagnetMessage session started.");
+          MMXUser.login(MyActivity.QUICKSTART_USERNAME, MyActivity.QUICKSTART_PASSWORD,
+                  new MagnetMessage.OnFinishedListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+              Log.d(TAG, "onWakeupReceived():  Login successful.");
+            }
+
+            @Override
+            public void onFailure(MagnetMessage.FailureCode failureCode, Exception e) {
+              Log.e(TAG, "onWakeupReceived(): Login failed with code: " + failureCode, e);
+            }
+          });
+        }
+
+        @Override
+        public void onFailure(MagnetMessage.FailureCode failureCode, Exception e) {
+
+        }
+      });
     }
   }
 }
