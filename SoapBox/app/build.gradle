@@ -25,7 +25,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile('com.magnet.mmx:magnet-mmx-client-android:1.4.5@aar') {
+    compile('com.magnet.mmx:magnet-mmx-client-android:1.4.6@aar') {
         transitive = true
     }
 }
