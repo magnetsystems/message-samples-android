@@ -153,7 +153,7 @@ public class MyActivity extends Activity {
     runOnUiThread(new Runnable() {
       public void run() {
         if (mLoginSuccess.get()) {
-          String username = MagnetMessage.getCurrentUser().getUserId();
+          String username = MMXUser.getCurrentUser().getUsername();
           String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
