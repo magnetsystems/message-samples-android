@@ -70,14 +70,17 @@ public class MyApplication extends Application {
   }
 
   private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {
-    String messageText = message.getContent().get("foo").toString();
-    MMXid from = message.getSender();
-    NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-    Notification note = new Notification.Builder(this).setAutoCancel(true)
-            .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setContentTitle("Message from " + from.getUserId()).setContentText(messageText).build();
-    noteMgr.notify(mNoteId++, note);
+    Object textObj = message.getContent().get(MyActivity.KEY_MESSAGE_TEXT);
+    if (textObj != null) {
+      String messageText = textObj.toString();
+      MMXid from = message.getSender();
+      NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+      Notification note = new Notification.Builder(this).setAutoCancel(true)
+              .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
+              .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+              .setContentTitle("Message from " + from.getUserId()).setContentText(messageText).build();
+      noteMgr.notify(mNoteId++, note);
+    }
   }
 
 }
