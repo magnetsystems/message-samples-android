@@ -35,7 +35,7 @@ import android.widget.Toast;
 
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
-import com.magnet.mmx.client.api.MagnetMessage;
+import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.common.MMXid;
 
 import java.text.DateFormat;
@@ -73,13 +73,18 @@ public class MyActivity extends Activity {
   private String mToUsername = QUICKSTART_USERNAME;
   private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
-  private MagnetMessage.OnMessageReceivedListener mMessageListener =
-          new MagnetMessage.OnMessageReceivedListener() {
-    public boolean onMessageReceived(MMXMessage mmxMessage) {
-      updateViewState();
-      return false;
-    }
-  };
+  private MMX.EventListener mEventListener =
+          new MMX.EventListener() {
+            public boolean onMessageReceived(MMXMessage mmxMessage) {
+              updateViewState();
+              return false;
+            }
+
+            @Override
+            public boolean onMessageAcknowledgementReceived(MMXid mmXid, String s) {
+              return false;
+            }
+          };
 
   /**
    * On creating this activity, register this activity as a local listener to
@@ -93,14 +98,14 @@ public class MyActivity extends Activity {
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
-    MagnetMessage.registerListener(mMessageListener);
-    MMXUser.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MagnetMessage.OnFinishedListener<Void>() {
+    MMX.registerListener(mEventListener);
+    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
         mLoginSuccess.set(true);
         updateViewState();
       }
 
-      public void onFailure(MagnetMessage.FailureCode failureCode, Exception e) {
+      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
         mLoginSuccess.set(false);
         updateViewState();
       }
@@ -133,7 +138,7 @@ public class MyActivity extends Activity {
    */
   @Override
   public void onDestroy() {
-    MagnetMessage.unregisterListener(mMessageListener);
+    MMX.unregisterListener(mEventListener);
     super.onDestroy();
   }
 
@@ -153,7 +158,7 @@ public class MyActivity extends Activity {
     runOnUiThread(new Runnable() {
       public void run() {
         if (mLoginSuccess.get()) {
-          String username = MMXUser.getCurrentUser().getUsername();
+          String username = MMX.getCurrentUser().getUsername();
           String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
@@ -206,7 +211,7 @@ public class MyActivity extends Activity {
           }
           //set author and color
           MMXMessage msg = message.getMessage();
-          String authorStr = msg.getSender().getUserId();
+          String authorStr = msg.getSender().getUsername();
           for (int i=TO_LIST.length; --i >= 0;) {
             if (TO_LIST[i].equalsIgnoreCase(authorStr)) {
               colorResId = COLOR_IDS[i];
@@ -275,23 +280,23 @@ public class MyActivity extends Activity {
       //don't send an empty message
       return;
     }
-    HashMap<String, Object> content = new HashMap<String, Object>();
+    HashMap<String, String> content = new HashMap<String, String>();
     content.put(KEY_MESSAGE_TEXT, messageText);
 
-    HashSet<MMXid> recipients = new HashSet<MMXid>();
-    recipients.add(new MMXid(mToUsername));
+    HashSet<MMXUser> recipients = new HashSet<MMXUser>();
+    recipients.add(new MMXUser.Builder().username(mToUsername).build());
 
     String messageID = new MMXMessage.Builder()
             .content(content)
             .recipients(recipients)
             .build()
-            .send(new MagnetMessage.OnFinishedListener<String>() {
+            .send(new MMX.OnFinishedListener<String>() {
               public void onSuccess(String s) {
                 Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
                 updateViewState();
               }
 
-              public void onFailure(MagnetMessage.FailureCode failureCode, Exception e) {
+              public void onFailure(MMX.FailureCode failureCode, Throwable e) {
                 Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
                 Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
               }
