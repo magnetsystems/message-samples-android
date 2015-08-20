@@ -20,9 +20,11 @@ public class ChannelsManager {
 
   public static final MMXChannel CHANNEL_COMPANY_ANNOUNCEMENTS = new MMXChannel.Builder()
           .name("company_announcements")
+          .setPublic(true)
           .build();
   public static final MMXChannel CHANNEL_LUNCH_BUDDIES = new MMXChannel.Builder()
           .name("lunch_buddies")
+          .setPublic(true)
           .build();
 
   private List<MMXChannel> mChannels = null;

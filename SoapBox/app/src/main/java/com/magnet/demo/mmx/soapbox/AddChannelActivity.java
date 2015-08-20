@@ -83,6 +83,7 @@ public class AddChannelActivity extends Activity {
       }
       MMXChannel channel = new MMXChannel.Builder()
               .name(channelName)
+              .setPublic(true)
               .build();
       channel.create(new MMX.OnFinishedListener<MMXChannel>() {
         public void onSuccess(MMXChannel mmxChannel) {
