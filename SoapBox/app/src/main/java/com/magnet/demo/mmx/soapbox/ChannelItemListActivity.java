@@ -32,15 +32,15 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class TopicItemListActivity extends Activity {
-  private static final String TAG = TopicItemListActivity.class.getSimpleName();
+public class ChannelItemListActivity extends Activity {
+  private static final String TAG = ChannelItemListActivity.class.getSimpleName();
   private static final String KEY_MESSAGE_TEXT = "messageText";
 
   private MyProfile mProfile;
   private MMXChannel mChannel;
-  private List<MMXMessage> mTopicItems;
-  private ListView mTopicItemsView;
-  private TextView mTopicName;
+  private List<MMXMessage> mChannelItems;
+  private ListView mChannelItemsView;
+  private TextView mChannelName;
   private EditText mPublishText;
   private AtomicBoolean mScrollToBottom = new AtomicBoolean(true);
 
@@ -48,7 +48,7 @@ public class TopicItemListActivity extends Activity {
     public boolean onMessageReceived(com.magnet.mmx.client.api.MMXMessage mmxMessage) {
       MMXChannel channel = mmxMessage.getChannel();
       if (channel != null && channel.getName().equals(mChannel.getName())) {
-        updateTopicItems();
+        updateChannelItems();
       }
       return true;
     }
@@ -57,24 +57,24 @@ public class TopicItemListActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_topic_item_list);
+    setContentView(R.layout.activity_channel_item_list);
 
-    final String topicName = getIntent().getStringExtra(TopicListActivity.EXTRA_TOPIC_NAME);
-    Log.d(TAG, "onCreate(): topicName=" + topicName);
-    MMXChannel.findByName(topicName, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
+    final String channelName = getIntent().getStringExtra(ChannelListActivity.EXTRA_CHANNEL_NAME);
+    Log.d(TAG, "onCreate(): channelName=" + channelName);
+    MMXChannel.findByName(channelName, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
       @Override
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
         for (MMXChannel channel : mmxChannelListResult.items) {
-          if (channel.getName().equalsIgnoreCase(topicName)) {
+          if (channel.getName().equalsIgnoreCase(channelName)) {
             mChannel = channel;
-            updateTopicItems();
+            updateChannelItems();
             break;
           }
         }
         if (mChannel == null) {
-          Toast.makeText(TopicItemListActivity.this, "Unable to load channel: " +
-                  topicName, Toast.LENGTH_LONG).show();
-          TopicItemListActivity.this.finish();
+          Toast.makeText(ChannelItemListActivity.this, "Unable to load channel: " +
+                  channelName, Toast.LENGTH_LONG).show();
+          ChannelItemListActivity.this.finish();
           return;
         }
         MMX.registerListener(mListener);
@@ -82,16 +82,16 @@ public class TopicItemListActivity extends Activity {
 
       @Override
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        Toast.makeText(TopicItemListActivity.this, "Failed to load channel: " + topicName + ".  " +
+        Toast.makeText(ChannelItemListActivity.this, "Failed to load channel: " + channelName + ".  " +
                 failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
-        TopicItemListActivity.this.finish();
+        ChannelItemListActivity.this.finish();
       }
     });
-    mProfile = MyProfile.getInstance(TopicItemListActivity.this);
-    mTopicItemsView = (ListView) findViewById(R.id.topic_items);
-    mTopicName = (TextView) findViewById(R.id.topic_name);
+    mProfile = MyProfile.getInstance(ChannelItemListActivity.this);
+    mChannelItemsView = (ListView) findViewById(R.id.channel_items);
+    mChannelName = (TextView) findViewById(R.id.channel_name);
     mPublishText = (EditText) findViewById(R.id.publishMessage);
-    mTopicName.setText(topicName);
+    mChannelName.setText(channelName);
   }
 
   protected void onDestroy() {
@@ -101,26 +101,26 @@ public class TopicItemListActivity extends Activity {
 
   protected void onResume() {
     super.onResume();
-    updateTopicItems();
+    updateChannelItems();
   }
 
-  private void updateTopicItems() {
+  private void updateChannelItems() {
     synchronized (this) {
       if (mChannel != null) {
         mChannel.getItems(null, null, 25, false,
                 new MMX.OnFinishedListener<List<com.magnet.mmx.client.api.MMXMessage>>() {
                   public void onSuccess(List<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
                     //reverse the list
-                    mTopicItems = new ArrayList<MMXMessage>();
+                    mChannelItems = new ArrayList<MMXMessage>();
                     for (int i = mmxMessages.size(); --i >= 0; ) {
-                      mTopicItems.add(mmxMessages.get(i));
+                      mChannelItems.add(mmxMessages.get(i));
                     }
                     mScrollToBottom.set(true);
                     updateListView();
                   }
 
                   public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                    Toast.makeText(TopicItemListActivity.this, "Unable to retrieve items: "
+                    Toast.makeText(ChannelItemListActivity.this, "Unable to retrieve items: "
                             + throwable.getMessage(), Toast.LENGTH_LONG).show();
                   }
                 });
@@ -131,11 +131,11 @@ public class TopicItemListActivity extends Activity {
   private void updateListView() {
     runOnUiThread(new Runnable() {
       public void run() {
-        if (mTopicItems != null) {
-          TopicItemsAdapter adapter = new TopicItemsAdapter(TopicItemListActivity.this, mTopicItems, mProfile);
-          mTopicItemsView.setAdapter(adapter);
+        if (mChannelItems != null) {
+          ChannelItemsAdapter adapter = new ChannelItemsAdapter(ChannelItemListActivity.this, mChannelItems, mProfile);
+          mChannelItemsView.setAdapter(adapter);
           if (mScrollToBottom.compareAndSet(true, false)) {
-            mTopicItemsView.setSelection(adapter.getCount() - 1);
+            mChannelItemsView.setSelection(adapter.getCount() - 1);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(mPublishText.getWindowToken(), 0);
           }
@@ -154,25 +154,25 @@ public class TopicItemListActivity extends Activity {
     mChannel.publish(content, new MMX.OnFinishedListener<String>() {
       @Override
       public void onSuccess(String s) {
-        Toast.makeText(TopicItemListActivity.this, "Published successfully.",
+        Toast.makeText(ChannelItemListActivity.this, "Published successfully.",
                 Toast.LENGTH_SHORT).show();
       }
 
       @Override
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        Toast.makeText(TopicItemListActivity.this, "Unable to publish message: " +
+        Toast.makeText(ChannelItemListActivity.this, "Unable to publish message: " +
                 throwable.getMessage(), Toast.LENGTH_LONG).show();
       }
     });
     mPublishText.setText(null);
     mScrollToBottom.set(true);
-    updateTopicItems();
+    updateChannelItems();
   }
 
   public void doShowMenu(View view) {
     PopupMenu popup = new PopupMenu(this, view);
     MenuInflater inflater = popup.getMenuInflater();
-    inflater.inflate(R.menu.menu_topic_item_list, popup.getMenu());
+    inflater.inflate(R.menu.menu_channel_item_list, popup.getMenu());
 
     //decide which items to hide
     Menu menu = popup.getMenu();
@@ -213,11 +213,11 @@ public class TopicItemListActivity extends Activity {
   public void doSubscribe() {
     mChannel.subscribe(new MMX.OnFinishedListener<String>() {
       public void onSuccess(String s) {
-        Toast.makeText(TopicItemListActivity.this, "Subscribed successfully", Toast.LENGTH_LONG).show();
+        Toast.makeText(ChannelItemListActivity.this, "Subscribed successfully", Toast.LENGTH_LONG).show();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        Toast.makeText(TopicItemListActivity.this, "Unable to subscribe: " +
+        Toast.makeText(ChannelItemListActivity.this, "Unable to subscribe: " +
                 throwable.getMessage(), Toast.LENGTH_LONG).show();
       }
     });
@@ -227,14 +227,14 @@ public class TopicItemListActivity extends Activity {
     mChannel.unsubscribe(new MMX.OnFinishedListener<Boolean>() {
       public void onSuccess(Boolean result) {
         if (result) {
-          Toast.makeText(TopicItemListActivity.this, "Unsubscribed successfully", Toast.LENGTH_LONG).show();
+          Toast.makeText(ChannelItemListActivity.this, "Unsubscribed successfully", Toast.LENGTH_LONG).show();
         } else {
-          Toast.makeText(TopicItemListActivity.this, "Could not unsubscribe.", Toast.LENGTH_LONG).show();
+          Toast.makeText(ChannelItemListActivity.this, "Could not unsubscribe.", Toast.LENGTH_LONG).show();
         }
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        Toast.makeText(TopicItemListActivity.this, "Exception caught: " + throwable.getMessage(),
+        Toast.makeText(ChannelItemListActivity.this, "Exception caught: " + throwable.getMessage(),
                 Toast.LENGTH_LONG).show();
       }
     });
@@ -247,12 +247,12 @@ public class TopicItemListActivity extends Activity {
           case DialogInterface.BUTTON_POSITIVE:
             mChannel.delete(new MMX.OnFinishedListener<Void>() {
               public void onSuccess(Void aVoid) {
-                TopicItemListActivity.this.finish();
+                ChannelItemListActivity.this.finish();
               }
 
               public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                Toast.makeText(TopicItemListActivity.this,
-                        getString(R.string.error_unable_to_delete_topic) +
+                Toast.makeText(ChannelItemListActivity.this,
+                        getString(R.string.error_unable_to_delete_channel) +
                                 failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
 
               }
@@ -272,7 +272,7 @@ public class TopicItemListActivity extends Activity {
     builder.show();
   }
 
-  private static class TopicItemsAdapter extends ArrayAdapter<MMXMessage> {
+  private static class ChannelItemsAdapter extends ArrayAdapter<MMXMessage> {
     private static final int[] COLOR_IDS = {R.color.chat_1, R.color.chat_2, R.color.chat_3, R.color.chat_4, R.color.chat_5, R.color.chat_6};
     private static final int TYPE_ME = 0;
     private static final int TYPE_THEM = 1;
@@ -280,7 +280,7 @@ public class TopicItemListActivity extends Activity {
     private LayoutInflater mInflater;
     private DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
 
-    public TopicItemsAdapter(Context context, List<MMXMessage> messages, MyProfile profile) {
+    public ChannelItemsAdapter(Context context, List<MMXMessage> messages, MyProfile profile) {
       super(context, 0, messages);
       mProfile = profile;
       mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -297,13 +297,13 @@ public class TopicItemListActivity extends Activity {
       switch (type) {
         case TYPE_ME:
           if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.topic_item_me, null);
+            convertView = mInflater.inflate(R.layout.channel_item_me, null);
           }
           colorResId = R.color.chat_me;
           break;
         case TYPE_THEM:
           if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.topic_item_them, null);
+            convertView = mInflater.inflate(R.layout.channel_item_them, null);
           }
           //set author and color
           colorResId = COLOR_IDS[Math.abs(authorStr.hashCode() % COLOR_IDS.length)];

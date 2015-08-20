@@ -42,7 +42,7 @@ public class LoginActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    //if have credentials or already connected, go to topic list activity
+    //if have credentials or already connected, go to channel list activity
     mProfile = MyProfile.getInstance(this);
     setContentView(R.layout.activity_login);
 
@@ -128,7 +128,7 @@ public class LoginActivity extends Activity {
         public void onSuccess(Void aVoid) {
           //login success
           MMX.enableIncomingMessages(true);
-          TopicsManager.getInstance(LoginActivity.this).provisionTopics();
+          ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
           mConnecting.set(false);
           setResult(RESULT_OK);
           finish();

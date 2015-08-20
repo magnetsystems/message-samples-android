@@ -3,7 +3,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                tools:context="com.magnet.demo.mmx.soapbox.TopicItemListActivity">
+                tools:context="com.magnet.demo.mmx.soapbox.ChannelItemListActivity">
 
 
     <LinearLayout
@@ -22,13 +22,13 @@
             android:onClick="doBack"
             />
         <TextView
-            android:id="@+id/topic_name"
+            android:id="@+id/channel_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5"
             android:gravity="center_vertical"
             android:textSize="20sp"
-            android:text="Topic Name"
+            android:text="Channel Name"
             />
         <ImageButton
             android:layout_width="50dp"
@@ -46,7 +46,7 @@
         android:background="?android:attr/listDivider"
         />
     <ListView
-        android:id="@+id/topic_items"
+        android:id="@+id/channel_items"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"

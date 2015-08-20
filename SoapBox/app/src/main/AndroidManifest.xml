@@ -35,8 +35,8 @@
             >
         </activity>
         <activity
-            android:name=".TopicListActivity"
-            android:label="@string/title_activity_topic_list"
+            android:name=".ChannelListActivity"
+            android:label="@string/title_activity_channel_list"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -45,13 +45,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TopicItemListActivity"
-            android:label="@string/title_activity_topic_item_list"
+            android:name=".ChannelItemListActivity"
+            android:label="@string/title_activity_channel_item_list"
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
-            android:name=".TopicAddActivity"
-            android:label="@string/title_activity_topic_add" >
+            android:name=".AddChannelActivity"
+            android:label="@string/title_activity_channel_add" >
         </activity>
     </application>
 

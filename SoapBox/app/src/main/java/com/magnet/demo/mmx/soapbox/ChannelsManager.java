@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A utility/manager class for the app to manage topic information.
+ * A utility/manager class for the app to manage channel information.
  */
-public class TopicsManager {
-  private static final String TAG = TopicsManager.class.getSimpleName();
+public class ChannelsManager {
+  private static final String TAG = ChannelsManager.class.getSimpleName();
 
-  private static TopicsManager sInstance = null;
+  private static ChannelsManager sInstance = null;
   private Context mContext = null;
 
   public static final MMXChannel CHANNEL_COMPANY_ANNOUNCEMENTS = new MMXChannel.Builder()
@@ -27,23 +27,23 @@ public class TopicsManager {
 
   private List<MMXChannel> mChannels = null;
 
-  //Used to hold the processed topics/subscriptions
+  //Used to hold the processed channels/subscriptions
   private ArrayList<MMXChannel> mSubscribedChannels = null;
   private ArrayList<MMXChannel> mOtherChannels = null;
 
-  private TopicsManager(Context context) {
+  private ChannelsManager(Context context) {
     mContext = context.getApplicationContext();
   }
 
   /**
-   * Retrieve the singleton instance of this TopicsManager
+   * Retrieve the singleton instance of this ChannelsManager
    *
    * @param context the android context
    * @return the singleton instance
    */
-  public static synchronized TopicsManager getInstance(Context context) {
+  public static synchronized ChannelsManager getInstance(Context context) {
     if (sInstance == null) {
-      sInstance = new TopicsManager(context);
+      sInstance = new ChannelsManager(context);
     }
     return sInstance;
   }
@@ -68,11 +68,11 @@ public class TopicsManager {
   }
 
   /**
-   * Retrieves the list of subscribed topics.  If a searchString paramter is
+   * Retrieves the list of subscribed channels.  If a searchString paramter is
    * specified, the results will be filtered.
    *
-   * @param searchString the partial match string to filter, or null for all subscribed topics
-   * @return a list of subscribed topics matching the searchString filter
+   * @param searchString the partial match string to filter, or null for all subscribed channels
+   * @return a list of subscribed channels matching the searchString filter
    */
   public List<MMXChannel> getSubscribedChannels(String searchString) {
     synchronized (this) {
@@ -91,11 +91,11 @@ public class TopicsManager {
   }
 
   /**
-   * Retrieves the filter list of topics, with the subscribed topics removed.
+   * Retrieves the filter list of channels, with the subscribed channels removed.
    * If a searchString parameter is specified, the results will be filtered.
    *
-   * @param searchString the partial match string to filter, or null for all non-subscribed topics
-   * @return a list of non-subscribed topics matching the searchString filter
+   * @param searchString the partial match string to filter, or null for all non-subscribed channels
+   * @return a list of non-subscribed channels matching the searchString filter
    */
   public List<MMXChannel> getOtherChannels(String searchString) {
     synchronized (this) {
@@ -127,9 +127,9 @@ public class TopicsManager {
   }
 
   /**
-   * Provisions the pre-defined topics and subscriptions for this app.
+   * Provisions the pre-defined channels and subscriptions for this app.
    */
-  public void provisionTopics() {
+  public void provisionChannels() {
     CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMX.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
 

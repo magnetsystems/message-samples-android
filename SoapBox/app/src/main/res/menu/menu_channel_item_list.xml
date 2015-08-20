@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
-      tools:context="com.magnet.demo.mmx.soapbox.TopicItemListActivity">
+      tools:context="com.magnet.demo.mmx.soapbox.ChannelItemListActivity">
     <item android:id="@+id/action_subscribe"
           android:title="@string/action_subscribe"
           android:orderInCategory="100"

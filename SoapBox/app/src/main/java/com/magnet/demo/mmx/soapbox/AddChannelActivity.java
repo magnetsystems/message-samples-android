@@ -20,9 +20,9 @@ import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class TopicAddActivity extends Activity {
-  private static final String TAG = TopicAddActivity.class.getSimpleName();
-  private EditText mTopicName = null;
+public class AddChannelActivity extends Activity {
+  private static final String TAG = AddChannelActivity.class.getSimpleName();
+  private EditText mChannelName = null;
   private ListView mTagList = null;
   private String[] mTagArray = null;
   private AtomicBoolean mSaving = new AtomicBoolean(false);
@@ -30,9 +30,9 @@ public class TopicAddActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_topic_add);
-    mTagArray = getResources().getStringArray(R.array.topic_tags);
-    mTopicName = (EditText) findViewById(R.id.topicName);
+    setContentView(R.layout.activity_channel_add);
+    mTagArray = getResources().getStringArray(R.array.channel_tags);
+    mChannelName = (EditText) findViewById(R.id.channelName);
     mTagList = (ListView) findViewById(R.id.tagList);
     mTagList.setAdapter(
             new ArrayAdapter<String>(this, R.layout.simple_list_item_checked, mTagArray));
@@ -41,7 +41,7 @@ public class TopicAddActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.menu_topic_add, menu);
+    getMenuInflater().inflate(R.menu.menu_channel_add, menu);
     return true;
   }
 
@@ -68,7 +68,7 @@ public class TopicAddActivity extends Activity {
     runOnUiThread(new Runnable() {
       public void run() {
         boolean disableViews = mSaving.get();
-        mTopicName.setEnabled(!disableViews);
+        mChannelName.setEnabled(!disableViews);
         mTagList.setEnabled(!disableViews);
       }
     });
@@ -76,13 +76,13 @@ public class TopicAddActivity extends Activity {
 
   public void doSave(View view) {
     if (mSaving.compareAndSet(false, true)) {
-      final String topicName = mTopicName.getText().toString();
-      if (topicName.isEmpty()) {
-        mTopicName.setError(getString(R.string.error_topic_name_required));
+      final String channelName = mChannelName.getText().toString();
+      if (channelName.isEmpty()) {
+        mChannelName.setError(getString(R.string.error_channel_name_required));
         return;
       }
       MMXChannel channel = new MMXChannel.Builder()
-              .name(topicName)
+              .name(channelName)
               .build();
       channel.create(new MMX.OnFinishedListener<MMXChannel>() {
         public void onSuccess(MMXChannel mmxChannel) {
@@ -93,7 +93,7 @@ public class TopicAddActivity extends Activity {
             int position = checkedPositions.keyAt(i);
             boolean checked = checkedPositions.valueAt(i);
             if (checked) {
-              Log.d(TAG, "createTopic(): adding tag: " + mTagArray[position]);
+              Log.d(TAG, "create(): adding tag: " + mTagArray[position]);
               tags.add(mTagArray[position]);
             }
           }
@@ -101,33 +101,33 @@ public class TopicAddActivity extends Activity {
             mmxChannel.setTags(tags, new MMX.OnFinishedListener<Void>() {
               public void onSuccess(Void aVoid) {
                 mSaving.set(false);
-                TopicAddActivity.this.finish();
+                AddChannelActivity.this.finish();
 
               }
 
               public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                Toast.makeText(TopicAddActivity.this, "Topic '" + topicName +
+                Toast.makeText(AddChannelActivity.this, "Channel '" + channelName +
                         "' created, but unable to add tags: " + throwable.getMessage(),
                         Toast.LENGTH_LONG).show();
                 mSaving.set(false);
-                TopicAddActivity.this.finish();
+                AddChannelActivity.this.finish();
               }
             });
             updateView();
           } else {
             mSaving.set(false);
-            TopicAddActivity.this.finish();
+            AddChannelActivity.this.finish();
           }
 
         }
 
         public void onFailure(MMX.FailureCode failureCode, final Throwable throwable) {
-          TopicAddActivity.this.runOnUiThread(new Runnable() {
+          AddChannelActivity.this.runOnUiThread(new Runnable() {
             public void run() {
               if (throwable.getCause() instanceof TopicExistsException) {
-                mTopicName.setError(getString(R.string.error_topic_already_exists));
+                mChannelName.setError(getString(R.string.error_channel_already_exists));
               } else {
-                mTopicName.setError(throwable.getMessage());
+                mChannelName.setError(throwable.getMessage());
               }
               updateView();
             }

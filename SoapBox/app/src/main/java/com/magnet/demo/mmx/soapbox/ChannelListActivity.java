@@ -27,44 +27,44 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.List;
 
-public class TopicListActivity extends Activity {
-  private static final String TAG = TopicListActivity.class.getSimpleName();
-  public static final String EXTRA_TOPIC_NAME = "topicName";
+public class ChannelListActivity extends Activity {
+  private static final String TAG = ChannelListActivity.class.getSimpleName();
+  public static final String EXTRA_CHANNEL_NAME = "channelName";
   private static final long MILLIS_IN_ONE_DAY = 24 * 60 * 60 * 1000l;
   static final int REQUEST_LOGIN = 1;
-  private TopicsManager mTopicsManager = null;
+  private ChannelsManager mChannelsManager = null;
 
   private Handler mSearchHandler = new Handler();
   private ListView mListView = null;
   private EditText mSearchFilter = null;
-  private TopicHeaderListAdapter mAdapter = null;
+  private ChannelHeaderListAdapter mAdapter = null;
 
   private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-      String topicName = (String) view.getTag();
-      if (topicName != null) {
-        Intent intent = new Intent(TopicListActivity.this, TopicItemListActivity.class);
-        intent.putExtra(EXTRA_TOPIC_NAME, topicName);
+      String channelName = (String) view.getTag();
+      if (channelName != null) {
+        Intent intent = new Intent(ChannelListActivity.this, ChannelItemListActivity.class);
+        intent.putExtra(EXTRA_CHANNEL_NAME, channelName);
         startActivity(intent);
       }
     }
   };
 
   /**
-   * Use this listener to be notified when we receive a message for a topic that we're subscribed to
+   * Use this listener to be notified when we receive a message for a channel that we're subscribed to
    * so that we can update the counts.  NOTE:  onPubSubItemReceived() will only be called when messages
-   * are published to subscribed topics.
+   * are published to subscribed channels.
    */
   private MMX.EventListener mListener = new MMX.EventListener() {
     public boolean onMessageReceived(MMXMessage mmxMessage) {
-      updateTopicList();
+      updateChannelList();
       return false;
     }
   };
 
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_topic_list);
+    setContentView(R.layout.activity_channel_list);
     mSearchFilter = (EditText) findViewById(R.id.search);
     mSearchFilter.addTextChangedListener(new TextWatcher() {
       @Override
@@ -77,7 +77,7 @@ public class TopicListActivity extends Activity {
         mSearchHandler.removeCallbacks(null);
         mSearchHandler.postDelayed(new Runnable() {
           public void run() {
-            updateTopicList();
+            updateChannelList();
           }
         }, 700);
       }
@@ -87,11 +87,11 @@ public class TopicListActivity extends Activity {
 
       }
     });
-    mTopicsManager = TopicsManager.getInstance(this);
-    mAdapter = new TopicHeaderListAdapter(this,
-            mTopicsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
-            mTopicsManager.getOtherChannels(mSearchFilter.getText().toString()));
-    mListView = (ListView) findViewById(R.id.topics_list);
+    mChannelsManager = ChannelsManager.getInstance(this);
+    mAdapter = new ChannelHeaderListAdapter(this,
+            mChannelsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
+            mChannelsManager.getOtherChannels(mSearchFilter.getText().toString()));
+    mListView = (ListView) findViewById(R.id.channels_list);
     mListView.setOnItemClickListener(mOnItemClickListener);
     MMX.registerListener(mListener);
   }
@@ -109,19 +109,19 @@ public class TopicListActivity extends Activity {
       startActivityForResult(loginIntent, REQUEST_LOGIN);
     } else {
       //populate or update the view
-      updateTopicList();
+      updateChannelList();
     }
   }
 
-  private synchronized void updateTopicList() {
+  private synchronized void updateChannelList() {
     MMXChannel.findByName(null, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
-        TopicsManager.getInstance(TopicListActivity.this).setChannels(mmxChannelListResult.items);
+        ChannelsManager.getInstance(ChannelListActivity.this).setChannels(mmxChannelListResult.items);
         updateView();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        Toast.makeText(TopicListActivity.this, "Exception: " + throwable.getMessage(),
+        Toast.makeText(ChannelListActivity.this, "Exception: " + throwable.getMessage(),
                 Toast.LENGTH_LONG).show();
         updateView();
       }
@@ -131,9 +131,9 @@ public class TopicListActivity extends Activity {
   private void updateView() {
     runOnUiThread(new Runnable() {
       public void run() {
-        mAdapter = new TopicHeaderListAdapter(TopicListActivity.this,
-                mTopicsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
-                mTopicsManager.getOtherChannels(mSearchFilter.getText().toString()));
+        mAdapter = new ChannelHeaderListAdapter(ChannelListActivity.this,
+                mChannelsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
+                mChannelsManager.getOtherChannels(mSearchFilter.getText().toString()));
         mListView.setAdapter(mAdapter);
       }
     });
@@ -143,7 +143,7 @@ public class TopicListActivity extends Activity {
     Log.d(TAG, "onActivityResult() request=" + requestCode + ", result=" + resultCode);
     if (requestCode == REQUEST_LOGIN) {
       if (resultCode == RESULT_OK) {
-        updateTopicList();
+        updateChannelList();
       } else {
         finish();
       }
@@ -157,11 +157,11 @@ public class TopicListActivity extends Activity {
           case DialogInterface.BUTTON_POSITIVE:
             MMX.logout(new MMX.OnFinishedListener<Void>() {
               public void onSuccess(Void aVoid) {
-                TopicListActivity.this.finish();
+                ChannelListActivity.this.finish();
               }
 
               public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                Toast.makeText(TopicListActivity.this, "Logout failed: " + failureCode +
+                Toast.makeText(ChannelListActivity.this, "Logout failed: " + failureCode +
                         ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
               }
             });
@@ -180,48 +180,48 @@ public class TopicListActivity extends Activity {
     builder.create().show();
   }
 
-  public void doAddTopic(View view) {
-    Intent intent = new Intent(this, TopicAddActivity.class);
+  public void doAddChannel(View view) {
+    Intent intent = new Intent(this, AddChannelActivity.class);
     startActivity(intent);
   }
 
-  private static class TopicHeaderListAdapter extends BaseAdapter {
+  private static class ChannelHeaderListAdapter extends BaseAdapter {
     private static final int TYPE_HEADER = 0;
-    private static final int TYPE_TOPIC = 1;
+    private static final int TYPE_CHANNEL = 1;
     private Context mContext;
     private List<MMXChannel> mSubscriptions;
-    private List<MMXChannel> mTopics;
+    private List<MMXChannel> mOtherChannels;
     private LayoutInflater mLayoutInflater;
-    private int mOtherTopicsHeaderPosition;
+    private int mOtherChannelsHeaderPosition;
 
-    public TopicHeaderListAdapter(Context context, List<MMXChannel> subscriptions, List<MMXChannel> topics) {
+    public ChannelHeaderListAdapter(Context context, List<MMXChannel> subscriptions, List<MMXChannel> otherChannels) {
       super();
       mContext = context;
       mLayoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
       mSubscriptions = subscriptions;
-      mTopics = topics;
-      mOtherTopicsHeaderPosition = mSubscriptions.size() + 1;
+      mOtherChannels = otherChannels;
+      mOtherChannelsHeaderPosition = mSubscriptions.size() + 1;
     }
 
     @Override
     public int getCount() {
-      return mSubscriptions.size() + mTopics.size() + 2; //two header rows
+      return mSubscriptions.size() + mOtherChannels.size() + 2; //two header rows
     }
 
     @Override
     public Object getItem(int position) {
       if (position == 0) {
-        return mContext.getString(R.string.topic_list_header_subscriptions) + " (" + mSubscriptions.size() + ")";
-      } else if (position == mOtherTopicsHeaderPosition) {
-        return mContext.getString(R.string.topic_list_header_other_topics) + " (" + mTopics.size() + ")";
+        return mContext.getString(R.string.channel_list_header_subscriptions) + " (" + mSubscriptions.size() + ")";
+      } else if (position == mOtherChannelsHeaderPosition) {
+        return mContext.getString(R.string.channel_list_header_other_channels) + " (" + mOtherChannels.size() + ")";
       } else {
-        if (position < mOtherTopicsHeaderPosition) {
+        if (position < mOtherChannelsHeaderPosition) {
           int subscriptionsIndex = position - 1;
           return mSubscriptions.get(subscriptionsIndex);
         } else {
-          //look into other topics
-          int otherTopicsIndex = position - mSubscriptions.size() - 2;
-          return mTopics.get(otherTopicsIndex);
+          //look into other channels
+          int otherChannelsIndex = position - mSubscriptions.size() - 2;
+          return mOtherChannels.get(otherChannelsIndex);
         }
       }
     }
@@ -237,7 +237,7 @@ public class TopicListActivity extends Activity {
       switch (viewType) {
         case TYPE_HEADER:
           if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.topic_list_header, null);
+            convertView = mLayoutInflater.inflate(R.layout.channel_list_header, null);
           }
           String headerStr = (String) getItem(position);
           TextView headerText = (TextView) convertView.findViewById(R.id.headerText);
@@ -245,12 +245,12 @@ public class TopicListActivity extends Activity {
           convertView.setTag(null);
           convertView.setEnabled(false);
           break;
-        case TYPE_TOPIC:
+        case TYPE_CHANNEL:
           if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.topic_list_item, null);
+            convertView = mLayoutInflater.inflate(R.layout.channel_list_item, null);
           }
-          MMXChannel topic = (MMXChannel) getItem(position);
-          populateTopicView(convertView, topic);
+          MMXChannel channel = (MMXChannel) getItem(position);
+          populateChannelView(convertView, channel);
           break;
       }
       return convertView;
@@ -259,25 +259,25 @@ public class TopicListActivity extends Activity {
     @Override
     public int getItemViewType(int position) {
       //H T T T T T H T T T T
-      if (position == 0 || position == mOtherTopicsHeaderPosition) {
+      if (position == 0 || position == mOtherChannelsHeaderPosition) {
         return TYPE_HEADER;
       }
-      return TYPE_TOPIC;
+      return TYPE_CHANNEL;
     }
 
     @Override
     public int getViewTypeCount() {
-      //header view and topic view
+      //header view and channel view
       return 2;
     }
 
-    private void populateTopicView(View view, MMXChannel topic) {
-      TextView topicNameView = (TextView) view.findViewById(R.id.topic_name);
-      String topicName = topic.getName();
-      topicNameView.setText(topicName);
+    private void populateChannelView(View view, MMXChannel channel) {
+      TextView channelNameView = (TextView) view.findViewById(R.id.channel_name);
+      String channelName = channel.getName();
+      channelNameView.setText(channelName);
 
       TextView countView = (TextView) view.findViewById(R.id.new_item_count);
-      int count = topic.getNumberOfMessages();
+      int count = channel.getNumberOfMessages();
       if (count > 0) {
         countView.setVisibility(View.VISIBLE);
         countView.setText(String.valueOf(count));
@@ -285,7 +285,7 @@ public class TopicListActivity extends Activity {
         countView.setVisibility(View.INVISIBLE);
         countView.setText(null);
       }
-      view.setTag(topicName);
+      view.setTag(channelName);
     }
   }
 }
