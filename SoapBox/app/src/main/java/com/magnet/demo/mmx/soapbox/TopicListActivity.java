@@ -20,22 +20,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.MMXTask;
-import com.magnet.mmx.client.common.MMXErrorMessage;
-import com.magnet.mmx.client.common.MMXException;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.client.common.MMXSubscription;
-import com.magnet.mmx.client.common.MMXTopicInfo;
-import com.magnet.mmx.client.common.MMXTopicSearchResult;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.protocol.MMXTopic;
-import com.magnet.mmx.protocol.SearchAction;
-import com.magnet.mmx.protocol.TopicAction;
-import com.magnet.mmx.protocol.TopicSummary;
+import com.magnet.mmx.client.api.ListResult;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TopicListActivity extends Activity {
@@ -43,15 +32,12 @@ public class TopicListActivity extends Activity {
   public static final String EXTRA_TOPIC_NAME = "topicName";
   private static final long MILLIS_IN_ONE_DAY = 24 * 60 * 60 * 1000l;
   static final int REQUEST_LOGIN = 1;
-  private MMXClient mClient = null;
   private TopicsManager mTopicsManager = null;
 
   private Handler mSearchHandler = new Handler();
   private ListView mListView = null;
   private EditText mSearchFilter = null;
   private TopicHeaderListAdapter mAdapter = null;
-  private MMXTask<List<MMXSubscription>> mSubscriptionsTask = null;
-  private MMXTask<MMXTopicSearchResult> mTopicsTask = null;
 
   private AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -69,29 +55,10 @@ public class TopicListActivity extends Activity {
    * so that we can update the counts.  NOTE:  onPubSubItemReceived() will only be called when messages
    * are published to subscribed topics.
    */
-  private MMXClient.MMXListener mMMXListener = new MMXClient.MMXListener() {
-    public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
-
-    }
-
-    public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String s) {
-
-    }
-
-    public void onSendFailed(MMXClient mmxClient, String s) {
-
-    }
-
-    public void onMessageDelivered(MMXClient mmxClient, MMXid mmXid, String s) {
-
-    }
-
-    public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
+  private MMX.EventListener mListener = new MMX.EventListener() {
+    public boolean onMessageReceived(MMXMessage mmxMessage) {
       updateTopicList();
-    }
-
-    public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage mmxErrorMessage) {
-
+      return false;
     }
   };
 
@@ -122,23 +89,22 @@ public class TopicListActivity extends Activity {
     });
     mTopicsManager = TopicsManager.getInstance(this);
     mAdapter = new TopicHeaderListAdapter(this,
-            mTopicsManager.getSubscribedTopics(mSearchFilter.getText().toString()),
-            mTopicsManager.getOtherTopics(mSearchFilter.getText().toString()));
+            mTopicsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
+            mTopicsManager.getOtherChannels(mSearchFilter.getText().toString()));
     mListView = (ListView) findViewById(R.id.topics_list);
     mListView.setOnItemClickListener(mOnItemClickListener);
-    mClient = MMXClient.getInstance(this, R.raw.soapbox);
-    MyMMXListener.getInstance(this).registerListener(mMMXListener);
+    MMX.registerListener(mListener);
   }
 
   protected void onDestroy() {
-    MyMMXListener.getInstance(this).unregisterListener(mMMXListener);
+    MMX.unregisterListener(mListener);
     super.onDestroy();
 
   }
 
   protected void onResume() {
     super.onResume();
-    if (!mClient.isConnected()) {
+    if (MMX.getCurrentUser() == null) {
       Intent loginIntent = new Intent(this, LoginActivity.class);
       startActivityForResult(loginIntent, REQUEST_LOGIN);
     } else {
@@ -148,84 +114,26 @@ public class TopicListActivity extends Activity {
   }
 
   private synchronized void updateTopicList() {
-    if (mSubscriptionsTask == null) {
-      mSubscriptionsTask = new MMXTask<List<MMXSubscription>>(mClient) {
-        @Override
-        public List<MMXSubscription> doRun(MMXClient mmxClient) throws Throwable {
-          return mmxClient.getPubSubManager().listAllSubscriptions();
-        }
+    MMXChannel.findByName(null, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
+      public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
+        TopicsManager.getInstance(TopicListActivity.this).setChannels(mmxChannelListResult.items);
+        updateView();
+      }
 
-        @Override
-        public void onException(Throwable exception) {
-          Log.e(TAG, "subscriptionsTask() caught exception", exception);
-          Toast.makeText(TopicListActivity.this, "Exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-          synchronized (TopicListActivity.this) {
-            mSubscriptionsTask = null;
-          }
-        }
-
-        @Override
-        public void onResult(List<MMXSubscription> result) {
-          mTopicsManager.setSubscriptions(result);
-          updateView();
-          synchronized (TopicListActivity.this) {
-            mSubscriptionsTask = null;
-          }
-        }
-      };
-      mSubscriptionsTask.execute();
-    }
-
-    if (mTopicsTask == null) {
-      mTopicsTask = new MMXTask<MMXTopicSearchResult>(mClient) {
-        @Override
-        public MMXTopicSearchResult doRun(MMXClient mmxClient) throws Throwable {
-          return mmxClient.getPubSubManager().searchBy(SearchAction.Operator.OR,
-                  new TopicAction.TopicSearch(), null);
-        }
-
-        @Override
-        public void onException(Throwable exception) {
-          Log.e(TAG, "subscriptionsTask() caught exception", exception);
-          Toast.makeText(TopicListActivity.this, "Exception: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-          synchronized (TopicListActivity.this) {
-            mTopicsTask = null;
-          }
-        }
-
-        @Override
-        public void onResult(MMXTopicSearchResult result) {
-          mTopicsManager.setTopics(result.getResults());
-          ArrayList<MMXTopic> topicsList = new ArrayList<MMXTopic>();
-          for (MMXTopicInfo info : result.getResults()) {
-            MMXTopic topic = info.getTopic();
-            if (topic.getName() != null && !topic.getName().isEmpty()) {
-              topicsList.add(info.getTopic());
-            }
-          }
-          try {
-            List<TopicSummary> summaries = mClient.getPubSubManager().getTopicSummary(topicsList,
-                    new Date(System.currentTimeMillis() - MILLIS_IN_ONE_DAY), null);
-            mTopicsManager.setTopicSummaries(summaries);
-          } catch (MMXException e) {
-            Log.e(TAG, "Unable to retrieve topic summaries", e);
-          }
-          updateView();
-          synchronized (TopicListActivity.this) {
-            mTopicsTask = null;
-          }
-        }
-      };
-      mTopicsTask.execute();
-    }
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Toast.makeText(TopicListActivity.this, "Exception: " + throwable.getMessage(),
+                Toast.LENGTH_LONG).show();
+        updateView();
+      }
+    });
   }
 
   private void updateView() {
     runOnUiThread(new Runnable() {
       public void run() {
         mAdapter = new TopicHeaderListAdapter(TopicListActivity.this,
-                mTopicsManager.getSubscribedTopics(mSearchFilter.getText().toString()),
-                mTopicsManager.getOtherTopics(mSearchFilter.getText().toString()));
+                mTopicsManager.getSubscribedChannels(mSearchFilter.getText().toString()),
+                mTopicsManager.getOtherChannels(mSearchFilter.getText().toString()));
         mListView.setAdapter(mAdapter);
       }
     });
@@ -247,19 +155,16 @@ public class TopicListActivity extends Activity {
       public void onClick(final DialogInterface dialog, int which) {
         switch (which) {
           case DialogInterface.BUTTON_POSITIVE:
-            MMXTask<Void> logoutTask = new MMXTask<Void>(mClient) {
-              @Override
-              public Void doRun(MMXClient mmxClient) throws Throwable {
-                mmxClient.disconnect();
-                return null;
-              }
-
-              @Override
-              public void onResult(Void result) {
+            MMX.logout(new MMX.OnFinishedListener<Void>() {
+              public void onSuccess(Void aVoid) {
                 TopicListActivity.this.finish();
               }
-            };
-            logoutTask.execute();
+
+              public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                Toast.makeText(TopicListActivity.this, "Logout failed: " + failureCode +
+                        ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+              }
+            });
             break;
           case DialogInterface.BUTTON_NEGATIVE:
             dialog.cancel();
@@ -284,17 +189,15 @@ public class TopicListActivity extends Activity {
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_TOPIC = 1;
     private Context mContext;
-    private List<MMXTopic> mSubscriptions;
-    private List<MMXTopic> mTopics;
+    private List<MMXChannel> mSubscriptions;
+    private List<MMXChannel> mTopics;
     private LayoutInflater mLayoutInflater;
     private int mOtherTopicsHeaderPosition;
-    private TopicsManager mTopicsManager;
 
-    public TopicHeaderListAdapter(Context context, List<MMXTopic> subscriptions, List<MMXTopic> topics) {
+    public TopicHeaderListAdapter(Context context, List<MMXChannel> subscriptions, List<MMXChannel> topics) {
       super();
       mContext = context;
       mLayoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-      mTopicsManager = TopicsManager.getInstance(mContext);
       mSubscriptions = subscriptions;
       mTopics = topics;
       mOtherTopicsHeaderPosition = mSubscriptions.size() + 1;
@@ -346,7 +249,7 @@ public class TopicListActivity extends Activity {
           if (convertView == null) {
             convertView = mLayoutInflater.inflate(R.layout.topic_list_item, null);
           }
-          MMXTopic topic = (MMXTopic) getItem(position);
+          MMXChannel topic = (MMXChannel) getItem(position);
           populateTopicView(convertView, topic);
           break;
       }
@@ -368,14 +271,13 @@ public class TopicListActivity extends Activity {
       return 2;
     }
 
-    private void populateTopicView(View view, MMXTopic topic) {
+    private void populateTopicView(View view, MMXChannel topic) {
       TextView topicNameView = (TextView) view.findViewById(R.id.topic_name);
       String topicName = topic.getName();
       topicNameView.setText(topicName);
 
       TextView countView = (TextView) view.findViewById(R.id.new_item_count);
-      TopicSummary summary = mTopicsManager.getTopicSummary(topic);
-      int count = summary == null ? 0 : summary.getCount();
+      int count = topic.getNumberOfMessages();
       if (count > 0) {
         countView.setVisibility(View.VISIBLE);
         countView.setText(String.valueOf(count));

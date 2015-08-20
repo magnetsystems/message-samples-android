@@ -20,64 +20,37 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.MMXTask;
-import com.magnet.mmx.client.common.MMXErrorMessage;
-import com.magnet.mmx.client.common.MMXException;
-import com.magnet.mmx.client.common.MMXGlobalTopic;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.client.common.MMXPayload;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.protocol.MMXStatus;
-import com.magnet.mmx.protocol.MMXTopic;
-import com.magnet.mmx.protocol.TopicAction;
+import com.magnet.mmx.client.api.ListResult;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class TopicItemListActivity extends Activity {
   private static final String TAG = TopicItemListActivity.class.getSimpleName();
-  private static final String KEY_USERNAME = "username";
+  private static final String KEY_MESSAGE_TEXT = "messageText";
 
   private MyProfile mProfile;
-  private MMXClient mClient;
-  private MMXTopic mTopic;
-  private MMXTask<List<MMXMessage>> mTask;
+  private MMXChannel mChannel;
   private List<MMXMessage> mTopicItems;
   private ListView mTopicItemsView;
   private TextView mTopicName;
   private EditText mPublishText;
   private AtomicBoolean mScrollToBottom = new AtomicBoolean(true);
 
-  private MMXClient.MMXListener mListener = new MMXClient.MMXListener() {
-    public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
-
-    }
-
-    public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String s) {
-
-    }
-
-    public void onSendFailed(MMXClient mmxClient, String s) {
-
-    }
-
-    public void onMessageDelivered(MMXClient mmxClient, MMXid mmXid, String s) {
-
-    }
-
-    public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
-      if (mmxTopic.getName().equals(mTopic.getName())) {
-        //update the items if we are currently viewing the topic
+  private MMX.EventListener mListener = new MMX.EventListener() {
+    public boolean onMessageReceived(com.magnet.mmx.client.api.MMXMessage mmxMessage) {
+      MMXChannel channel = mmxMessage.getChannel();
+      if (channel != null && channel.getName().equals(mChannel.getName())) {
         updateTopicItems();
       }
-    }
-
-    public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage mmxErrorMessage) {
-
+      return true;
     }
   };
 
@@ -86,12 +59,35 @@ public class TopicItemListActivity extends Activity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_topic_item_list);
 
-    String topicName = getIntent().getStringExtra(TopicListActivity.EXTRA_TOPIC_NAME);
-    mTopic = new MMXGlobalTopic(topicName);
+    final String topicName = getIntent().getStringExtra(TopicListActivity.EXTRA_TOPIC_NAME);
     Log.d(TAG, "onCreate(): topicName=" + topicName);
-    MyMMXListener.getInstance(this).registerListener(mListener);
-    mProfile = MyProfile.getInstance(this);
-    mClient = MMXClient.getInstance(this, R.raw.soapbox);
+    MMXChannel.findByName(topicName, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
+      @Override
+      public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
+        for (MMXChannel channel : mmxChannelListResult.items) {
+          if (channel.getName().equalsIgnoreCase(topicName)) {
+            mChannel = channel;
+            updateTopicItems();
+            break;
+          }
+        }
+        if (mChannel == null) {
+          Toast.makeText(TopicItemListActivity.this, "Unable to load channel: " +
+                  topicName, Toast.LENGTH_LONG).show();
+          TopicItemListActivity.this.finish();
+          return;
+        }
+        MMX.registerListener(mListener);
+      }
+
+      @Override
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Toast.makeText(TopicItemListActivity.this, "Failed to load channel: " + topicName + ".  " +
+                failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+        TopicItemListActivity.this.finish();
+      }
+    });
+    mProfile = MyProfile.getInstance(TopicItemListActivity.this);
     mTopicItemsView = (ListView) findViewById(R.id.topic_items);
     mTopicName = (TextView) findViewById(R.id.topic_name);
     mPublishText = (EditText) findViewById(R.id.publishMessage);
@@ -99,7 +95,7 @@ public class TopicItemListActivity extends Activity {
   }
 
   protected void onDestroy() {
-    MyMMXListener.getInstance(this).unregisterListener(mListener);
+    MMX.unregisterListener(mListener);
     super.onDestroy();
   }
 
@@ -110,41 +106,24 @@ public class TopicItemListActivity extends Activity {
 
   private void updateTopicItems() {
     synchronized (this) {
-      if (mTask == null) {
-        Log.d(TAG, "onResume(): loading items for topic: " + mTopic.getName());
-        mTask = new MMXTask<List<MMXMessage>>(mClient) {
-          @Override
-          public List<MMXMessage> doRun(MMXClient mmxClient) throws Throwable {
-            return mClient.getPubSubManager().getItems(mTopic,
-                    new TopicAction.FetchOptions().setMaxItems(25).setAscending(false));
-          }
+      if (mChannel != null) {
+        mChannel.getItems(null, null, 25, false,
+                new MMX.OnFinishedListener<List<com.magnet.mmx.client.api.MMXMessage>>() {
+                  public void onSuccess(List<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
+                    //reverse the list
+                    mTopicItems = new ArrayList<MMXMessage>();
+                    for (int i = mmxMessages.size(); --i >= 0; ) {
+                      mTopicItems.add(mmxMessages.get(i));
+                    }
+                    mScrollToBottom.set(true);
+                    updateListView();
+                  }
 
-          @Override
-          public void onException(Throwable exception) {
-            Toast.makeText(TopicItemListActivity.this, "Unable to retrieve items: "
-                    + exception.getMessage(), Toast.LENGTH_LONG).show();
-            synchronized (TopicItemListActivity.this) {
-              mTask = null;
-            }
-          }
-
-          @Override
-          public void onResult(List<MMXMessage> result) {
-            //reverse the list
-            mTopicItems = new ArrayList<MMXMessage>();
-            for (int i=result.size(); --i>=0;) {
-              mTopicItems.add(result.get(i));
-            }
-            mScrollToBottom.set(true);
-            updateListView();
-            synchronized (TopicItemListActivity.this) {
-              mTask = null;
-            }
-          }
-        };
-        mTask.execute();
-      } else {
-        Log.d(TAG, "onResume():  Already loading items...");
+                  public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                    Toast.makeText(TopicItemListActivity.this, "Unable to retrieve items: "
+                            + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+                });
       }
     }
   }
@@ -170,16 +149,24 @@ public class TopicItemListActivity extends Activity {
   }
 
   public void doPublish(final View view) {
-    try {
-      MMXPayload payload = new MMXPayload(mPublishText.getText());
-      payload.setMetaData(KEY_USERNAME, mProfile.getUsername());
-      String messageId = mClient.getPubSubManager().publish(mTopic, payload);
-      mPublishText.setText(null);
-      mScrollToBottom.set(true);
-      updateTopicItems();
-    } catch (MMXException e) {
-      Toast.makeText(this, "Unable to publish message: " + e.getMessage(), Toast.LENGTH_LONG).show();
-    }
+    HashMap<String, String> content = new HashMap<String, String>();
+    content.put(KEY_MESSAGE_TEXT, mPublishText.getText().toString());
+    mChannel.publish(content, new MMX.OnFinishedListener<String>() {
+      @Override
+      public void onSuccess(String s) {
+        Toast.makeText(TopicItemListActivity.this, "Published successfully.",
+                Toast.LENGTH_SHORT).show();
+      }
+
+      @Override
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Toast.makeText(TopicItemListActivity.this, "Unable to publish message: " +
+                throwable.getMessage(), Toast.LENGTH_LONG).show();
+      }
+    });
+    mPublishText.setText(null);
+    mScrollToBottom.set(true);
+    updateTopicItems();
   }
 
   public void doShowMenu(View view) {
@@ -190,8 +177,7 @@ public class TopicItemListActivity extends Activity {
     //decide which items to hide
     Menu menu = popup.getMenu();
 
-    TopicsManager tm = TopicsManager.getInstance(this);
-    if (tm.isTopicSubscribed(mTopic)) {
+    if (mChannel.isSubscribed()) {
       //remove subcribe
       menu.removeItem(R.id.action_subscribe);
     } else {
@@ -199,7 +185,8 @@ public class TopicItemListActivity extends Activity {
       menu.removeItem(R.id.action_unsubscribe);
     }
 
-    if (!tm.canDelete(mTopic, mProfile)) {
+    if (!mChannel.getOwnerUsername()
+            .equalsIgnoreCase(MMX.getCurrentUser().getUsername())) {
       menu.removeItem(R.id.action_delete);
     }
 
@@ -224,47 +211,33 @@ public class TopicItemListActivity extends Activity {
   }
 
   public void doSubscribe() {
-    MMXTask<String> subscribeTask = new MMXTask<String>(mClient) {
-      @Override
-      public String doRun(MMXClient mmxClient) throws Throwable {
-        return mmxClient.getPubSubManager().subscribe(mTopic, false);
-      }
-
-      @Override
-      public void onException(Throwable exception) {
-        Toast.makeText(TopicItemListActivity.this, "Unable to subscribe: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-      }
-
-      @Override
-      public void onResult(String result) {
+    mChannel.subscribe(new MMX.OnFinishedListener<String>() {
+      public void onSuccess(String s) {
         Toast.makeText(TopicItemListActivity.this, "Subscribed successfully", Toast.LENGTH_LONG).show();
       }
-    };
-    subscribeTask.execute();
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Toast.makeText(TopicItemListActivity.this, "Unable to subscribe: " +
+                throwable.getMessage(), Toast.LENGTH_LONG).show();
+      }
+    });
   }
 
   public void doUnsubscribe() {
-    MMXTask<Boolean> unsubscribeTask = new MMXTask<Boolean>(mClient) {
-      @Override
-      public Boolean doRun(MMXClient mmxClient) throws Throwable {
-        return mmxClient.getPubSubManager().unsubscribe(mTopic, null);
-      }
-
-      @Override
-      public void onException(Throwable exception) {
-        Toast.makeText(TopicItemListActivity.this, "Exception caught: " + exception.getMessage(), Toast.LENGTH_LONG).show();
-      }
-
-      @Override
-      public void onResult(Boolean result) {
-        if (result.booleanValue()) {
+    mChannel.unsubscribe(new MMX.OnFinishedListener<Boolean>() {
+      public void onSuccess(Boolean result) {
+        if (result) {
           Toast.makeText(TopicItemListActivity.this, "Unsubscribed successfully", Toast.LENGTH_LONG).show();
         } else {
           Toast.makeText(TopicItemListActivity.this, "Could not unsubscribe.", Toast.LENGTH_LONG).show();
         }
       }
-    };
-    unsubscribeTask.execute();
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Toast.makeText(TopicItemListActivity.this, "Exception caught: " + throwable.getMessage(),
+                Toast.LENGTH_LONG).show();
+      }
+    });
   }
 
   public void doDelete() {
@@ -272,30 +245,18 @@ public class TopicItemListActivity extends Activity {
       public void onClick(DialogInterface dialog, int which) {
         switch (which) {
           case DialogInterface.BUTTON_POSITIVE:
-            MMXTask<MMXStatus> deleteTask = new MMXTask<MMXStatus>(mClient) {
-              @Override
-              public MMXStatus doRun(MMXClient mmxClient) throws Throwable {
-                return mmxClient.getPubSubManager().deleteTopic(mTopic);
+            mChannel.delete(new MMX.OnFinishedListener<Void>() {
+              public void onSuccess(Void aVoid) {
+                TopicItemListActivity.this.finish();
               }
 
-              @Override
-              public void onException(Throwable exception) {
+              public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
                 Toast.makeText(TopicItemListActivity.this,
-                        getString(R.string.error_unable_to_delete_topic) + exception.getMessage(), Toast.LENGTH_LONG).show();
-              }
+                        getString(R.string.error_unable_to_delete_topic) +
+                                failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
 
-              @Override
-              public void onResult(MMXStatus result) {
-                if (result.getCode() != MMXStatus.SUCCESS) {
-                  Toast.makeText(TopicItemListActivity.this,
-                          getString(R.string.error_unable_to_delete_topic) + result.getMessage(), Toast.LENGTH_LONG).show();
-                } else {
-                  TopicItemListActivity.this.finish();
-                }
               }
-            };
-            deleteTask.execute();
-
+            });
             break;
           case DialogInterface.BUTTON_NEGATIVE:
             break;
@@ -329,7 +290,7 @@ public class TopicItemListActivity extends Activity {
       int type = getItemViewType(position);
       MMXMessage message = getItem(position);
       int colorResId = 0;
-      String authorStr = message.getPayload().getMetaData(KEY_USERNAME, null);
+      String authorStr = message.getSender().getUsername();
       if (authorStr == null) {
         authorStr = getContext().getString(R.string.chat_unknown);
       }
@@ -352,10 +313,10 @@ public class TopicItemListActivity extends Activity {
           break;
       }
       TextView datePosted = (TextView) convertView.findViewById(R.id.datePosted);
-      datePosted.setText(mFormatter.format(message.getPayload().getSentTime()));
+      datePosted.setText(mFormatter.format(message.getTimestamp()));
       TextView messageText = (TextView) convertView.findViewById(R.id.messageText);
       messageText.setBackgroundResource(colorResId);
-      messageText.setText(message.getPayload().getDataAsText());
+      messageText.setText(message.getContent().get(KEY_MESSAGE_TEXT));
       return convertView;
     }
 
@@ -367,7 +328,7 @@ public class TopicItemListActivity extends Activity {
     @Override
     public int getItemViewType(int position) {
       MMXMessage message = getItem(position);
-      if (mProfile.getUsername().equals(message.getFrom().getUserId())) {
+      if (mProfile.getUsername().equals(message.getSender().getUsername())) {
         //me
         return TYPE_ME;
       } else {

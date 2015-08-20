@@ -1,9 +1,6 @@
 package com.magnet.demo.mmx.soapbox;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class UserProfile {
   private String mUsername = null;

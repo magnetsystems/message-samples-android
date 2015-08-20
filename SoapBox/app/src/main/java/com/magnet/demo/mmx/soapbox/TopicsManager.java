@@ -1,23 +1,12 @@
 package com.magnet.demo.mmx.soapbox;
 
 import android.content.Context;
-import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.MMXPubSubManager;
-import com.magnet.mmx.client.MMXTask;
-import com.magnet.mmx.client.common.MMXException;
-import com.magnet.mmx.client.common.MMXGlobalTopic;
-import com.magnet.mmx.client.common.MMXSubscription;
-import com.magnet.mmx.client.common.MMXTopicInfo;
-import com.magnet.mmx.client.common.TopicExistsException;
-import com.magnet.mmx.protocol.MMXTopic;
-import com.magnet.mmx.protocol.MMXTopicOptions;
-import com.magnet.mmx.protocol.TopicSummary;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -28,22 +17,22 @@ public class TopicsManager {
 
   private static TopicsManager sInstance = null;
   private Context mContext = null;
-  private MMXClient mClient = null;
 
-  public static final MMXTopic TOPIC_COMPANY_ANNOUNCEMENTS = new MMXGlobalTopic("company_announcements");
-  public static final MMXTopic TOPIC_LUNCH_BUDDIES = new MMXGlobalTopic("lunch_buddies");
+  public static final MMXChannel CHANNEL_COMPANY_ANNOUNCEMENTS = new MMXChannel.Builder()
+          .name("company_announcements")
+          .build();
+  public static final MMXChannel CHANNEL_LUNCH_BUDDIES = new MMXChannel.Builder()
+          .name("lunch_buddies")
+          .build();
 
-  private List<MMXSubscription> mSubscriptions = null;
-  private List<MMXTopicInfo> mTopics = null;
+  private List<MMXChannel> mChannels = null;
 
   //Used to hold the processed topics/subscriptions
-  private ArrayList<MMXTopic> mSubscribedTopics = null;
-  private ArrayList<MMXTopic> mOtherTopics = null;
-  private HashMap<String, TopicSummary> mTopicSummaryMap = null;
+  private ArrayList<MMXChannel> mSubscribedChannels = null;
+  private ArrayList<MMXChannel> mOtherChannels = null;
 
   private TopicsManager(Context context) {
     mContext = context.getApplicationContext();
-    mClient = MMXClient.getInstance(context, R.raw.soapbox);
   }
 
   /**
@@ -60,55 +49,21 @@ public class TopicsManager {
   }
 
   /**
-   * Set the subscriptions data into this manager.
-   * @param subscriptions the list of subscriptions retrieved from MMX
-   */
-  public void setSubscriptions(List<MMXSubscription> subscriptions) {
-    synchronized (this) {
-      mSubscriptions = subscriptions;
-      clearCachedTopics();
-    }
-  }
-
-  /**
-   * Set the topics data into this manager.
-   * @param topics the list of all topics retrieved from MMX
-   */
-  public void setTopics(List<MMXTopicInfo> topics) {
-    synchronized (this) {
-      mTopics = topics;
-      clearCachedTopics();
-    }
-  }
-
-  public void setTopicSummaries(List<TopicSummary> topicSummaries) {
-    synchronized (this) {
-      mTopicSummaryMap = new HashMap<String, TopicSummary>();
-      for (TopicSummary summary : topicSummaries) {
-        mTopicSummaryMap.put(summary.getTopicNode().getName(), summary);
-      }
-    }
-  }
-
-  private void clearCachedTopics() {
-    synchronized (this) {
-      mSubscribedTopics = null;
-      mOtherTopics = null;
-    }
-  }
-
-  /**
-   * Retrieves the summary for the specified topic.
+   * Set the channels
    *
-   * @param topic the topic to retrieve the summary
-   * @return the topic summary or null of not found
+   * @param allChannels all channels
    */
-  public TopicSummary getTopicSummary(MMXTopic topic) {
+  public void setChannels(List<MMXChannel> allChannels) {
     synchronized (this) {
-      if (mTopicSummaryMap != null) {
-        return mTopicSummaryMap.get(topic.getName());
-      }
-      return null;
+      mChannels = allChannels;
+      clearCachedChannels();
+    }
+  }
+
+  private void clearCachedChannels() {
+    synchronized (this) {
+      mSubscribedChannels = null;
+      mOtherChannels = null;
     }
   }
 
@@ -119,17 +74,19 @@ public class TopicsManager {
    * @param searchString the partial match string to filter, or null for all subscribed topics
    * @return a list of subscribed topics matching the searchString filter
    */
-  public List<MMXTopic> getSubscribedTopics(String searchString) {
+  public List<MMXChannel> getSubscribedChannels(String searchString) {
     synchronized (this) {
-      if (mSubscribedTopics == null) {
-        mSubscribedTopics = new ArrayList<MMXTopic>();
-        if (mSubscriptions != null) {
-          for (MMXSubscription sub : mSubscriptions) {
-            mSubscribedTopics.add(sub.getTopic());
+      if (mSubscribedChannels == null) {
+        mSubscribedChannels = new ArrayList<MMXChannel>();
+        if (mChannels != null) {
+          for (MMXChannel channel : mChannels) {
+            if (channel.isSubscribed()) {
+              mSubscribedChannels.add(channel);
+            }
           }
         }
       }
-      return filterList(mSubscribedTopics, searchString);
+      return filterList(mSubscribedChannels, searchString);
     }
   }
 
@@ -140,42 +97,29 @@ public class TopicsManager {
    * @param searchString the partial match string to filter, or null for all non-subscribed topics
    * @return a list of non-subscribed topics matching the searchString filter
    */
-  public List<MMXTopic> getOtherTopics(String searchString) {
+  public List<MMXChannel> getOtherChannels(String searchString) {
     synchronized (this) {
-      mOtherTopics = new ArrayList<MMXTopic>();
-      if (mTopics != null) {
-        for (MMXTopicInfo topicInfo : mTopics) {
-          if (topicInfo.getTopic().getName() == null || topicInfo.getTopic().getName().isEmpty()) {
-            //shouldn't need this, but just being defensive
-            continue;
-          }
-          boolean subscribed = false;
-          List<MMXTopic> subscribedTopics = getSubscribedTopics(searchString);
-          for (MMXTopic subscribedTopic : subscribedTopics) {
-            String name = subscribedTopic.getName();
-            if (name != null && name.equalsIgnoreCase(topicInfo.getTopic().getName())) {
-              subscribed = true;
-              break;
-            }
-          }
-          if (!subscribed) {
-            mOtherTopics.add(topicInfo.getTopic());
+      mOtherChannels = new ArrayList<MMXChannel>();
+      if (mChannels != null) {
+        for (MMXChannel channel : mChannels) {
+          if (!channel.isSubscribed()) {
+            mOtherChannels.add(channel);
           }
         }
       }
-      return filterList(mOtherTopics, searchString);
+      return filterList(mOtherChannels, searchString);
     }
   }
 
-  private List<MMXTopic> filterList(List<MMXTopic> topics, String filter) {
+  private List<MMXChannel> filterList(List<MMXChannel> channels, String filter) {
     if (filter == null || filter.isEmpty()) {
-      return Collections.unmodifiableList(topics);
+      return Collections.unmodifiableList(channels);
     } else {
       //filter this list down
-      ArrayList<MMXTopic> filteredResults = new ArrayList<MMXTopic>();
-      for (MMXTopic topic : topics) {
-        if (topic.getName().toLowerCase().contains(filter.toLowerCase())) {
-          filteredResults.add(topic);
+      ArrayList<MMXChannel> filteredResults = new ArrayList<MMXChannel>();
+      for (MMXChannel channel : channels) {
+        if (channel.getName().toLowerCase().contains(filter.toLowerCase())) {
+          filteredResults.add(channel);
         }
       }
       return Collections.unmodifiableList(filteredResults);
@@ -183,71 +127,27 @@ public class TopicsManager {
   }
 
   /**
-   * Determines if the specified topic is currently subscribed.
-   *
-   * @param topic the topic to check
-   * @return true if the topic is currently subscribed
-   */
-  public boolean isTopicSubscribed(MMXTopic topic) {
-    for (MMXSubscription sub : mSubscriptions) {
-      if (sub.getTopic().getName().equalsIgnoreCase(topic.getName())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Verifies that the current user can delete the specified topic.
-   *
-   * @param topic the topic to verify
-   * @param profile the current user's profile
-   * @return true if the current user can delete the specified topic
-   */
-  public boolean canDelete(MMXTopic topic, MyProfile profile) {
-    for (MMXTopicInfo topicInfo : mTopics) {
-      if (topic.getName()
-              .equalsIgnoreCase(topicInfo.getTopic().getName())) {
-        return topicInfo.getCreator().getUserId()
-                .equalsIgnoreCase(profile.getUsername());
-      }
-    }
-    return false;
-  }
-
-  /**
    * Provisions the pre-defined topics and subscriptions for this app.
    */
   public void provisionTopics() {
-    MMXTask<Void> provisionTask = new MMXTask<Void>(mClient) {
-      @Override
-      public Void doRun(MMXClient mmxClient) throws Throwable {
-        MMXPubSubManager psm = mmxClient.getPubSubManager();
-        try {
-          psm.createTopic(TOPIC_COMPANY_ANNOUNCEMENTS, new MMXTopicOptions());
-        } catch (TopicExistsException tex) {
-          //For our purposes, this is ok.
-        } catch (MMXException e) {
-          Toast.makeText(mContext, "Unable to create topic: " + TOPIC_COMPANY_ANNOUNCEMENTS.getName() +
-                  ".  "  + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        try {
-          String subscriptionId = psm.subscribe(TOPIC_COMPANY_ANNOUNCEMENTS, false);
-        } catch (MMXException e) {
-          Toast.makeText(mContext, "Unable to subscribe to: " + TOPIC_COMPANY_ANNOUNCEMENTS.getName() +
-                  ".  "  + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        try {
-          psm.createTopic(TOPIC_LUNCH_BUDDIES, new MMXTopicOptions());
-        } catch (TopicExistsException tex) {
-          //For our purposes, this is ok.
-        } catch (MMXException e) {
-          Toast.makeText(mContext, "Unable to create topic: " + TOPIC_LUNCH_BUDDIES.getName() +
-                  ".  "  + e.getMessage(), Toast.LENGTH_LONG).show();
-        }
-        return null;
+    CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMX.OnFinishedListener<MMXChannel>() {
+      public void onSuccess(MMXChannel mmxChannel) {
+
       }
-    };
-    provisionTask.execute();
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+
+      }
+    });
+
+    CHANNEL_LUNCH_BUDDIES.create(new MMX.OnFinishedListener<MMXChannel>() {
+      public void onSuccess(MMXChannel mmxChannel) {
+
+      }
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+
+      }
+    });
   }
 }

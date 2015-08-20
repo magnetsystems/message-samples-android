@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,13 +17,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.common.MMXErrorMessage;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.protocol.MMXTopic;
-import com.magnet.mmx.util.XIDUtil;
+import com.magnet.mmx.client.api.MMX;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,66 +36,13 @@ public class LoginActivity extends Activity {
   private View mLoginFormView;
 
   private AtomicBoolean mConnecting = new AtomicBoolean(false);
-  private MMXClient mClient = null;
   private MyProfile mProfile = null;
-  private MyMMXListener mGlobalListener = null;
-  private MMXClient.MMXListener mListener = new MMXClient.MMXListener() {
-    public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
-      switch (connectionEvent) {
-        case CONNECTED:
-          mConnecting.set(false);
-          setResult(RESULT_OK);
-          finish();
-          break;
-        case AUTHENTICATION_FAILURE:
-          runOnUiThread(new Runnable() {
-            public void run() {
-              mPasswordView.setError(getString(R.string.error_incorrect_password));
-              mPasswordView.requestFocus();
-            }
-          });
-          break;
-        case CONNECTION_FAILED:
-        case DISCONNECTED:
-          mConnecting.set(false);
-          break;
-      }
-      runOnUiThread(new Runnable() {
-        public void run() {
-          showProgress(false);
-        }
-      });
-    }
-
-    public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String s) {
-
-    }
-
-    public void onSendFailed(MMXClient mmxClient, String s) {
-
-    }
-
-    public void onMessageDelivered(MMXClient mmxClient, MMXid mmXid, String s) {
-
-    }
-
-    public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
-
-    }
-
-    public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage mmxErrorMessage) {
-
-    }
-  };
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     //if have credentials or already connected, go to topic list activity
-    mGlobalListener = MyMMXListener.getInstance(this);
-    mGlobalListener.registerListener(mListener);
-    mClient = MMXClient.getInstance(this, R.raw.soapbox);
     mProfile = MyProfile.getInstance(this);
     setContentView(R.layout.activity_login);
 
@@ -132,7 +76,6 @@ public class LoginActivity extends Activity {
 
   protected void onDestroy() {
     super.onDestroy();
-    mGlobalListener.unregisterListener(mListener);
   }
 
   /**
@@ -168,10 +111,6 @@ public class LoginActivity extends Activity {
       mUsernameView.setError(getString(R.string.error_field_required));
       focusView = mUsernameView;
       cancel = true;
-    } else if (!XIDUtil.validateUserId(username)) {
-      mUsernameView.setError(getString(R.string.error_invalid_email));
-      focusView = mUsernameView;
-      cancel = true;
     }
 
     if (cancel) {
@@ -185,7 +124,52 @@ public class LoginActivity extends Activity {
       mProfile.setPassword(password.getBytes());
       showProgress(true);
       mConnecting.set(true);
-      mClient.connectWithCredentials(username, password.getBytes(), mGlobalListener, new MMXClient.ConnectionOptions().setAutoCreate(true));
+      MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
+        public void onSuccess(Void aVoid) {
+          //login success
+          MMX.enableIncomingMessages(true);
+          TopicsManager.getInstance(LoginActivity.this).provisionTopics();
+          mConnecting.set(false);
+          setResult(RESULT_OK);
+          finish();
+          runOnUiThread(new Runnable() {
+            public void run() {
+              showProgress(false);
+            }
+          });
+        }
+
+        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+          switch (failureCode) {
+            case SERVER_AUTH_FAILED:
+              runOnUiThread(new Runnable() {
+                public void run() {
+                  mPasswordView.setError(getString(R.string.error_incorrect_password));
+                  mPasswordView.requestFocus();
+                }
+              });
+              break;
+            case REGISTRATION_INVALID_USERNAME:
+              runOnUiThread(new Runnable() {
+                public void run() {
+                  mUsernameView.setError(getString(R.string.error_invalid_email));
+                  mUsernameView.requestFocus();
+                }
+              });
+              break;
+            default:
+              Log.e(TAG, "login() error: " + failureCode, throwable);
+              Toast.makeText(LoginActivity.this,
+                      "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
+          }
+          mConnecting.set(false);
+          runOnUiThread(new Runnable() {
+            public void run() {
+              showProgress(false);
+            }
+          });
+        }
+      });
     }
   }
 
