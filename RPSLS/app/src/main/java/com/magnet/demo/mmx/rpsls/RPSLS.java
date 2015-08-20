@@ -230,11 +230,12 @@ public class RPSLS {
 
     static {
       //These AI players can be selected as opponents by the current player
-      sAvailablePlayers.add(new UserProfile("HAL 9000", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-51494400000l), true)); //May 15, 1968
-      sAvailablePlayers.add(new UserProfile("WOPR/Joshua", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(423446400000l), true)); //June 3, 1983
-      sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
-      sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
-      sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
+      //sAvailablePlayers.add(new UserProfile("HAL 9000", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-51494400000l), true)); //May 15, 1968
+      //sAvailablePlayers.add(new UserProfile("WOPR/Joshua", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(423446400000l), true)); //June 3, 1983
+      //sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
+      //sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
+      //sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
+      sAvailablePlayers.add(new UserProfile("player_bot", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(System.currentTimeMillis()), false)); //September 28, 1951
     }
 
     /**
@@ -278,7 +279,7 @@ public class RPSLS {
      */
     public static List<UserProfile> getAvailablePlayers() {
       synchronized (sAvailablePlayers) {
-        return new ArrayList<UserProfile>(sAvailablePlayers);
+        return new ArrayList<>(sAvailablePlayers);
       }
     }
 

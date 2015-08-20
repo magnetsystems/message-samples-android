@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
   private UserProfileAdapter mAvailablePlayersAdapter = null;
   private Button mInviteButton = null;
 
-  private MMX.EventListener mListener2 = new MMX.EventListener() {
+  private MMX.EventListener mListener = new MMX.EventListener() {
     public boolean onMessageReceived(MMXMessage mmxMessage) {
       MMXChannel channel = mmxMessage.getChannel();
       if (channel != null) {
@@ -53,9 +53,11 @@ public class MainActivity extends Activity {
           //handle the availability/unavailability of users
           RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxMessage);
           updateAvailablePlayersView();
+          return true;
         }
       } else {
         RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxMessage);
+        return true;
       }
       return false;
     }
@@ -84,7 +86,7 @@ public class MainActivity extends Activity {
     mInviteButton = (Button) findViewById(R.id.btn_invite);
 
     //start connection
-    MMX.registerListener(mListener2);
+    MMX.registerListener(mListener);
     mProfile = MyProfile.getInstance(this);
 
     mAvailablePlayersAdapter = new UserProfileAdapter(this, RPSLS.Util.getAvailablePlayers());
@@ -98,7 +100,7 @@ public class MainActivity extends Activity {
   }
 
   protected void onDestroy() {
-    MMX.unregisterListener(mListener2);
+    MMX.unregisterListener(mListener);
     RPSLS.Util.publishAvailability(this, false);
     super.onDestroy();
   }
