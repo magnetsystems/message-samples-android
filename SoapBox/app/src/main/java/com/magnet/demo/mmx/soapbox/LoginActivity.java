@@ -9,17 +9,15 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXUser;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -51,22 +49,20 @@ public class LoginActivity extends Activity {
     mUsernameView.setText(mProfile.getUsername());
 
     mPasswordView = (EditText) findViewById(R.id.password);
-    mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-        if (id == R.id.login || id == EditorInfo.IME_NULL) {
-          attemptLogin();
-          return true;
-        }
-        return false;
-      }
-    });
 
     Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
     mEmailSignInButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View view) {
-        attemptLogin();
+        attemptLogin(false);
+      }
+    });
+
+    Button mRegisterButton = (Button) findViewById(R.id.register_button);
+    mRegisterButton.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        attemptLogin(true);
       }
     });
 
@@ -83,7 +79,7 @@ public class LoginActivity extends Activity {
    * If there are form errors (invalid email, missing fields, etc.), the
    * errors are presented and no actual login attempt is made.
    */
-  public void attemptLogin() {
+  public void attemptLogin(boolean register) {
     if (mConnecting.get()) {
       return;
     }
@@ -93,8 +89,8 @@ public class LoginActivity extends Activity {
     mPasswordView.setError(null);
 
     // Store values at the time of the login attempt.
-    String username = mUsernameView.getText().toString();
-    String password = mPasswordView.getText().toString();
+    final String username = mUsernameView.getText().toString();
+    final String password = mPasswordView.getText().toString();
 
     boolean cancel = false;
     View focusView = null;
@@ -124,53 +120,83 @@ public class LoginActivity extends Activity {
       mProfile.setPassword(password.getBytes());
       showProgress(true);
       mConnecting.set(true);
-      MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
-        public void onSuccess(Void aVoid) {
-          //login success
-          MMX.enableIncomingMessages(true);
-          ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
-          mConnecting.set(false);
-          setResult(RESULT_OK);
-          finish();
-          runOnUiThread(new Runnable() {
-            public void run() {
-              showProgress(false);
-            }
-          });
-        }
-
-        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-          switch (failureCode) {
-            case SERVER_AUTH_FAILED:
-              runOnUiThread(new Runnable() {
-                public void run() {
-                  mPasswordView.setError(getString(R.string.error_incorrect_password));
-                  mPasswordView.requestFocus();
-                }
-              });
-              break;
-            case REGISTRATION_INVALID_USERNAME:
-              runOnUiThread(new Runnable() {
-                public void run() {
-                  mUsernameView.setError(getString(R.string.error_invalid_email));
-                  mUsernameView.requestFocus();
-                }
-              });
-              break;
-            default:
-              Log.e(TAG, "login() error: " + failureCode, throwable);
-              Toast.makeText(LoginActivity.this,
-                      "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
+      if (register) {
+        MMXUser user = new MMXUser.Builder().username(username).build();
+        user.register(password.getBytes(), new MMX.OnFinishedListener<Void>() {
+          public void onSuccess(Void aVoid) {
+            loginHelper(username, password);
           }
-          mConnecting.set(false);
-          runOnUiThread(new Runnable() {
-            public void run() {
-              showProgress(false);
+
+          public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+            switch (failureCode) {
+              case REGISTRATION_INVALID_USERNAME:
+                runOnUiThread(new Runnable() {
+                  public void run() {
+                    mUsernameView.setError(getString(R.string.error_invalid_email));
+                    mUsernameView.requestFocus();
+                  }
+                });
+                break;
+              default:
+                Log.e(TAG, "register() error: " + failureCode, throwable);
+                Toast.makeText(LoginActivity.this,
+                        "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
+
             }
-          });
-        }
-      });
+            mConnecting.set(false);
+            runOnUiThread(new Runnable() {
+              public void run() {
+                showProgress(false);
+              }
+            });
+          }
+        });
+      } else {
+        loginHelper(username, password);
+      }
+
     }
+  }
+
+  private void loginHelper(String username, String password) {
+    MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
+      public void onSuccess(Void aVoid) {
+        //login success
+        MMX.enableIncomingMessages(true);
+        ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
+        mConnecting.set(false);
+        setResult(RESULT_OK);
+        finish();
+        runOnUiThread(new Runnable() {
+          public void run() {
+            showProgress(false);
+          }
+        });
+      }
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        switch (failureCode) {
+          case SERVER_AUTH_FAILED:
+            runOnUiThread(new Runnable() {
+              public void run() {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+              }
+            });
+            break;
+          default:
+            Log.e(TAG, "loginHelper() error: " + failureCode, throwable);
+            Toast.makeText(LoginActivity.this,
+                    "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
+        }
+        mConnecting.set(false);
+        runOnUiThread(new Runnable() {
+          public void run() {
+            showProgress(false);
+          }
+        });
+      }
+    });
   }
 
   private boolean isPasswordValid(String password) {

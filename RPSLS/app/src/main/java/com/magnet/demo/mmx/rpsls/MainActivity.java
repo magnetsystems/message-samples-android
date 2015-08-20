@@ -20,11 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.common.MMXErrorMessage;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.protocol.MMXTopic;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -35,7 +33,6 @@ public class MainActivity extends Activity {
   private static final String TAG = MainActivity.class.getSimpleName();
   static final int REQUEST_LOGIN = 1;
 
-  private MMXClient mClient = null;
   private MyProfile mProfile = null;
   private Handler mMainHandler = null;
   private Button mFindOpponentButton = null;
@@ -48,43 +45,26 @@ public class MainActivity extends Activity {
   private UserProfileAdapter mAvailablePlayersAdapter = null;
   private Button mInviteButton = null;
 
-  private MMXClient.MMXListener mListener = new MMXClient.MMXListener() {
-    private static final String TAG = "MMXListener";
-
-    @Override
-    public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
-      updateViewConnectionState();
-    }
-
-    @Override
-    public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String receiptId) {
-      Log.d(TAG, "onMessageReceived(): received message");
-      RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxClient, mmxMessage.getPayload());
-    }
-
-    @Override
-    public void onSendFailed(MMXClient mmxClient, String s) {
-
-    }
-
-    @Override
-    public void onMessageDelivered(MMXClient mmxClient, MMXid mmXid, String s) {
-
-    }
-
-    @Override
-    public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
-      Log.d(TAG, "onPubsubItemReceived(): Topic=" + mmxTopic.getName());
-      if (RPSLS.MessageConstants.AVAILABILITY_TOPIC_NAME.equals(mmxTopic.getName())) {
-        //handle the availability/unavailability of users
-        RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxClient, mmxMessage.getPayload());
-        updateAvailablePlayersView();
+  private MMX.EventListener mListener2 = new MMX.EventListener() {
+    public boolean onMessageReceived(MMXMessage mmxMessage) {
+      MMXChannel channel = mmxMessage.getChannel();
+      if (channel != null) {
+        if (RPSLS.MessageConstants.AVAILABILITY_TOPIC_NAME.equals(channel.getName())) {
+          //handle the availability/unavailability of users
+          RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxMessage);
+          updateAvailablePlayersView();
+        }
+      } else {
+        RPSLS.Util.handleIncomingMessage(MainActivity.this, mmxMessage);
       }
+      return false;
     }
 
     @Override
-    public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage mmxErrorMessage) {
-
+    public boolean onLoginRequired(MMX.LoginReason reason) {
+      updateViewConnectionState();
+      startLoginActivity();
+      return false;
     }
   };
 
@@ -104,9 +84,7 @@ public class MainActivity extends Activity {
     mInviteButton = (Button) findViewById(R.id.btn_invite);
 
     //start connection
-    MyMMXListener globalListener = MyMMXListener.getInstance(this);
-    globalListener.registerListener(mListener);
-    mClient = MMXClient.getInstance(this, R.raw.rpsls);
+    MMX.registerListener(mListener2);
     mProfile = MyProfile.getInstance(this);
 
     mAvailablePlayersAdapter = new UserProfileAdapter(this, RPSLS.Util.getAvailablePlayers());
@@ -120,21 +98,22 @@ public class MainActivity extends Activity {
   }
 
   protected void onDestroy() {
-    MyMMXListener globalListener = MyMMXListener.getInstance(this);
-    globalListener.setExiting(true);
-    RPSLS.Util.publishAvailability(this, mClient, false);
-    mClient.disconnect();
-    globalListener.unregisterListener(mListener);
+    MMX.unregisterListener(mListener2);
+    RPSLS.Util.publishAvailability(this, false);
     super.onDestroy();
   }
 
+  private void startLoginActivity() {
+    Intent loginIntent = new Intent(this, LoginActivity.class);
+    startActivityForResult(loginIntent, REQUEST_LOGIN);
+  }
+
   protected void onResume() {
-    if (!mClient.isConnected()) {
-      Intent loginIntent = new Intent(this, LoginActivity.class);
-      startActivityForResult(loginIntent, REQUEST_LOGIN);
+    if (MMX.getCurrentUser() == null) {
+      startLoginActivity();
     } else {
       //populate or update the view
-      RPSLS.Util.publishAvailability(this, mClient, true);
+      RPSLS.Util.publishAvailability(this, true);
       updateViewConnectionState();
       updateAvailablePlayersView();
     }
@@ -148,7 +127,7 @@ public class MainActivity extends Activity {
     if (requestCode == REQUEST_LOGIN) {
       if (resultCode == RESULT_OK) {
         //populate or update the view
-        RPSLS.Util.publishAvailability(this, mClient, true);
+        RPSLS.Util.publishAvailability(this, true);
         updateViewConnectionState();
         updateAvailablePlayersView();
       } else {
@@ -182,7 +161,7 @@ public class MainActivity extends Activity {
   private void updateViewConnectionState() {
     mMainHandler.post(new Runnable() {
       public void run() {
-        boolean connected = mClient.isConnected();
+        boolean connected = MMX.getCurrentUser() != null;
         mFindOpponentButton.setEnabled(connected);
       }
     });
@@ -248,7 +227,7 @@ public class MainActivity extends Activity {
           checkedProfiles.add(mAvailablePlayersAdapter.getItem(position));
         }
       }
-      if (RPSLS.Util.sendInvitations(this, mClient, checkedProfiles)) {
+      if (RPSLS.Util.sendInvitations(this, checkedProfiles)) {
         Toast.makeText(this, "Invitations sent.", Toast.LENGTH_SHORT).show();
         doBack(view);
       } else {
