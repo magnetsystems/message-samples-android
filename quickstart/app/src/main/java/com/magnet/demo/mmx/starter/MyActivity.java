@@ -102,6 +102,7 @@ public class MyActivity extends Activity {
     MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
         mLoginSuccess.set(true);
+        MMX.enableIncomingMessages(true);
         updateViewState();
       }
 
