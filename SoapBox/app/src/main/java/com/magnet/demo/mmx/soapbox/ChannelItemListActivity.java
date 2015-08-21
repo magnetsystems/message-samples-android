@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChannelItemListActivity extends Activity {
   private static final String TAG = ChannelItemListActivity.class.getSimpleName();
-  private static final String KEY_MESSAGE_TEXT = "messageText";
+  private static final String KEY_MESSAGE_TEXT = "content";
 
   private MyProfile mProfile;
   private MMXChannel mChannel;
