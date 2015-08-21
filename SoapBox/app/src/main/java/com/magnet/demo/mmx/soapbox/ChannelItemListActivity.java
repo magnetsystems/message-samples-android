@@ -108,12 +108,12 @@ public class ChannelItemListActivity extends Activity {
     synchronized (this) {
       if (mChannel != null) {
         mChannel.getItems(null, null, 25, false,
-                new MMX.OnFinishedListener<List<com.magnet.mmx.client.api.MMXMessage>>() {
-                  public void onSuccess(List<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
+                new MMX.OnFinishedListener<ListResult<com.magnet.mmx.client.api.MMXMessage>>() {
+                  public void onSuccess(ListResult<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
                     //reverse the list
                     mChannelItems = new ArrayList<MMXMessage>();
-                    for (int i = mmxMessages.size(); --i >= 0; ) {
-                      mChannelItems.add(mmxMessages.get(i));
+                    for (int i = mmxMessages.items.size(); --i >= 0; ) {
+                      mChannelItems.add(mmxMessages.items.get(i));
                     }
                     mScrollToBottom.set(true);
                     updateListView();

@@ -8,11 +8,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
-import com.magnet.mmx.client.common.TopicExistsException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -304,12 +304,12 @@ public class RPSLS {
       });
 
       availabilityChannel.getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
-              null, 100, false, new MMX.OnFinishedListener<List<MMXMessage>>() {
-                public void onSuccess(List<MMXMessage> mmxMessages) {
-                  Log.d(TAG, "setupGameMessaging(): found " + mmxMessages.size() + " availability items published in the last 30 minutes");
-                  for (int i = mmxMessages.size(); --i >= 0; ) {
+              null, 100, false, new MMX.OnFinishedListener<ListResult<MMXMessage>>() {
+                public void onSuccess(ListResult<MMXMessage> mmxMessages) {
+                  Log.d(TAG, "setupGameMessaging(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
+                  for (int i = mmxMessages.totalCount; --i >= 0; ) {
                     //start with the last (oldest message);
-                    handleAvailabilityMessage(context, mmxMessages.get(i));
+                    handleAvailabilityMessage(context, mmxMessages.items.get(i));
                   }
 
                 }
