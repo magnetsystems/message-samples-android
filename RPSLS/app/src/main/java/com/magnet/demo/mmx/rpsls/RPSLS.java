@@ -292,21 +292,6 @@ public class RPSLS {
      */
     public static void setupGameMessaging(final Context context) {
       final MMXChannel availabilityChannel = getAvailabilityChannel();
-      availabilityChannel.create(new MMX.OnFinishedListener<MMXChannel>() {
-        public void onSuccess(MMXChannel mmxChannel) {
-          Log.d(TAG, "setupGameMessaging():  channel successfully created: " + mmxChannel.getName());
-        }
-
-        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-          if (throwable != null && throwable.getCause() instanceof TopicExistsException) {
-            //this is ok, no-op
-          } else {
-            Toast.makeText(context, "Unable to create availability channel: " + failureCode +
-                    ", " + throwable, Toast.LENGTH_LONG).show();
-          }
-        }
-      });
-
       availabilityChannel.subscribe(new MMX.OnFinishedListener<String>() {
         public void onSuccess(String subId) {
           Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +

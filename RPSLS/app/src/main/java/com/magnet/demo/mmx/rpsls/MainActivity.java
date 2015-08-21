@@ -61,13 +61,6 @@ public class MainActivity extends Activity {
       }
       return false;
     }
-
-    @Override
-    public boolean onLoginRequired(MMX.LoginReason reason) {
-      updateViewConnectionState();
-      startLoginActivity();
-      return false;
-    }
   };
 
   @Override

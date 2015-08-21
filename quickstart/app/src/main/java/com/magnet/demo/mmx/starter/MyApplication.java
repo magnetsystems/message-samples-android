@@ -14,34 +14,31 @@
  */
 package com.magnet.demo.mmx.starter;
 
-import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXUser;
+import com.magnet.mmx.client.common.Log;
 import com.magnet.mmx.client.common.MMXid;
 
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.media.RingtoneManager;
 
 import java.util.Date;
 
 /**
  * Quick-start application extending the android Application class.  It registers
- * the <code>MyWakeupListener</code> to handle the GCM wake-up message sent by
- * MMX server.  Alternatively, the application may use a timer to wake itself
- * up; it is functionally equivalent to Android AlarmManager.  Typically a GCM
- * wake-up message is sent when there is a message waiting for the disconnected
- * client to retrieve, and the wake-up listener is responsible to establish the
- * connection.  Currently <code>MyWakeupListener</code> has this logic disabled
- * by a flag.
+ * the a broadcast intent to handle the GCM wake-up message sent by MMX server.
+ * Typically, a GCM wake-up message is sent when there is a message waiting for
+ * the disconnected client to retrieve, and the wake-up broadcast receiver is responsible
+ * to establish the connection.
+ *
  * @see MyActivity
- * @see MyWakeupListener
  */
 public class MyApplication extends Application {
-  private final static boolean WAKEUP_BY_TIMER = false;
   private int mNoteId = 0;
 
   private MMX.EventListener mListener =
@@ -60,17 +57,17 @@ public class MyApplication extends Application {
   
   public void onCreate() {
     super.onCreate();
-
+    Log.setLoggable(null, Log.VERBOSE);
     MMX.init(this, R.raw.quickstart);
     MMX.registerListener(mListener);
 
-    // register a wakeup listener for GCM and/or timer.
-    MMXClient.registerWakeupListener(this, MyWakeupListener.class);
-    
-    if (WAKEUP_BY_TIMER) {
-      // Alternatively, use a 60-second timer to wake up this application.
-      MMXClient.setWakeupInterval(this, 60 * 1000);
-    }
+    // Optionally register a wakeup broadcast intent.  This will be broadcast when a GCM message
+    // for this MMX application.  If configure properly, the MMX server will send this GCM  to wakeup
+    // the device when a message needs to be delivered.  It is up to the developer to define this intent
+    // and implement/declare the BroadcastReceiver to handle this intent and thus to call MMX.login()
+    // to retrieve pending messages.
+    Intent intent = new Intent("QUICKSTART_WAKEUP");
+    MMX.registerWakeupBroadcast(intent);
   }
 
   private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {

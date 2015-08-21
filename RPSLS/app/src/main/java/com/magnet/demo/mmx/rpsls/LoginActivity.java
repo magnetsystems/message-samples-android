@@ -165,7 +165,6 @@ public class LoginActivity extends Activity {
         MMX.enableIncomingMessages(true);
         Log.d(TAG, "loginHelper(): CONNECTED.  Setting up game messaging and publishing availability");
         RPSLS.Util.setupGameMessaging(LoginActivity.this);
-        RPSLS.Util.publishAvailability(LoginActivity.this, true);
         mConnecting.set(false);
         setResult(RESULT_OK);
         finish();
