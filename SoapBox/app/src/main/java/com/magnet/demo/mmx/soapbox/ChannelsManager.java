@@ -134,21 +134,25 @@ public class ChannelsManager {
   public void provisionChannels() {
     CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMX.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
-
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      }
+    });
 
+    CHANNEL_COMPANY_ANNOUNCEMENTS.subscribe(new MMX.OnFinishedListener<String>() {
+      public void onSuccess(String s) {
+      }
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
       }
     });
 
     CHANNEL_LUNCH_BUDDIES.create(new MMX.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
-
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-
       }
     });
   }
