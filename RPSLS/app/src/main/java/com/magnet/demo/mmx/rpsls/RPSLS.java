@@ -90,7 +90,7 @@ public class RPSLS {
   /**
    * The choice that is beaten and how it's accomplished
    */
-  private static final class BeatsHow {
+  static final class BeatsHow {
     private final Choice mBeats;
     private final How mHow;
     private final int mResourceId;
