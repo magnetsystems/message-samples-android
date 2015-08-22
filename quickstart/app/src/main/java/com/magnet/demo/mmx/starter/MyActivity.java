@@ -99,16 +99,19 @@ public class MyActivity extends Activity {
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
     MMX.registerListener(mEventListener);
-    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
+    MMXUser quickstartUser = new MMXUser.Builder()
+            .username(QUICKSTART_USERNAME)
+            .displayName(QUICKSTART_USERNAME)
+            .build();
+    quickstartUser.register(QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
-        mLoginSuccess.set(true);
-        MMX.enableIncomingMessages(true);
-        updateViewState();
+        Log.d(TAG, "register user succeeded");
+        loginHelper();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
-        mLoginSuccess.set(false);
-        updateViewState();
+      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        Log.d(TAG, "register user failed because: " + failureCode);
+        loginHelper();
       }
     });
     setContentView(R.layout.activity_my_activity);
@@ -131,6 +134,21 @@ public class MyActivity extends Activity {
       }
     });
     updateViewState();
+  }
+
+  private void loginHelper() {
+    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
+      public void onSuccess(Void aVoid) {
+        mLoginSuccess.set(true);
+        MMX.enableIncomingMessages(true);
+        updateViewState();
+      }
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+        mLoginSuccess.set(false);
+        updateViewState();
+      }
+    });
   }
 
   /**
