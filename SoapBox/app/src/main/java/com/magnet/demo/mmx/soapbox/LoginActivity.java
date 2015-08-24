@@ -122,30 +122,35 @@ public class LoginActivity extends Activity {
       mConnecting.set(true);
       if (register) {
         MMXUser user = new MMXUser.Builder().username(username).build();
-        user.register(password.getBytes(), new MMX.OnFinishedListener<Void>() {
+        user.register(password.getBytes(), new MMXUser.OnFinishedListener<Void>() {
           public void onSuccess(Void aVoid) {
             loginHelper(username, password);
           }
 
-          public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-            switch (failureCode) {
-              case REGISTRATION_INVALID_USERNAME:
-                runOnUiThread(new Runnable() {
-                  public void run() {
-                    mUsernameView.setError(getString(R.string.error_invalid_email));
-                    mUsernameView.requestFocus();
-                  }
-                });
-                break;
-              default:
-                Log.e(TAG, "register() error: " + failureCode, throwable);
-                Toast.makeText(LoginActivity.this,
-                        "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
-
+          public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
+            if (MMXUser.FailureCode.REGISTRATION_INVALID_USERNAME.equals(failureCode)) {
+              runOnUiThread(new Runnable() {
+                public void run() {
+                  mUsernameView.setError(getString(R.string.error_invalid_email));
+                  mUsernameView.requestFocus();
+                }
+              });
+            } else if (MMXUser.FailureCode.REGISTRATION_USER_ALREADY_EXISTS.equals(failureCode)) {
+              runOnUiThread(new Runnable() {
+                public void run() {
+                  mUsernameView.setError(getString(R.string.error_invalid_email_exists));
+                  mUsernameView.requestFocus();
+                }
+              });
+            } else {
+              Log.e(TAG, "register() error: " + failureCode, throwable);
+              Toast.makeText(LoginActivity.this,
+                      "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
             }
             mConnecting.set(false);
+
             runOnUiThread(new Runnable() {
-              public void run() {
+              public void run () {
                 showProgress(false);
               }
             });
@@ -154,7 +159,6 @@ public class LoginActivity extends Activity {
       } else {
         loginHelper(username, password);
       }
-
     }
   }
 
@@ -175,19 +179,17 @@ public class LoginActivity extends Activity {
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        switch (failureCode) {
-          case SERVER_AUTH_FAILED:
-            runOnUiThread(new Runnable() {
-              public void run() {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-              }
-            });
-            break;
-          default:
-            Log.e(TAG, "loginHelper() error: " + failureCode, throwable);
-            Toast.makeText(LoginActivity.this,
-                    "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
+        if (MMX.FailureCode.SERVER_AUTH_FAILED.equals(failureCode)) {
+          runOnUiThread(new Runnable() {
+            public void run() {
+              mPasswordView.setError(getString(R.string.error_incorrect_password));
+              mPasswordView.requestFocus();
+            }
+          });
+        } else {
+          Log.e(TAG, "loginHelper() error: " + failureCode, throwable);
+          Toast.makeText(LoginActivity.this,
+                  "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
         }
         mConnecting.set(false);
         runOnUiThread(new Runnable() {

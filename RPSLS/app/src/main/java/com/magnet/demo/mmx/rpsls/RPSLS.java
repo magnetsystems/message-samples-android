@@ -9,7 +9,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.magnet.mmx.client.api.ListResult;
-import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
@@ -292,19 +291,19 @@ public class RPSLS {
      */
     public static void setupGameMessaging(final Context context) {
       final MMXChannel availabilityChannel = getAvailabilityChannel();
-      availabilityChannel.subscribe(new MMX.OnFinishedListener<String>() {
+      availabilityChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
         public void onSuccess(String subId) {
           Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +
                   availabilityChannel.getName() + ", subId=" + subId);
         }
 
-        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
           Log.e(TAG, "setupGameMessaging(): unable to subscribe to availability topic", throwable);
         }
       });
 
       availabilityChannel.getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
-              null, 100, false, new MMX.OnFinishedListener<ListResult<MMXMessage>>() {
+              null, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
                 public void onSuccess(ListResult<MMXMessage> mmxMessages) {
                   Log.d(TAG, "setupGameMessaging(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
                   for (int i = mmxMessages.totalCount; --i >= 0; ) {
@@ -314,7 +313,7 @@ public class RPSLS {
 
                 }
 
-                public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                   Log.e(TAG, "setupGameMessaging(): caught exception while finding the latest available players", throwable);
                 }
               });
@@ -333,12 +332,12 @@ public class RPSLS {
       messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
       messageContent.put(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
       messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-      getAvailabilityChannel().publish(messageContent, new MMX.OnFinishedListener<String>() {
+      getAvailabilityChannel().publish(messageContent, new MMXMessage.OnFinishedListener<String>() {
         public void onSuccess(String messageId) {
           Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
         }
 
-        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
           Log.e(TAG, "publishAvailability(): unable to publish availability: " + failureCode, throwable);
         }
       });
@@ -481,13 +480,13 @@ public class RPSLS {
                               .content(buildAcceptPayload(context, gameId, true))
                               .recipients(recipients)
                               .build();
-                      message.send(new MMX.OnFinishedListener<String>() {
+                      message.send(new MMXMessage.OnFinishedListener<String>() {
                         public void onSuccess(String messageId) {
                           Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
                           launchGameActivity(context, gameId);
                         }
 
-                        public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
                           Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
                           Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
                         }
@@ -506,12 +505,12 @@ public class RPSLS {
                             .content(buildAcceptPayload(context, gameId, false))
                             .recipients(recipients)
                             .build();
-                    message.send(new MMX.OnFinishedListener<String>() {
+                    message.send(new MMXMessage.OnFinishedListener<String>() {
                       public void onSuccess(String messageId) {
                         Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
                       }
 
-                      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                      public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
                         Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
                         Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
                       }
@@ -630,12 +629,12 @@ public class RPSLS {
                   .recipients(recipients)
                   .content(messageContent)
                   .build();
-          message.send(new MMX.OnFinishedListener<String>() {
+          message.send(new MMXMessage.OnFinishedListener<String>() {
             public void onSuccess(String messageId) {
               Log.d(TAG, "sendInvitations(): sent invitation to " + recipients.size() + " users.  messageId=" + messageId);
             }
 
-            public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+            public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
               Log.e(TAG, "sendInvitations(): unable to send invitation to recipient: " + failureCode + ", " + throwable, throwable);
             }
           });
@@ -821,12 +820,12 @@ public class RPSLS {
                 .recipients(recipients)
                 .content(messageContent)
                 .build();
-        message.send(new MMX.OnFinishedListener<String>() {
+        message.send(new MMXMessage.OnFinishedListener<String>() {
           public void onSuccess(String messageId) {
             Log.d(TAG, "getResult(): sent choice to opponent.  messageId=" + messageId);
           }
 
-          public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+          public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
             Log.e(TAG, "getresult(): unable to send choice to opponent.", throwable);
           }
         });

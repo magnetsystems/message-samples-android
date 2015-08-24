@@ -61,7 +61,7 @@ public class ChannelItemListActivity extends Activity {
 
     final String channelName = getIntent().getStringExtra(ChannelListActivity.EXTRA_CHANNEL_NAME);
     Log.d(TAG, "onCreate(): channelName=" + channelName);
-    MMXChannel.findByName(channelName, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
+    MMXChannel.findByName(channelName, 100, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
       @Override
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
         for (MMXChannel channel : mmxChannelListResult.items) {
@@ -81,7 +81,7 @@ public class ChannelItemListActivity extends Activity {
       }
 
       @Override
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelItemListActivity.this, "Failed to load channel: " + channelName + ".  " +
                 failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
         ChannelItemListActivity.this.finish();
@@ -108,7 +108,7 @@ public class ChannelItemListActivity extends Activity {
     synchronized (this) {
       if (mChannel != null) {
         mChannel.getItems(null, null, 25, false,
-                new MMX.OnFinishedListener<ListResult<com.magnet.mmx.client.api.MMXMessage>>() {
+                new MMXChannel.OnFinishedListener<ListResult<com.magnet.mmx.client.api.MMXMessage>>() {
                   public void onSuccess(ListResult<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
                     //reverse the list
                     mChannelItems = new ArrayList<MMXMessage>();
@@ -119,7 +119,7 @@ public class ChannelItemListActivity extends Activity {
                     updateListView();
                   }
 
-                  public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+                  public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                     Toast.makeText(ChannelItemListActivity.this, "Unable to retrieve items: "
                             + throwable.getMessage(), Toast.LENGTH_LONG).show();
                   }
@@ -151,7 +151,7 @@ public class ChannelItemListActivity extends Activity {
   public void doPublish(final View view) {
     HashMap<String, String> content = new HashMap<String, String>();
     content.put(KEY_MESSAGE_TEXT, mPublishText.getText().toString());
-    mChannel.publish(content, new MMX.OnFinishedListener<String>() {
+    mChannel.publish(content, new MMXMessage.OnFinishedListener<String>() {
       @Override
       public void onSuccess(String s) {
         Toast.makeText(ChannelItemListActivity.this, "Published successfully.",
@@ -159,7 +159,7 @@ public class ChannelItemListActivity extends Activity {
       }
 
       @Override
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelItemListActivity.this, "Unable to publish message: " +
                 throwable.getMessage(), Toast.LENGTH_LONG).show();
       }
@@ -211,12 +211,12 @@ public class ChannelItemListActivity extends Activity {
   }
 
   public void doSubscribe() {
-    mChannel.subscribe(new MMX.OnFinishedListener<String>() {
+    mChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
       public void onSuccess(String s) {
         Toast.makeText(ChannelItemListActivity.this, "Subscribed successfully", Toast.LENGTH_LONG).show();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelItemListActivity.this, "Unable to subscribe: " +
                 throwable.getMessage(), Toast.LENGTH_LONG).show();
       }
@@ -224,7 +224,7 @@ public class ChannelItemListActivity extends Activity {
   }
 
   public void doUnsubscribe() {
-    mChannel.unsubscribe(new MMX.OnFinishedListener<Boolean>() {
+    mChannel.unsubscribe(new MMXChannel.OnFinishedListener<Boolean>() {
       public void onSuccess(Boolean result) {
         if (result) {
           Toast.makeText(ChannelItemListActivity.this, "Unsubscribed successfully", Toast.LENGTH_LONG).show();
@@ -233,7 +233,7 @@ public class ChannelItemListActivity extends Activity {
         }
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelItemListActivity.this, "Exception caught: " + throwable.getMessage(),
                 Toast.LENGTH_LONG).show();
       }
@@ -245,12 +245,12 @@ public class ChannelItemListActivity extends Activity {
       public void onClick(DialogInterface dialog, int which) {
         switch (which) {
           case DialogInterface.BUTTON_POSITIVE:
-            mChannel.delete(new MMX.OnFinishedListener<Void>() {
+            mChannel.delete(new MMXChannel.OnFinishedListener<Void>() {
               public void onSuccess(Void aVoid) {
                 ChannelItemListActivity.this.finish();
               }
 
-              public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+              public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                 Toast.makeText(ChannelItemListActivity.this,
                         getString(R.string.error_unable_to_delete_channel) +
                                 failureCode + ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
