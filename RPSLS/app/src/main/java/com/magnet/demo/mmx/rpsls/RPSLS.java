@@ -46,11 +46,11 @@ public class RPSLS {
    * Enumeration of the possible choices for each user
    */
   public enum Choice {
-    ROCK(R.drawable.rock),
-    PAPER(R.drawable.paper),
-    SCISSORS(R.drawable.scissors),
-    LIZARD(R.drawable.lizard),
-    SPOCK(R.drawable.spock);
+    ROCK(R.drawable.rock_300),
+    PAPER(R.drawable.paper_300),
+    SCISSORS(R.drawable.scissors_300),
+    LIZARD(R.drawable.lizard_300),
+    SPOCK(R.drawable.spock_300);
     private int mResourceId;
 
     Choice(int resourceId) {
@@ -67,15 +67,15 @@ public class RPSLS {
    */
   private static final Map<Choice, BeatsHow[]> sBeatsTable;
   private static final BeatsHow[] ROCK_BEATS =
-          {new BeatsHow(Choice.SCISSORS, How.CRUSHES, R.drawable.rock_vs_scissiors), new BeatsHow(Choice.LIZARD, How.CRUSHES, R.drawable.rock_vs_lizard)};
+          {new BeatsHow(Choice.SCISSORS, How.CRUSHES, R.drawable.rock_vs_scissiors_450), new BeatsHow(Choice.LIZARD, How.CRUSHES, R.drawable.rock_vs_lizard_450)};
   private static final BeatsHow[] PAPER_BEATS =
-          {new BeatsHow(Choice.ROCK, How.COVERS, R.drawable.paper_vs_rock), new BeatsHow(Choice.SPOCK, How.DISPROVES, R.drawable.paper_vs_spock)};
+          {new BeatsHow(Choice.ROCK, How.COVERS, R.drawable.paper_vs_rock_450), new BeatsHow(Choice.SPOCK, How.DISPROVES, R.drawable.paper_vs_spock_450)};
   private static final BeatsHow[] SCISSORS_BEATS =
-          {new BeatsHow(Choice.PAPER, How.CUTS, R.drawable.scissors_vs_paper), new BeatsHow(Choice.LIZARD, How.DECAPITATES, R.drawable.scissors_vs_lizard)};
+          {new BeatsHow(Choice.PAPER, How.CUTS, R.drawable.scissors_vs_paper_450), new BeatsHow(Choice.LIZARD, How.DECAPITATES, R.drawable.scissors_vs_lizard_450)};
   private static final BeatsHow[] LIZARD_BEATS =
-          {new BeatsHow(Choice.PAPER, How.EATS, R.drawable.lizard_vs_paper), new BeatsHow(Choice.SPOCK, How.POISONS, R.drawable.lizard_vs_spock)};
+          {new BeatsHow(Choice.PAPER, How.EATS, R.drawable.lizard_vs_paper_450), new BeatsHow(Choice.SPOCK, How.POISONS, R.drawable.lizard_vs_spock_450)};
   private static final BeatsHow[] SPOCK_BEATS =
-          {new BeatsHow(Choice.ROCK, How.VAPORIZES, R.drawable.spock_vs_rock), new BeatsHow(Choice.SCISSORS, How.SMASHES, R.drawable.spock_vs_scissors)};
+          {new BeatsHow(Choice.ROCK, How.VAPORIZES, R.drawable.spock_vs_rock_450), new BeatsHow(Choice.SCISSORS, How.SMASHES, R.drawable.spock_vs_scissors_450)};
 
   static {
     HashMap<Choice, BeatsHow[]> table = new HashMap<Choice, BeatsHow[]>();
