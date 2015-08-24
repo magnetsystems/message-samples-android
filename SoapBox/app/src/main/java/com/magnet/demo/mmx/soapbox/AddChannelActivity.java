@@ -119,15 +119,14 @@ public class AddChannelActivity extends Activity {
             mSaving.set(false);
             AddChannelActivity.this.finish();
           }
-
         }
 
         public void onFailure(MMX.FailureCode failureCode, final Throwable throwable) {
           AddChannelActivity.this.runOnUiThread(new Runnable() {
             public void run() {
-              if (throwable.getCause() instanceof TopicExistsException) {
+              if (throwable instanceof TopicExistsException) {
                 mChannelName.setError(getString(R.string.error_channel_already_exists));
-              } else {
+              } else if (throwable.getCause() instanceof TopicExistsException) {
                 mChannelName.setError(throwable.getMessage());
               }
               updateView();
