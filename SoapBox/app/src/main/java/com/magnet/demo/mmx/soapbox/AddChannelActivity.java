@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.common.TopicExistsException;
 
@@ -85,7 +84,7 @@ public class AddChannelActivity extends Activity {
               .name(channelName)
               .setPublic(true)
               .build();
-      channel.create(new MMX.OnFinishedListener<MMXChannel>() {
+      channel.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
         public void onSuccess(MMXChannel mmxChannel) {
           //add tags
           SparseBooleanArray checkedPositions = mTagList.getCheckedItemPositions();
@@ -99,14 +98,14 @@ public class AddChannelActivity extends Activity {
             }
           }
           if (tags.size() > 0) {
-            mmxChannel.setTags(tags, new MMX.OnFinishedListener<Void>() {
+            mmxChannel.setTags(tags, new MMXChannel.OnFinishedListener<Void>() {
               public void onSuccess(Void aVoid) {
                 mSaving.set(false);
                 AddChannelActivity.this.finish();
 
               }
 
-              public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+              public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                 Toast.makeText(AddChannelActivity.this, "Channel '" + channelName +
                         "' created, but unable to add tags: " + throwable.getMessage(),
                         Toast.LENGTH_LONG).show();
@@ -121,7 +120,7 @@ public class AddChannelActivity extends Activity {
           }
         }
 
-        public void onFailure(MMX.FailureCode failureCode, final Throwable throwable) {
+        public void onFailure(MMXChannel.FailureCode failureCode, final Throwable throwable) {
           AddChannelActivity.this.runOnUiThread(new Runnable() {
             public void run() {
               if (throwable instanceof TopicExistsException) {

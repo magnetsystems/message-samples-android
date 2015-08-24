@@ -102,13 +102,13 @@ public class MyActivity extends Activity {
             .username(QUICKSTART_USERNAME)
             .displayName(QUICKSTART_USERNAME)
             .build();
-    quickstartUser.register(QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
+    quickstartUser.register(QUICKSTART_PASSWORD, new MMXUser.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
         Log.d(TAG, "register user succeeded");
         loginHelper();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
         Log.d(TAG, "register user failed because: " + failureCode);
         loginHelper();
       }
@@ -309,13 +309,13 @@ public class MyActivity extends Activity {
             .content(content)
             .recipients(recipients)
             .build()
-            .send(new MMX.OnFinishedListener<String>() {
+            .send(new MMXMessage.OnFinishedListener<String>() {
               public void onSuccess(String s) {
                 Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
                 updateViewState();
               }
 
-              public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+              public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
                 Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
                 Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
               }

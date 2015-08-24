@@ -132,27 +132,27 @@ public class ChannelsManager {
    * Provisions the pre-defined channels and subscriptions for this app.
    */
   public void provisionChannels() {
-    CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMX.OnFinishedListener<MMXChannel>() {
+    CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
       }
     });
 
-    CHANNEL_COMPANY_ANNOUNCEMENTS.subscribe(new MMX.OnFinishedListener<String>() {
+    CHANNEL_COMPANY_ANNOUNCEMENTS.subscribe(new MMXChannel.OnFinishedListener<String>() {
       public void onSuccess(String s) {
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
       }
     });
 
-    CHANNEL_LUNCH_BUDDIES.create(new MMX.OnFinishedListener<MMXChannel>() {
+    CHANNEL_LUNCH_BUDDIES.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
       }
     });
   }
