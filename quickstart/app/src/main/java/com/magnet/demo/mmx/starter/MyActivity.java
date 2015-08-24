@@ -36,7 +36,6 @@ import android.widget.Toast;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
-import com.magnet.mmx.client.common.MMXid;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -81,7 +80,7 @@ public class MyActivity extends Activity {
             }
 
             @Override
-            public boolean onMessageAcknowledgementReceived(MMXid mmXid, String s) {
+            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
               return false;
             }
           };
