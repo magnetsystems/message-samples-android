@@ -9,8 +9,8 @@
     <string name="action_register">Register</string>
 
     <string name="error_invalid_email">This username is invalid</string>
+    <string name="error_invalid_email_exists">This username is taken</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect or the username is already taken</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="sign_in_note">If you do not have an account you will be registered on first log in.</string>
 </resources>

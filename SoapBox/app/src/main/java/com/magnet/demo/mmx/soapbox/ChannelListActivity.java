@@ -114,13 +114,13 @@ public class ChannelListActivity extends Activity {
   }
 
   private synchronized void updateChannelList() {
-    MMXChannel.findByName(null, 100, new MMX.OnFinishedListener<ListResult<MMXChannel>>() {
+    MMXChannel.findByName(null, 100, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
         ChannelsManager.getInstance(ChannelListActivity.this).setChannels(mmxChannelListResult.items);
         updateView();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelListActivity.this, "Exception: " + throwable.getMessage(),
                 Toast.LENGTH_LONG).show();
         updateView();
