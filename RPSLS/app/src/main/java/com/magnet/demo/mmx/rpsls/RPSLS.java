@@ -302,10 +302,14 @@ public class RPSLS {
         }
       });
 
-      availabilityChannel.getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
+      fetchAvailablePlayers(context);
+    }
+
+    public static void fetchAvailablePlayers(final Context context) {
+      getAvailabilityChannel().getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
               null, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
                 public void onSuccess(ListResult<MMXMessage> mmxMessages) {
-                  Log.d(TAG, "setupGameMessaging(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
+                  Log.d(TAG, "fetchAvailablePlayers(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
                   for (int i = mmxMessages.totalCount; --i >= 0; ) {
                     //start with the last (oldest message);
                     handleAvailabilityMessage(context, mmxMessages.items.get(i));
@@ -314,7 +318,7 @@ public class RPSLS {
                 }
 
                 public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                  Log.e(TAG, "setupGameMessaging(): caught exception while finding the latest available players", throwable);
+                  Log.e(TAG, "fetchAvailablePlayers(): caught exception while finding the latest available players", throwable);
                 }
               });
     }
@@ -541,20 +545,24 @@ public class RPSLS {
 
       Game game = getGame(gameId);
       if (game != null) {
-        if (isAccept) {
-          game.setSelectedOpponent(opponent.getUsername());
-          checkStartGame(context, game);
-        } else {
-          //game was rejected
-          game.removeInvitee(opponent.getUsername());
-          if (!game.hasRealInvitee()) {
-            if (game.setRandomAIOpponent()) {
-              checkStartGame(context, game);
-            } else {
-              //no more opponents.  remove this game
-              removeGame(game.getGameId());
+        if (game.getSelectedOpponent() == null) {
+          if (isAccept) {
+            game.setSelectedOpponent(opponent.getUsername());
+            checkStartGame(context, game);
+          } else {
+            //game was rejected
+            game.removeInvitee(opponent.getUsername());
+            if (!game.hasRealInvitee()) {
+              if (game.setRandomAIOpponent()) {
+                checkStartGame(context, game);
+              } else {
+                //no more opponents.  remove this game
+                removeGame(game.getGameId());
+              }
             }
           }
+        } else {
+          Log.d(TAG, "handleInvitationAcceptance(): Game has already been accepted.  ignoring acceptance.");
         }
       }
       return true;
