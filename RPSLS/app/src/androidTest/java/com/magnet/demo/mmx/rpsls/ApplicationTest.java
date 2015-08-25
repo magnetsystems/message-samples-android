@@ -15,11 +15,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     RPSLS.Choice myChoice = RPSLS.Choice.ROCK;
     RPSLS.Choice theirChoice = RPSLS.Choice.LIZARD;
 
-    RPSLS.How howIWin = RPSLS.getHowAttackerWins(myChoice, theirChoice);
-    RPSLS.How howTheyWin = RPSLS.getHowAttackerWins(theirChoice, myChoice);
+    RPSLS.BeatsHow howIWin = RPSLS.getHowAttackerWins(myChoice, theirChoice);
+    RPSLS.BeatsHow howTheyWin = RPSLS.getHowAttackerWins(theirChoice, myChoice);
 
     assertNotNull(howIWin);
-    assertEquals(howIWin, RPSLS.How.CRUSHES);
+    assertEquals(howIWin.getHow(), RPSLS.How.CRUSHES);
     assertNull(howTheyWin);
   }
 }

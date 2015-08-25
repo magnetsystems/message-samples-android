@@ -8,17 +8,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.MMXPubSubManager;
-import com.magnet.mmx.client.common.MMXException;
-import com.magnet.mmx.client.common.MMXGlobalTopic;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.client.common.MMXPayload;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.client.common.TopicExistsException;
-import com.magnet.mmx.protocol.MMXTopic;
-import com.magnet.mmx.protocol.MMXTopicOptions;
-import com.magnet.mmx.protocol.TopicAction;
+import com.magnet.mmx.client.api.ListResult;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.api.MMXUser;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -51,11 +45,11 @@ public class RPSLS {
    * Enumeration of the possible choices for each user
    */
   public enum Choice {
-    ROCK(R.drawable.rock),
-    PAPER(R.drawable.paper),
-    SCISSORS(R.drawable.scissors),
-    LIZARD(R.drawable.lizard),
-    SPOCK(R.drawable.spock);
+    ROCK(R.drawable.rock_300),
+    PAPER(R.drawable.paper_300),
+    SCISSORS(R.drawable.scissors_300),
+    LIZARD(R.drawable.lizard_300),
+    SPOCK(R.drawable.spock_300);
     private int mResourceId;
 
     Choice(int resourceId) {
@@ -72,15 +66,15 @@ public class RPSLS {
    */
   private static final Map<Choice, BeatsHow[]> sBeatsTable;
   private static final BeatsHow[] ROCK_BEATS =
-          {new BeatsHow(Choice.SCISSORS, How.CRUSHES, R.drawable.rock_vs_scissiors), new BeatsHow(Choice.LIZARD, How.CRUSHES, R.drawable.rock_vs_lizard)};
+          {new BeatsHow(Choice.SCISSORS, How.CRUSHES, R.drawable.rock_vs_scissiors_450), new BeatsHow(Choice.LIZARD, How.CRUSHES, R.drawable.rock_vs_lizard_450)};
   private static final BeatsHow[] PAPER_BEATS =
-          {new BeatsHow(Choice.ROCK, How.COVERS, R.drawable.paper_vs_rock), new BeatsHow(Choice.SPOCK, How.DISPROVES, R.drawable.paper_vs_spock)};
+          {new BeatsHow(Choice.ROCK, How.COVERS, R.drawable.paper_vs_rock_450), new BeatsHow(Choice.SPOCK, How.DISPROVES, R.drawable.paper_vs_spock_450)};
   private static final BeatsHow[] SCISSORS_BEATS =
-          {new BeatsHow(Choice.PAPER, How.CUTS, R.drawable.scissors_vs_paper), new BeatsHow(Choice.LIZARD, How.DECAPITATES, R.drawable.scissors_vs_lizard)};
+          {new BeatsHow(Choice.PAPER, How.CUTS, R.drawable.scissors_vs_paper_450), new BeatsHow(Choice.LIZARD, How.DECAPITATES, R.drawable.scissors_vs_lizard_450)};
   private static final BeatsHow[] LIZARD_BEATS =
-          {new BeatsHow(Choice.PAPER, How.EATS, R.drawable.lizard_vs_paper), new BeatsHow(Choice.SPOCK, How.POISONS, R.drawable.lizard_vs_spock)};
+          {new BeatsHow(Choice.PAPER, How.EATS, R.drawable.lizard_vs_paper_450), new BeatsHow(Choice.SPOCK, How.POISONS, R.drawable.lizard_vs_spock_450)};
   private static final BeatsHow[] SPOCK_BEATS =
-          {new BeatsHow(Choice.ROCK, How.VAPORIZES, R.drawable.spock_vs_rock), new BeatsHow(Choice.SCISSORS, How.SMASHES, R.drawable.spock_vs_scissors)};
+          {new BeatsHow(Choice.ROCK, How.VAPORIZES, R.drawable.spock_vs_rock_450), new BeatsHow(Choice.SCISSORS, How.SMASHES, R.drawable.spock_vs_scissors_450)};
 
   static {
     HashMap<Choice, BeatsHow[]> table = new HashMap<Choice, BeatsHow[]>();
@@ -95,7 +89,7 @@ public class RPSLS {
   /**
    * The choice that is beaten and how it's accomplished
    */
-  private static final class BeatsHow {
+  static final class BeatsHow {
     private final Choice mBeats;
     private final How mHow;
     private final int mResourceId;
@@ -180,7 +174,7 @@ public class RPSLS {
 
     public static final Map<String, Choice> CHOICE_MAP;
     static {
-      HashMap<String, Choice> choiceMap = new HashMap<String, Choice>();
+      HashMap<String, Choice> choiceMap = new HashMap<>();
       choiceMap.put(CHOICE_ROCK, Choice.ROCK);
       choiceMap.put(CHOICE_PAPER, Choice.PAPER);
       choiceMap.put(CHOICE_SCISSORS, Choice.SCISSORS);
@@ -191,7 +185,7 @@ public class RPSLS {
 
     public static final Map<Choice, String> CHOICE_REVERSE_MAP;
     static {
-      HashMap<Choice, String> choiceMap = new HashMap<Choice, String>();
+      HashMap<Choice, String> choiceMap = new HashMap<>();
       choiceMap.put(Choice.ROCK, CHOICE_ROCK);
       choiceMap.put(Choice.PAPER, CHOICE_PAPER);
       choiceMap.put(Choice.SCISSORS, CHOICE_SCISSORS);
@@ -229,17 +223,18 @@ public class RPSLS {
     private static final String[] ROBOT_NAMES = {"Rosie", "C-3PO", "R2-D2", "Data", "David", "IronGiant", "Johnny5", "OptimusPrime", "Wall-E"};
     private static final char DELIMITER = '-';
     private static final Random RANDOM = new Random();
-    private static final LinkedList<UserProfile> sAvailablePlayers = new LinkedList<UserProfile>();
+    private static final LinkedList<UserProfile> sAvailablePlayers = new LinkedList<>();
     private static final DateFormat mDateFormatter = DateFormat.getDateTimeInstance();
-    private static final HashMap<String, Game> sPendingGames = new HashMap<String, Game>(); //gameId:game
+    private static final HashMap<String, Game> sPendingGames = new HashMap<>(); //gameId:game
 
     static {
       //These AI players can be selected as opponents by the current player
-      sAvailablePlayers.add(new UserProfile("HAL 9000", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-51494400000l), true)); //May 15, 1968
-      sAvailablePlayers.add(new UserProfile("WOPR/Joshua", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(423446400000l), true)); //June 3, 1983
-      sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
-      sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
-      sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
+      //sAvailablePlayers.add(new UserProfile("HAL 9000", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-51494400000l), true)); //May 15, 1968
+      //sAvailablePlayers.add(new UserProfile("WOPR/Joshua", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(423446400000l), true)); //June 3, 1983
+      //sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
+      //sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
+      //sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
+      sAvailablePlayers.add(new UserProfile("player_bot", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(System.currentTimeMillis()), false)); //September 28, 1951
     }
 
     /**
@@ -283,93 +278,90 @@ public class RPSLS {
      */
     public static List<UserProfile> getAvailablePlayers() {
       synchronized (sAvailablePlayers) {
-        return new ArrayList<UserProfile>(sAvailablePlayers);
+        return new ArrayList<>(sAvailablePlayers);
       }
     }
 
     /**
      * Sets up the messaging for this application.  This is meant to be called
-     * after a connection is already made.  It will create the availability topic (if necessary),
-     * subscribe to the topic, and publish the current user as available.
+     * after a connection is already made.  It will create the availability channel (if necessary),
+     * subscribe to the channel, and publish the current user as available.
      *
      * @param context the context
-     * @param client the MMXClient instance
      */
-    public static void setupGameMessaging(Context context, MMXClient client) {
-      MMXTopic availabilityTopic = getTopic();
-      MMXPubSubManager psm = client.getPubSubManager();
-      try {
-        availabilityTopic = psm.createTopic(availabilityTopic,
-                new MMXTopicOptions().setMaxItems(-1));
-        Log.d(TAG, "setupGameMessaging(): created topic: " + availabilityTopic.getName());
-      } catch (MMXException e) {
-        if (!(e instanceof TopicExistsException)) {
-          Log.e(TAG, "setupGameMessaging(): caught exception while setting up game", e);
+    public static void setupGameMessaging(final Context context) {
+      final MMXChannel availabilityChannel = getAvailabilityChannel();
+      availabilityChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
+        public void onSuccess(String subId) {
+          Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +
+                  availabilityChannel.getName() + ", subId=" + subId);
         }
-      }
-      try {
-        String subId = psm.subscribe(availabilityTopic, true);
-        Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +
-                availabilityTopic.getName() + ", subId=" + subId);
-      } catch (MMXException e) {
-        Log.e(TAG, "setupGameMessaging(): caught exception while setting up game", e);
-      }
-      try {
-        List<MMXMessage> items = psm.getItems(availabilityTopic,
-                new TopicAction.FetchOptions()
-                        .setSince(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION))));
-        //TODO:  Make sure that this list of items is from recent to oldest
-        Log.d(TAG, "setupGameMessaging(): found " + items.size() + " availability items published in the last 30 minutes");
-        for (int i=items.size();--i>=0;) {
-          //start with the last (oldest message);
-          handleAvailabilityMessage(context, items.get(i).getPayload());
+
+        public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+          Log.e(TAG, "setupGameMessaging(): unable to subscribe to availability topic", throwable);
         }
-      } catch (MMXException e) {
-        Log.e(TAG, "setupGameMessaging(): caught exception while finding the latest available players", e);
-      }
+      });
+
+      availabilityChannel.getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
+              null, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
+                public void onSuccess(ListResult<MMXMessage> mmxMessages) {
+                  Log.d(TAG, "setupGameMessaging(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
+                  for (int i = mmxMessages.totalCount; --i >= 0; ) {
+                    //start with the last (oldest message);
+                    handleAvailabilityMessage(context, mmxMessages.items.get(i));
+                  }
+
+                }
+
+                public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                  Log.e(TAG, "setupGameMessaging(): caught exception while finding the latest available players", throwable);
+                }
+              });
     }
 
     /**
      * Publishes the availability for the current user
      *
      * @param context the context
-     * @param client the MMXClient instance
      * @param isAvailable whether or not the current user is available
      */
-    public static void publishAvailability(Context context, MMXClient client, boolean isAvailable) {
-        MMXPubSubManager psm = client.getPubSubManager();
-        MyProfile profile = MyProfile.getInstance(context);
-        MMXPayload payload = new MMXPayload("This is the message to publish availability or unavailability");
-        payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
-        setProfileToPayload(profile, payload);
-        payload.setMetaData(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
-        payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        try {
-          String messageId = psm.publish(getTopic(), payload);
+    public static void publishAvailability(Context context, boolean isAvailable) {
+      HashMap<String,String> messageContent = new HashMap<>();
+      MyProfile profile = MyProfile.getInstance(context);
+      setProfileToMessage(profile, messageContent);
+      messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
+      messageContent.put(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
+      messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+      getAvailabilityChannel().publish(messageContent, new MMXMessage.OnFinishedListener<String>() {
+        public void onSuccess(String messageId) {
           Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
-        } catch (Exception e) {
-          Log.e(TAG, "publishAvailability(): unable to publish availability", e);
         }
+
+        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+          Log.e(TAG, "publishAvailability(): unable to publish availability: " + failureCode, throwable);
+        }
+      });
     }
 
     /**
      * Handles an availability message.  This is a published availability message
      *
      * @param context the context
-     * @param payload the payload of the availability message
+     * @param message the availability message
      */
-    private static boolean handleAvailabilityMessage(Context context, MMXPayload payload) {
-      UserProfile profileFromPayload = parseUserProfileFromPayload(payload);
+    private static boolean handleAvailabilityMessage(Context context, MMXMessage message) {
+      Map<String, String> messageContent = message.getContent();
+      UserProfile profileFromPayload = parseUserProfileFromMessage(messageContent);
       String username = profileFromPayload.getUsername();
       Log.d(TAG, "handleAvailabilityMessage(): handling availability message sent by " + username + " at "
-              + mDateFormatter.format(payload.getSentTime()));
+              + mDateFormatter.format(message.getTimestamp()));
 
       if (username == null || username.equals(MyProfile.getInstance(context).getUsername())) {
         Log.d(TAG, "handleAvailabilityMessage(): ignoring my own availability");
         return false;
       }
 
-      boolean isAvailable = Boolean.parseBoolean(payload.getMetaData("isAvailable", "false"));
+      boolean isAvailable = Boolean.parseBoolean(messageContent.get(MessageConstants.KEY_IS_AVAILABLE));
 
       synchronized (sAvailablePlayers) {
         for (int i = sAvailablePlayers.size(); --i>=0;) {
@@ -391,14 +383,17 @@ public class RPSLS {
     /**
      * Marshaller method to pull a UserProfile object from a payload
      *
-     * @param payload the payload
+     * @param messageContent the messageContent
      * @return the UserProfile object
      */
-    private static UserProfile parseUserProfileFromPayload(MMXPayload payload) {
-      String username = payload.getMetaData(MessageConstants.KEY_USERNAME, null);
-      int wins = Integer.parseInt(payload.getMetaData(MessageConstants.KEY_WINS, "0"));
-      int losses = Integer.parseInt(payload.getMetaData(MessageConstants.KEY_LOSSES, "0"));
-      int ties = Integer.parseInt(payload.getMetaData(MessageConstants.KEY_DRAWS, "0"));
+    private static UserProfile parseUserProfileFromMessage(Map<String,String> messageContent) {
+      String username = messageContent.get(MessageConstants.KEY_USERNAME);
+      String winStr = messageContent.get(MessageConstants.KEY_WINS);
+      String lossStr = messageContent.get(MessageConstants.KEY_LOSSES);
+      String tieStr = messageContent.get(MessageConstants.KEY_DRAWS);
+      int wins = winStr == null ? 0 : Integer.parseInt(winStr);
+      int losses = lossStr == null ? 0 : Integer.parseInt(lossStr);
+      int ties = tieStr == null ? 0 : Integer.parseInt(tieStr);
       return new UserProfile(username,
               new UserProfile.Stats(wins, losses, ties, 0, 0, 0, 0, 0), null, false);
     }
@@ -407,59 +402,59 @@ public class RPSLS {
      * Marshaller method to put a UserProfile into a payload
      *
      * @param profile the UserProfile
-     * @param payload the payload
+     * @param messageContent the message content
      */
-    private static void setProfileToPayload(UserProfile profile, MMXPayload payload) {
+    private static void setProfileToMessage(UserProfile profile, Map<String,String> messageContent) {
       Map<Outcome,Integer> outcomeCounts = profile.getStats().getOutcomeCounts();
-      payload.setMetaData(MessageConstants.KEY_USERNAME, profile.getUsername());
-      payload.setMetaData(MessageConstants.KEY_WINS, String.valueOf(outcomeCounts.get(Outcome.WIN)));
-      payload.setMetaData(MessageConstants.KEY_LOSSES, String.valueOf(outcomeCounts.get(Outcome.LOSS)));
-      payload.setMetaData(MessageConstants.KEY_DRAWS, String.valueOf(outcomeCounts.get(Outcome.DRAW)));
+      messageContent.put(MessageConstants.KEY_USERNAME, profile.getUsername());
+      messageContent.put(MessageConstants.KEY_WINS, String.valueOf(outcomeCounts.get(Outcome.WIN)));
+      messageContent.put(MessageConstants.KEY_LOSSES, String.valueOf(outcomeCounts.get(Outcome.LOSS)));
+      messageContent.put(MessageConstants.KEY_DRAWS, String.valueOf(outcomeCounts.get(Outcome.DRAW)));
     }
 
     /**
      * Handles an incoming message, including messages from onMessageReceived and onPubsubItemReceived()
      *
      * @param context the context
-     * @param client the MMXClient instance
-     * @param payload the incoming payload
+     * @param message the incoming message
      * @return true if the message was processed, false otherwise
      */
-    public static boolean handleIncomingMessage(final Context context, final MMXClient client, final MMXPayload payload) {
-//      String type = payload.getType();
-      String type = payload.getMetaData(MessageConstants.KEY_TYPE, null);
+    public static boolean handleIncomingMessage(final Context context, final MMXMessage message) {
+      Map<String,String> messageContent = message.getContent();
+      String type = messageContent.get(MessageConstants.KEY_TYPE);
       boolean returnVal = false;
       if (MessageConstants.TYPE_INVITATION.equals(type)) {
-        returnVal = handleInvitation(context, client, payload);
+        returnVal = handleInvitation(context, message);
       } else if (MessageConstants.TYPE_ACCEPTANCE.equals(type)) {
-        returnVal = handleInvitationAcceptance(context, payload);
+        returnVal = handleInvitationAcceptance(context, message);
       } else if (MessageConstants.TYPE_CHOICE.equals(type)) {
-        returnVal = handleOpponentChoice(payload);
+        returnVal = handleOpponentChoice(message);
       } else if (MessageConstants.TYPE_AVAILABILITY.equals(type)) {
-        returnVal = handleAvailabilityMessage(context, payload);
+        returnVal = handleAvailabilityMessage(context, message);
       } else {
         Log.d(TAG, "handleIncomingMessage(): unsupported message type: " + type);
       }
       return returnVal;
     }
 
-    private static MMXPayload buildAcceptPayload(Context context, String gameId,
+    private static Map<String,String> buildAcceptPayload(Context context, String gameId,
                                                  boolean isAccept) {
-      MMXPayload payload = new MMXPayload("This message is to accept an invitation.");
-      payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_ACCEPTANCE);
+      HashMap<String,String> messageContent = new HashMap<>();
+      messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_ACCEPTANCE);
       MyProfile myProfile = MyProfile.getInstance(context);
-      payload.setMetaData(MessageConstants.KEY_GAMEID, gameId);
-      payload.setMetaData(MessageConstants.KEY_IS_ACCEPT, String.valueOf(isAccept));
-      payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-      setProfileToPayload(myProfile, payload);
-      return payload;
+      messageContent.put(MessageConstants.KEY_GAMEID, gameId);
+      messageContent.put(MessageConstants.KEY_IS_ACCEPT, String.valueOf(isAccept));
+      messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+      setProfileToMessage(myProfile, messageContent);
+      return messageContent;
     }
 
-    private static boolean handleInvitation(final Context context, final MMXClient client, MMXPayload payload) {
+    private static boolean handleInvitation(final Context context, MMXMessage message) {
       Log.d(TAG, "handleInvitation(): Message is an invitation");
-      final String gameId = payload.getMetaData(MessageConstants.KEY_GAMEID, null);
-      String timestamp = payload.getMetaData(MessageConstants.KEY_TIMESTAMP, null);
-      final UserProfile profile = parseUserProfileFromPayload(payload);
+      Map<String,String> messageContent = message.getContent();
+      final String gameId = messageContent.get(MessageConstants.KEY_GAMEID);
+      String timestamp = messageContent.get(MessageConstants.KEY_TIMESTAMP);
+      final UserProfile profile = parseUserProfileFromMessage(messageContent);
       if (gameId == null || profile.getUsername() == null) {
         //can't continue
         Log.w(TAG, "handleInvitation(): Invitation is invalid");
@@ -477,29 +472,49 @@ public class RPSLS {
                   public void onClick(DialogInterface dialog, int which) {
                     synchronized (sPendingGames) {
                       sPendingGames.put(gameId, new Game(gameId, profile));
-                      try {
-                        String messageId = client.getMessageManager().sendPayload(new MMXid(profile.getUsername()),
-                                buildAcceptPayload(context, gameId, true), null);
-                        Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
-                        launchGameActivity(context, gameId);
-                      } catch (MMXException e) {
-                        Log.e(TAG, "handleInvitation(): unable to send acceptance message", e);
-                        Toast.makeText(context, "Unable to accept: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                      }
+                      HashSet<MMXUser> recipients = new HashSet<>();
+                      recipients.add(new MMXUser.Builder()
+                              .username(profile.getUsername())
+                              .build());
+                      MMXMessage message = new MMXMessage.Builder()
+                              .content(buildAcceptPayload(context, gameId, true))
+                              .recipients(recipients)
+                              .build();
+                      message.send(new MMXMessage.OnFinishedListener<String>() {
+                        public void onSuccess(String messageId) {
+                          Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
+                          launchGameActivity(context, gameId);
+                        }
+
+                        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+                          Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
+                          Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                        }
+                      });
                       dialog.dismiss();
                     }
                   }
                 })
                 .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
-                    try {
-                      String messageId = client.getMessageManager().sendPayload(new MMXid(profile.getUsername()),
-                              buildAcceptPayload(context, gameId, false), null);
-                      Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
-                    } catch (MMXException e) {
-                      Log.e(TAG, "handleInvitation(): unable to send rejection message", e);
-                      Toast.makeText(context, "Unable to reject: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
+                    HashSet<MMXUser> recipients = new HashSet<>();
+                    recipients.add(new MMXUser.Builder()
+                            .username(profile.getUsername())
+                            .build());
+                    MMXMessage message = new MMXMessage.Builder()
+                            .content(buildAcceptPayload(context, gameId, false))
+                            .recipients(recipients)
+                            .build();
+                    message.send(new MMXMessage.OnFinishedListener<String>() {
+                      public void onSuccess(String messageId) {
+                        Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
+                      }
+
+                      public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+                        Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
+                        Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                      }
+                    });
                     dialog.dismiss();
                   }
                 });
@@ -508,13 +523,13 @@ public class RPSLS {
       }
     }
 
-    private static boolean handleInvitationAcceptance(final Context context, MMXPayload payload) {
+    private static boolean handleInvitationAcceptance(final Context context, MMXMessage message) {
       //start the game
-      UserProfile opponent = parseUserProfileFromPayload(payload);
-      final String gameId = payload.getMetaData(MessageConstants.KEY_GAMEID, null);
-      String timestamp = payload.getMetaData(MessageConstants.KEY_TIMESTAMP, null);
-      boolean isAccept = Boolean.parseBoolean(payload.getMetaData(MessageConstants.KEY_IS_ACCEPT,
-              Boolean.FALSE.toString()));
+      Map<String,String> messageContent = message.getContent();
+      UserProfile opponent = parseUserProfileFromMessage(messageContent);
+      final String gameId = messageContent.get(MessageConstants.KEY_GAMEID);
+      String timestamp = messageContent.get(MessageConstants.KEY_TIMESTAMP);
+      boolean isAccept = Boolean.parseBoolean(messageContent.get(MessageConstants.KEY_IS_ACCEPT));
       if (gameId == null) {
         Log.d(TAG, "handleInvitationAcceptance(): gameId was null");
         return false;
@@ -545,9 +560,10 @@ public class RPSLS {
       return true;
     }
 
-    private static boolean handleOpponentChoice(final MMXPayload payload) {
-      String choiceStr = payload.getMetaData(MessageConstants.KEY_CHOICE, null);
-      String gameId = payload.getMetaData(MessageConstants.KEY_GAMEID, null);
+    private static boolean handleOpponentChoice(final MMXMessage message) {
+      Map<String,String> messageContent = message.getContent();
+      String choiceStr = messageContent.get(MessageConstants.KEY_CHOICE);
+      String gameId = messageContent.get(MessageConstants.KEY_GAMEID);
       Choice choice = MessageConstants.CHOICE_MAP.get(choiceStr);
       Log.d(TAG, "handleOpponentChoice(): gameId=" + gameId + ", choice=" + choiceStr);
       if (gameId == null || choiceStr == null) {
@@ -584,21 +600,21 @@ public class RPSLS {
       context.startActivity(intent);
     }
 
-    public static boolean sendInvitations(Context context, MMXClient client, List<UserProfile> invitees) {
+    public static boolean sendInvitations(Context context, List<UserProfile> invitees) {
       boolean result = false;
       if (invitees != null && invitees.size() > 0) {
         String gameId = generateGameId();
-        MMXPayload payload = new MMXPayload("This is the invitation message that will be sent to the specified invitees.");
-        payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_INVITATION);
+        HashMap<String,String> messageContent = new HashMap<>();
+        messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_INVITATION);
         MyProfile myProfile = MyProfile.getInstance(context);
-        setProfileToPayload(myProfile, payload);
-        payload.setMetaData(MessageConstants.KEY_GAMEID, gameId);
-        payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        ArrayList<MMXid> recipients = new ArrayList<MMXid>();
-        ArrayList<UserProfile> aiPlayers = new ArrayList<UserProfile>();
+        setProfileToMessage(myProfile, messageContent);
+        messageContent.put(MessageConstants.KEY_GAMEID, gameId);
+        messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+        final HashSet<MMXUser> recipients = new HashSet<>();
+        ArrayList<UserProfile> aiPlayers = new ArrayList<>();
         for (UserProfile invitee : invitees) {
           if (!invitee.isArtificialIntelligence()) {
-            recipients.add(new MMXid(invitee.getUsername()));
+            recipients.add(new MMXUser.Builder().username(invitee.getUsername()).build());
           } else {
             aiPlayers.add(invitee);
           }
@@ -609,14 +625,19 @@ public class RPSLS {
         }
 
         if (recipients.size() > 0) {
-          for (MMXid recipient : recipients) {
-            try {
-              String messageId = client.getMessageManager().sendPayload(recipient, payload, null);
-              Log.d(TAG, "sendInvitations(): sent invitation to " + recipient.getUserId() + " users.  messageId=" + messageId);
-            } catch (MMXException e) {
-              Log.e(TAG, "sendInvitations(): unable to send invitation to recipient: " + recipient.getUserId(), e);
+          MMXMessage message = new MMXMessage.Builder()
+                  .recipients(recipients)
+                  .content(messageContent)
+                  .build();
+          message.send(new MMXMessage.OnFinishedListener<String>() {
+            public void onSuccess(String messageId) {
+              Log.d(TAG, "sendInvitations(): sent invitation to " + recipients.size() + " users.  messageId=" + messageId);
             }
-          }
+
+            public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+              Log.e(TAG, "sendInvitations(): unable to send invitation to recipient: " + failureCode + ", " + throwable, throwable);
+            }
+          });
           game.waitForOpponent(context, MessageConstants.OPPONENT_ACCEPTANCE_WAIT_TIME);
           result = true;
         } else if (aiPlayers.size() > 0) {
@@ -628,8 +649,11 @@ public class RPSLS {
       return result;
     }
 
-    private static MMXTopic getTopic() {
-      return new MMXGlobalTopic(MessageConstants.AVAILABILITY_TOPIC_NAME);
+    private static MMXChannel getAvailabilityChannel() {
+      return new MMXChannel.Builder()
+              .name(MessageConstants.AVAILABILITY_TOPIC_NAME)
+              .setPublic(true)
+              .build();
     }
 
     public static Game getGame(String gameId) {
@@ -775,27 +799,36 @@ public class RPSLS {
      * choice selection or until timeout specified in the MessageConstants value.
      *
      * @param context the context
-     * @param client the MMXClient instance
      * @param choice the current user's choice
      * @see com.magnet.demo.mmx.rpsls.RPSLS.MessageConstants#OPPONENT_CHOICE_WAIT_TIME
      * @return the result of this game
      */
-    public Result getResult(Context context, MMXClient client, Choice choice) {
+    public Result getResult(Context context, Choice choice) {
       if (!mSelectedOpponent.isArtificialIntelligence()) {
-        MMXPayload payload = new MMXPayload("This is the actual choice that the user made");
-        payload.setMetaData(MessageConstants.KEY_TYPE, MessageConstants.TYPE_CHOICE);
+        HashMap<String, String> messageContent = new HashMap<>();
+        messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_CHOICE);
         MyProfile profile = MyProfile.getInstance(context);
-        RPSLS.Util.setProfileToPayload(profile, payload);
-        payload.setMetaData(MessageConstants.KEY_GAMEID, mGameId);
-        payload.setMetaData(MessageConstants.KEY_CHOICE, MessageConstants.CHOICE_REVERSE_MAP.get(choice));
-        payload.setMetaData(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        try {
-          String messageId = client.getMessageManager().sendPayload(
-                  new MMXid(mSelectedOpponent.getUsername()), payload, null);
-          Log.d(TAG, "getResult(): sent choice to opponent.  messageId=" + messageId);
-        } catch (MMXException e) {
-          Log.e(TAG, "getresult(): unable to send choice to opponent.", e);
-        }
+        RPSLS.Util.setProfileToMessage(profile, messageContent);
+        messageContent.put(MessageConstants.KEY_GAMEID, mGameId);
+        messageContent.put(MessageConstants.KEY_CHOICE, MessageConstants.CHOICE_REVERSE_MAP.get(choice));
+        messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+
+        HashSet<MMXUser> recipients = new HashSet<>();
+        recipients.add(new MMXUser.Builder()
+                .username(mSelectedOpponent.getUsername()).build());
+        MMXMessage message = new MMXMessage.Builder()
+                .recipients(recipients)
+                .content(messageContent)
+                .build();
+        message.send(new MMXMessage.OnFinishedListener<String>() {
+          public void onSuccess(String messageId) {
+            Log.d(TAG, "getResult(): sent choice to opponent.  messageId=" + messageId);
+          }
+
+          public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+            Log.e(TAG, "getresult(): unable to send choice to opponent.", throwable);
+          }
+        });
 
         synchronized (this) {
           if (mOpponentChoice == null) {
@@ -834,7 +867,7 @@ public class RPSLS {
     /**
      * Represents the results of the current game.
      *
-     * @see com.magnet.demo.mmx.rpsls.RPSLS.Game#getResult(Context, MMXClient, Choice)
+     * @see com.magnet.demo.mmx.rpsls.RPSLS.Game#getResult(Context, Choice)
      */
     public static class Result {
       public final Outcome outcome;

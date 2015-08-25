@@ -33,17 +33,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.magnet.mmx.client.MMXClient;
-import com.magnet.mmx.client.common.MMXErrorMessage;
-import com.magnet.mmx.client.common.MMXException;
-import com.magnet.mmx.client.common.MMXPayload;
-import com.magnet.mmx.client.common.MMXid;
-import com.magnet.mmx.client.common.MMXMessage;
-import com.magnet.mmx.protocol.MMXTopic;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.api.MMXUser;
+import com.magnet.mmx.client.api.MMX;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * This is the primary activity for this application.  It establishes a
@@ -58,19 +57,33 @@ import java.util.List;
  * user can also send a message to self or one of the two bots from this
  * activity.
  */
-public class MyActivity extends Activity implements MMXClient.MMXListener {
+public class MyActivity extends Activity {
   static final String QUICKSTART_USERNAME = "QuickstartUser1";
   static final byte[] QUICKSTART_PASSWORD = "QuickstartUser1".getBytes();
+  static final String KEY_MESSAGE_TEXT = "textContent";
 
   private static final String TAG = MyActivity.class.getSimpleName();
   private static final String[] TO_LIST = {QUICKSTART_USERNAME, "amazing_bot", "echo_bot"};
-  private MMXClient mClient = null;
   private TextView mStatus = null;
   private ImageButton mSendButton = null;
   private EditText mSendText = null;
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
   private String mToUsername = QUICKSTART_USERNAME;
+  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
+
+  private MMX.EventListener mEventListener =
+          new MMX.EventListener() {
+            public boolean onMessageReceived(MMXMessage mmxMessage) {
+              updateViewState();
+              return false;
+            }
+
+            @Override
+            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
+              return false;
+            }
+          };
 
   /**
    * On creating this activity, register this activity as a local listener to
@@ -84,12 +97,25 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
-    MyMMXListener globalListener = MyMMXListener.getInstance(this);
-    globalListener.registerListener(this);
+    MMX.registerListener(mEventListener);
+    MMXUser quickstartUser = new MMXUser.Builder()
+            .username(QUICKSTART_USERNAME)
+            .displayName(QUICKSTART_USERNAME)
+            .build();
+    quickstartUser.register(QUICKSTART_PASSWORD, new MMXUser.OnFinishedListener<Void>() {
+      public void onSuccess(Void aVoid) {
+        Log.d(TAG, "register user succeeded");
+        loginHelper();
+      }
+
+      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
+        Log.d(TAG, "register user failed because: " + failureCode);
+        loginHelper();
+      }
+    });
     setContentView(R.layout.activity_my_activity);
 
     //Setup the views
-    mClient = MMXClient.getInstance(this, R.raw.quickstart);
     mStatus = (TextView) findViewById(R.id.status_field);
     mSendText = (EditText) findViewById(R.id.message_text);
     mSendButton = (ImageButton) findViewById(R.id.btn_send);
@@ -106,8 +132,22 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
         return false;
       }
     });
-    doConnect();
     updateViewState();
+  }
+
+  private void loginHelper() {
+    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
+      public void onSuccess(Void aVoid) {
+        mLoginSuccess.set(true);
+        MMX.enableIncomingMessages(true);
+        updateViewState();
+      }
+
+      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+        mLoginSuccess.set(false);
+        updateViewState();
+      }
+    });
   }
 
   /**
@@ -116,7 +156,8 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
    */
   @Override
   public void onDestroy() {
-    MyMMXListener.getInstance(this).unregisterListener(this);
+    MMX.unregisterListener(mEventListener);
+    MMX.logout(null);
     super.onDestroy();
   }
 
@@ -135,8 +176,8 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        if (mClient.isConnected()) {
-          String username = mClient.getConnectionInfo().username;
+        if (mLoginSuccess.get()) {
+          String username = MMX.getCurrentUser().getUsername();
           String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
@@ -151,77 +192,6 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
         mMessageListView.smoothScrollToPosition(mMessageListAdapter.getCount());
       }
     });
-  }
-
-  /**
-   * This callback is invoked if the connection state is changed.  Show the
-   * connection state and prompt the user for reconnection if the client is
-   * disconnected from the MMX server.
-   */
-  public void onConnectionEvent(MMXClient mmxClient, MMXClient.ConnectionEvent connectionEvent) {
-    if (connectionEvent == MMXClient.ConnectionEvent.DISCONNECTED) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(MyActivity.this)
-              .setPositiveButton(R.string.reconnect, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                  doConnect();
-                }
-              })
-              .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                public void onCancel(DialogInterface dialog) {
-                  MyActivity.this.finish();
-                }
-              })
-              .setMessage(R.string.event_disconnected);
-      builder.show();
-    }
-    updateViewState();
-  }
-
-  /**
-   * This callback is invoked only if an incoming message is received.  Update
-   * the view.
-   */
-  public void onMessageReceived(MMXClient mmxClient, MMXMessage mmxMessage, String deliveryReceiptId) {
-    updateViewState();
-  }
-
-  /**
-   * This callback is invoked only if the message cannot be sent.  It is ignored
-   * by this application for now.
-   */
-  public void onSendFailed(MMXClient mmxClient, String messageId) {
-  }
-
-  /**
-   * This callback is invoked only if the message sender requests for a delivery
-   * receipt and the message recipient returns the receipt.  It is not applicable
-   * to this application.
-   */
-  public void onMessageDelivered(MMXClient mmxClient, MMXid recipient, String messageId) {
-  }
-
-  /**
-   * This callback is invoked only if a published item is received.  It is not
-   * applicable to this application.
-   */
-  public void onPubsubItemReceived(MMXClient mmxClient, MMXTopic mmxTopic, MMXMessage mmxMessage) {
-  }
-
-  /**
-   * This callback is invoked only if an error message is received.  It is
-   * ignored by this application for now.
-   */
-  public void onErrorReceived(MMXClient mmxClient, MMXErrorMessage error) {
-  }
-
-  /**
-   * Connect to the MMX server using the pre-defined username/password.
-   */
-  private void doConnect() {
-    if (!mClient.isConnected()) {
-      mClient.connectWithCredentials(QUICKSTART_USERNAME, QUICKSTART_PASSWORD,
-              MyMMXListener.getInstance(this), new MMXClient.ConnectionOptions().setAutoCreate(true));
-    }
   }
 
   private static class MessageListAdapter extends BaseAdapter {
@@ -260,7 +230,7 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
           }
           //set author and color
           MMXMessage msg = message.getMessage();
-          String authorStr = msg.getFrom().getUserId();
+          String authorStr = msg.getSender().getUsername();
           for (int i=TO_LIST.length; --i >= 0;) {
             if (TO_LIST[i].equalsIgnoreCase(authorStr)) {
               colorResId = COLOR_IDS[i];
@@ -272,8 +242,9 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
           }
           TextView author = (TextView) convertView.findViewById(R.id.author);
           author.setText(authorStr + " - ");
-          datePostedStr = mFormatter.format(msg.getPayload().getSentTime());
-          messageStr = msg.getPayload().getDataAsText().toString();
+          datePostedStr = mFormatter.format(msg.getTimestamp());
+          Object textObj = msg.getContent().get(KEY_MESSAGE_TEXT);
+          messageStr = textObj != null ? textObj.toString() : "<no text>";
           break;
       }
       TextView datePosted = (TextView) convertView.findViewById(R.id.datePosted);
@@ -328,19 +299,29 @@ public class MyActivity extends Activity implements MMXClient.MMXListener {
       //don't send an empty message
       return;
     }
-    MMXPayload payload = new MMXPayload(messageText);
-    String result;
-    try {
-      String messageID = mClient.getMessageManager().sendPayload(new MMXid(mToUsername), payload, null);
-      MyMessageStore.addMessage(null, messageText, new Date(), false);
-      mSendText.setText(null);
-      result = "Message sent.";
-    } catch (MMXException e) {
-      Log.e(TAG, "doSendMessage() exception caught", e);
-      result = "Exception: " + e.getMessage();
-    }
-    Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-    updateViewState();
+    HashMap<String, String> content = new HashMap<String, String>();
+    content.put(KEY_MESSAGE_TEXT, messageText);
+
+    HashSet<MMXUser> recipients = new HashSet<MMXUser>();
+    recipients.add(new MMXUser.Builder().username(mToUsername).build());
+
+    String messageID = new MMXMessage.Builder()
+            .content(content)
+            .recipients(recipients)
+            .build()
+            .send(new MMXMessage.OnFinishedListener<String>() {
+              public void onSuccess(String s) {
+                Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
+                updateViewState();
+              }
+
+              public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
+                Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
+                Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+              }
+            });
+    MyMessageStore.addMessage(null, messageText, new Date(), false);
+    mSendText.setText(null);
   }
 
   public void showToDialog(View view) {

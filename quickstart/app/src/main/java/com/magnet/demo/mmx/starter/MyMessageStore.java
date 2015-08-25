@@ -14,7 +14,7 @@
  */
 package com.magnet.demo.mmx.starter;
 
-import com.magnet.mmx.client.common.MMXMessage;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
 import java.util.Collections;
