@@ -7,7 +7,8 @@
     <string name="label_status">Status:</string>
     <string name="status_unknown">unknown</string>
     <string name="status_connected">connected</string>
-    <string name="status_disconnected">disconnected</string>
+    <string name="status_authenticated">authenticated</string>
+    <string name="status_unavailable">service unavailable</string>
     <string name="user_anonymously">anonymously</string>
     <string name="chat_me">Me - </string>
     <string name="default_text_hello_world">Hello World!</string>

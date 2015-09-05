@@ -70,7 +70,6 @@ public class MyActivity extends Activity {
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
   private String mToUsername = QUICKSTART_USERNAME;
-  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
@@ -81,6 +80,13 @@ public class MyActivity extends Activity {
 
             @Override
             public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
+              return false;
+            }
+
+            @Override
+            public boolean onLoginRequired(MMX.LoginReason reason) {
+              Log.d(TAG, "onLoginRequired() reason="+reason);
+              updateViewState();
               return false;
             }
           };
@@ -138,13 +144,11 @@ public class MyActivity extends Activity {
   private void loginHelper() {
     MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
-        mLoginSuccess.set(true);
         MMX.enableIncomingMessages(true);
         updateViewState();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable e) {
-        mLoginSuccess.set(false);
         updateViewState();
       }
     });
@@ -176,14 +180,15 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        if (mLoginSuccess.get()) {
-          String username = MMX.getCurrentUser().getUsername();
-          String status = getString(R.string.status_connected) +
+        MMXUser user = MMX.getCurrentUser();
+        if (user != null) {
+          String username = user.getUsername();
+          String status = getString(R.string.status_authenticated) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
           mSendButton.setEnabled(true);
         } else {
-          mStatus.setText(R.string.status_disconnected);
+          mStatus.setText(R.string.status_unavailable);
           mSendButton.setEnabled(false);
         }
 
