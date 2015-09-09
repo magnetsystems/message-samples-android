@@ -28,5 +28,6 @@ dependencies {
     compile('com.magnet.mmx:magnet-mmx-client-android:1.6.0-SNAPSHOT@aar') {
         transitive = true
     }
+    compile('com.amazonaws:aws-android-sdk-s3:2.2.5')
 }
 

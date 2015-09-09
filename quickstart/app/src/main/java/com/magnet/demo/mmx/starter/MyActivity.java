@@ -18,6 +18,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,6 +30,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,10 +40,8 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
 
+import java.io.File;
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -70,26 +71,13 @@ public class MyActivity extends Activity {
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
   private String mToUsername = QUICKSTART_USERNAME;
+  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
-  private MMX.EventListener mEventListener =
-          new MMX.EventListener() {
-            public boolean onMessageReceived(MMXMessage mmxMessage) {
-              updateViewState();
-              return false;
-            }
-
-            @Override
-            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
-              return false;
-            }
-
-            @Override
-            public boolean onLoginRequired(MMX.LoginReason reason) {
-              Log.d(TAG, "onLoginRequired() reason="+reason);
-              updateViewState();
-              return false;
-            }
-          };
+  private MyMessageStore.OnChangeListener mChangeListener = new MyMessageStore.OnChangeListener() {
+    public void onChange() {
+      updateViewState();
+    }
+  };
 
   /**
    * On creating this activity, register this activity as a local listener to
@@ -103,7 +91,7 @@ public class MyActivity extends Activity {
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
-    MMX.registerListener(mEventListener);
+    MyMessageStore.registerOnChangeListener(mChangeListener);
     MMXUser quickstartUser = new MMXUser.Builder()
             .username(QUICKSTART_USERNAME)
             .displayName(QUICKSTART_USERNAME)
@@ -144,11 +132,13 @@ public class MyActivity extends Activity {
   private void loginHelper() {
     MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
+        mLoginSuccess.set(true);
         MMX.enableIncomingMessages(true);
         updateViewState();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+        mLoginSuccess.set(false);
         updateViewState();
       }
     });
@@ -160,7 +150,7 @@ public class MyActivity extends Activity {
    */
   @Override
   public void onDestroy() {
-    MMX.unregisterListener(mEventListener);
+    MyMessageStore.unregisterOnChangeListener(mChangeListener);
     MMX.logout(null);
     super.onDestroy();
   }
@@ -180,15 +170,14 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        MMXUser user = MMX.getCurrentUser();
-        if (user != null) {
-          String username = user.getUsername();
-          String status = getString(R.string.status_authenticated) +
+        if (mLoginSuccess.get()) {
+          String username = MMX.getCurrentUser().getUsername();
+          String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
           mSendButton.setEnabled(true);
         } else {
-          mStatus.setText(R.string.status_unavailable);
+          mStatus.setText(R.string.status_disconnected);
           mSendButton.setEnabled(false);
         }
 
@@ -207,8 +196,10 @@ public class MyActivity extends Activity {
     private List<MyMessageStore.Message> mMessageList = null;
     private LayoutInflater mInflater;
     private DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+    private Context mContext;
 
     public MessageListAdapter(Context context, List<MyMessageStore.Message> messageList, String username) {
+      mContext = context;
       mUsername = username;
       mMessageList = messageList;
       mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -219,7 +210,7 @@ public class MyActivity extends Activity {
       int colorResId = 0;
       String datePostedStr = null;
       String messageStr = null;
-      MyMessageStore.Message message = (MyMessageStore.Message)getItem(position);
+      final MyMessageStore.Message message = (MyMessageStore.Message)getItem(position);
       switch (type) {
         case TYPE_ME:
           if (convertView == null) {
@@ -257,6 +248,21 @@ public class MyActivity extends Activity {
       TextView messageText = (TextView) convertView.findViewById(R.id.messageText);
       messageText.setBackgroundResource(colorResId);
       messageText.setText(messageStr);
+
+      if (message.getFile() != null) {
+        convertView.setOnClickListener(new View.OnClickListener() {
+          public void onClick(View v) {
+            LinearLayout layout = (LinearLayout) mInflater.inflate(R.layout.dialog_image, null);
+            ImageView image = (ImageView) layout.findViewById(R.id.image);
+            image.setImageBitmap(BitmapFactory.decodeFile(message.getFile().getAbsolutePath()));
+            AlertDialog dialog = new AlertDialog.Builder(mContext)
+                    .setView(layout)
+                    .show();
+          }
+        });
+      } else {
+        convertView.setOnClickListener(null);
+      }
       return convertView;
     }
 
@@ -304,28 +310,19 @@ public class MyActivity extends Activity {
       //don't send an empty message
       return;
     }
-    HashMap<String, String> content = new HashMap<String, String>();
-    content.put(KEY_MESSAGE_TEXT, messageText);
 
-    HashSet<MMXUser> recipients = new HashSet<MMXUser>();
-    recipients.add(new MMXUser.Builder().username(mToUsername).build());
+    MyMessageStore.sendMessage(this, mToUsername, messageText, new File("/sdcard/image.jpg"), "image/jpeg",
+            new MMXMessage.OnFinishedListener<String>() {
+      public void onSuccess(String s) {
+        Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
+        updateViewState();
+      }
 
-    String messageID = new MMXMessage.Builder()
-            .content(content)
-            .recipients(recipients)
-            .build()
-            .send(new MMXMessage.OnFinishedListener<String>() {
-              public void onSuccess(String s) {
-                Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
-                updateViewState();
-              }
-
-              public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
-                Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
-                Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
-              }
-            });
-    MyMessageStore.addMessage(null, messageText, new Date(), false);
+      public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
+        Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
+        Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+      }
+    });
     mSendText.setText(null);
   }
 

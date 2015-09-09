@@ -8,6 +8,7 @@
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.magnet.demo.mmx.starter.permission.C2D_MESSAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".MyApplication"
@@ -42,6 +43,10 @@
                 <action android:name="QUICKSTART_WAKEUP" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
     </application>
 
 </manifest>

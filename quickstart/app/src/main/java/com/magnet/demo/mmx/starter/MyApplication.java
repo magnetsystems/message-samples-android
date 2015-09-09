@@ -44,8 +44,7 @@ public class MyApplication extends Application {
   private MMX.EventListener mListener =
           new MMX.EventListener() {
             public boolean onMessageReceived(MMXMessage mmxMessage) {
-              MyMessageStore.addMessage(mmxMessage, null,
-                      new Date(), true);
+              MyMessageStore.handleMessage(MyApplication.this, mmxMessage);
               doNotify(mmxMessage);
               return false;
             }
@@ -58,6 +57,7 @@ public class MyApplication extends Application {
   public void onCreate() {
     super.onCreate();
     Log.setLoggable(null, Log.VERBOSE);
+    MyMessageStore.init(this);
     MMX.init(this, R.raw.quickstart);
     MMX.registerListener(mListener);
 
