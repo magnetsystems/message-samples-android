@@ -3,3 +3,5 @@ This application depends on Android SDK API level 19 (4.4.2) and requires the in
 Extras-->Google Play services
 Extras-->Google Repository
  
+Amazon S3 Integration:  http://docs.aws.amazon.com/mobile/sdkforandroid/developerguide/getting-started-store-retrieve-s3-transferutility.html
+
