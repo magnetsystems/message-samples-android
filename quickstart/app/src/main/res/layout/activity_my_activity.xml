@@ -102,6 +102,18 @@
             android:text="@string/default_text_hello_world"
             />
         <ImageButton
+            android:id="@+id/btn_attach"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:src="@android:drawable/ic_menu_gallery"
+            android:background="@android:color/transparent"
+            android:onClick="doAttach"
+            android:clickable="false"
+            />
+        <ImageButton
             android:id="@+id/btn_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

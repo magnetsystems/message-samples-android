@@ -18,6 +18,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -29,6 +32,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,12 +41,18 @@ import android.widget.Toast;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.util.MediaUtil;
+import com.magnet.mmx.util.Base64;
+import com.magnet.mmx.util.DisposableFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -61,6 +72,8 @@ public class MyActivity extends Activity {
   static final String QUICKSTART_USERNAME = "QuickstartUser1";
   static final byte[] QUICKSTART_PASSWORD = "QuickstartUser1".getBytes();
   static final String KEY_MESSAGE_TEXT = "textContent";
+  static final String KEY_ATTACHMENT = "attachment";
+  static final String KEY_ATTACHMENT_MIME_TYPE = "attachmentMimeType";
 
   private static final String TAG = MyActivity.class.getSimpleName();
   private static final String[] TO_LIST = {QUICKSTART_USERNAME, "amazing_bot", "echo_bot"};
@@ -70,6 +83,9 @@ public class MyActivity extends Activity {
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
   private String mToUsername = QUICKSTART_USERNAME;
+  private ImageButton mGalleryButton = null;
+  private DisposableFile mPickedFile = null;
+  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
@@ -80,13 +96,6 @@ public class MyActivity extends Activity {
 
             @Override
             public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
-              return false;
-            }
-
-            @Override
-            public boolean onLoginRequired(MMX.LoginReason reason) {
-              Log.d(TAG, "onLoginRequired() reason="+reason);
-              updateViewState();
               return false;
             }
           };
@@ -125,6 +134,7 @@ public class MyActivity extends Activity {
     mStatus = (TextView) findViewById(R.id.status_field);
     mSendText = (EditText) findViewById(R.id.message_text);
     mSendButton = (ImageButton) findViewById(R.id.btn_send);
+    mGalleryButton = (ImageButton) findViewById(R.id.btn_attach);
     mMessageListView = (ListView) findViewById(R.id.message_list_view);
     mMessageListAdapter = new MessageListAdapter(this, MyMessageStore.getMessageList(), QUICKSTART_USERNAME);
     mMessageListView.setAdapter(mMessageListAdapter);
@@ -144,11 +154,13 @@ public class MyActivity extends Activity {
   private void loginHelper() {
     MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
+        mLoginSuccess.set(true);
         MMX.enableIncomingMessages(true);
         updateViewState();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+        mLoginSuccess.set(false);
         updateViewState();
       }
     });
@@ -180,21 +192,26 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        MMXUser user = MMX.getCurrentUser();
-        if (user != null) {
-          String username = user.getUsername();
-          String status = getString(R.string.status_authenticated) +
+        if (mLoginSuccess.get()) {
+          String username = MMX.getCurrentUser().getUsername();
+          String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
           mSendButton.setEnabled(true);
         } else {
-          mStatus.setText(R.string.status_unavailable);
+          mStatus.setText(R.string.status_disconnected);
           mSendButton.setEnabled(false);
         }
 
         List<MyMessageStore.Message> messageList = MyMessageStore.getMessageList();
         mMessageListAdapter.setMessageList(messageList);
         mMessageListView.smoothScrollToPosition(mMessageListAdapter.getCount());
+
+        if (mPickedFile != null) {
+          mGalleryButton.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+        } else {
+          mGalleryButton.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        }
       }
     });
   }
@@ -204,12 +221,15 @@ public class MyActivity extends Activity {
     private static final int TYPE_ME = 0;
     private static final int TYPE_THEM = 1;
     private String mUsername;
+    private HashMap<String, Drawable> mDrawableCache = new HashMap<String, Drawable>();
     private List<MyMessageStore.Message> mMessageList = null;
+    private Context mContext;
     private LayoutInflater mInflater;
     private DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
 
     public MessageListAdapter(Context context, List<MyMessageStore.Message> messageList, String username) {
       mUsername = username;
+      mContext = context;
       mMessageList = messageList;
       mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
     }
@@ -219,7 +239,7 @@ public class MyActivity extends Activity {
       int colorResId = 0;
       String datePostedStr = null;
       String messageStr = null;
-      MyMessageStore.Message message = (MyMessageStore.Message)getItem(position);
+      final MyMessageStore.Message message = (MyMessageStore.Message)getItem(position);
       switch (type) {
         case TYPE_ME:
           if (convertView == null) {
@@ -252,11 +272,41 @@ public class MyActivity extends Activity {
           messageStr = textObj != null ? textObj.toString() : "<no text>";
           break;
       }
+      boolean hasAttachment = message.getMessage() != null &&
+              message.getMessage().getContent().containsKey(KEY_ATTACHMENT);
       TextView datePosted = (TextView) convertView.findViewById(R.id.datePosted);
       datePosted.setText(datePostedStr);
       TextView messageText = (TextView) convertView.findViewById(R.id.messageText);
       messageText.setBackgroundResource(colorResId);
       messageText.setText(messageStr);
+      if (hasAttachment) {
+        Map<String, String> content = message.getMessage().getContent();
+        String attachment = content.get(KEY_ATTACHMENT);
+        String mimeType = content.get(KEY_ATTACHMENT_MIME_TYPE);
+        //TODO: Do something with the MIME type
+        try {
+          Drawable drawable = mDrawableCache.get(message.getMessage().getId());
+          if (drawable == null) {
+            final File tempAttachmentFile = File.createTempFile(message.getMessage().getId() + "-attach-" + System.currentTimeMillis(), null);
+            Base64.decodeToFile(attachment, tempAttachmentFile.getAbsolutePath());
+            drawable = BitmapDrawable.createFromPath(tempAttachmentFile.getAbsolutePath());
+            mDrawableCache.put(message.getMessage().getId(), drawable);
+          }
+          messageText.setCompoundDrawablePadding(20);
+          messageText.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+          final Drawable finalDrawable = drawable;
+          convertView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+              showImageDialog(mContext, finalDrawable);
+            }
+          });
+        } catch (IOException e) {
+          Log.e(TAG, "Unable to create temp file for attachment.", e);
+          Toast.makeText(mContext, "Unable to process attachment: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+      } else {
+        convertView.setOnClickListener(null);
+      }
       return convertView;
     }
 
@@ -296,10 +346,20 @@ public class MyActivity extends Activity {
     public long getItemId(int position) {
       return 0;
     }
+
+    private void showImageDialog(Context context, Drawable drawable) {
+      LinearLayout imageLayout = (LinearLayout) mInflater.inflate(R.layout.dialog_image, null);
+      ImageView imageView = (ImageView) imageLayout.findViewById(R.id.image);
+      imageView.setImageDrawable(drawable);
+      AlertDialog dialog = new AlertDialog.Builder(context)
+              .setView(imageLayout)
+              .show();
+    }
+
   }
 
   public void doSendMessage(View view) {
-    String messageText = mSendText.getText().toString();
+    final String messageText = mSendText.getText().toString();
     if (messageText.isEmpty()) {
       //don't send an empty message
       return;
@@ -310,6 +370,17 @@ public class MyActivity extends Activity {
     HashSet<MMXUser> recipients = new HashSet<MMXUser>();
     recipients.add(new MMXUser.Builder().username(mToUsername).build());
 
+    if (mPickedFile != null) {
+      try {
+        content.put(KEY_ATTACHMENT, Base64.encodeFromFile(mPickedFile.getAbsolutePath()));
+        content.put(KEY_ATTACHMENT_MIME_TYPE, "image/jpeg");
+        //TODO:  Figure out the MIME type
+      } catch (IOException e) {
+        Log.e(TAG, "doSendMessage(): exception caught while attaching file" + e);
+        Toast.makeText(this, "Unable to attach file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+      }
+    }
+
     String messageID = new MMXMessage.Builder()
             .content(content)
             .recipients(recipients)
@@ -317,6 +388,16 @@ public class MyActivity extends Activity {
             .send(new MMXMessage.OnFinishedListener<String>() {
               public void onSuccess(String s) {
                 Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
+                MyMessageStore.addMessage(null, messageText, new Date(), false);
+
+                runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                    mSendText.setText(null);
+                  }
+                });
+                mPickedFile.finish();
+                mPickedFile = null;
                 updateViewState();
               }
 
@@ -325,8 +406,10 @@ public class MyActivity extends Activity {
                 Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
               }
             });
-    MyMessageStore.addMessage(null, messageText, new Date(), false);
-    mSendText.setText(null);
+  }
+
+  public void doAttach(View view) {
+    MediaUtil.startImagePickerActivityWithResult(this);
   }
 
   public void showToDialog(View view) {
@@ -344,4 +427,17 @@ public class MyActivity extends Activity {
             .create();
     toDialog.show();
   }
+
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    try {
+      mPickedFile = MediaUtil.getDisposableImageFromActivityResult(this, resultCode, data);
+      updateViewState();
+    } catch (IOException e) {
+      Log.e(TAG, "onActivityResult(): caught exception", e);
+      Toast.makeText(this, "Unable to attach file: " + e.getMessage(), Toast.LENGTH_LONG).show();
+    }
+  }
+
 }
