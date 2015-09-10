@@ -12,7 +12,7 @@ Magnet Message is a powerful, open source mobile messaging framework enabling re
 We created a Rock Paper Scissors Lizard Spock game as popularized by the show “Big Bang Theory”. If you aren’t already a fan, check out the [rules](http://www.samkass.com/theories/RPSSL.html). Install, build, run, play, repeat. Oh, and learn more about how Magnet Message handles core message passing and the publish/subscribe dynamic.
 
 ### Build Instructions
-0.  Ensure that the configuration file contains the proper values for your deployed server.  Edit the RPSLS/app/src/main/res/raw/rpsls.properties file.
+0.  You must replace the existing properties file in the project with your own. You can download this file on the Settings page of the Magnet Message Web Interface. After adding the properties file to RPSLS/app/src/main/res/raw/rpsls.properties, just build and run!
 
 Command line:
 1.  Execute the gradle wrapper script from the RPSLS folder.
@@ -42,7 +42,7 @@ Game on!
 We needed an app to address one of the the most important issues in our office – what’s for lunch? Following that, after our office was hit by a network outage in the morning that blasted productivity for unsuspecting early commuters we came up with the notion of a corporate announcements app. Something we could check to take some of the… surprises out of work. After polishing up the code, we realized it makes a pretty effective piece of sample code highlighting our Publish/Subscribe capabilities. Pull it down, customize and get everyone on the same page.
 
 ### Build Instructions
-0.  Ensure that the configuration file contains the proper values for your deployed server.  Edit the RPSLS/app/src/main/res/raw/rpsls.properties file.
+0.  You must replace the existing properties file in the project with your own. You can download this file on the Settings page of the Magnet Message Web Interface. After adding the properties file to SoapBox/app/src/main/res/raw/soapbox.properties, just build and run!
 
 Command line:
 1.  Execute the gradle wrapper script from the SoapBox folder.
@@ -66,6 +66,23 @@ Feature highlights:
 -- create topics
 -- subscribe and unsubscribe from topics
 -- adding tags for topics (tags can be used as search criteria)
+
+
+<hr>
+## Quickstart
+0.  Quickstart was created to have a simple app that could demonstrate the most basic messaging features including logging in and sending and receiving a message.
+
+### Build Instructions
+0.  You must replace the existing properties file in the project with your own. You can download this file on the Settings page of the Magnet Message Web Interface. After adding the properties file to quickstart/app/src/main/res/raw/quickstart.properties, just build and run!
+
+### How it works (Technical Highlights)
+Quickstart auto-creates a user and allows you to send a message to yourself by default. By sending a message to yourself you can easily see the roundtrip from device to server and back.
+
+Feature highlights: 
+-- quick account provisioning 
+-- addressing and sending a message 
+-- receiving a message and accessing its content.
+
 
 ## Feedback
 
