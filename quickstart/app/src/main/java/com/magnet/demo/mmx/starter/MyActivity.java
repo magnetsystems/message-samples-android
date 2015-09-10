@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,11 +35,24 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
 
+import org.json.JSONObject;
+
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,18 +73,68 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * activity.
  */
 public class MyActivity extends Activity {
-  static final String QUICKSTART_USERNAME = "QuickstartUser1";
-  static final byte[] QUICKSTART_PASSWORD = "QuickstartUser1".getBytes();
   static final String KEY_MESSAGE_TEXT = "textContent";
 
   private static final String TAG = MyActivity.class.getSimpleName();
-  private static final String[] TO_LIST = {QUICKSTART_USERNAME, "amazing_bot", "echo_bot"};
+  private static final String[] TO_LIST = {"amazing_bot", "echo_bot"};
   private TextView mStatus = null;
   private ImageButton mSendButton = null;
   private EditText mSendText = null;
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
-  private String mToUsername = QUICKSTART_USERNAME;
+  private String mToUsername = null;
+  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
+  private CallbackManager mCallbackManager = null;
+  private MyProfile mProfile = null;
+
+  private FacebookCallback<LoginResult> mLoginCallback = new FacebookCallback<LoginResult>() {
+    public void onSuccess(LoginResult loginResult) {
+      Log.d(TAG, "LoginCallback.onSuccess() " + loginResult.getAccessToken().getUserId());
+      final GraphRequest request = new GraphRequest(loginResult.getAccessToken(), "me");
+      Bundle params = new Bundle();
+      params.putString("fields", "id,name,email");
+      request.setParameters(params);
+
+      AsyncTask.execute(new Runnable() {
+        public void run() {
+          Log.d(TAG, "LoginCallback.onSuccess() lookup email");
+          GraphResponse response = request.executeAndWait();
+          JSONObject jsonResp = response.getJSONObject();
+          try {
+            String email = jsonResp.getString("email");
+            String name = jsonResp.getString("name");
+            String id = jsonResp.getString("id");
+            mProfile.setUsername(email);
+            mProfile.setPassword(id.getBytes()); //FIXME: Find a better way to generate this password
+            mProfile.setDisplayName(name);
+            setupMMX();
+            updateViewState();
+          } catch (final Exception ex) {
+            Log.e(TAG, "LoginCallback.onSuccess(): exception caught while getting identity", ex);
+            runOnUiThread(new Runnable() {
+              public void run() {
+                Toast.makeText(MyActivity.this, "Exception caught while getting identity: " +
+                        ex.getMessage(), Toast.LENGTH_LONG).show();
+                MyActivity.this.finish();
+              }
+            });
+          }
+        }
+      });
+
+    }
+
+    public void onCancel() {
+      Log.d(TAG, "LoginCallback.onCancel()");
+      MyActivity.this.finish();
+    }
+
+    public void onError(FacebookException e) {
+      Log.e(TAG, "LoginCallback.onError() ", e);
+      Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+      MyActivity.this.finish();
+    }
+  };
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
@@ -80,13 +145,6 @@ public class MyActivity extends Activity {
 
             @Override
             public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
-              return false;
-            }
-
-            @Override
-            public boolean onLoginRequired(MMX.LoginReason reason) {
-              Log.d(TAG, "onLoginRequired() reason="+reason);
-              updateViewState();
               return false;
             }
           };
@@ -100,25 +158,7 @@ public class MyActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    // Register this activity as a listener to receive and show incoming
-    // messages.  See #onDestroy for the unregister call.
-    MMX.registerListener(mEventListener);
-    MMXUser quickstartUser = new MMXUser.Builder()
-            .username(QUICKSTART_USERNAME)
-            .displayName(QUICKSTART_USERNAME)
-            .build();
-    quickstartUser.register(QUICKSTART_PASSWORD, new MMXUser.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
-        Log.d(TAG, "register user succeeded");
-        loginHelper();
-      }
-
-      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-        Log.d(TAG, "register user failed because: " + failureCode);
-        loginHelper();
-      }
-    });
+    mProfile = MyProfile.getInstance(this);
     setContentView(R.layout.activity_my_activity);
 
     //Setup the views
@@ -126,7 +166,7 @@ public class MyActivity extends Activity {
     mSendText = (EditText) findViewById(R.id.message_text);
     mSendButton = (ImageButton) findViewById(R.id.btn_send);
     mMessageListView = (ListView) findViewById(R.id.message_list_view);
-    mMessageListAdapter = new MessageListAdapter(this, MyMessageStore.getMessageList(), QUICKSTART_USERNAME);
+    mMessageListAdapter = new MessageListAdapter(this, MyMessageStore.getMessageList(), mProfile.getUsername());
     mMessageListView.setAdapter(mMessageListAdapter);
     mSendText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -138,17 +178,60 @@ public class MyActivity extends Activity {
         return false;
       }
     });
+
+    FacebookSdk.sdkInitialize(getApplicationContext());
+    mCallbackManager = CallbackManager.Factory.create();
+    LoginManager.getInstance().registerCallback(mCallbackManager, mLoginCallback);
+    if (mProfile.getUsername() == null || Profile.getCurrentProfile() == null) {
+      //go login
+      HashSet<String> permissions = new HashSet<String>();
+      permissions.add("user_friends");
+      permissions.add("email");
+      LoginManager.getInstance().logInWithReadPermissions(this, permissions);
+    } else {
+      setupMMX();
+    }
     updateViewState();
   }
 
-  private void loginHelper() {
-    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    mCallbackManager.onActivityResult(requestCode, resultCode, data);
+  }
+
+  private void setupMMX() {
+    // Register this activity as a listener to receive and show incoming
+    // messages.  See #onDestroy for the unregister call.
+    MMX.registerListener(mEventListener);
+    MMXUser quickstartUser = new MMXUser.Builder()
+            .username(mProfile.getUsername())
+            .displayName(mProfile.getDisplayName())
+            .build();
+    quickstartUser.register(mProfile.getPassword(), new MMXUser.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
+        Log.d(TAG, "register user succeeded");
+        loginHelper();
+      }
+
+      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
+        Log.d(TAG, "register user failed because: " + failureCode);
+        loginHelper();
+      }
+    });
+  }
+
+  private void loginHelper() {
+    MMX.login(mProfile.getUsername(), mProfile.getPassword(), new MMX.OnFinishedListener<Void>() {
+      public void onSuccess(Void aVoid) {
+        mToUsername = mProfile.getUsername();
+        mLoginSuccess.set(true);
         MMX.enableIncomingMessages(true);
         updateViewState();
       }
 
       public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+        mLoginSuccess.set(false);
         updateViewState();
       }
     });
@@ -180,15 +263,14 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        MMXUser user = MMX.getCurrentUser();
-        if (user != null) {
-          String username = user.getUsername();
-          String status = getString(R.string.status_authenticated) +
+        if (mLoginSuccess.get()) {
+          String username = MMX.getCurrentUser().getUsername();
+          String status = getString(R.string.status_connected) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
           mSendButton.setEnabled(true);
         } else {
-          mStatus.setText(R.string.status_unavailable);
+          mStatus.setText(R.string.status_disconnected);
           mSendButton.setEnabled(false);
         }
 
@@ -330,15 +412,18 @@ public class MyActivity extends Activity {
   }
 
   public void showToDialog(View view) {
+    final ArrayList<String> toList = new ArrayList<String>();
+    toList.add(mProfile.getUsername());
+    Collections.addAll(toList, TO_LIST);
     AlertDialog toDialog = new AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog)
             .setTitle(R.string.title_send_to)
             .setAdapter(new ArrayAdapter<String>(this,
                             android.R.layout.simple_list_item_1,
-                            android.R.id.text1, TO_LIST),
+                            android.R.id.text1, toList),
                     new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
-                        mToUsername = TO_LIST[which];
+                        mToUsername = toList.get(which);
                       }
                     })
             .create();

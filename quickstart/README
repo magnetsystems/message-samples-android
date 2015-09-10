@@ -3,3 +3,5 @@ This application depends on Android SDK API level 19 (4.4.2) and requires the in
 Extras-->Google Play services
 Extras-->Google Repository
  
+Note: For facebook login integration:  https://developers.facebook.com/docs/facebook-login/android/v2.4
+

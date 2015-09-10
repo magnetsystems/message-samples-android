@@ -28,5 +28,6 @@ dependencies {
     compile('com.magnet.mmx:magnet-mmx-client-android:1.6.0-SNAPSHOT@aar') {
         transitive = true
     }
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
 }
 
