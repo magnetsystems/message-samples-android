@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MessagingSample</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_activity_login">Login</string>
+    <string name="login_btn_text">Log In</string>
+    <string name="register_btn_text">Register</string>
+    <string name="email_label_text">Username</string>
+    <string name="password_text_label">Password</string>
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_user_select">UserSelectActivity</string>
+    <string name="message_hint">Message</string>
+
+</resources>
