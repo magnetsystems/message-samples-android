@@ -46,7 +46,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            updateViewState(mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), false);
+            updateViewState(mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), true);
             return false;
         }
 
@@ -66,6 +66,7 @@ public class ChatActivity extends AppCompatActivity {
 
         lvComments = (ListView) findViewById(R.id.lvComments);
         etMessage = (EditText) findViewById(R.id.etMessage);
+        btnSend = (ImageButton) findViewById(R.id.btnSend);
 
         adapter = new CommentArrayAdapter(getApplicationContext(), R.layout.activity_chat);
 
@@ -89,8 +90,6 @@ public class ChatActivity extends AppCompatActivity {
                 doSendMessage();
             }
         });
-
-        addItems();
     }
 
     public void doSendMessage() {
@@ -105,7 +104,7 @@ public class ChatActivity extends AppCompatActivity {
         HashSet<MMXUser> recipients = new HashSet<MMXUser>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 
-        updateViewState(messageText, true);
+        updateViewState(messageText, false);
 
         String messageID = new MMXMessage.Builder()
             .content(content)
@@ -124,32 +123,8 @@ public class ChatActivity extends AppCompatActivity {
         etMessage.setText(null);
     }
 
-    private void updateViewState(String comment, boolean isOwner) {
-        adapter.add(new Comment(isOwner, comment));
-    }
-
-    private void addItems() {
-        random = new Random();
-        adapter.add(new Comment(true, "Hello bubbles!"));
-
-        for (int i = 0; i < 4; i++) {
-            boolean left = getRandomInteger(0, 1) == 0 ? true : false;
-            int word = getRandomInteger(1, 10);
-            int start = getRandomInteger(1, 40);
-            String words = "hello world";
-
-            adapter.add(new Comment(left, words));
-        }
-    }
-
-    private static int getRandomInteger(int aStart, int aEnd) {
-        if (aStart > aEnd) {
-            throw new IllegalArgumentException("Start cannot exceed End.");
-        }
-        long range = (long) aEnd - (long) aStart + 1;
-        long fraction = (long) (range * random.nextDouble());
-        int randomNumber = (int) (fraction + aStart);
-        return randomNumber;
+    private void updateViewState(String comment, boolean isReceivedMessage) {
+        adapter.add(new Comment(isReceivedMessage, comment));
     }
 
     /**

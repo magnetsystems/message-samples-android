@@ -50,14 +50,13 @@ public class ChatApplication extends Application {
     }
 
     private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {
-        String messageKey = "messageContent";
         Object textObj = message.getContent().get(ChatActivity.KEY_MESSAGE_TEXT);
         if (textObj != null) {
             String messageText = textObj.toString();
             MMXUser from = message.getSender();
             NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification note = new Notification.Builder(this).setAutoCancel(true)
-                    .setSmallIcon(R.drawable.abc_list_selector_holo_light).setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.drawable.bubble_green).setWhen(System.currentTimeMillis())
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setContentTitle("Message from " + from.getUsername()).setContentText(messageText).build();
             noteMgr.notify(mNoteId++, note);

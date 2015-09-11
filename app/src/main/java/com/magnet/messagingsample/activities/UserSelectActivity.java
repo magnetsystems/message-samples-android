@@ -20,7 +20,10 @@ import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXUser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
 
@@ -47,32 +50,54 @@ public class UserSelectActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvUsers.setLayoutManager(layoutManager);
 
+        // TODO: this doesnt return all users
         MMXUser.findByName("t", 20, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
             public void onSuccess(ListResult<MMXUser> users) {
-                refreshListView(users);
+                refreshListView(users.totalCount > 0 ? users.items : null);
             }
 
             public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
                 Log.e(TAG, "MMXUser.findByName() error: " + failureCode, throwable);
-                Toast.makeText(UserSelectActivity.this, "Oops.  Please try again.", Toast.LENGTH_LONG).show();
+                refreshListView(null);
             }
         });
 
+        // TODO: this doesnt return all users either
+//        HashSet names = new HashSet();
+//        names.add("");
+//        MMXUser.findByNames(names, new MMXUser.OnFinishedListener<HashMap<String, MMXUser>>() {
+//            @Override
+//            public void onSuccess(HashMap<String, MMXUser> stringMMXUserHashMap) {
+//                ArrayList<MMXUser> users = new ArrayList<>();
+//                for (MMXUser user : stringMMXUserHashMap.values()) {
+//                    users.add(user);
+//                }
+//                refreshListView(users);
+//            }
+//
+//            @Override
+//            public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
+//                Log.e(TAG, "MMXUser.findByNames() error: " + failureCode, throwable);
+//                refreshListView(null);
+//            }
+//        });
+
     }
 
-    protected void refreshListView(ListResult<MMXUser> users) {
-        User user;
-        if (users.totalCount > 0) {
-            for (int i = 0; i < users.items.size(); i++) {
-                user = new User();
-                user.setUsername(users.items.get(i).getUsername());
-                userlist.add(user);
+    protected void refreshListView(final List<MMXUser> users) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.clear();
+                if (users != null && users.size() > 0) {
+                    adapter.addAll(users);
+//                    adapter.refreshAdapter();
+                    rvUsers.getAdapter().notifyDataSetChanged();
+                } else {
+                    Toast.makeText(UserSelectActivity.this, "No users found.", Toast.LENGTH_LONG).show();
+                }
             }
-        }
-        adapter.clear();
-        adapter.addAll(userlist);
-//        rvUsers.getAdapter().notifyDataSetChanged();
-//            adapter.refreshAdapter();
+        });
     }
 
     @Override

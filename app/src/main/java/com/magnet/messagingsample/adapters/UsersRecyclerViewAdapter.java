@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.activities.ChatActivity;
 import com.magnet.messagingsample.models.User;
+import com.magnet.mmx.client.api.ListResult;
+import com.magnet.mmx.client.api.MMXUser;
 
 import java.util.List;
 
@@ -82,8 +84,12 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
         users.clear();
     }
 
-    public void addAll(List<User> items) {
-        users.addAll(items);
+    public void addAll(List<MMXUser> mmxUsers) {
+        for (int i = 0; i < mmxUsers.size(); i++) {
+            User user = new User();
+            user.setUsername(mmxUsers.get(i).getUsername());
+            users.add(user);
+        }
     }
 
     public void refreshAdapter() {
