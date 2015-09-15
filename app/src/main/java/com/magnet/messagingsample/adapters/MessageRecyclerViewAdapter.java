@@ -209,43 +209,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             BitmapDescriptor defaultMarker =
                     BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
 
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(latlong).title("My Location").icon(defaultMarker));
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(latlong)
+                    .title("My Location")
+                    .icon(defaultMarker));
 
-            dropPinEffect(marker);
-
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlong, 17);
-            googleMap.animateCamera(cameraUpdate);
+            marker.showInfoWindow();
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 13));
         }
-    }
-
-    private void dropPinEffect(final Marker marker) {
-        final android.os.Handler handler = new android.os.Handler();
-        final long start = SystemClock.uptimeMillis();
-        final long duration = 1500;
-
-        final android.view.animation.Interpolator interpolator = new BounceInterpolator();
-
-        // Animate marker with a bounce updating its position every 15ms
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                long elapsed = SystemClock.uptimeMillis() - start;
-                // Calculate t for bounce based on elapsed time
-                float t = Math.max(
-                        1 - interpolator.getInterpolation((float) elapsed
-                                / duration), 0);
-                // Set the anchor
-                marker.setAnchor(0.5f, 1.0f + 14 * t);
-
-                if (t > 0.0) {
-                    // Post this event again 15ms from now.
-                    handler.postDelayed(this, 15);
-                } else { // done elapsing, show window
-                    marker.showInfoWindow();
-                }
-            }
-        });
-
     }
 
     public void add(Object obj) {

@@ -67,12 +67,10 @@ public class ChatActivity extends AppCompatActivity {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT) != null) {
                 updateList(KEY_MESSAGE_TEXT, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), true);
-            }
-            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
+            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
                 updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
-            }
-            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
-                updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
+            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
+                //updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
             }
             return false;
         }
@@ -131,7 +129,7 @@ public class ChatActivity extends AppCompatActivity {
         btnSendPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendImage();
+                selectImage();
             }
         });
 
@@ -146,35 +144,14 @@ public class ChatActivity extends AppCompatActivity {
     public void sendMessage() {
         String messageText = etMessage.getText().toString();
         if (messageText.isEmpty()) {
-            //don't send an empty message
             return;
         }
-        HashMap<String, String> content = new HashMap<String, String>();
-        content.put(KEY_MESSAGE_TEXT, messageText);
-
-        HashSet<MMXUser> recipients = new HashSet<MMXUser>();
-        recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
-
         updateList(KEY_MESSAGE_TEXT, messageText, false);
-
-        String messageID = new MMXMessage.Builder()
-            .content(content)
-            .recipients(recipients)
-            .build()
-            .send(new MMXMessage.OnFinishedListener<String>() {
-                public void onSuccess(String s) {
-                    Toast.makeText(ChatActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
-                }
-
-                public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
-                    Log.e(TAG, "sendMessage() failure: " + failureCode, e);
-                    Toast.makeText(ChatActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+        send(KEY_MESSAGE_TEXT, messageText);
         etMessage.setText(null);
     }
 
-    private void sendImage() {
+    private void selectImage() {
         Intent intent = new Intent(this, ImagePickerActivity.class);
         Config config = new Config.Builder()
                 .setTabBackgroundColor(R.color.white)    // set tab background color. Default white.
@@ -206,6 +183,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (uris != null && uris.length > 0) {
                     for (Uri uri : uris) {
                         updateList(KEY_MESSAGE_IMAGE, uri.toString(), false);
+                        send(KEY_MESSAGE_IMAGE, uri.toString());
                     }
                 }
             }
@@ -227,28 +205,31 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
         String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
+        updateList(KEY_MESSAGE_MAP, latlng, false);
+        send(KEY_MESSAGE_MAP, latlng);
+    }
+
+    private void send(String type, String text) {
         HashMap<String, String> content = new HashMap<String, String>();
-        content.put(KEY_MESSAGE_MAP, latlng);
+        content.put(type, text);
 
         HashSet<MMXUser> recipients = new HashSet<MMXUser>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 
-        updateList(KEY_MESSAGE_MAP, latlng, false);
-
         String messageID = new MMXMessage.Builder()
-                .content(content)
-                .recipients(recipients)
+            .content(content)
+            .recipients(recipients)
                 .build()
                 .send(new MMXMessage.OnFinishedListener<String>() {
                     public void onSuccess(String s) {
-                        Toast.makeText(ChatActivity.this, "Location sent.", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(ChatActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
                     }
 
                     public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
-                        Log.e(TAG, "sendLocation() failure: " + failureCode, e);
+                        Log.e(TAG, "send() failure: " + failureCode, e);
                         Toast.makeText(ChatActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                }
+            });
     }
 
     public void updateList(String type, String content, boolean orientation) {
@@ -263,8 +244,13 @@ public class ChatActivity extends AppCompatActivity {
                 adapter.add(new MessageMap(orientation, content));
                 break;
         }
-        rvMessages.scrollToPosition(adapter.getItemCount() - 1);
-        rvMessages.getAdapter().notifyDataSetChanged();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rvMessages.getAdapter().notifyDataSetChanged();
+                rvMessages.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        });
     }
 
     /**

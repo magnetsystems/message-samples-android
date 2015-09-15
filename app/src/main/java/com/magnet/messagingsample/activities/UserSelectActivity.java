@@ -50,8 +50,8 @@ public class UserSelectActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvUsers.setLayoutManager(layoutManager);
 
-        // TODO: this doesnt return all users
-        MMXUser.findByName("t", 20, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
+        // return all users
+        MMXUser.findByName("%", 20, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
             public void onSuccess(ListResult<MMXUser> users) {
                 refreshListView(users.totalCount > 0 ? users.items : null);
             }
@@ -62,7 +62,7 @@ public class UserSelectActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: this doesnt return all users either
+        // TODO: this doesnt return all users
 //        HashSet names = new HashSet();
 //        names.add("");
 //        MMXUser.findByNames(names, new MMXUser.OnFinishedListener<HashMap<String, MMXUser>>() {
