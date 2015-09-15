@@ -4,13 +4,13 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <ListView
-        android:id="@+id/lvComments"
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rvMessages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_above="@+id/linearLayout">
-    </ListView>
+        android:layout_above="@+id/linearLayout" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -31,13 +31,21 @@
             android:hint="@string/message_hint"
             />
         <ImageButton
-            android:id="@+id/btnSend"
+            android:id="@+id/btnSendText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|center_vertical"
             android:src="@android:drawable/ic_menu_send"
             android:background="@android:color/transparent"
-            android:onClick="doSendMessage"
+            android:clickable="false"
+            />
+        <ImageButton
+            android:id="@+id/btnSendPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@android:drawable/ic_menu_camera"
+            android:background="@android:color/transparent"
             android:clickable="false"
             />
     </LinearLayout>

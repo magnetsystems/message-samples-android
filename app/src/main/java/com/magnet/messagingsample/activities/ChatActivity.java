@@ -1,7 +1,13 @@
 package com.magnet.messagingsample.activities;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -9,44 +15,56 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.magnet.messagingsample.R;
-import com.magnet.messagingsample.adapters.CommentArrayAdapter;
-import com.magnet.messagingsample.models.Comment;
-import com.magnet.messagingsample.models.MessageStore;
+import com.magnet.messagingsample.adapters.MessageRecyclerViewAdapter;
+import com.magnet.messagingsample.models.MessageImage;
+import com.magnet.messagingsample.models.MessageMap;
+import com.magnet.messagingsample.models.MessageText;
 import com.magnet.messagingsample.models.User;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
+import nl.changer.polypicker.Config;
+import nl.changer.polypicker.ImagePickerActivity;
 
 public class ChatActivity extends AppCompatActivity {
 
     final String TAG = "ChatActivity";
 
     public static final String KEY_MESSAGE_TEXT = "messageContent";
+    public static final String KEY_MESSAGE_IMAGE = "imageContent";
+    public static final String KEY_MESSAGE_MAP = "mapContent";
+    final private int INTENT_REQUEST_GET_IMAGES = 14;
 
     private User mUser;
+    List<Object> messageList;
 
-    private CommentArrayAdapter adapter;
+    private MessageRecyclerViewAdapter adapter;
     private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
-    private ListView lvComments;
-    private static Random random;
+    private RecyclerView rvMessages;
     private EditText etMessage;
-    private ImageButton btnSend;
+    private ImageButton btnSendText;
+    private ImageButton btnSendPicture;
 
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            updateViewState(mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), true);
+            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT) != null) {
+                updateList(KEY_MESSAGE_TEXT, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), true);
+            }
+            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
+                updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
+            }
             return false;
         }
 
@@ -64,35 +82,47 @@ public class ChatActivity extends AppCompatActivity {
         mUser = getIntent().getParcelableExtra("User");
         MMX.registerListener(mEventListener);
 
-        lvComments = (ListView) findViewById(R.id.lvComments);
+        rvMessages = (RecyclerView) findViewById(R.id.rvMessages);
         etMessage = (EditText) findViewById(R.id.etMessage);
-        btnSend = (ImageButton) findViewById(R.id.btnSend);
+        btnSendText = (ImageButton) findViewById(R.id.btnSendText);
+        btnSendPicture = (ImageButton) findViewById(R.id.btnSendPicture);
 
-        adapter = new CommentArrayAdapter(getApplicationContext(), R.layout.activity_chat);
+        messageList = new ArrayList<>();
+        adapter = new MessageRecyclerViewAdapter(this, messageList);
 
-        lvComments.setAdapter(adapter);
+        rvMessages.setAdapter(new SlideInBottomAnimationAdapter(adapter));
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        rvMessages.setLayoutManager(layoutManager);
 
         etMessage.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     // Perform action on key press
-                    doSendMessage();
+                    sendMessage();
                     return true;
                 }
                 return false;
             }
         });
 
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        btnSendText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doSendMessage();
+                sendMessage();
+            }
+        });
+
+        btnSendPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
             }
         });
     }
 
-    public void doSendMessage() {
+    public void sendMessage() {
         String messageText = etMessage.getText().toString();
         if (messageText.isEmpty()) {
             //don't send an empty message
@@ -104,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
         HashSet<MMXUser> recipients = new HashSet<MMXUser>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 
-        updateViewState(messageText, false);
+        updateList(KEY_MESSAGE_TEXT, messageText, false);
 
         String messageID = new MMXMessage.Builder()
             .content(content)
@@ -116,15 +146,64 @@ public class ChatActivity extends AppCompatActivity {
                 }
 
                 public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
-                    Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
+                    Log.e(TAG, "sendMessage() failure: " + failureCode, e);
                     Toast.makeText(ChatActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         etMessage.setText(null);
     }
 
-    private void updateViewState(String comment, boolean isReceivedMessage) {
-        adapter.add(new Comment(isReceivedMessage, comment));
+    private void selectImage() {
+        Intent intent = new Intent(this, ImagePickerActivity.class);
+        Config config = new Config.Builder()
+                .setTabBackgroundColor(R.color.white)    // set tab background color. Default white.
+//                .setTabSelectionIndicatorColor(R.color.primary)
+//                .setCameraButtonColor(R.color.accent)
+                .setSelectionLimit(1)
+                .build();
+        ImagePickerActivity.setConfig(config);
+        startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == INTENT_REQUEST_GET_IMAGES) {
+                Parcelable[] parcelableUris = intent.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
+
+                if (parcelableUris == null) {
+                    return;
+                }
+
+                // Java doesn't allow array casting, this is a little hack
+                Uri[] uris = new Uri[parcelableUris.length];
+                System.arraycopy(parcelableUris, 0, uris, 0, parcelableUris.length);
+
+                // TODO: upload image to server and store image url
+                if (uris != null && uris.length > 0) {
+                    for (Uri uri : uris) {
+                        updateList(KEY_MESSAGE_IMAGE, uri.toString(), false);
+                    }
+                }
+            }
+        }
+    }
+
+    public void updateList(String type, String content, boolean orientation) {
+        switch (type) {
+            case ChatActivity.KEY_MESSAGE_TEXT:
+                adapter.add(new MessageText(orientation, content));
+                break;
+            case ChatActivity.KEY_MESSAGE_IMAGE:
+                adapter.add(new MessageImage(orientation, content));
+                break;
+            case ChatActivity.KEY_MESSAGE_MAP:
+                adapter.add(new MessageMap(orientation, content));
+                break;
+        }
+        rvMessages.getAdapter().notifyDataSetChanged();
     }
 
     /**
