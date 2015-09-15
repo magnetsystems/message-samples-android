@@ -4,16 +4,36 @@ package com.magnet.messagingsample.adapters;
  * Created by edwardyang on 9/15/15.
  */
 import android.app.Activity;
+import android.app.Fragment;
+import android.location.Location;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.activities.ChatActivity;
 import com.magnet.messagingsample.models.MessageImage;
@@ -62,10 +82,16 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     class ViewHolderMap extends RecyclerView.ViewHolder {
         private LinearLayout wrapper;
+        public MapFragment mapMessageLocation;
+        public RelativeLayout rlMapContainer;
 
         public ViewHolderMap(View itemView) {
             super(itemView);
             this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
+            this.rlMapContainer = (RelativeLayout) itemView.findViewById(R.id.rlMapContainer);
+            if (mapMessageLocation == null) {
+                mapMessageLocation = ((MapFragment) mActivity.getFragmentManager().findFragmentById(R.id.mapMessageLocation));
+            }
         }
     }
 
@@ -80,6 +106,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return TEXT_TYPE;
         } else if (messageItems.get(position) instanceof MessageImage) {
             return IMAGE_TYPE;
+        } else if (messageItems.get(position) instanceof MessageMap) {
+            return MAP_TYPE;
         }
         return -1;
     }
@@ -100,15 +128,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 viewHolder = new ViewHolderImage(v2);
                 break;
             case MAP_TYPE:
-                View v3 = inflater.inflate(R.layout.item_chat_text, parent, false);
+                View v3 = inflater.inflate(R.layout.item_chat_map, parent, false);
                 viewHolder = new ViewHolderMap(v3);
                 break;
             default:
                 // TODO: handle this later
                 View v4 = inflater.inflate(R.layout.item_chat_text, parent, false);
                 viewHolder = new ViewHolderText(v4);
-//                View v = inflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-//                viewHolder = new RecyclerViewSimpleTextViewHolder(v);
                 break;
         }
         return viewHolder;
@@ -129,13 +155,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 configureViewHolder2(vh2, position);
                 break;
             case MAP_TYPE:
-                ViewHolderImage vh3 = (ViewHolderImage) viewHolder;
+                ViewHolderMap vh3 = (ViewHolderMap) viewHolder;
                 configureViewHolder3(vh3, position);
-                break;
-            default:
-                ViewHolderText vh4 = (ViewHolderText) viewHolder;
-//                RecyclerViewSimpleTextViewHolder vh = (RecyclerViewSimpleTextViewHolder) viewHolder;
-//                configureDefaultViewHolder(vh, position);
                 break;
         }
     }
@@ -160,20 +181,75 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    private void configureViewHolder3(ViewHolderImage vh3, int position) {
-        MessageMap item = (MessageMap) messageItems.get(position);
+    private void configureViewHolder3(ViewHolderMap vh3, int position) {
+        final MessageMap item = (MessageMap) messageItems.get(position);
+        if (item != null) {
+            vh3.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            if (vh3.mapMessageLocation != null) {
+                vh3.rlMapContainer.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+                vh3.mapMessageLocation.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap map) {
+                        loadMap(map, item.latlng);
+                    }
+                });
+            }
+        }
+    }
+
+    protected void loadMap(GoogleMap googleMap, String latlng) {
+        if (googleMap != null) {
+            googleMap.setMyLocationEnabled(true);
+
+            String[] latlngAry = latlng.split(",");
+            double lat = Double.parseDouble(latlngAry[0]);
+            double lng = Double.parseDouble(latlngAry[1]);
+            LatLng latlong = new LatLng(lat, lng);
+
+            BitmapDescriptor defaultMarker =
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+
+            Marker marker = googleMap.addMarker(new MarkerOptions().position(latlong).title("My Location").icon(defaultMarker));
+
+            dropPinEffect(marker);
+
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latlong, 17);
+            googleMap.animateCamera(cameraUpdate);
+        }
+    }
+
+    private void dropPinEffect(final Marker marker) {
+        final android.os.Handler handler = new android.os.Handler();
+        final long start = SystemClock.uptimeMillis();
+        final long duration = 1500;
+
+        final android.view.animation.Interpolator interpolator = new BounceInterpolator();
+
+        // Animate marker with a bounce updating its position every 15ms
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                // Calculate t for bounce based on elapsed time
+                float t = Math.max(
+                        1 - interpolator.getInterpolation((float) elapsed
+                                / duration), 0);
+                // Set the anchor
+                marker.setAnchor(0.5f, 1.0f + 14 * t);
+
+                if (t > 0.0) {
+                    // Post this event again 15ms from now.
+                    handler.postDelayed(this, 15);
+                } else { // done elapsing, show window
+                    marker.showInfoWindow();
+                }
+            }
+        });
+
     }
 
     public void add(Object obj) {
         messageItems.add(obj);
     }
-
-    public void clear() {
-        messageItems.clear();
-    }
-
-//    private void configureDefaultViewHolder(RecyclerViewSimpleTextViewHolder vh, int position) {
-//        vh.getLabel().setText((CharSequence) items.get(position));
-//    }
 
 }

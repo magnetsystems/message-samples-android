@@ -23,6 +23,7 @@ import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
 import com.magnet.messagingsample.models.User;
+import com.magnet.messagingsample.services.GPSTracker;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
@@ -46,16 +47,21 @@ public class ChatActivity extends AppCompatActivity {
     public static final String KEY_MESSAGE_MAP = "mapContent";
     final private int INTENT_REQUEST_GET_IMAGES = 14;
 
+    GPSTracker gps;
+
     private User mUser;
     List<Object> messageList;
 
     private MessageRecyclerViewAdapter adapter;
-    private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
 
     private RecyclerView rvMessages;
     private EditText etMessage;
     private ImageButton btnSendText;
     private ImageButton btnSendPicture;
+    private ImageButton btnSendLocation;
+
+    private double myLat;
+    private double myLong;
 
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
@@ -64,6 +70,9 @@ public class ChatActivity extends AppCompatActivity {
             }
             if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
                 updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
+            }
+            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
+                updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
             }
             return false;
         }
@@ -86,6 +95,7 @@ public class ChatActivity extends AppCompatActivity {
         etMessage = (EditText) findViewById(R.id.etMessage);
         btnSendText = (ImageButton) findViewById(R.id.btnSendText);
         btnSendPicture = (ImageButton) findViewById(R.id.btnSendPicture);
+        btnSendLocation = (ImageButton) findViewById(R.id.btnSendLocation);
 
         messageList = new ArrayList<>();
         adapter = new MessageRecyclerViewAdapter(this, messageList);
@@ -93,7 +103,11 @@ public class ChatActivity extends AppCompatActivity {
         rvMessages.setAdapter(new SlideInBottomAnimationAdapter(adapter));
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(false);
         rvMessages.setLayoutManager(layoutManager);
+
+        gps = new GPSTracker(this);
 
         etMessage.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -117,7 +131,14 @@ public class ChatActivity extends AppCompatActivity {
         btnSendPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectImage();
+                sendImage();
+            }
+        });
+
+        btnSendLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendLocation();
             }
         });
     }
@@ -153,7 +174,7 @@ public class ChatActivity extends AppCompatActivity {
         etMessage.setText(null);
     }
 
-    private void selectImage() {
+    private void sendImage() {
         Intent intent = new Intent(this, ImagePickerActivity.class);
         Config config = new Config.Builder()
                 .setTabBackgroundColor(R.color.white)    // set tab background color. Default white.
@@ -191,6 +212,45 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    private void getLocation() {
+        if (gps.canGetLocation() && gps.getLatitude() != 0.00 && gps.getLongitude() != 0.00) {
+            myLat = gps.getLatitude();
+            myLong = gps.getLongitude();
+        }else{
+            gps.showSettingsAlert();
+        }
+    }
+
+    private void sendLocation() {
+        getLocation();
+        if (Double.isNaN(myLat) || Double.isNaN(myLong)) {
+            return;
+        }
+        String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
+        HashMap<String, String> content = new HashMap<String, String>();
+        content.put(KEY_MESSAGE_MAP, latlng);
+
+        HashSet<MMXUser> recipients = new HashSet<MMXUser>();
+        recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
+
+        updateList(KEY_MESSAGE_MAP, latlng, false);
+
+        String messageID = new MMXMessage.Builder()
+                .content(content)
+                .recipients(recipients)
+                .build()
+                .send(new MMXMessage.OnFinishedListener<String>() {
+                    public void onSuccess(String s) {
+                        Toast.makeText(ChatActivity.this, "Location sent.", Toast.LENGTH_LONG).show();
+                    }
+
+                    public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
+                        Log.e(TAG, "sendLocation() failure: " + failureCode, e);
+                        Toast.makeText(ChatActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
     public void updateList(String type, String content, boolean orientation) {
         switch (type) {
             case ChatActivity.KEY_MESSAGE_TEXT:
@@ -203,6 +263,7 @@ public class ChatActivity extends AppCompatActivity {
                 adapter.add(new MessageMap(orientation, content));
                 break;
         }
+        rvMessages.scrollToPosition(adapter.getItemCount() - 1);
         rvMessages.getAdapter().notifyDataSetChanged();
     }
 

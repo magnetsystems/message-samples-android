@@ -6,12 +6,12 @@ package com.magnet.messagingsample.models;
 public class MessageMap {
 
     public boolean left;
-    public String imageUri;
+    public String latlng;
 
-    public MessageMap(boolean left, String imageUri) {
+    public MessageMap(boolean left, String latlng) {
         super();
         this.left = left;
-        this.imageUri = imageUri;
+        this.latlng = latlng;
     }
 
 }

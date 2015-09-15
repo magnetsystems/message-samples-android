@@ -8,20 +8,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
-        <ImageView
+        <RelativeLayout
+            android:id="@+id/rlMapContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ivMessageImage"
-            android:layout_alignParentTop="true"
-            android:src="@mipmap/ic_launcher"
-            android:layout_gravity="center"
-            android:layout_margin="5dip"
-            android:background="@drawable/bubble_yellow"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignRight="@+id/etEmail"
-            android:layout_alignEnd="@+id/etEmail"
-            android:focusableInTouchMode="false" />
+            android:background="@drawable/bubble_yellow">
+
+            <fragment
+                android:id="@+id/mapMessageLocation"
+                class="com.google.android.gms.maps.MapFragment"
+                android:layout_gravity="center"
+                android:layout_margin="5dip"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
