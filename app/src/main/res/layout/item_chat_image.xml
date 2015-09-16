@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:id="@+id/wrapper">
 
-    <LinearLayout
-        android:id="@+id/wrapper"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ivMessageImage"
-            android:src="@mipmap/ic_launcher"
-            android:layout_gravity="center"
-            android:layout_margin="5dip"
-            android:layout_weight=".60"
-            android:background="@drawable/bubble_yellow"
-            android:focusableInTouchMode="false" />
-
-    </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="200dp"
+        android:id="@+id/ivMessageImage"
+        android:src="@mipmap/ic_launcher"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center"
+        android:layout_margin="5dip"
+        android:background="@drawable/bubble_yellow"
+        android:focusableInTouchMode="false" />
 
 </LinearLayout>
