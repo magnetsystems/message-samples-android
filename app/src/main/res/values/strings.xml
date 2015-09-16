@@ -14,5 +14,6 @@
     <string name="message_hint">Message</string>
     <string name="title_activity_map_view">MapViewActivity</string>
     <string name="title_activity_image_view">ImageViewActivity</string>
+    <string name="title_activity_video_view">VideoViewActivity</string>
 
 </resources>

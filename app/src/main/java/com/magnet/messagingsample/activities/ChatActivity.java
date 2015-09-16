@@ -32,6 +32,11 @@ import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,11 +51,12 @@ public class ChatActivity extends AppCompatActivity {
 
     final String TAG = "ChatActivity";
 
-    public static final String KEY_MESSAGE_TEXT = "messageContent";
-    public static final String KEY_MESSAGE_IMAGE = "imageContent";
-    public static final String KEY_MESSAGE_MAP = "mapContent";
-    public static final String KEY_MESSAGE_VIDEO = "videoContent";
+    public static final String KEY_MESSAGE_TEXT = "text";
+    public static final String KEY_MESSAGE_IMAGE = "photo";
+    public static final String KEY_MESSAGE_MAP = "location";
+    public static final String KEY_MESSAGE_VIDEO = "video";
     final private int INTENT_REQUEST_GET_IMAGES = 14;
+    final private int INTENT_SELECT_VIDEO = 13;
 
     GPSTracker gps;
 
@@ -71,14 +77,20 @@ public class ChatActivity extends AppCompatActivity {
 
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT) != null) {
-                updateList(KEY_MESSAGE_TEXT, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_TEXT).toString(), true);
-            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
-                updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
-            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
-                updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
-            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_VIDEO) != null) {
-                updateList(KEY_MESSAGE_VIDEO, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_VIDEO).toString(), true);
+            String type = mmxMessage.getContent().get("type");
+            switch (type) {
+                case KEY_MESSAGE_TEXT:
+                    updateList(KEY_MESSAGE_TEXT, mmxMessage.getContent().get("message"), true);
+                    break;
+                case KEY_MESSAGE_IMAGE:
+                    updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get("url"), true);
+                    break;
+                case KEY_MESSAGE_MAP:
+                    updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get("latitude") + "," + mmxMessage.getContent().get("longitude"), true);
+                    break;
+                case KEY_MESSAGE_VIDEO:
+                    updateList(KEY_MESSAGE_VIDEO, mmxMessage.getContent().get("url"), true);
+                    break;
             }
             return false;
         }
@@ -152,6 +164,7 @@ public class ChatActivity extends AppCompatActivity {
         btnSendVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                selectVideo();
                 sendVideo();
             }
         });
@@ -164,7 +177,11 @@ public class ChatActivity extends AppCompatActivity {
             return;
         }
         updateList(KEY_MESSAGE_TEXT, messageText, false);
-        send(KEY_MESSAGE_TEXT, messageText);
+
+        HashMap<String, String> content = new HashMap<>();
+        content.put("type", KEY_MESSAGE_TEXT);
+        content.put("message", messageText);
+        send(KEY_MESSAGE_TEXT, content);
         etMessage.setText(null);
     }
 
@@ -178,6 +195,13 @@ public class ChatActivity extends AppCompatActivity {
                 .build();
         ImagePickerActivity.setConfig(config);
         startActivityForResult(intent, INTENT_REQUEST_GET_IMAGES);
+    }
+
+    private void selectVideo() {
+        Intent intent = new Intent();
+        intent.setType("video/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select a Video "), INTENT_SELECT_VIDEO);
     }
 
     @Override
@@ -200,12 +224,55 @@ public class ChatActivity extends AppCompatActivity {
                 if (uris != null && uris.length > 0) {
                     for (Uri uri : uris) {
                         updateList(KEY_MESSAGE_IMAGE, uri.toString(), false);
-                        send(KEY_MESSAGE_IMAGE, uri.toString());
+
+                        HashMap<String, String> content = new HashMap<>();
+                        content.put("type", KEY_MESSAGE_IMAGE);
+                        content.put("url", uri.toString());
+                        send(KEY_MESSAGE_IMAGE, content);
                     }
                 }
+            } else if (requestCode == INTENT_SELECT_VIDEO) {
+                Uri selectedImageUri = intent.getData();
+                String selectedPath = selectedImageUri.toString();
+                sendVideo();
             }
         }
     }
+
+//    private void sendVideo2(String videoPath) throws ParseException, IOException {
+//
+//        HttpClient httpclient = new DefaultHttpClient();
+//        HttpPost httppost = new HttpPost(YOUR_URL);
+//
+//        FileBody filebodyVideo = new FileBody(new File(videoPath));
+//        StringBody title = new StringBody("Filename: " + videoPath);
+//        StringBody description = new StringBody("This is a video of the agent");
+//        StringBody code = new StringBody(realtorCodeStr);
+//
+//        MultipartEntity reqEntity = new MultipartEntity();
+//        reqEntity.addPart("videoFile", filebodyVideo);
+//        reqEntity.addPart("title", title);
+//        reqEntity.addPart("description", description);
+//        reqEntity.addPart("code", code);
+//        httppost.setEntity(reqEntity);
+//
+//        // DEBUG
+//        System.out.println( "executing request " + httppost.getRequestLine( ) );
+//        HttpResponse response = httpclient.execute( httppost );
+//        HttpEntity resEntity = response.getEntity( );
+//
+//        // DEBUG
+//        System.out.println( response.getStatusLine( ) );
+//        if (resEntity != null) {
+//            System.out.println( EntityUtils.toString( resEntity ) );
+//        } // end if
+//
+//        if (resEntity != null) {
+//            resEntity.consumeContent( );
+//        } // end if
+//
+//        httpclient.getConnectionManager( ).shutdown( );
+//    }
 
     private void getLocation() {
         if (gps.canGetLocation() && gps.getLatitude() != 0.00 && gps.getLongitude() != 0.00) {
@@ -223,19 +290,25 @@ public class ChatActivity extends AppCompatActivity {
         }
         String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
         updateList(KEY_MESSAGE_MAP, latlng, false);
-        send(KEY_MESSAGE_MAP, latlng);
+
+        HashMap<String, String> content = new HashMap<>();
+        content.put("type", KEY_MESSAGE_MAP);
+        content.put("latitude", Double.toString(myLat));
+        content.put("longitude", Double.toString(myLong));
+        send(KEY_MESSAGE_MAP, content);
     }
 
     private void sendVideo() {
-        String videoId = "6qVBB5bKCaM";
-        updateList(KEY_MESSAGE_VIDEO, videoId, false);
-        send(KEY_MESSAGE_VIDEO, videoId);
+        String videoUrl = "http://jgfbucket.s3-us-west-1.amazonaws.com/magnet_test/small.mp4";
+        updateList(KEY_MESSAGE_VIDEO, videoUrl, false);
+
+        HashMap<String, String> content = new HashMap<>();
+        content.put("type", KEY_MESSAGE_VIDEO);
+        content.put("url", videoUrl);
+        send(KEY_MESSAGE_VIDEO, content);
     }
 
-    private void send(String type, String text) {
-        HashMap<String, String> content = new HashMap<>();
-        content.put(type, text);
-
+    private void send(String type, HashMap<String, String> content) {
         HashSet<MMXUser> recipients = new HashSet<>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 

@@ -31,6 +31,7 @@ import com.magnet.messagingsample.activities.ChatActivity;
 import com.magnet.messagingsample.activities.ImageViewActivity;
 import com.magnet.messagingsample.activities.MapViewActivity;
 import com.magnet.messagingsample.activities.UserSelectActivity;
+import com.magnet.messagingsample.activities.VideoViewActivity;
 import com.magnet.messagingsample.helpers.VideoPlayer;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
@@ -110,22 +111,20 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     class ViewHolderVideo extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LinearLayout wrapper;
-        public ImageView ivMessageVideo;
+        public ImageView ivVideoPlayButton;
 
         public ViewHolderVideo(View itemView) {
             super(itemView);
             this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
-            this.ivMessageVideo = (ImageView) itemView.findViewById(R.id.ivMessageVideo);
+            this.ivVideoPlayButton = (ImageView) itemView.findViewById(R.id.ivVideoPlayButton);
             itemView.setOnClickListener(this);
-//            this.vidMessageVideo = (VideoView) itemView.findViewById(R.id.vidMessageVideo);
         }
 
         @Override
         public void onClick(View view) {
             if (messageItems.size() > 0) {
                 MessageVideo item = (MessageVideo) messageItems.get(getAdapterPosition());
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watchv=" + item.videoId));
-                mActivity.startActivity(intent);
+                goToVideoViewActivity(item.videoUrl);
             }
         }
     }
@@ -239,18 +238,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void configureViewHolder4(final ViewHolderVideo vh4, int position) {
         final MessageVideo item = (MessageVideo) messageItems.get(position);
         if (item != null) {
-            vh4.ivMessageVideo.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh4.ivVideoPlayButton.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
             vh4.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-            String loc = "http://img.youtube.com/vi/"+item.videoId+"/0.jpg";
-            Picasso.with(mActivity).load(loc).into(vh4.ivMessageVideo);
-//            vh4.vidMessageVideo.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-//            vh4.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-//            Uri uri = Uri.parse(item.videoUrl);
-//            MediaController mc = new MediaController(mActivity);
-//            vh4.vidMessageVideo.setVideoURI(uri);
-//            vh4.vidMessageVideo.setMediaController(mc);
-//            vh4.vidMessageVideo.requestFocus();
-//            vh4.vidMessageVideo.start();
         }
     }
 
@@ -265,6 +254,13 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         Intent intent;
         intent = new Intent(mActivity, ImageViewActivity.class);
         intent.putExtra("imageUri", url);
+        mActivity.startActivity(intent);
+    }
+
+    public void goToVideoViewActivity(String url) {
+        Intent intent;
+        intent = new Intent(mActivity, VideoViewActivity.class);
+        intent.putExtra("videoUrl", url);
         mActivity.startActivity(intent);
     }
 

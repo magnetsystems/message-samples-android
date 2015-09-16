@@ -74,6 +74,10 @@
             android:name=".activities.ImageViewActivity"
             android:label="@string/title_activity_image_view" >
         </activity>
+        <activity
+            android:name=".activities.VideoViewActivity"
+            android:label="@string/title_activity_video_view" >
+        </activity>
     </application>
 
 </manifest>

@@ -4,42 +4,12 @@
     android:layout_height="wrap_content"
     android:id="@+id/wrapper">
 
-    <FrameLayout
+    <ImageView
+        android:id="@+id/ivVideoPlayButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:maxWidth="320dp"
-        android:layout_gravity="center_horizontal|center_vertical" >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ivMessageVideo"
-            android:src="@mipmap/ic_launcher"
-            android:adjustViewBounds="true"
-            android:layout_gravity="center"
-            android:layout_margin="5dip"
-            android:background="@drawable/bubble_yellow"
-            android:focusableInTouchMode="false" />
-
-        <ImageView
-            android:id="@+id/VideoPreviewPlayButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:layout_gravity="center"
-            android:src="@drawable/yt_play" />
-
-    </FrameLayout>
+        android:layout_margin="5dip"
+        android:background="@drawable/bubble_yellow"
+        android:src="@drawable/yt_play" />
 
 </LinearLayout>
-
-    <!--<VideoView-->
-        <!--android:id="@+id/vidMessageVideo"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:maxWidth="320dp"-->
-        <!--android:layout_gravity="center"-->
-        <!--android:layout_margin="5dip"-->
-        <!--android:background="@drawable/bubble_yellow"-->
-        <!--android:focusableInTouchMode="false" />-->
