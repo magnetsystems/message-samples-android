@@ -2,6 +2,7 @@ package com.magnet.messagingsample.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.adapters.MessageRecyclerViewAdapter;
 import com.magnet.messagingsample.models.MessageImage;
@@ -70,7 +73,7 @@ public class ChatActivity extends AppCompatActivity {
             } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE) != null) {
                 updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
             } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
-                //updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
+                updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
             }
             return false;
         }
@@ -210,10 +213,10 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void send(String type, String text) {
-        HashMap<String, String> content = new HashMap<String, String>();
+        HashMap<String, String> content = new HashMap<>();
         content.put(type, text);
 
-        HashSet<MMXUser> recipients = new HashSet<MMXUser>();
+        HashSet<MMXUser> recipients = new HashSet<>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 
         String messageID = new MMXMessage.Builder()

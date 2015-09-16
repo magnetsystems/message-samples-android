@@ -15,6 +15,7 @@
             android:src="@mipmap/ic_launcher"
             android:layout_gravity="center"
             android:layout_margin="5dip"
+            android:layout_weight=".60"
             android:background="@drawable/bubble_yellow"
             android:focusableInTouchMode="false" />
 

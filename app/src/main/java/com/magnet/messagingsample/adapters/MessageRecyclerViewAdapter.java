@@ -4,31 +4,19 @@ package com.magnet.messagingsample.adapters;
  * Created by edwardyang on 9/15/15.
  */
 import android.app.Activity;
-import android.app.Fragment;
-import android.location.Location;
-import android.net.Uri;
-import android.os.SystemClock;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -36,9 +24,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.activities.ChatActivity;
+import com.magnet.messagingsample.activities.ImageViewActivity;
+import com.magnet.messagingsample.activities.MapViewActivity;
+import com.magnet.messagingsample.activities.UserSelectActivity;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
+import com.magnet.messagingsample.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -69,7 +61,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    class ViewHolderImage extends RecyclerView.ViewHolder {
+    class ViewHolderImage extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView ivMessageImage;
         private LinearLayout wrapper;
 
@@ -77,20 +69,34 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             super(itemView);
             this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
             this.ivMessageImage = (ImageView) itemView.findViewById(R.id.ivMessageImage);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (messageItems.size() > 0) {
+                MessageImage item = (MessageImage) messageItems.get(getAdapterPosition());
+                goToImageViewActivity(item.imageUri);
+            }
         }
     }
 
-    class ViewHolderMap extends RecyclerView.ViewHolder {
+    class ViewHolderMap extends RecyclerView.ViewHolder implements View.OnClickListener {
         private LinearLayout wrapper;
-        public MapFragment mapMessageLocation;
-        public RelativeLayout rlMapContainer;
+        public ImageView ivMessageLocation;
 
         public ViewHolderMap(View itemView) {
             super(itemView);
             this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
-            this.rlMapContainer = (RelativeLayout) itemView.findViewById(R.id.rlMapContainer);
-            if (mapMessageLocation == null) {
-                mapMessageLocation = ((MapFragment) mActivity.getFragmentManager().findFragmentById(R.id.mapMessageLocation));
+            this.ivMessageLocation = (ImageView) itemView.findViewById(R.id.ivMessageLocation);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (messageItems.size() > 0) {
+                MessageMap item = (MessageMap) messageItems.get(getAdapterPosition());
+                goToMapViewActivity(item.latlng);
             }
         }
     }
@@ -184,39 +190,25 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private void configureViewHolder3(ViewHolderMap vh3, int position) {
         final MessageMap item = (MessageMap) messageItems.get(position);
         if (item != null) {
+            vh3.ivMessageLocation.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
             vh3.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-            if (vh3.mapMessageLocation != null) {
-                vh3.rlMapContainer.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-                vh3.mapMessageLocation.getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap map) {
-                        loadMap(map, item.latlng);
-                    }
-                });
-            }
+            String loc = "http://maps.google.com/maps/api/staticmap?center="+item.latlng+"&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C"+item.latlng;
+            Picasso.with(mActivity).load(loc).into(vh3.ivMessageLocation);
         }
     }
 
-    protected void loadMap(GoogleMap googleMap, String latlng) {
-        if (googleMap != null) {
-            googleMap.setMyLocationEnabled(true);
+    public void goToMapViewActivity(String latlng) {
+        Intent intent;
+        intent = new Intent(mActivity, MapViewActivity.class);
+        intent.putExtra("latlng", latlng);
+        mActivity.startActivity(intent);
+    }
 
-            String[] latlngAry = latlng.split(",");
-            double lat = Double.parseDouble(latlngAry[0]);
-            double lng = Double.parseDouble(latlngAry[1]);
-            LatLng latlong = new LatLng(lat, lng);
-
-            BitmapDescriptor defaultMarker =
-                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
-
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(latlong)
-                    .title("My Location")
-                    .icon(defaultMarker));
-
-            marker.showInfoWindow();
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlong, 13));
-        }
+    public void goToImageViewActivity(String url) {
+        Intent intent;
+        intent = new Intent(mActivity, ImageViewActivity.class);
+        intent.putExtra("imageUri", url);
+        mActivity.startActivity(intent);
     }
 
     public void add(Object obj) {
