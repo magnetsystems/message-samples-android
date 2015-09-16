@@ -25,6 +25,7 @@ import com.magnet.messagingsample.adapters.MessageRecyclerViewAdapter;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
+import com.magnet.messagingsample.models.MessageVideo;
 import com.magnet.messagingsample.models.User;
 import com.magnet.messagingsample.services.GPSTracker;
 import com.magnet.mmx.client.api.MMX;
@@ -48,6 +49,7 @@ public class ChatActivity extends AppCompatActivity {
     public static final String KEY_MESSAGE_TEXT = "messageContent";
     public static final String KEY_MESSAGE_IMAGE = "imageContent";
     public static final String KEY_MESSAGE_MAP = "mapContent";
+    public static final String KEY_MESSAGE_VIDEO = "videoContent";
     final private int INTENT_REQUEST_GET_IMAGES = 14;
 
     GPSTracker gps;
@@ -62,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton btnSendText;
     private ImageButton btnSendPicture;
     private ImageButton btnSendLocation;
+    private ImageButton btnSendVideo;
 
     private double myLat;
     private double myLong;
@@ -74,6 +77,8 @@ public class ChatActivity extends AppCompatActivity {
                 updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_IMAGE).toString(), true);
             } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP) != null) {
                 updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_MAP).toString(), true);
+            } else if (mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_VIDEO) != null) {
+                updateList(KEY_MESSAGE_VIDEO, mmxMessage.getContent().get(ChatActivity.KEY_MESSAGE_VIDEO).toString(), true);
             }
             return false;
         }
@@ -97,6 +102,7 @@ public class ChatActivity extends AppCompatActivity {
         btnSendText = (ImageButton) findViewById(R.id.btnSendText);
         btnSendPicture = (ImageButton) findViewById(R.id.btnSendPicture);
         btnSendLocation = (ImageButton) findViewById(R.id.btnSendLocation);
+        btnSendVideo = (ImageButton) findViewById(R.id.btnSendVideo);
 
         messageList = new ArrayList<>();
         adapter = new MessageRecyclerViewAdapter(this, messageList);
@@ -142,6 +148,14 @@ public class ChatActivity extends AppCompatActivity {
                 sendLocation();
             }
         });
+
+        btnSendVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendVideo();
+            }
+        });
+
     }
 
     public void sendMessage() {
@@ -212,6 +226,12 @@ public class ChatActivity extends AppCompatActivity {
         send(KEY_MESSAGE_MAP, latlng);
     }
 
+    private void sendVideo() {
+        String videoId = "6qVBB5bKCaM";
+        updateList(KEY_MESSAGE_VIDEO, videoId, false);
+        send(KEY_MESSAGE_VIDEO, videoId);
+    }
+
     private void send(String type, String text) {
         HashMap<String, String> content = new HashMap<>();
         content.put(type, text);
@@ -245,6 +265,9 @@ public class ChatActivity extends AppCompatActivity {
                 break;
             case ChatActivity.KEY_MESSAGE_MAP:
                 adapter.add(new MessageMap(orientation, content));
+                break;
+            case ChatActivity.KEY_MESSAGE_VIDEO:
+                adapter.add(new MessageVideo(orientation, content));
                 break;
         }
         runOnUiThread(new Runnable() {

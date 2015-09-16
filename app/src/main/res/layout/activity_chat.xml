@@ -57,6 +57,15 @@
             android:background="@android:color/transparent"
             android:clickable="false"
             />
+        <ImageButton
+            android:id="@+id/btnSendVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:src="@android:drawable/ic_media_play"
+            android:background="@android:color/transparent"
+            android:clickable="false"
+            />
     </LinearLayout>
 
 </RelativeLayout>

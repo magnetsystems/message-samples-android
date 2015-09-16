@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/wrapper">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:maxWidth="320dp"
+        android:layout_gravity="center_horizontal|center_vertical" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivMessageVideo"
+            android:src="@mipmap/ic_launcher"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dip"
+            android:background="@drawable/bubble_yellow"
+            android:focusableInTouchMode="false" />
+
+        <ImageView
+            android:id="@+id/VideoPreviewPlayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/yt_play" />
+
+    </FrameLayout>
+
+</LinearLayout>
+
+    <!--<VideoView-->
+        <!--android:id="@+id/vidMessageVideo"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:maxWidth="320dp"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_margin="5dip"-->
+        <!--android:background="@drawable/bubble_yellow"-->
+        <!--android:focusableInTouchMode="false" />-->

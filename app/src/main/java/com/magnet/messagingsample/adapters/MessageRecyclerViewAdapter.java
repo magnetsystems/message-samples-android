@@ -4,7 +4,9 @@ package com.magnet.messagingsample.adapters;
  * Created by edwardyang on 9/15/15.
  */
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,9 +31,11 @@ import com.magnet.messagingsample.activities.ChatActivity;
 import com.magnet.messagingsample.activities.ImageViewActivity;
 import com.magnet.messagingsample.activities.MapViewActivity;
 import com.magnet.messagingsample.activities.UserSelectActivity;
+import com.magnet.messagingsample.helpers.VideoPlayer;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
+import com.magnet.messagingsample.models.MessageVideo;
 import com.magnet.messagingsample.models.User;
 import com.squareup.picasso.Picasso;
 
@@ -41,6 +47,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     private static final int TEXT_TYPE = 0;
     private static final int IMAGE_TYPE = 1;
     private static final int MAP_TYPE = 2;
+    private static final int VIDEO_TYPE = 3;
 
     private List<Object> messageItems;
     public Activity mActivity;
@@ -101,6 +108,28 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    class ViewHolderVideo extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private LinearLayout wrapper;
+        public ImageView ivMessageVideo;
+
+        public ViewHolderVideo(View itemView) {
+            super(itemView);
+            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
+            this.ivMessageVideo = (ImageView) itemView.findViewById(R.id.ivMessageVideo);
+            itemView.setOnClickListener(this);
+//            this.vidMessageVideo = (VideoView) itemView.findViewById(R.id.vidMessageVideo);
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (messageItems.size() > 0) {
+                MessageVideo item = (MessageVideo) messageItems.get(getAdapterPosition());
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watchv=" + item.videoId));
+                mActivity.startActivity(intent);
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return this.messageItems.size();
@@ -114,6 +143,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             return IMAGE_TYPE;
         } else if (messageItems.get(position) instanceof MessageMap) {
             return MAP_TYPE;
+        } else if (messageItems.get(position) instanceof MessageVideo) {
+            return VIDEO_TYPE;
         }
         return -1;
     }
@@ -137,10 +168,14 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
                 View v3 = inflater.inflate(R.layout.item_chat_map, parent, false);
                 viewHolder = new ViewHolderMap(v3);
                 break;
+            case VIDEO_TYPE:
+                View v4 = inflater.inflate(R.layout.item_chat_video, parent, false);
+                viewHolder = new ViewHolderVideo(v4);
+                break;
             default:
                 // TODO: handle this later
-                View v4 = inflater.inflate(R.layout.item_chat_text, parent, false);
-                viewHolder = new ViewHolderText(v4);
+                View v5 = inflater.inflate(R.layout.item_chat_text, parent, false);
+                viewHolder = new ViewHolderText(v5);
                 break;
         }
         return viewHolder;
@@ -163,6 +198,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             case MAP_TYPE:
                 ViewHolderMap vh3 = (ViewHolderMap) viewHolder;
                 configureViewHolder3(vh3, position);
+                break;
+            case VIDEO_TYPE:
+                ViewHolderVideo vh4 = (ViewHolderVideo) viewHolder;
+                configureViewHolder4(vh4, position);
                 break;
         }
     }
@@ -194,6 +233,24 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
             vh3.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
             String loc = "http://maps.google.com/maps/api/staticmap?center="+item.latlng+"&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C"+item.latlng;
             Picasso.with(mActivity).load(loc).into(vh3.ivMessageLocation);
+        }
+    }
+
+    private void configureViewHolder4(final ViewHolderVideo vh4, int position) {
+        final MessageVideo item = (MessageVideo) messageItems.get(position);
+        if (item != null) {
+            vh4.ivMessageVideo.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh4.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            String loc = "http://img.youtube.com/vi/"+item.videoId+"/0.jpg";
+            Picasso.with(mActivity).load(loc).into(vh4.ivMessageVideo);
+//            vh4.vidMessageVideo.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+//            vh4.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+//            Uri uri = Uri.parse(item.videoUrl);
+//            MediaController mc = new MediaController(mActivity);
+//            vh4.vidMessageVideo.setVideoURI(uri);
+//            vh4.vidMessageVideo.setMediaController(mc);
+//            vh4.vidMessageVideo.requestFocus();
+//            vh4.vidMessageVideo.start();
         }
     }
 
