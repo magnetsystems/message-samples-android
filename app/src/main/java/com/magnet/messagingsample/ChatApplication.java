@@ -8,14 +8,11 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 
 import com.magnet.messagingsample.activities.ChatActivity;
-import com.magnet.messagingsample.models.MessageStore;
 import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.common.MMXid;
-
-import java.util.Date;
 
 /**
  * Created by edwardyang on 9/10/15.
@@ -27,7 +24,6 @@ public class ChatApplication extends Application {
 
     private MMX.EventListener mListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            MessageStore.addMessage(mmxMessage, null, new Date(), true);
             doNotify(mmxMessage);
             return false;
         }
@@ -41,7 +37,6 @@ public class ChatApplication extends Application {
         public void onWakeupReceived(final Context applicationContext, Intent intent) {
             MMX.registerListener(new MMX.EventListener() {
                 public boolean onMessageReceived(MMXMessage mmxMessage) {
-                    MessageStore.addMessage(mmxMessage, null, new Date(), true);
                     doNotify(mmxMessage);
                     return false;
                 }
