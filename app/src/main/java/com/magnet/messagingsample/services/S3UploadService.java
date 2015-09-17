@@ -19,7 +19,7 @@ public class S3UploadService {
 
     private static final String TAG = "S3UploadService";
     private static final String AWS_S3_BUCKETNAME = "richmessagebucket"; //amazon s3 bucket name
-    private static final String AWS_IDENTITY_POOL_ID = "us-east-1:a1b2c3d4-a1b2-a1b2-a1b2-a1b2c3d4e5f6";
+    private static final String AWS_IDENTITY_POOL_ID = "us-east-1:98a3889a-5a1e-42db-957c-d3f88b98a840";
     private static final Regions AWS_REGION = Regions.US_EAST_1;
     private static final String PREFIX = "magnet_test";
 
