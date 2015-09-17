@@ -163,7 +163,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptRegister(final String user, final byte[] pass, final boolean isNewUser) {
-        MMXUser mmxUser = new MMXUser.Builder().username(user).build();
+        MMXUser mmxUser = new MMXUser.Builder().username(user).displayName(user).build();
         mmxUser.register(pass, new MMXUser.OnFinishedListener<Void>() {
             public void onSuccess(Void aVoid) {
                 Log.e(TAG, "attemptRegister() success");
