@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 
 import com.magnet.messagingsample.activities.ChatActivity;
-import com.magnet.messagingsample.services.S3UploadService;
 import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -64,8 +63,6 @@ public class ChatApplication extends Application {
         super.onCreate();
 
         ChatApplication.context = this;
-
-        S3UploadService.init(this);
 
         MMX.init(this, R.raw.messagingsample);
         MMXClient.registerWakeupListener(this, MyWakeupListener.class);

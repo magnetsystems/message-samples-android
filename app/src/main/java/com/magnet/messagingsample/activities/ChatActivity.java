@@ -1,5 +1,6 @@
 package com.magnet.messagingsample.activities;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -69,7 +70,7 @@ public class ChatActivity extends AppCompatActivity {
     final private int INTENT_REQUEST_GET_IMAGES = 14;
     final private int INTENT_SELECT_VIDEO = 13;
 
-    GPSTracker gps;
+    GPSTracker mGPS;
 
     private User mUser;
     List<Object> messageList;
@@ -122,7 +123,15 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         mUser = getIntent().getParcelableExtra("User");
+
         MMX.registerListener(mEventListener);
+        S3UploadService.init(this);
+        mGPS = new GPSTracker(this);
+
+        ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setTitle("Chatting With: " + mUser.getUsername());
+        }
 
         rvMessages = (RecyclerView) findViewById(R.id.rvMessages);
         etMessage = (EditText) findViewById(R.id.etMessage);
@@ -140,8 +149,6 @@ public class ChatActivity extends AppCompatActivity {
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(false);
         rvMessages.setLayoutManager(layoutManager);
-
-        gps = new GPSTracker(this);
 
         etMessage.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -273,9 +280,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendLocation() {
-        if (gps.canGetLocation() && gps.getLatitude() != 0.00 && gps.getLongitude() != 0.00) {
-            double myLat = gps.getLatitude();
-            double myLong = gps.getLongitude();
+        if (mGPS.canGetLocation() && mGPS.getLatitude() != 0.00 && mGPS.getLongitude() != 0.00) {
+            double myLat = mGPS.getLatitude();
+            double myLong = mGPS.getLongitude();
             String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
 
             updateList(KEY_MESSAGE_MAP, latlng, false);
@@ -286,7 +293,7 @@ public class ChatActivity extends AppCompatActivity {
             content.put("longitude", Double.toString(myLong));
             send(content);
         }else{
-            gps.showSettingsAlert();
+            mGPS.showSettingsAlert(this);
         }
     }
 
@@ -341,6 +348,8 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         MMX.unregisterListener(mEventListener);
+        S3UploadService.destroy();
+        mGPS.stopUsingGPS();
         super.onDestroy();
     }
 

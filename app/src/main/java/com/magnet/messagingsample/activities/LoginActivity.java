@@ -155,11 +155,10 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e(TAG, "attemptLogin() error: " + failureCode, throwable);
                 if (MMX.FailureCode.SERVER_AUTH_FAILED.equals(failureCode)) {
                     //login failed, probably an incorrect password
-                    Toast.makeText(LoginActivity.this, "Oops.  Please try again.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Invalid username and/or password.", Toast.LENGTH_LONG).show();
                 }
             }
         });
-
     }
 
     private void attemptRegister(final String user, final byte[] pass, final boolean isNewUser) {
@@ -174,7 +173,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
                 if (MMXUser.FailureCode.REGISTRATION_INVALID_USERNAME.equals(failureCode)) {
                     Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
-                    Toast.makeText(LoginActivity.this, "Sorry, thats not a valid username.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "Sorry, that's not a valid username.", Toast.LENGTH_LONG).show();
                 }
                 if (MMXUser.FailureCode.REGISTRATION_USER_ALREADY_EXISTS.equals(failureCode)) {
                     if (isNewUser) {

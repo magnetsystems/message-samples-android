@@ -23,6 +23,7 @@ public class S3UploadService {
     private static final Regions AWS_REGION = Regions.US_EAST_1;
     private static final String PREFIX = "magnet_test";
 
+    private static AmazonS3Client mS3Client;
     private static TransferUtility sTransferUtility = null;
 
     /**
@@ -35,8 +36,15 @@ public class S3UploadService {
                 AWS_IDENTITY_POOL_ID, // Identity Pool ID
                 AWS_REGION // Region
         );
-        AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
-        sTransferUtility = new TransferUtility(s3Client, context);
+        mS3Client = new AmazonS3Client(credentialsProvider);
+        sTransferUtility = new TransferUtility(mS3Client, context);
+    }
+
+    /**
+     * Shuts down this client object, releasing any resources that might be held open
+     */
+    public static void destroy() {
+        mS3Client.shutdown();
     }
 
     /**

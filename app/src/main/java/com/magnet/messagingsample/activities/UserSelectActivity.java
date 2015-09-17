@@ -72,26 +72,6 @@ public class UserSelectActivity extends AppCompatActivity {
         rvUsers.setLayoutManager(layoutManager);
 
         updateViewState();
-
-        // TODO: this doesnt return all users
-//        HashSet names = new HashSet();
-//        names.add("");
-//        MMXUser.findByNames(names, new MMXUser.OnFinishedListener<HashMap<String, MMXUser>>() {
-//            @Override
-//            public void onSuccess(HashMap<String, MMXUser> stringMMXUserHashMap) {
-//                ArrayList<MMXUser> users = new ArrayList<>();
-//                for (MMXUser user : stringMMXUserHashMap.values()) {
-//                    users.add(user);
-//                }
-//                refreshListView(users);
-//            }
-//
-//            @Override
-//            public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-//                Log.e(TAG, "MMXUser.findByNames() error: " + failureCode, throwable);
-//                refreshListView(null);
-//            }
-//        });
     }
 
     private void updateViewState() {
@@ -143,6 +123,11 @@ public class UserSelectActivity extends AppCompatActivity {
             MMX.logout(null);
             Intent intent = new Intent(UserSelectActivity.this, LoginActivity.class);
             startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.nav_refresh) {
+            updateViewState();
             return true;
         }
 

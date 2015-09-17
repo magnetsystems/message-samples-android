@@ -18,8 +18,6 @@ import android.util.Log;
  */
 public class GPSTracker extends Service implements LocationListener {
 
-    private final Context mContext;
-
     // flag for GPS status
     boolean isGPSEnabled = false;
 
@@ -43,13 +41,12 @@ public class GPSTracker extends Service implements LocationListener {
     protected LocationManager locationManager;
 
     public GPSTracker(Context context) {
-        this.mContext = context;
-        getLocation();
+        getLocation(context);
     }
 
-    public Location getLocation() {
+    public Location getLocation(Context context) {
         try {
-            locationManager = (LocationManager) mContext
+            locationManager = (LocationManager) context
                     .getSystemService(LOCATION_SERVICE);
 
             // getting GPS status
@@ -153,8 +150,8 @@ public class GPSTracker extends Service implements LocationListener {
      * Function to show settings alert dialog
      * On pressing Settings button will lauch Settings Options
      * */
-    public void showSettingsAlert() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+    public void showSettingsAlert(final Context context) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
 
         // Setting Dialog Title
         alertDialog.setTitle("GPS is settings");
@@ -166,7 +163,7 @@ public class GPSTracker extends Service implements LocationListener {
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                mContext.startActivity(intent);
+                context.startActivity(intent);
             }
         });
 
