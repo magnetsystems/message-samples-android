@@ -62,7 +62,6 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
 
     @Override
     public void onBindViewHolder(final UsersRecyclerViewAdapter.ViewHolder holder, int position) {
-
         if (position >= users.size()) {
             return;
         }
@@ -91,9 +90,4 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
             users.add(user);
         }
     }
-
-    public void refreshAdapter() {
-        this.notifyDataSetChanged();
-    }
-
 }

@@ -9,9 +9,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-/**
- * Created by edwardyang on 9/16/15.
- */
 public class FileHelper {
 
     /**

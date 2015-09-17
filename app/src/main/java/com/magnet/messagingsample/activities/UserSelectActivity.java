@@ -50,7 +50,8 @@ public class UserSelectActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvUsers.setLayoutManager(layoutManager);
 
-        MMXUser.findByName("%", 20, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
+        // return all users
+        MMXUser.findByName("%", 50, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
             public void onSuccess(ListResult<MMXUser> users) {
                 refreshListView(users.totalCount > 0 ? users.items : null);
             }
@@ -90,7 +91,6 @@ public class UserSelectActivity extends AppCompatActivity {
                 adapter.clear();
                 if (users != null && users.size() > 0) {
                     adapter.addAll(users);
-//                    adapter.refreshAdapter();
                     rvUsers.getAdapter().notifyDataSetChanged();
                 } else {
                     Toast.makeText(UserSelectActivity.this, "No users found.", Toast.LENGTH_LONG).show();

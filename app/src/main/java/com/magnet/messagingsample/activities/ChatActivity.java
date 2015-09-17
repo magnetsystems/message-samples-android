@@ -81,24 +81,21 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton btnSendLocation;
     private ImageButton btnSendVideo;
 
-    private double myLat;
-    private double myLong;
-
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             String type = mmxMessage.getContent().get("type");
             switch (type) {
                 case KEY_MESSAGE_TEXT:
-                    updateList(KEY_MESSAGE_TEXT, mmxMessage.getContent().get("message"), true);
+                    updateList(type, mmxMessage.getContent().get("message"), true);
                     break;
                 case KEY_MESSAGE_IMAGE:
-                    updateList(KEY_MESSAGE_IMAGE, mmxMessage.getContent().get("url"), true);
+                    updateList(type, mmxMessage.getContent().get("url"), true);
                     break;
                 case KEY_MESSAGE_MAP:
-                    updateList(KEY_MESSAGE_MAP, mmxMessage.getContent().get("latitude") + "," + mmxMessage.getContent().get("longitude"), true);
+                    updateList(type, mmxMessage.getContent().get("latitude") + "," + mmxMessage.getContent().get("longitude"), true);
                     break;
                 case KEY_MESSAGE_VIDEO:
-                    updateList(KEY_MESSAGE_VIDEO, mmxMessage.getContent().get("url"), true);
+                    updateList(type, mmxMessage.getContent().get("url"), true);
                     break;
             }
             return false;
@@ -139,9 +136,7 @@ public class ChatActivity extends AppCompatActivity {
 
         etMessage.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    // Perform action on key press
                     sendMessage();
                     return true;
                 }
@@ -174,10 +169,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 selectVideo();
-//                sendVideo();
             }
         });
-
     }
 
     public void sendMessage() {
@@ -197,9 +190,7 @@ public class ChatActivity extends AppCompatActivity {
     private void selectImage() {
         Intent intent = new Intent(this, ImagePickerActivity.class);
         Config config = new Config.Builder()
-                .setTabBackgroundColor(R.color.white)    // set tab background color. Default white.
-//                .setTabSelectionIndicatorColor(R.color.primary)
-//                .setCameraButtonColor(R.color.accent)
+                .setTabBackgroundColor(R.color.white)
                 .setSelectionLimit(1)
                 .build();
         ImagePickerActivity.setConfig(config);
@@ -272,38 +263,22 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void getLocation() {
+    private void sendLocation() {
         if (gps.canGetLocation() && gps.getLatitude() != 0.00 && gps.getLongitude() != 0.00) {
-            myLat = gps.getLatitude();
-            myLong = gps.getLongitude();
+            double myLat = gps.getLatitude();
+            double myLong = gps.getLongitude();
+            String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
+
+            updateList(KEY_MESSAGE_MAP, latlng, false);
+
+            HashMap<String, String> content = new HashMap<>();
+            content.put("type", KEY_MESSAGE_MAP);
+            content.put("latitude", Double.toString(myLat));
+            content.put("longitude", Double.toString(myLong));
+            send(content);
         }else{
             gps.showSettingsAlert();
         }
-    }
-
-    private void sendLocation() {
-        getLocation();
-        if (Double.isNaN(myLat) || Double.isNaN(myLong)) {
-            return;
-        }
-        String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
-        updateList(KEY_MESSAGE_MAP, latlng, false);
-
-        HashMap<String, String> content = new HashMap<>();
-        content.put("type", KEY_MESSAGE_MAP);
-        content.put("latitude", Double.toString(myLat));
-        content.put("longitude", Double.toString(myLong));
-        send(content);
-    }
-
-    private void sendVideo() {
-        String videoUrl = "http://jgfbucket.s3-us-west-1.amazonaws.com/magnet_test/small.mp4";
-        updateList(KEY_MESSAGE_VIDEO, videoUrl, false);
-
-        HashMap<String, String> content = new HashMap<>();
-        content.put("type", KEY_MESSAGE_VIDEO);
-        content.put("url", videoUrl);
-        send(content);
     }
 
     private void send(HashMap<String, String> content) {
@@ -357,7 +332,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         MMX.unregisterListener(mEventListener);
-        MMX.logout(null);
         super.onDestroy();
     }
 

@@ -134,31 +134,26 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+        View view;
         RecyclerView.ViewHolder viewHolder;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         switch (viewType) {
-            case TEXT_TYPE:
-                View v1 = inflater.inflate(R.layout.item_chat_text, parent, false);
-                viewHolder = new ViewHolderText(v1);
-                break;
             case IMAGE_TYPE:
-                View v2 = inflater.inflate(R.layout.item_chat_image, parent, false);
-                viewHolder = new ViewHolderImage(v2);
+                view = inflater.inflate(R.layout.item_chat_image, parent, false);
+                viewHolder = new ViewHolderImage(view);
                 break;
             case MAP_TYPE:
-                View v3 = inflater.inflate(R.layout.item_chat_map, parent, false);
-                viewHolder = new ViewHolderMap(v3);
+                view = inflater.inflate(R.layout.item_chat_map, parent, false);
+                viewHolder = new ViewHolderMap(view);
                 break;
             case VIDEO_TYPE:
-                View v4 = inflater.inflate(R.layout.item_chat_video, parent, false);
-                viewHolder = new ViewHolderVideo(v4);
+                view = inflater.inflate(R.layout.item_chat_video, parent, false);
+                viewHolder = new ViewHolderVideo(view);
                 break;
             default:
-                // TODO: handle this later
-                View v5 = inflater.inflate(R.layout.item_chat_text, parent, false);
-                viewHolder = new ViewHolderText(v5);
+                view = inflater.inflate(R.layout.item_chat_text, parent, false);
+                viewHolder = new ViewHolderText(view);
                 break;
         }
         return viewHolder;
@@ -171,59 +166,53 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
         switch (viewHolder.getItemViewType()) {
             case TEXT_TYPE:
-                ViewHolderText vh1 = (ViewHolderText) viewHolder;
-                configureViewHolder1(vh1, position);
+                configureViewHolder1((ViewHolderText) viewHolder, position);
                 break;
             case IMAGE_TYPE:
-                ViewHolderImage vh2 = (ViewHolderImage) viewHolder;
-                configureViewHolder2(vh2, position);
+                configureViewHolder2((ViewHolderImage) viewHolder, position);
                 break;
             case MAP_TYPE:
-                ViewHolderMap vh3 = (ViewHolderMap) viewHolder;
-                configureViewHolder3(vh3, position);
+                configureViewHolder3((ViewHolderMap) viewHolder, position);
                 break;
             case VIDEO_TYPE:
-                ViewHolderVideo vh4 = (ViewHolderVideo) viewHolder;
-                configureViewHolder4(vh4, position);
+                configureViewHolder4((ViewHolderVideo) viewHolder, position);
                 break;
         }
     }
 
-    private void configureViewHolder1(ViewHolderText vh1, int position) {
+    private void configureViewHolder1(ViewHolderText vh, int position) {
         MessageText item = (MessageText) messageItems.get(position);
         if (item != null) {
-            vh1.tvMessageText.setText(item.text);
-            vh1.tvMessageText.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh1.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-
+            vh.tvMessageText.setText(item.text);
+            vh.tvMessageText.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
         }
     }
 
-    private void configureViewHolder2(ViewHolderImage vh2, int position) {
+    private void configureViewHolder2(ViewHolderImage vh, int position) {
         MessageImage item = (MessageImage) messageItems.get(position);
         if (item != null) {
-            vh2.ivMessageImage.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh2.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-//            File f = new File(item.imageUrl);
-            Picasso.with(mActivity).load(item.imageUrl).into(vh2.ivMessageImage);
+            vh.ivMessageImage.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            Picasso.with(mActivity).load(item.imageUrl).into(vh.ivMessageImage);
         }
     }
 
-    private void configureViewHolder3(ViewHolderMap vh3, int position) {
+    private void configureViewHolder3(ViewHolderMap vh, int position) {
         final MessageMap item = (MessageMap) messageItems.get(position);
         if (item != null) {
-            vh3.ivMessageLocation.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh3.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            vh.ivMessageLocation.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
             String loc = "http://maps.google.com/maps/api/staticmap?center="+item.latlng+"&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C"+item.latlng;
-            Picasso.with(mActivity).load(loc).into(vh3.ivMessageLocation);
+            Picasso.with(mActivity).load(loc).into(vh.ivMessageLocation);
         }
     }
 
-    private void configureViewHolder4(final ViewHolderVideo vh4, int position) {
+    private void configureViewHolder4(final ViewHolderVideo vh, int position) {
         final MessageVideo item = (MessageVideo) messageItems.get(position);
         if (item != null) {
-            vh4.ivVideoPlayButton.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh4.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            vh.ivVideoPlayButton.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
+            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
         }
     }
 
