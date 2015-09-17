@@ -61,23 +61,14 @@
         <activity
             android:name=".activities.MapViewActivity"
             android:label="@string/title_activity_map_view" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.magnet.messagingsample.activities.ChatActivity" />
         </activity>
         <activity
             android:name=".activities.ImageViewActivity"
             android:label="@string/title_activity_image_view" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.magnet.messagingsample.activities.ChatActivity" />
         </activity>
         <activity
             android:name=".activities.VideoViewActivity"
             android:label="@string/title_activity_video_view" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.magnet.messagingsample.activities.ChatActivity" />
         </activity>
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
