@@ -1,10 +1,14 @@
 package com.magnet.messagingsample.activities;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,16 +22,20 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.adapters.MessageRecyclerViewAdapter;
+import com.magnet.messagingsample.helpers.FileHelper;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
 import com.magnet.messagingsample.models.MessageVideo;
 import com.magnet.messagingsample.models.User;
 import com.magnet.messagingsample.services.GPSTracker;
+import com.magnet.messagingsample.services.S3UploadService;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
@@ -35,6 +43,7 @@ import com.magnet.mmx.client.api.MMXUser;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -164,8 +173,8 @@ public class ChatActivity extends AppCompatActivity {
         btnSendVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                selectVideo();
-                sendVideo();
+                selectVideo();
+//                sendVideo();
             }
         });
 
@@ -181,7 +190,7 @@ public class ChatActivity extends AppCompatActivity {
         HashMap<String, String> content = new HashMap<>();
         content.put("type", KEY_MESSAGE_TEXT);
         content.put("message", messageText);
-        send(KEY_MESSAGE_TEXT, content);
+        send(content);
         etMessage.setText(null);
     }
 
@@ -220,59 +229,48 @@ public class ChatActivity extends AppCompatActivity {
                 Uri[] uris = new Uri[parcelableUris.length];
                 System.arraycopy(parcelableUris, 0, uris, 0, parcelableUris.length);
 
-                // TODO: upload image to server and store image url
                 if (uris != null && uris.length > 0) {
                     for (Uri uri : uris) {
-                        updateList(KEY_MESSAGE_IMAGE, uri.toString(), false);
-
-                        HashMap<String, String> content = new HashMap<>();
-                        content.put("type", KEY_MESSAGE_IMAGE);
-                        content.put("url", uri.toString());
-                        send(KEY_MESSAGE_IMAGE, content);
+                        sendMedia(KEY_MESSAGE_IMAGE, uri.toString());
                     }
                 }
             } else if (requestCode == INTENT_SELECT_VIDEO) {
-                Uri selectedImageUri = intent.getData();
-                String selectedPath = selectedImageUri.toString();
-                sendVideo();
+                Uri videoUri = intent.getData();
+                String videoPath = FileHelper.getPath(this, videoUri);
+                sendMedia(KEY_MESSAGE_VIDEO, videoPath);
             }
         }
     }
 
-//    private void sendVideo2(String videoPath) throws ParseException, IOException {
-//
-//        HttpClient httpclient = new DefaultHttpClient();
-//        HttpPost httppost = new HttpPost(YOUR_URL);
-//
-//        FileBody filebodyVideo = new FileBody(new File(videoPath));
-//        StringBody title = new StringBody("Filename: " + videoPath);
-//        StringBody description = new StringBody("This is a video of the agent");
-//        StringBody code = new StringBody(realtorCodeStr);
-//
-//        MultipartEntity reqEntity = new MultipartEntity();
-//        reqEntity.addPart("videoFile", filebodyVideo);
-//        reqEntity.addPart("title", title);
-//        reqEntity.addPart("description", description);
-//        reqEntity.addPart("code", code);
-//        httppost.setEntity(reqEntity);
-//
-//        // DEBUG
-//        System.out.println( "executing request " + httppost.getRequestLine( ) );
-//        HttpResponse response = httpclient.execute( httppost );
-//        HttpEntity resEntity = response.getEntity( );
-//
-//        // DEBUG
-//        System.out.println( response.getStatusLine( ) );
-//        if (resEntity != null) {
-//            System.out.println( EntityUtils.toString( resEntity ) );
-//        } // end if
-//
-//        if (resEntity != null) {
-//            resEntity.consumeContent( );
-//        } // end if
-//
-//        httpclient.getConnectionManager( ).shutdown( );
-//    }
+    private void sendMedia(final String mediaType, String filePath) {
+        File f = new File(filePath);
+        final String key = S3UploadService.generateKey(f);
+        S3UploadService.uploadFile(key, f, new TransferListener() {
+            public void onStateChanged(int id, TransferState state) {
+                switch (state) {
+                    case COMPLETED:
+                        updateList(mediaType, S3UploadService.buildUrl(key), false);
+                        HashMap<String, String> content = new HashMap<>();
+                        content.put("type", mediaType);
+                        content.put("url", S3UploadService.buildUrl(key));
+                        send(content);
+                        break;
+                    case CANCELED:
+                    case FAILED:
+                        Toast.makeText(ChatActivity.this, "Unable to upload.", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+
+            }
+
+            public void onError(int id, Exception ex) {
+                Log.e(TAG, "send(): exception during upload", ex);
+            }
+        });
+    }
 
     private void getLocation() {
         if (gps.canGetLocation() && gps.getLatitude() != 0.00 && gps.getLongitude() != 0.00) {
@@ -295,7 +293,7 @@ public class ChatActivity extends AppCompatActivity {
         content.put("type", KEY_MESSAGE_MAP);
         content.put("latitude", Double.toString(myLat));
         content.put("longitude", Double.toString(myLong));
-        send(KEY_MESSAGE_MAP, content);
+        send(content);
     }
 
     private void sendVideo() {
@@ -305,10 +303,10 @@ public class ChatActivity extends AppCompatActivity {
         HashMap<String, String> content = new HashMap<>();
         content.put("type", KEY_MESSAGE_VIDEO);
         content.put("url", videoUrl);
-        send(KEY_MESSAGE_VIDEO, content);
+        send(content);
     }
 
-    private void send(String type, HashMap<String, String> content) {
+    private void send(HashMap<String, String> content) {
         HashSet<MMXUser> recipients = new HashSet<>();
         recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
 
@@ -330,16 +328,16 @@ public class ChatActivity extends AppCompatActivity {
 
     public void updateList(String type, String content, boolean orientation) {
         switch (type) {
-            case ChatActivity.KEY_MESSAGE_TEXT:
+            case KEY_MESSAGE_TEXT:
                 adapter.add(new MessageText(orientation, content));
                 break;
-            case ChatActivity.KEY_MESSAGE_IMAGE:
+            case KEY_MESSAGE_IMAGE:
                 adapter.add(new MessageImage(orientation, content));
                 break;
-            case ChatActivity.KEY_MESSAGE_MAP:
+            case KEY_MESSAGE_MAP:
                 adapter.add(new MessageMap(orientation, content));
                 break;
-            case ChatActivity.KEY_MESSAGE_VIDEO:
+            case KEY_MESSAGE_VIDEO:
                 adapter.add(new MessageVideo(orientation, content));
                 break;
         }

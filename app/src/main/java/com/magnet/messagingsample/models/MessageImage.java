@@ -6,12 +6,12 @@ package com.magnet.messagingsample.models;
 public class MessageImage {
 
     public boolean left;
-    public String imageUri;
+    public String imageUrl;
 
-    public MessageImage(boolean left, String imageUri) {
+    public MessageImage(boolean left, String imageUrl) {
         super();
         this.left = left;
-        this.imageUri = imageUri;
+        this.imageUrl = imageUrl;
     }
 
 }

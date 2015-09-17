@@ -50,7 +50,6 @@ public class UserSelectActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvUsers.setLayoutManager(layoutManager);
 
-        // return all users
         MMXUser.findByName("%", 20, new MMXUser.OnFinishedListener<ListResult<MMXUser>>() {
             public void onSuccess(ListResult<MMXUser> users) {
                 refreshListView(users.totalCount > 0 ? users.items : null);

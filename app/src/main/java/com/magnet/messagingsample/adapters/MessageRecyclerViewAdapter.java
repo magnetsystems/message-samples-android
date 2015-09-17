@@ -4,9 +4,7 @@ package com.magnet.messagingsample.adapters;
  * Created by edwardyang on 9/15/15.
  */
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,30 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.magnet.messagingsample.R;
-import com.magnet.messagingsample.activities.ChatActivity;
 import com.magnet.messagingsample.activities.ImageViewActivity;
 import com.magnet.messagingsample.activities.MapViewActivity;
-import com.magnet.messagingsample.activities.UserSelectActivity;
 import com.magnet.messagingsample.activities.VideoViewActivity;
-import com.magnet.messagingsample.helpers.VideoPlayer;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
 import com.magnet.messagingsample.models.MessageVideo;
-import com.magnet.messagingsample.models.User;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -84,7 +68,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         public void onClick(View view) {
             if (messageItems.size() > 0) {
                 MessageImage item = (MessageImage) messageItems.get(getAdapterPosition());
-                goToImageViewActivity(item.imageUri);
+                goToImageViewActivity(item.imageUrl);
             }
         }
     }
@@ -220,8 +204,8 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         if (item != null) {
             vh2.ivMessageImage.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
             vh2.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-            File f = new File(item.imageUri);
-            Picasso.with(mActivity).load(f).into(vh2.ivMessageImage);
+//            File f = new File(item.imageUrl);
+            Picasso.with(mActivity).load(item.imageUrl).into(vh2.ivMessageImage);
         }
     }
 
@@ -253,7 +237,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
     public void goToImageViewActivity(String url) {
         Intent intent;
         intent = new Intent(mActivity, ImageViewActivity.class);
-        intent.putExtra("imageUri", url);
+        intent.putExtra("imageUrl", url);
         mActivity.startActivity(intent);
     }
 

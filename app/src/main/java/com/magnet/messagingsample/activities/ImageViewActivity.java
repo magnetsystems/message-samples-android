@@ -27,16 +27,10 @@ public class ImageViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_view);
 
         String imageUrl = getIntent().getStringExtra("imageUrl");
-        String imageUriStr = getIntent().getStringExtra("imageUri");
-        Uri imageUri = Uri.parse(imageUriStr);
-
         ivMessageImage = (TouchImageView) findViewById(R.id.ivMessageImage);
 
         if (imageUrl != null) {
             Picasso.with(this).load(imageUrl).into(ivMessageImage);
-        } else if (imageUri != null) {
-            File f = new File(imageUriStr);
-            Picasso.with(this).load(f).into(ivMessageImage);
         }
     }
 
