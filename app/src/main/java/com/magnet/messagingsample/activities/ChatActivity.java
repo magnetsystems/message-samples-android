@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.magnet.messagingsample.R;
@@ -111,6 +113,14 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        if (Profile.getCurrentProfile() == null) {
+            MMX.unregisterListener(mEventListener);
+            MMX.logout(null);
+            Intent intent;
+            intent = new Intent(ChatActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         mUser = getIntent().getParcelableExtra("User");
         MMX.registerListener(mEventListener);
