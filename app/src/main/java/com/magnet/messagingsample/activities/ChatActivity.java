@@ -114,11 +114,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        if (Profile.getCurrentProfile() == null) {
+        if (MMX.getCurrentUser() == null) {
             MMX.unregisterListener(mEventListener);
             MMX.logout(null);
-            Intent intent;
-            intent = new Intent(ChatActivity.this, LoginActivity.class);
+            Intent intent = new Intent(ChatActivity.this, LoginActivity.class);
             startActivity(intent);
         }
 
@@ -358,11 +357,6 @@ public class ChatActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

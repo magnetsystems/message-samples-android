@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                         mProfile.setUsername(email);
                         mProfile.setPassword(id.getBytes()); //FIXME: Find a better way to generate this password
                         mProfile.setDisplayName(name);
-                        attemptRegister(mProfile.getUsername(), mProfile.getPassword());
+                        attemptRegister(mProfile.getUsername(), mProfile.getPassword(), false);
                     } catch (final Exception ex) {
                         Log.e(TAG, "LoginCallback.onSuccess(): exception caught while getting identity", ex);
                         runOnUiThread(new Runnable() {
@@ -97,7 +97,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         FacebookSdk.sdkInitialize(getApplicationContext());
+        mProfile = MyProfile.getInstance(this);
+        if (mProfile.getUsername() != null && Profile.getCurrentProfile() != null) {
+            attemptRegister(mProfile.getUsername(), mProfile.getPassword(), false);
+        }
+
         setContentView(R.layout.activity_login);
 
         btLogin = (Button) findViewById(R.id.btLogin);
@@ -120,24 +126,19 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                attemptRegister(username, password.getBytes());
+                attemptRegister(username, password.getBytes(), true);
             }
         });
 
-        mProfile = MyProfile.getInstance(this);
         mCallbackManager = CallbackManager.Factory.create();
         btFacebookLogin.registerCallback(mCallbackManager, mLoginCallback);
-
-        if (mProfile.getUsername() != null && Profile.getCurrentProfile() != null) {
-            attemptRegister(mProfile.getUsername(), mProfile.getPassword());
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         if (mProfile.getUsername() != null && Profile.getCurrentProfile() != null) {
-            attemptRegister(mProfile.getUsername(), mProfile.getPassword());
+            attemptRegister(mProfile.getUsername(), mProfile.getPassword(), false);
         }
     }
 
@@ -161,7 +162,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    private void attemptRegister(final String user, final byte[] pass) {
+    private void attemptRegister(final String user, final byte[] pass, final boolean isNewUser) {
         MMXUser mmxUser = new MMXUser.Builder().username(user).build();
         mmxUser.register(pass, new MMXUser.OnFinishedListener<Void>() {
             public void onSuccess(Void aVoid) {
@@ -171,12 +172,17 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-                Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
                 if (MMXUser.FailureCode.REGISTRATION_INVALID_USERNAME.equals(failureCode)) {
+                    Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
                     Toast.makeText(LoginActivity.this, "Sorry, thats not a valid username.", Toast.LENGTH_LONG).show();
                 }
                 if (MMXUser.FailureCode.REGISTRATION_USER_ALREADY_EXISTS.equals(failureCode)) {
-                    attemptLogin(user, pass);
+                    if (isNewUser) {
+                        Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
+                        Toast.makeText(LoginActivity.this, "Sorry, this user already exists.", Toast.LENGTH_LONG).show();
+                    } else {
+                        attemptLogin(user, pass);
+                    }
                 }
                 mLoginSuccess.set(false);
             }
@@ -208,11 +214,6 @@ public class LoginActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }

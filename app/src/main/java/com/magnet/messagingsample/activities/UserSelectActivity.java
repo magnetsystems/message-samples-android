@@ -56,10 +56,9 @@ public class UserSelectActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_select);
 
-        if (Profile.getCurrentProfile() == null) {
+        if (MMX.getCurrentUser() == null) {
             MMX.logout(null);
-            Intent intent;
-            intent = new Intent(UserSelectActivity.this, LoginActivity.class);
+            Intent intent = new Intent(UserSelectActivity.this, LoginActivity.class);
             startActivity(intent);
         }
 
@@ -139,7 +138,11 @@ public class UserSelectActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.nav_logout) {
+            LoginManager.getInstance().logOut();
+            MMX.logout(null);
+            Intent intent = new Intent(UserSelectActivity.this, LoginActivity.class);
+            startActivity(intent);
             return true;
         }
 

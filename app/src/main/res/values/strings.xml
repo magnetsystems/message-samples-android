@@ -6,7 +6,7 @@
 
     <string name="title_activity_login">Rich Messaging</string>
     <string name="login_btn_text">Log In</string>
-    <string name="login_facebook_btn_text">Login With Facebook</string>
+    <string name="login_facebook_btn_text">LOG IN WITH FACEBOOK</string>
     <string name="register_btn_text">Register</string>
     <string name="email_label_text">Username</string>
     <string name="password_text_label">Password</string>

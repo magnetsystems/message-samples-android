@@ -4,22 +4,25 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
+    xmlns:fb="http://schemas.android.com/apk/res-auto"
     tools:context="com.magnet.messagingsample.activities.LoginActivity"
     android:background="#eaeaea">
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="110dp"
         android:id="@+id/ivLogo"
         android:layout_alignParentTop="true"
-        android:src="@drawable/common_signin_btn_icon_normal_dark"
+        android:src="@drawable/magnet_message_logo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignRight="@+id/etEmail"
         android:layout_alignEnd="@+id/etEmail"
-        android:layout_margin="20dp"
         android:focusableInTouchMode="false"
-        android:minHeight="80dp" />
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -42,7 +45,7 @@
         android:textColor="#000000"
         android:layout_below="@+id/ivLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="25dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -88,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_below="@+id/btLogin"
+        fb:login_text="@string/login_facebook_btn_text"
         android:layout_marginTop="15dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
