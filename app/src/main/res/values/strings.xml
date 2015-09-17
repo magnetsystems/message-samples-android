@@ -9,11 +9,11 @@
     <string name="register_btn_text">Register</string>
     <string name="email_label_text">Username</string>
     <string name="password_text_label">Password</string>
-    <string name="title_activity_chat">ChatActivity</string>
-    <string name="title_activity_user_select">UserSelectActivity</string>
+    <string name="title_activity_chat">Chat</string>
+    <string name="title_activity_user_select">Chat With User</string>
     <string name="message_hint">Message</string>
-    <string name="title_activity_map_view">MapViewActivity</string>
-    <string name="title_activity_image_view">ImageViewActivity</string>
-    <string name="title_activity_video_view">VideoViewActivity</string>
+    <string name="title_activity_map_view">Map</string>
+    <string name="title_activity_image_view">Image</string>
+    <string name="title_activity_video_view">Video</string>
 
 </resources>
