@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.magnet.messagingsample.activities.UserSelectActivity">
+
+    <item
+        android:id="@+id/nav_refresh"
+        android:title="Refresh List" />
+
+    <item
+        android:id="@+id/nav_logout"
+        android:title="Log Out" />
+
+</menu>
