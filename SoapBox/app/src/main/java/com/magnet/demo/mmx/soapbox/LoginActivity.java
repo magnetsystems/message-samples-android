@@ -166,7 +166,7 @@ public class LoginActivity extends Activity {
     MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
         //login success
-        MMX.enableIncomingMessages(true);
+        MMX.start();
         ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
         mConnecting.set(false);
         setResult(RESULT_OK);

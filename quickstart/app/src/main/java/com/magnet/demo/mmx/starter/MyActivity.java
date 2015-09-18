@@ -144,7 +144,7 @@ public class MyActivity extends Activity {
   private void loginHelper() {
     MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
-        MMX.enableIncomingMessages(true);
+        MMX.start();
         updateViewState();
       }
 

@@ -166,7 +166,7 @@ public class LoginActivity extends Activity {
     MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
         //login success
-        MMX.enableIncomingMessages(true);
+        MMX.start();
         Log.d(TAG, "loginHelper(): CONNECTED.  Setting up game messaging and publishing availability");
         RPSLS.Util.setupGameMessaging(LoginActivity.this);
         mConnecting.set(false);
