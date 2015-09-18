@@ -4,7 +4,7 @@ Magnet Message is a powerful, open source mobile messaging framework enabling re
 
 ## Rich Messaging
 
-We created a simple Android chat app to demonstrate how rich content such as images, videos, and geographical location can be delivered and received using Magnet Message. This app also demonstrates Facebook integration with Magnet Message. 
+We created a simple Android chat app to demonstrate how rich content such as images, videos, and geographical location can be delivered and received using Magnet Message. Images and videos are uploaded to Amazon S3, and the URL to the file is delivered to the recipient. This app also demonstrates Facebook integration with Magnet Message. 
 
 ## Features
 
@@ -13,9 +13,10 @@ We created a simple Android chat app to demonstrate how rich content such as ima
 * Obtain a list of users to chat with
 * One to one chat with a user
 * Send and receive text, pictures, videos, or a map pointing out your current location
+* Select and upload images and video to Amazon S3 to be viewed by your recipient
 * Receive notifications from other users which show up in your notification bar
 
 ## Video Walkthrough
 
-![Video Walkthrough](android-rich-messaging-sample-1.gif)
+![Video Walkthrough](android-rich-messaging-sample-2.gif)
 
