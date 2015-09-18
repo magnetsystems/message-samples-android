@@ -1,8 +1,4 @@
-# Magnet Message Android Sample Apps
-
-Magnet Message is a powerful, open source mobile messaging framework enabling real-time user engagement for your mobile apps. Send relevant and targeted communications to customers or employees. These sample Android apps serve as introductory sample code - get familiar with our API, extend our samples and get coding today.
-
-## Rich Messaging
+# Rich Messaging
 
 We created a simple Android chat app to demonstrate how rich content such as images, videos, and geographical location can be delivered and received using Magnet Message. Images and videos are uploaded to Amazon S3, and the URL to the file is delivered to the recipient. This app also demonstrates Facebook integration with Magnet Message. 
 
@@ -24,6 +20,8 @@ We created a simple Android chat app to demonstrate how rich content such as ima
 ## Installation
 
 Since this app uses Facebook for Android, you will need to follow the instructions on the [Facebook Developer Getting Started](https://developers.facebook.com/docs/android/getting-started/) page to configure the Rich Messaging app to use your own Facebook developer account. In summary, you will need to create a Facebook app, import your own `facebook_app_id` into the Rich Messaging app, and set up the Development Key Hash for your development machine at Facebook.
+
+All users of this app will be able to see and communicate with each other. If you would like to try this sample out privately, it is recommended that you create your own Magnet Message app by following the instructions at [Creating Your First App](https://docs.magnet.com/message/android/creating-your-first-app-android/). Once you obtain a `.properties` file, you can import it into the Rich Messaging app.
 
 ## How To Use
 
