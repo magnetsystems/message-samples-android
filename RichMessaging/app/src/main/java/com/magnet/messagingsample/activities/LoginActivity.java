@@ -146,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         MMX.login(user, pass, new MMX.OnFinishedListener<Void>() {
             public void onSuccess(Void aVoid) {
                 //if an EventListener has already been registered, start receiving messages
-                MMX.enableIncomingMessages(true);
+                MMX.start();
                 goToUserSelectActivity();
 
             }
