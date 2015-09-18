@@ -2,8 +2,6 @@ package com.magnet.demo.mmx.soapbox;
 
 import android.content.Context;
 
-import com.magnet.mmx.client.api.ListResult;
-import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.ArrayList;
