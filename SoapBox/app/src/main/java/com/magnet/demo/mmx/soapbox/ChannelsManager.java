@@ -2,6 +2,7 @@ package com.magnet.demo.mmx.soapbox;
 
 import android.content.Context;
 
+import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -17,15 +18,6 @@ public class ChannelsManager {
 
   private static ChannelsManager sInstance = null;
   private Context mContext = null;
-
-  public static final MMXChannel CHANNEL_COMPANY_ANNOUNCEMENTS = new MMXChannel.Builder()
-          .name("company_announcements")
-          .setPublic(true)
-          .build();
-  public static final MMXChannel CHANNEL_LUNCH_BUDDIES = new MMXChannel.Builder()
-          .name("lunch_buddies")
-          .setPublic(true)
-          .build();
 
   private List<MMXChannel> mChannels = null;
 
@@ -132,23 +124,38 @@ public class ChannelsManager {
    * Provisions the pre-defined channels and subscriptions for this app.
    */
   public void provisionChannels() {
-    CHANNEL_COMPANY_ANNOUNCEMENTS.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
+    final String companyAnnouncementsName = "company_announcements";
+    //create
+    MMXChannel.create(companyAnnouncementsName, companyAnnouncementsName, true,
+            new MMXChannel.OnFinishedListener<MMXChannel>() {
+              public void onSuccess(MMXChannel mmxChannel) {
+              }
+
+              public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+              }
+            });
+
+    //subscribe
+    MMXChannel.getPublicChannel(companyAnnouncementsName,
+            new MMXChannel.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
+        mmxChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
+          public void onSuccess(String s) {
+          }
+
+          public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+          }
+        });
       }
 
       public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
       }
     });
 
-    CHANNEL_COMPANY_ANNOUNCEMENTS.subscribe(new MMXChannel.OnFinishedListener<String>() {
-      public void onSuccess(String s) {
-      }
-
-      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-      }
-    });
-
-    CHANNEL_LUNCH_BUDDIES.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
+    //create
+    final String lunchBuddiesName = "lunch_buddies";
+    MMXChannel.create(lunchBuddiesName, lunchBuddiesName, true,
+            new MMXChannel.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
       }
 

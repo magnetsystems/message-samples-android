@@ -306,8 +306,8 @@ public class RPSLS {
     }
 
     public static void fetchAvailablePlayers(final Context context) {
-      getAvailabilityChannel().getItems(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
-              null, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
+      getAvailabilityChannel().getMessages(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
+              null, 0, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
                 public void onSuccess(ListResult<MMXMessage> mmxMessages) {
                   Log.d(TAG, "fetchAvailablePlayers(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
                   for (int i = mmxMessages.totalCount; --i >= 0; ) {
@@ -657,11 +657,34 @@ public class RPSLS {
       return result;
     }
 
-    private static MMXChannel getAvailabilityChannel() {
-      return new MMXChannel.Builder()
-              .name(MessageConstants.AVAILABILITY_TOPIC_NAME)
-              .setPublic(true)
-              .build();
+    private static MMXChannel sAvailabilityChannel = null;
+
+    private synchronized static MMXChannel getAvailabilityChannel() {
+      if (sAvailabilityChannel == null) {
+        MMXChannel.OnFinishedListener<MMXChannel> listener =
+                new MMXChannel.OnFinishedListener<MMXChannel>() {
+          public void onSuccess(MMXChannel mmxChannel) {
+            sAvailabilityChannel = mmxChannel;
+            synchronized (this) {
+              this.notify();
+            }
+          }
+
+          public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+            synchronized (this) {
+              this.notify();
+            }
+          }
+        };
+        MMXChannel.getPublicChannel(MessageConstants.AVAILABILITY_TOPIC_NAME, listener);
+        synchronized (listener) {
+          try {
+            listener.wait(5000);
+          } catch (InterruptedException e) {
+          }
+        }
+      }
+      return sAvailabilityChannel;
     }
 
     public static Game getGame(String gameId) {

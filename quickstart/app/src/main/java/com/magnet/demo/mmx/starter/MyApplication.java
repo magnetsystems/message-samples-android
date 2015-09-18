@@ -18,7 +18,6 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.common.Log;
-import com.magnet.mmx.client.common.MMXid;
 
 import android.app.Application;
 import android.app.Notification;
@@ -47,10 +46,6 @@ public class MyApplication extends Application {
               MyMessageStore.addMessage(mmxMessage, null,
                       new Date(), true);
               doNotify(mmxMessage);
-              return false;
-            }
-
-            public boolean onMessageAcknowledgementReceived(MMXid mmXid, String s) {
               return false;
             }
           };

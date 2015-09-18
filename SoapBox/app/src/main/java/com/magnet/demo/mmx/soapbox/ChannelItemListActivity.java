@@ -61,7 +61,8 @@ public class ChannelItemListActivity extends Activity {
 
     final String channelName = getIntent().getStringExtra(ChannelListActivity.EXTRA_CHANNEL_NAME);
     Log.d(TAG, "onCreate(): channelName=" + channelName);
-    MMXChannel.findByName(channelName, 100, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
+    MMXChannel.findPublicChannelsByName(channelName, 0, 100,
+            new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
       @Override
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
         for (MMXChannel channel : mmxChannelListResult.items) {
@@ -107,7 +108,7 @@ public class ChannelItemListActivity extends Activity {
   private void updateChannelItems() {
     synchronized (this) {
       if (mChannel != null) {
-        mChannel.getItems(null, null, 25, false,
+        mChannel.getMessages(null, null, 0, 25, false,
                 new MMXChannel.OnFinishedListener<ListResult<com.magnet.mmx.client.api.MMXMessage>>() {
                   public void onSuccess(ListResult<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
                     //reverse the list
@@ -151,7 +152,7 @@ public class ChannelItemListActivity extends Activity {
   public void doPublish(final View view) {
     HashMap<String, String> content = new HashMap<String, String>();
     content.put(KEY_MESSAGE_TEXT, mPublishText.getText().toString());
-    mChannel.publish(content, new MMXMessage.OnFinishedListener<String>() {
+    mChannel.publish(content, new MMXChannel.OnFinishedListener<String>() {
       @Override
       public void onSuccess(String s) {
         Toast.makeText(ChannelItemListActivity.this, "Published successfully.",
@@ -159,7 +160,7 @@ public class ChannelItemListActivity extends Activity {
       }
 
       @Override
-      public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+      public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
         Toast.makeText(ChannelItemListActivity.this, "Unable to publish message: " +
                 throwable.getMessage(), Toast.LENGTH_LONG).show();
       }
