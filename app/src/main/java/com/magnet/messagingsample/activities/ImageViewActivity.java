@@ -1,5 +1,6 @@
 package com.magnet.messagingsample.activities;
 
+import android.support.v7.app.ActionBar;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -26,6 +27,11 @@ public class ImageViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
 
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
         String imageUrl = getIntent().getStringExtra("imageUrl");
         ivMessageImage = (TouchImageView) findViewById(R.id.ivMessageImage);
 
@@ -47,6 +53,11 @@ public class ImageViewActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
