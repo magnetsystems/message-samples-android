@@ -5,7 +5,7 @@
 
 Magnet Message is a powerful, open source mobile messaging framework enabling real-time user engagement for your mobile apps. Send relevant and targeted communications to customers or employees. These sample Android apps serve as introductory sample code - get familiar with our API, extend our samples and get coding today.
 
-## Rock Paper Scissors Lizard Spock
+## [Rock Paper Scissors Lizard Spock](RPSLS)
 <img style="margin:10px" src="https://www.magnet.com/wp-content/uploads/2015/04/spock.png"
  alt="RPSLS logo" width="200"  align="right" title="RPSLS"/>
 
@@ -35,7 +35,7 @@ Game on!
 
 
 <hr>
-## Soapbox
+## [Soapbox](SoapBox)
 <img style="margin:10px" src="http://www.threetwelvecreative.com/Portals/207686/images/Stick-Figures-With-Megaphone-800.jpg"
  alt="soapbox logo" width="250" align="right"  title="soapbox"/>
 
@@ -69,7 +69,7 @@ Feature highlights:
 
 
 <hr>
-## Quickstart
+## [Quickstart](quickstart)
 0.  Quickstart was created to have a simple app that could demonstrate the most basic messaging features including logging in and sending and receiving a message.
 
 ### Build Instructions
