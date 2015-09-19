@@ -47,7 +47,7 @@ dependencies {
     compile 'com.github.jaydeepw:poly-picker:v1.0.22'
     compile 'com.amazonaws:aws-android-sdk-s3:2.2.5'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
-    compile ("com.magnet.mmx:magnet-mmx-client-android:1.6.0-SNAPSHOT@aar") {
-        transitive=true
+    compile('com.magnet.mmx:magnet-mmx-client-android:1.9.1@aar') {
+        transitive = true
     }
 }
