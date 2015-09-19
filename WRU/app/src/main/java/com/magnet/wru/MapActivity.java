@@ -130,12 +130,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
       }
     });
     updateLocationMarkers(null);
-    Handler handler = new Handler();
-    handler.postDelayed(new Runnable() {
-      public void run() {
-        mWru.requestLocationUpdates();
-      }
-    }, 2000);
   }
 
   private HashMap<String, Marker> mMarkerMap = new HashMap<>();

@@ -129,8 +129,9 @@ public class WRU {
     mJoinedTopicPassphrase = mSharedPrefs.getString(SHARED_PREF_KEY_JOINED_TOPIC_PASSPHRASE, null);
     mUsername = mSharedPrefs.getString(SHARED_PREF_KEY_JOINED_TOPIC_AS_USERNAME, null);
     mJoinedTopicUpdateInterval = mSharedPrefs.getLong(SHARED_PREF_KEY_UPDATE_INTERVAL, -1l);
-
-
+    if (mJoinedTopicKey != null) {
+      loadLastLocations(encodeTopic(mJoinedTopicKey, mJoinedTopicPassphrase));
+    }
 
     if (playServicesConnected(mContext)) {
       mGoogleApiClient = new GoogleApiClient.Builder(mContext)
@@ -563,7 +564,7 @@ public class WRU {
                   });
                 }
               });
-              loadLastLocations(mJoinedTopic);
+              requestLocationUpdates();
               LocationUpdaterService.startLocationUpdates(mContext, mUsername, mJoinedTopic, mJoinedTopicUpdateInterval);
             }
 
@@ -650,10 +651,10 @@ public class WRU {
     }
   }
 
-  private void loadLastLocations(MMXChannel topic) {
-    Log.d(TAG, "loadLastLocations(): for topic: " + topic.getName());
+  private void loadLastLocations(String topicName) {
+    Log.d(TAG, "loadLastLocations(): for topic: " + topicName);
     String where = WRUHelper.COL_TOPIC_NAME + "=?";
-    String[] whereArgs = {topic.getName()};
+    String[] whereArgs = {topicName};
     Cursor cursor = null;
     try {
       cursor = mDb.query(WRUHelper.TABLE_HISTORY, null, where, whereArgs, null, null, null);
