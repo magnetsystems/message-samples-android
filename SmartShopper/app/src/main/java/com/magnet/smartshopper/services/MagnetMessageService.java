@@ -75,12 +75,7 @@ public class MagnetMessageService {
     }
 
     private static void createWishListChannel() {
-        MMXChannel mmxChannel = new MMXChannel.Builder()
-                .name("myWishList")
-                .summary("channel to store my wish list")
-                .setPublic(false)
-                .build();
-
+        
         MMXChannel.create(MY_WISH_LIST,"Chanel to store my wish ist",false,new MMXChannel.OnFinishedListener<MMXChannel>() {
 
             public void onSuccess(final MMXChannel result) {
