@@ -103,7 +103,10 @@ public class MagnetMessageService {
 
                messageMap.put(ITEM_ID, product.getId());
                messageMap.put(ITEM_NAME, product.getName());
-               messageMap.put(ITEM_PRICE, product.getSalePrice());
+               if(product.getSalePrice() != null && product.getSalePrice().length() > 1) {
+                   messageMap.put(ITEM_PRICE, product.getSalePrice().substring(1));
+               }
+
                messageMap.put(ITEM_IMAGE, product.getThumbnailImage());
 
                mmxChannel.publish(messageMap, new MMXChannel.OnFinishedListener<String>() {
@@ -142,7 +145,9 @@ public class MagnetMessageService {
             Map<String, String> content = new HashMap<String, String>(4);
             content.put(ITEM_ID, product.getId());
             content.put(ITEM_NAME, product.getName());
-            content.put(ITEM_PRICE, product.getSalePrice());
+            if(product.getSalePrice() != null && product.getSalePrice().length() > 1) {
+                content.put(ITEM_PRICE, product.getSalePrice().substring(1));
+            }
             content.put(ITEM_IMAGE, product.getThumbnailImage());
             // Build the message
             MMXMessage message = new MMXMessage.Builder()
