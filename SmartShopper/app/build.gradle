@@ -40,7 +40,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.squareup.picasso:picasso:2.4.0'
     testCompile "junit:junit:$junit_version"
-    compile('com.magnet.mmx:magnet-mmx-client-android:1.8.4@aar') {
+    compile('com.magnet.mmx:magnet-mmx-client-android:1.9.1@aar') {
         transitive = true
     }
 
