@@ -83,6 +83,11 @@ Feature highlights:
 -- addressing and sending a message 
 -- receiving a message and accessing its content.
 
+<hr>
+## [RichMessaging](RichMessaging)
+<img style="margin:10px" src="https://raw.githubusercontent.com/magnetsystems/message-samples-android/develop/RichMessaging/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+ alt="RichMessaging logo" width="160" align="right"  title="RichMessaging"/>
+RichMessaging is a simple Android chat app to demonstrate how rich content such as images, videos, and geographical location can be delivered and received using Magnet Message. Images and videos are uploaded to Amazon S3, and the URL to the file is delivered to the recipient. This app also demonstrates Facebook integration with Magnet Message.
 
 ## Feedback
 
