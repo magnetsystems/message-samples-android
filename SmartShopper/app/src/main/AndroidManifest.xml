@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.magnet.smartshopper" >
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".SmartShopperApp"
+        android:theme="@style/AppTheme" >
+
+        <activity
+            android:name=".activities.ProductListActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.ProductDetailActivity"
+            android:label="@string/title_activity_product_detail" >
+        </activity>
+        <activity
+            android:name=".activities.UserSelectActivity"
+            android:label="@string/title_activity_product_share" >
+        </activity>
+        <activity
+            android:name=".activities.WishListActivity"
+            android:label="@string/title_activity_wishlist" >
+        </activity>
+        <receiver android:name=".MessageBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="SMARTSHOPPER_WAKEUP" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name="com.magnet.mmx.client.MMXGcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.magnet.smartshopper" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

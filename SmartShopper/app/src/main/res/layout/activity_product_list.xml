@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ProductActivity">
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="It's currently "
+        android:id="@+id/tvCurrentTempature"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#6167ff"/>
+
+
+    <ListView
+        android:id="@+id/lvProducts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

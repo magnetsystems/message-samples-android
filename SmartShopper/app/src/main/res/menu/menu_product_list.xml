@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ProductListActivity">
+
+    <item
+        android:id="@+id/wishList"
+        app:showAsAction="ifRoom"
+        android:title="Wish List" />
+
+</menu>
