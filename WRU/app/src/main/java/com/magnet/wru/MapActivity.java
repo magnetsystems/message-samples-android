@@ -31,6 +31,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 
 import java.text.DateFormat;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,6 +71,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
   };
 
+  private MMX.EventListener mEventListener = new MMX.EventListener() {
+    @Override
+    public boolean onMessageReceived(MMXMessage mmxMessage) {
+      return false;
+    }
+
+    public boolean onLoginRequired(MMX.LoginReason reason) {
+      updateLoginState();
+      return false;
+    }
+  };
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -87,6 +102,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             .findFragmentById(R.id.fragment_message_list);
 
     MyMessageStore.registerListener(mMessageListListener);
+    MMX.registerListener(mEventListener);
+    Handler handler = new Handler();
+    handler.postDelayed(new Runnable() {
+      public void run() {
+        updateLoginState();
+      }
+    }, 3000);
   }
 
   protected void onResume() {
@@ -103,6 +125,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
   protected void onDestroy() {
     mWru.unregisterOnLocationReceivedListener(mListener);
     MyMessageStore.unregisterListener(mMessageListListener);
+    MMX.unregisterListener(mEventListener);
     super.onDestroy();
   }
 
@@ -338,5 +361,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     mMessageListFragment.getView()
             .setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, newWeight));
     mMessageListOpen = !mMessageListOpen;
+  }
+
+  private void updateLoginState() {
+    runOnUiThread(new Runnable() {
+      public void run() {
+        if (MMX.getCurrentUser() != null) {
+          //logged in
+          mToggleMessageList.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+        } else {
+          //not logged in
+          mToggleMessageList.setBackgroundColor(getResources().getColor(android.R.color.holo_red_dark));
+        }
+      }
+    });
   }
 }
