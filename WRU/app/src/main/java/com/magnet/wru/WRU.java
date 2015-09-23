@@ -56,6 +56,8 @@ public class WRU {
   private String mJoinedTopicPassphrase;
   private long mJoinedTopicUpdateInterval;
   private String mUsername;
+  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
+  private AtomicBoolean mLoggingIn = new AtomicBoolean(false);
 
   private GoogleApiClient mGoogleApiClient = null;
   private final AtomicBoolean mGoogleApiInitialized = new AtomicBoolean(false);
@@ -142,13 +144,13 @@ public class WRU {
       mGoogleApiClient.connect();
     }
     registerMMXUser();
-    login();
   }
 
   public static synchronized WRU getInstance(final Context context) {
     if (sInstance == null) {
       sInstance = new WRU(context);
     }
+    sInstance.login();
     return sInstance;
   }
 
@@ -520,6 +522,11 @@ public class WRU {
   }
 
   private synchronized void login() {
+    if (mLoggingIn.get() || mLoginSuccess.get()) {
+      //already logging in or logged in
+      return;
+    }
+    mLoggingIn.set(true);
     if (!mRegistered.get()) {
       synchronized (mRegistered) {
         try {
@@ -537,6 +544,8 @@ public class WRU {
 
     MMX.login(getMMXUsername(), getMMXPassword().getBytes(), new MMX.OnFinishedListener<Void>() {
       public void onSuccess(Void aVoid) {
+        mLoggingIn.set(false);
+        mLoginSuccess.set(true);
         MMX.start();
         if (mJoinedTopicKey != null && mJoinedTopicPassphrase != null) {
           final String topicName = encodeTopic(mJoinedTopicKey, mJoinedTopicPassphrase);
@@ -577,6 +586,8 @@ public class WRU {
 
       public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
         Log.e(TAG, "login(): failed: " + failureCode, throwable);
+        mLoggingIn.set(false);
+        mLoginSuccess.set(false);
         Toast.makeText(mContext, "Unable to connect to server.", Toast.LENGTH_LONG).show();
       }
     });
@@ -639,7 +650,7 @@ public class WRU {
     values.put(WRUHelper.COL_LOCATION_TIME, locationTime.locationTimestamp);
     values.put(WRUHelper.COL_TIMESTAMP, System.currentTimeMillis());
     String where = WRUHelper.COL_USERNAME + "=? AND " + WRUHelper.COL_TOPIC_NAME + "=?";
-    String[] whereArgs = {locationTime.username, topic.getName()};
+    String[] whereArgs = {locationTime.username, topic.getName().toLowerCase()};
     int rows = mDb.update(WRUHelper.TABLE_HISTORY, values, where, whereArgs);
     Log.d(TAG, "saveLastLocation(): rows updated=" + rows);
     if (rows == 0) {
@@ -654,7 +665,7 @@ public class WRU {
   private void loadLastLocations(String topicName) {
     Log.d(TAG, "loadLastLocations(): for topic: " + topicName);
     String where = WRUHelper.COL_TOPIC_NAME + "=?";
-    String[] whereArgs = {topicName};
+    String[] whereArgs = {topicName.toLowerCase()};
     Cursor cursor = null;
     try {
       cursor = mDb.query(WRUHelper.TABLE_HISTORY, null, where, whereArgs, null, null, null);
