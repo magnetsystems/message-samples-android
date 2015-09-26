@@ -12,7 +12,6 @@ import com.magnet.mmx.client.MMXClient;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
-import com.magnet.mmx.client.common.MMXid;
 
 /**
  * Created by edwardyang on 9/10/15.
@@ -28,7 +27,7 @@ public class ChatApplication extends Application {
             return false;
         }
 
-        public boolean onMessageAcknowledgementReceived(MMXid mmXid, String s) {
+        public boolean onMessageAcknowledgementReceived(MMXUser from, String messageId) {
             return false;
         }
     };
