@@ -19,7 +19,8 @@ We created a simple Android chat app to demonstrate how rich content such as ima
 
 ## Installation
 
-Since this app uses Facebook for Android, you will need to follow the instructions on the [Facebook Developer Getting Started](https://developers.facebook.com/docs/android/getting-started/) page to configure the Rich Messaging app to use your own Facebook developer account. In summary, you will need to create a Facebook app, import your own `facebook_app_id` into the Rich Messaging app, and set up the Development Key Hash for your development machine at Facebook.
+1. To send images and video, you will need to create an Amazon S3 bucket to store your uploaded files. Edit `message-samples-android/RichMessaging/app/src/main/java/com/magnet/messagingsample/services/S3UploadService.java` and replace the variables with your AWS Cognito Identity Pool Id, bucket name, folder name, and AWS region in `AWS_IDENTITY_POOL_ID`, `AWS_S3_BUCKETNAME`, `PREFIX` and `AWS_REGION`, respectively.
+2. Since this app uses Facebook for Android, you will need to follow the instructions on the [Facebook Developer Getting Started](https://developers.facebook.com/docs/android/getting-started/) page to configure the Rich Messaging app to use your own Facebook developer account. In summary, you will need to create a Facebook app, import your own `facebook_app_id` into the Rich Messaging app, and set up the Development Key Hash for your development machine at Facebook.
 
 All users of this app will be able to see and communicate with each other. If you would like to try this sample out privately, it is recommended that you create your own Magnet Message app by following the instructions at [Creating Your First App](https://docs.magnet.com/message/android/creating-your-first-app-android/). Once you obtain a `.properties` file, you can import it into the Rich Messaging app.
 
