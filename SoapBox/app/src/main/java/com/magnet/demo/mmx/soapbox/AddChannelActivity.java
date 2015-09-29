@@ -80,11 +80,8 @@ public class AddChannelActivity extends Activity {
         mChannelName.setError(getString(R.string.error_channel_name_required));
         return;
       }
-      MMXChannel channel = new MMXChannel.Builder()
-              .name(channelName)
-              .setPublic(true)
-              .build();
-      channel.create(new MMXChannel.OnFinishedListener<MMXChannel>() {
+      MMXChannel.create(channelName, channelName, true,
+              new MMXChannel.OnFinishedListener<MMXChannel>() {
         public void onSuccess(MMXChannel mmxChannel) {
           //add tags
           SparseBooleanArray checkedPositions = mTagList.getCheckedItemPositions();

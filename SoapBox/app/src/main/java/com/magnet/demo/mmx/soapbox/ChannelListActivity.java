@@ -114,7 +114,7 @@ public class ChannelListActivity extends Activity {
   }
 
   private synchronized void updateChannelList() {
-    MMXChannel.findByName(null, 100, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
+    MMXChannel.getAllPublicChannels(0, 100, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
         ChannelsManager.getInstance(ChannelListActivity.this).setChannels(mmxChannelListResult.items);
         updateView();

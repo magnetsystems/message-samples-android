@@ -108,6 +108,7 @@ public class MainActivity extends Activity {
       startLoginActivity();
     } else {
       //populate or update the view
+      RPSLS.Util.fetchAvailablePlayers(this);
       RPSLS.Util.publishAvailability(this, true);
       updateViewConnectionState();
       updateAvailablePlayersView();
