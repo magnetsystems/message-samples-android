@@ -5,7 +5,7 @@
 
 Magnet Message is a powerful, open source mobile messaging framework enabling real-time user engagement for your mobile apps. Send relevant and targeted communications to customers or employees. These sample Android apps serve as introductory sample code - get familiar with our API, extend our samples and get coding today.
 
-## Rock Paper Scissors Lizard Spock
+## [Rock Paper Scissors Lizard Spock](RPSLS)
 <img style="margin:10px" src="https://www.magnet.com/wp-content/uploads/2015/04/spock.png"
  alt="RPSLS logo" width="200"  align="right" title="RPSLS"/>
 
@@ -35,7 +35,7 @@ Game on!
 
 
 <hr>
-## Soapbox
+## [Soapbox](SoapBox)
 <img style="margin:10px" src="http://www.threetwelvecreative.com/Portals/207686/images/Stick-Figures-With-Megaphone-800.jpg"
  alt="soapbox logo" width="250" align="right"  title="soapbox"/>
 
@@ -69,7 +69,7 @@ Feature highlights:
 
 
 <hr>
-## Quickstart
+## [Quickstart](quickstart)
 0.  Quickstart was created to have a simple app that could demonstrate the most basic messaging features including logging in and sending and receiving a message.
 
 ### Build Instructions
@@ -83,6 +83,15 @@ Feature highlights:
 -- addressing and sending a message 
 -- receiving a message and accessing its content.
 
+<hr>
+## [RichMessaging](RichMessaging)
+<img style="margin:10px" src="https://raw.githubusercontent.com/magnetsystems/message-samples-android/develop/RichMessaging/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
+ alt="RichMessaging logo" width="160" align="right"  title="RichMessaging"/>
+RichMessaging is a simple Android chat app to demonstrate how rich content such as images, videos, and geographical location can be delivered and received using Magnet Message. Images and videos are uploaded to Amazon S3, and the URL to the file is delivered to the recipient. This app also demonstrates Facebook integration with Magnet Message.
+
+<hr>
+## [Smart Shopper](SmartShopper)
+Smart Shopper allows a user to search for contextually relevant products, share them with friends or add them to your Wish List. It uses the [Weather Underground APIs](http://theweatherapi.com/) to retrieve the current weather and searches for a relevant product using the [Walmart Labs APIs](http://github.com/walmartlabs/getting-started). It uses [Magnet Message](https://www.magnet.com/developer/magnet-message/) APIs to implement **Share a Product** and **Wish List** features.
 
 ## Feedback
 

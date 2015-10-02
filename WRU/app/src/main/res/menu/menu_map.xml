@@ -1,0 +1,29 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.magnet.wru.MapActivity">
+      <item android:id="@+id/action_find"
+            android:orderInCategory="100"
+            android:title="@string/action_find"/>
+      <item android:id="@+id/action_request_updates"
+            android:orderInCategory="200"
+            android:title="@string/action_request_updates" />
+      <item android:id="@+id/action_leave"
+            android:orderInCategory="300"
+            android:title="@string/action_leave" />
+      <item android:id="@+id/action_settings"
+            android:title="@string/action_settings"
+            android:orderInCategory="400"
+            app:showAsAction="never"/>
+      <item android:title="@string/action_logs"
+            android:orderInCategory="500">
+          <menu>
+              <item android:id="@+id/action_set_enabled"
+                    android:title="Enable" />
+              <item android:id="@+id/action_view_log"
+                    android:title="@string/action_view_log" />
+              <item android:id="@+id/action_clear_log"
+                    android:title="@string/action_clear_log" />
+          </menu>
+      </item>
+</menu>
