@@ -33,6 +33,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.magnet.android.User;
+import com.magnet.android.ApiCallback;
+import com.magnet.android.ApiError;
+import com.magnet.android.auth.model.UserRegistrationInfo;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
@@ -98,23 +102,25 @@ public class MyActivity extends Activity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
     super.onCreate(savedInstanceState);
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
-    MMX.registerListener(mEventListener);
-    MMXUser quickstartUser = new MMXUser.Builder()
-            .username(QUICKSTART_USERNAME)
-            .displayName(QUICKSTART_USERNAME)
-            .build();
-    quickstartUser.register(QUICKSTART_PASSWORD, new MMXUser.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
+    User.register(new UserRegistrationInfo.Builder()
+            .userName(QUICKSTART_USERNAME)
+            .firstName(QUICKSTART_USERNAME)
+            .password(new String(QUICKSTART_PASSWORD))
+            .build(), new ApiCallback<User>() {
+      @Override
+      public void success(User user) {
         Log.d(TAG, "register user succeeded");
         loginHelper();
       }
 
-      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-        Log.d(TAG, "register user failed because: " + failureCode);
+      @Override
+      public void failure(ApiError apiError) {
+        Log.d(TAG, "register user failed because: " + apiError);
         loginHelper();
       }
     });
@@ -141,13 +147,14 @@ public class MyActivity extends Activity {
   }
 
   private void loginHelper() {
-    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
-        MMX.start();
+    User.login(QUICKSTART_USERNAME, new String(QUICKSTART_PASSWORD), false, new ApiCallback<Boolean>() {
+      public void success(Boolean aBoolean) {
+        Log.d(TAG, "login(): success! boolean=" + aBoolean);
         updateViewState();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+      public void failure(ApiError apiError) {
+        Log.d(TAG, "login(): failure! error=" + apiError);
         updateViewState();
       }
     });
@@ -169,6 +176,11 @@ public class MyActivity extends Activity {
    */
   @Override
   public void onResume() {
+    try {
+      MMX.start();
+    } catch (Exception ex) {
+      Log.d(TAG, "onResume(): caught exception", ex);
+    }
     updateViewState();
     super.onResume();
   }
@@ -179,9 +191,9 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        MMXUser user = MMX.getCurrentUser();
+        User user = User.getCurrentUser();
         if (user != null) {
-          String username = user.getUsername();
+          String username = user.getUserName();
           String status = getString(R.string.status_authenticated) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);

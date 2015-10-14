@@ -14,6 +14,8 @@
  */
 package com.magnet.demo.mmx.starter;
 
+import com.magnet.android.config.MagnetAndroidPropertiesConfig;
+import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXUser;
@@ -53,7 +55,7 @@ public class MyApplication extends Application {
   public void onCreate() {
     super.onCreate();
     Log.setLoggable(null, Log.VERBOSE);
-    MMX.init(this, R.raw.quickstart);
+    Max.init(this.getApplicationContext(), new MagnetAndroidPropertiesConfig(this, R.raw.quickstart));
     MMX.registerListener(mListener);
 
     // Optionally register a wakeup broadcast intent.  This will be broadcast when a GCM message
