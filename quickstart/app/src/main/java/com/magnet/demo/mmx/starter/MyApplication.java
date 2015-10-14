@@ -55,9 +55,10 @@ public class MyApplication extends Application {
   public void onCreate() {
     super.onCreate();
     Log.setLoggable(null, Log.VERBOSE);
-    Max.init(this.getApplicationContext(), new MagnetAndroidPropertiesConfig(this, R.raw.quickstart));
+    //First thing to do is init the Max API.
+    Max.init(this.getApplicationContext(),
+            new MagnetAndroidPropertiesConfig(this, R.raw.quickstart));
     MMX.registerListener(mListener);
-
     // Optionally register a wakeup broadcast intent.  This will be broadcast when a GCM message
     // for this MMX application.  If configure properly, the MMX server will send this GCM  to wakeup
     // the device when a message needs to be delivered.  It is up to the developer to define this intent
@@ -65,6 +66,7 @@ public class MyApplication extends Application {
     // to retrieve pending messages.
     Intent intent = new Intent("QUICKSTART_WAKEUP");
     MMX.registerWakeupBroadcast(intent);
+
   }
 
   private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {

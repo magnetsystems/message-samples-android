@@ -37,6 +37,7 @@ import com.magnet.android.User;
 import com.magnet.android.ApiCallback;
 import com.magnet.android.ApiError;
 import com.magnet.android.auth.model.UserRegistrationInfo;
+import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
@@ -102,7 +103,6 @@ public class MyActivity extends Activity {
    */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
     super.onCreate(savedInstanceState);
 
     // Register this activity as a listener to receive and show incoming
@@ -150,6 +150,15 @@ public class MyActivity extends Activity {
     User.login(QUICKSTART_USERNAME, new String(QUICKSTART_PASSWORD), false, new ApiCallback<Boolean>() {
       public void success(Boolean aBoolean) {
         Log.d(TAG, "login(): success! boolean=" + aBoolean);
+        Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
+          public void success(Boolean aBoolean) {
+            MMX.start();
+          }
+
+          public void failure(ApiError apiError) {
+            Toast.makeText(MyActivity.this, "Unable to initialize MMX: " + apiError, Toast.LENGTH_LONG).show();
+          }
+        });
         updateViewState();
       }
 
