@@ -39,7 +39,6 @@ import com.magnet.android.ApiError;
 import com.magnet.android.auth.model.UserRegistrationInfo;
 import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMXMessage;
-import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
 
 import java.text.DateFormat;
@@ -83,7 +82,7 @@ public class MyActivity extends Activity {
             }
 
             @Override
-            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
+            public boolean onMessageAcknowledgementReceived(User user, String messageId) {
               return false;
             }
 
@@ -185,11 +184,6 @@ public class MyActivity extends Activity {
    */
   @Override
   public void onResume() {
-    try {
-      MMX.start();
-    } catch (Exception ex) {
-      Log.d(TAG, "onResume(): caught exception", ex);
-    }
     updateViewState();
     super.onResume();
   }
@@ -255,7 +249,7 @@ public class MyActivity extends Activity {
           }
           //set author and color
           MMXMessage msg = message.getMessage();
-          String authorStr = msg.getSender().getUsername();
+          String authorStr = msg.getSender().getUserName();
           for (int i=TO_LIST.length; --i >= 0;) {
             if (TO_LIST[i].equalsIgnoreCase(authorStr)) {
               colorResId = COLOR_IDS[i];
@@ -327,8 +321,8 @@ public class MyActivity extends Activity {
     HashMap<String, String> content = new HashMap<String, String>();
     content.put(KEY_MESSAGE_TEXT, messageText);
 
-    HashSet<MMXUser> recipients = new HashSet<MMXUser>();
-    recipients.add(new MMXUser.Builder().username(mToUsername).build());
+    HashSet<User> recipients = new HashSet<User>();
+    recipients.add(MMX.getCurrentUser());
 
     String messageID = new MMXMessage.Builder()
             .content(content)

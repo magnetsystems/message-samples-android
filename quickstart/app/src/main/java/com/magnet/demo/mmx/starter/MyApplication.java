@@ -14,11 +14,11 @@
  */
 package com.magnet.demo.mmx.starter;
 
+import com.magnet.android.User;
 import com.magnet.android.config.MagnetAndroidPropertiesConfig;
 import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMX;
-import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.common.Log;
 
 import android.app.Application;
@@ -73,12 +73,12 @@ public class MyApplication extends Application {
     Object textObj = message.getContent().get(MyActivity.KEY_MESSAGE_TEXT);
     if (textObj != null) {
       String messageText = textObj.toString();
-      MMXUser from = message.getSender();
+      User from = message.getSender();
       NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
       Notification note = new Notification.Builder(this).setAutoCancel(true)
               .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
               .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-              .setContentTitle("Message from " + from.getUsername()).setContentText(messageText).build();
+              .setContentTitle("Message from " + from.getUserName()).setContentText(messageText).build();
       noteMgr.notify(mNoteId++, note);
     }
   }
