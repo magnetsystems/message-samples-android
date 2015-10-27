@@ -186,8 +186,8 @@ public class ChannelItemListActivity extends Activity {
       menu.removeItem(R.id.action_unsubscribe);
     }
 
-    if (!mChannel.getOwnerUsername()
-            .equalsIgnoreCase(MMX.getCurrentUser().getUsername())) {
+    if (!mChannel.getOwnerId()
+            .equalsIgnoreCase(MMX.getCurrentUser().getUserIdentifier())) {
       menu.removeItem(R.id.action_delete);
     }
 
@@ -291,7 +291,7 @@ public class ChannelItemListActivity extends Activity {
       int type = getItemViewType(position);
       MMXMessage message = getItem(position);
       int colorResId = 0;
-      String authorStr = message.getSender().getUsername();
+      String authorStr = message.getSender().getUserName();
       if (authorStr == null) {
         authorStr = getContext().getString(R.string.chat_unknown);
       }
@@ -329,7 +329,7 @@ public class ChannelItemListActivity extends Activity {
     @Override
     public int getItemViewType(int position) {
       MMXMessage message = getItem(position);
-      if (mProfile.getUsername().equals(message.getSender().getUsername())) {
+      if (mProfile.getUsername().equalsIgnoreCase(message.getSender().getUserName())) {
         //me
         return TYPE_ME;
       } else {

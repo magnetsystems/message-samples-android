@@ -80,7 +80,7 @@ public class AddChannelActivity extends Activity {
         mChannelName.setError(getString(R.string.error_channel_name_required));
         return;
       }
-      MMXChannel.create(channelName, channelName, true,
+      MMXChannel.create(channelName, channelName, true, MMXChannel.PublishPermission.ANYONE,
               new MMXChannel.OnFinishedListener<MMXChannel>() {
         public void onSuccess(MMXChannel mmxChannel) {
           //add tags
