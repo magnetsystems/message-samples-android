@@ -330,13 +330,21 @@ public class MyActivity extends Activity {
             .build()
             .send(new MMXMessage.OnFinishedListener<String>() {
               public void onSuccess(String s) {
-                Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable() {
+                  public void run() {
+                    Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
+                  }
+                });
                 updateViewState();
               }
 
-              public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
+              public void onFailure(MMXMessage.FailureCode failureCode, final Throwable e) {
                 Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
-                Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable() {
+                  public void run() {
+                    Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                  }
+                });
               }
             });
     MyMessageStore.addMessage(null, messageText, new Date(), false);
