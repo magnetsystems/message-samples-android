@@ -8,10 +8,10 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.magnet.android.User;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
-import com.magnet.mmx.client.api.MMXUser;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -234,7 +234,7 @@ public class RPSLS {
       //sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
       //sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
       //sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
-      sAvailablePlayers.add(new UserProfile("player_bot", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(System.currentTimeMillis()), false)); //September 28, 1951
+      sAvailablePlayers.add(new UserProfile("player_bot", null, new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(System.currentTimeMillis()), false)); //September 28, 1951
     }
 
     /**
@@ -355,7 +355,7 @@ public class RPSLS {
      */
     private static boolean handleAvailabilityMessage(Context context, MMXMessage message) {
       Map<String, String> messageContent = message.getContent();
-      UserProfile profileFromPayload = parseUserProfileFromMessage(messageContent);
+      UserProfile profileFromPayload = parseUserProfileFromMessage(message.getSender(), messageContent);
       String username = profileFromPayload.getUsername();
       Log.d(TAG, "handleAvailabilityMessage(): handling availability message sent by " + username + " at "
               + mDateFormatter.format(message.getTimestamp()));
@@ -390,7 +390,7 @@ public class RPSLS {
      * @param messageContent the messageContent
      * @return the UserProfile object
      */
-    private static UserProfile parseUserProfileFromMessage(Map<String,String> messageContent) {
+    private static UserProfile parseUserProfileFromMessage(User fromUser, Map<String,String> messageContent) {
       String username = messageContent.get(MessageConstants.KEY_USERNAME);
       String winStr = messageContent.get(MessageConstants.KEY_WINS);
       String lossStr = messageContent.get(MessageConstants.KEY_LOSSES);
@@ -398,7 +398,7 @@ public class RPSLS {
       int wins = winStr == null ? 0 : Integer.parseInt(winStr);
       int losses = lossStr == null ? 0 : Integer.parseInt(lossStr);
       int ties = tieStr == null ? 0 : Integer.parseInt(tieStr);
-      return new UserProfile(username,
+      return new UserProfile(username, fromUser,
               new UserProfile.Stats(wins, losses, ties, 0, 0, 0, 0, 0), null, false);
     }
 
@@ -458,7 +458,7 @@ public class RPSLS {
       Map<String,String> messageContent = message.getContent();
       final String gameId = messageContent.get(MessageConstants.KEY_GAMEID);
       String timestamp = messageContent.get(MessageConstants.KEY_TIMESTAMP);
-      final UserProfile profile = parseUserProfileFromMessage(messageContent);
+      final UserProfile profile = parseUserProfileFromMessage(message.getSender(), messageContent);
       if (gameId == null || profile.getUsername() == null) {
         //can't continue
         Log.w(TAG, "handleInvitation(): Invitation is invalid");
@@ -476,10 +476,8 @@ public class RPSLS {
                   public void onClick(DialogInterface dialog, int which) {
                     synchronized (sPendingGames) {
                       sPendingGames.put(gameId, new Game(gameId, profile));
-                      HashSet<MMXUser> recipients = new HashSet<>();
-                      recipients.add(new MMXUser.Builder()
-                              .username(profile.getUsername())
-                              .build());
+                      HashSet<User> recipients = new HashSet<>();
+                      recipients.add(profile.getUser());
                       MMXMessage message = new MMXMessage.Builder()
                               .content(buildAcceptPayload(context, gameId, true))
                               .recipients(recipients)
@@ -501,10 +499,8 @@ public class RPSLS {
                 })
                 .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
                   public void onClick(DialogInterface dialog, int which) {
-                    HashSet<MMXUser> recipients = new HashSet<>();
-                    recipients.add(new MMXUser.Builder()
-                            .username(profile.getUsername())
-                            .build());
+                    HashSet<User> recipients = new HashSet<>();
+                    recipients.add(profile.getUser());
                     MMXMessage message = new MMXMessage.Builder()
                             .content(buildAcceptPayload(context, gameId, false))
                             .recipients(recipients)
@@ -530,7 +526,7 @@ public class RPSLS {
     private static boolean handleInvitationAcceptance(final Context context, MMXMessage message) {
       //start the game
       Map<String,String> messageContent = message.getContent();
-      UserProfile opponent = parseUserProfileFromMessage(messageContent);
+      UserProfile opponent = parseUserProfileFromMessage(message.getSender(), messageContent);
       final String gameId = messageContent.get(MessageConstants.KEY_GAMEID);
       String timestamp = messageContent.get(MessageConstants.KEY_TIMESTAMP);
       boolean isAccept = Boolean.parseBoolean(messageContent.get(MessageConstants.KEY_IS_ACCEPT));
@@ -618,11 +614,11 @@ public class RPSLS {
         setProfileToMessage(myProfile, messageContent);
         messageContent.put(MessageConstants.KEY_GAMEID, gameId);
         messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-        final HashSet<MMXUser> recipients = new HashSet<>();
+        final HashSet<User> recipients = new HashSet<>();
         ArrayList<UserProfile> aiPlayers = new ArrayList<>();
         for (UserProfile invitee : invitees) {
           if (!invitee.isArtificialIntelligence()) {
-            recipients.add(new MMXUser.Builder().username(invitee.getUsername()).build());
+            recipients.add(invitee.getUser());
           } else {
             aiPlayers.add(invitee);
           }
@@ -844,9 +840,8 @@ public class RPSLS {
         messageContent.put(MessageConstants.KEY_CHOICE, MessageConstants.CHOICE_REVERSE_MAP.get(choice));
         messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
 
-        HashSet<MMXUser> recipients = new HashSet<>();
-        recipients.add(new MMXUser.Builder()
-                .username(mSelectedOpponent.getUsername()).build());
+        HashSet<User> recipients = new HashSet<>();
+        recipients.add(mSelectedOpponent.getUser());
         MMXMessage message = new MMXMessage.Builder()
                 .recipients(recipients)
                 .content(messageContent)

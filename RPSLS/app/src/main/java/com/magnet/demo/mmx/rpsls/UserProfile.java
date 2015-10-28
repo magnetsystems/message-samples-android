@@ -1,5 +1,7 @@
 package com.magnet.demo.mmx.rpsls;
 
+import com.magnet.android.User;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +35,7 @@ public class UserProfile {
     }
   }
 
+  private User mUser = null;
   private String mUsername = null;
   private Stats mStats = null;
   private Date mCreationDate = null;
@@ -40,8 +43,9 @@ public class UserProfile {
 
   protected UserProfile() {}
 
-  public UserProfile(String username, Stats stats, Date creationDate, boolean isArtificialIntelligence) {
+  public UserProfile(String username, User user, Stats stats, Date creationDate, boolean isArtificialIntelligence) {
     mUsername = username;
+    mUser = user;
     mStats = stats;
     mCreationDate = creationDate;
     mArtificialIntelligence = isArtificialIntelligence;
@@ -50,6 +54,8 @@ public class UserProfile {
   public final String getUsername() {
     return mUsername;
   }
+
+  public final User getUser() { return mUser; }
 
   protected void setUsername(String username) {
     mUsername = username;
