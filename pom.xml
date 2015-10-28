@@ -43,19 +43,19 @@
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
                                     <arg value="-y" />
-                                    <arg value="${basedir}/target/android-samples/quickstart-android-${project.version}-deploy.zip" />
+                                    <arg value="${basedir}/target/android-samples/com.magnet.quickstart-android.zip" />
                                     <arg value="quickstart" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
                                     <arg value="-y" />
-                                    <arg value="${basedir}/target/android-samples/soapbox-android-${project.version}-deploy.zip" />
+                                    <arg value="${basedir}/target/android-samples/com.magnet.soapbox-android.zip" />
                                     <arg value="SoapBox" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
                                     <arg value="-y" />
-                                    <arg value="${basedir}/target/android-samples/rpsls-android-${project.version}-deploy.zip" />
+                                    <arg value="${basedir}/target/android-samples/com.magnet.rpsls-android.zip" />
                                     <arg value="RPSLS" />
                                 </exec>
                             </target>
