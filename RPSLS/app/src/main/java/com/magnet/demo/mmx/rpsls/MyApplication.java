@@ -12,7 +12,7 @@ public class MyApplication extends Application {
     super.onCreate();
     //First thing to do is init the Max API.
     Max.init(this.getApplicationContext(),
-            new MagnetAndroidPropertiesConfig(this, R.raw.rpsls));
+            new MagnetAndroidPropertiesConfig(this, R.raw.magnetmax));
     MMX.registerListener(new MMX.EventListener() {
       public boolean onMessageReceived(MMXMessage mmxMessage) {
         RPSLS.Util.handleIncomingMessage(MyApplication.this, mmxMessage);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -226,6 +227,7 @@ public class RPSLS {
     private static final LinkedList<UserProfile> sAvailablePlayers = new LinkedList<>();
     private static final DateFormat mDateFormatter = DateFormat.getDateTimeInstance();
     private static final HashMap<String, Game> sPendingGames = new HashMap<>(); //gameId:game
+    private static final Handler sHandler = new Handler(Looper.getMainLooper());
 
     static {
       //These AI players can be selected as opponents by the current player
@@ -425,7 +427,7 @@ public class RPSLS {
      */
     public static boolean handleIncomingMessage(final Context context, final MMXMessage message) {
       Map<String,String> messageContent = message.getContent();
-      String type = messageContent.get(MessageConstants.KEY_TYPE);
+      final String type = messageContent.get(MessageConstants.KEY_TYPE);
       boolean returnVal = false;
       if (MessageConstants.TYPE_INVITATION.equals(type)) {
         returnVal = handleInvitation(context, message);
@@ -469,56 +471,68 @@ public class RPSLS {
         return false;
       } else {
         //show a UI whether or not to accept the invitation
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle(context.getString(R.string.invitation_from, profile.getUsername()))
-                .setMessage(R.string.accept_invitation_prompt)
-                .setPositiveButton(R.string.btn_accept, new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    synchronized (sPendingGames) {
-                      sPendingGames.put(gameId, new Game(gameId, profile));
-                      HashSet<User> recipients = new HashSet<>();
-                      recipients.add(profile.getUser());
-                      MMXMessage message = new MMXMessage.Builder()
-                              .content(buildAcceptPayload(context, gameId, true))
-                              .recipients(recipients)
-                              .build();
-                      message.send(new MMXMessage.OnFinishedListener<String>() {
-                        public void onSuccess(String messageId) {
-                          Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
-                          launchGameActivity(context, gameId);
-                        }
+        sHandler.post(new Runnable() {
+          public void run() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                    .setTitle(context.getString(R.string.invitation_from, profile.getUsername()))
+                    .setMessage(R.string.accept_invitation_prompt)
+                    .setPositiveButton(R.string.btn_accept, new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int which) {
+                        synchronized (sPendingGames) {
+                          sPendingGames.put(gameId, new Game(gameId, profile));
+                          HashSet<User> recipients = new HashSet<>();
+                          recipients.add(profile.getUser());
+                          MMXMessage message = new MMXMessage.Builder()
+                                  .content(buildAcceptPayload(context, gameId, true))
+                                  .recipients(recipients)
+                                  .build();
+                          message.send(new MMXMessage.OnFinishedListener<String>() {
+                            public void onSuccess(String messageId) {
+                              Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
+                              launchGameActivity(context, gameId);
+                            }
 
-                        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-                          Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
-                          Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                            public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
+                              Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
+                              sHandler.post(new Runnable() {
+                                public void run() {
+                                  Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                                }
+                              });
+                            }
+                          });
+                          dialog.dismiss();
                         }
-                      });
-                      dialog.dismiss();
-                    }
-                  }
-                })
-                .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    HashSet<User> recipients = new HashSet<>();
-                    recipients.add(profile.getUser());
-                    MMXMessage message = new MMXMessage.Builder()
-                            .content(buildAcceptPayload(context, gameId, false))
-                            .recipients(recipients)
-                            .build();
-                    message.send(new MMXMessage.OnFinishedListener<String>() {
-                      public void onSuccess(String messageId) {
-                        Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
                       }
+                    })
+                    .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int which) {
+                        HashSet<User> recipients = new HashSet<>();
+                        recipients.add(profile.getUser());
+                        MMXMessage message = new MMXMessage.Builder()
+                                .content(buildAcceptPayload(context, gameId, false))
+                                .recipients(recipients)
+                                .build();
+                        message.send(new MMXMessage.OnFinishedListener<String>() {
+                          public void onSuccess(String messageId) {
+                            Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
+                          }
 
-                      public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-                        Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
-                        Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                          public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
+                            Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
+                            sHandler.post(new Runnable() {
+                              public void run() {
+                                Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                              }
+                            });
+                          }
+                        });
+                        dialog.dismiss();
                       }
                     });
-                    dialog.dismiss();
-                  }
-                });
-        builder.show();
+            builder.show();
+          }
+        });
         return true;
       }
     }
@@ -583,18 +597,22 @@ public class RPSLS {
     }
 
     private static void checkStartGame(final Context context, final Game game) {
-      UserProfile opponent = game.getSelectedOpponent();
+      final UserProfile opponent = game.getSelectedOpponent();
       if (opponent != null) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle(R.string.invitation_accepted)
-                .setMessage(context.getString(R.string.starting_game, opponent.getUsername()))
-                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                  public void onClick(DialogInterface dialog, int which) {
-                    launchGameActivity(context, game.mGameId);
-                    dialog.dismiss();
-                  }
-                });
-        builder.show();
+        sHandler.post(new Runnable() {
+          public void run() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                    .setTitle(R.string.invitation_accepted)
+                    .setMessage(context.getString(R.string.starting_game, opponent.getUsername()))
+                    .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                      public void onClick(DialogInterface dialog, int which) {
+                        launchGameActivity(context, game.mGameId);
+                        dialog.dismiss();
+                      }
+                    });
+            builder.show();
+          }
+        });
       }
     }
 

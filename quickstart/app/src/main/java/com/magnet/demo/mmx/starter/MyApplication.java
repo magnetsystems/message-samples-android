@@ -56,7 +56,7 @@ public class MyApplication extends Application {
     com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
     //First thing to do is init the Max API.
     Max.init(this.getApplicationContext(),
-            new MagnetAndroidPropertiesConfig(this, R.raw.quickstart));
+            new MagnetAndroidPropertiesConfig(this, R.raw.magnetmax));
     MMX.registerListener(mListener);
     // Optionally register a wakeup broadcast intent.  This will be broadcast when a GCM message
     // for this MMX application.  If configure properly, the MMX server will send this GCM  to wakeup

@@ -29,8 +29,8 @@ dependencies {
     compile('com.magnet.android:magnet-max-android-sdk:3.0.9-SNAPSHOT@aar') {
         transitive = true
     }
-
-    compile 'com.google.android.gms:play-services-base:8.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+// Uncomment these for GCM support.  Also uncomment meta-data in AndroidManifest.xml
+//    compile 'com.google.android.gms:play-services-base:8.1.0'
+//    compile 'com.google.android.gms:play-services-gcm:8.1.0'
 }
 

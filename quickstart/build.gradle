@@ -26,16 +26,5 @@ allprojects {
                 password = "${devPassword}"
             }
         }
-
-        maven {
-            url "http://dev-repo.magneteng.com:8081/artifactory/blowfish-internal-repo"
-            credentials {
-                username = "intern_build"
-                password = "password"
-            }
-        }
-        maven {
-            url "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
     }
 }

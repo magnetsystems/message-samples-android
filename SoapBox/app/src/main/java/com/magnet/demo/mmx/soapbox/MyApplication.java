@@ -16,7 +16,7 @@ public class MyApplication extends Application {
     super.onCreate();
     //First thing to do is init the Max API.
     Max.init(this.getApplicationContext(),
-            new MagnetAndroidPropertiesConfig(this, R.raw.soapbox));
+            new MagnetAndroidPropertiesConfig(this, R.raw.magnetmax));
     MMX.registerListener(new MMX.EventListener() {
       @Override
       public boolean onMessageReceived(MMXMessage mmxMessage) {
