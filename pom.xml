@@ -44,7 +44,7 @@
                                     <arg value="-r" />
                                     <arg value="-y" />
                                     <arg value="${basedir}/target/android-samples/quickstart-android.zip" />
-                                    <arg value="quickstart" />
+                                    <arg value="QuickStart" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
