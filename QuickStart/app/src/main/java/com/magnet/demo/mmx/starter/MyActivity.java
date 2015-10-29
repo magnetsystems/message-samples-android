@@ -16,6 +16,7 @@ package com.magnet.demo.mmx.starter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -223,16 +224,14 @@ public class MyActivity extends Activity {
     private static final int TYPE_ME = 0;
     private static final int TYPE_THEM = 1;
     private String mUsername;
-    private Activity mActivity;
     private List<MyMessageStore.Message> mMessageList = null;
     private LayoutInflater mInflater;
     private DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
 
-    public MessageListAdapter(Activity activity, List<MyMessageStore.Message> messageList, String username) {
+    public MessageListAdapter(Context context, List<MyMessageStore.Message> messageList, String username) {
       mUsername = username;
       mMessageList = messageList;
-      mActivity = activity;
-      mInflater = (LayoutInflater) activity.getSystemService(LAYOUT_INFLATER_SERVICE);
+      mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -300,11 +299,7 @@ public class MyActivity extends Activity {
 
     private void setMessageList(List<MyMessageStore.Message> messageList) {
       mMessageList = messageList;
-      mActivity.runOnUiThread(new Runnable() {
-        public void run() {
-          notifyDataSetChanged();
-        }
-      });
+      notifyDataSetChanged();
     }
 
     @Override
@@ -345,21 +340,13 @@ public class MyActivity extends Activity {
             .build()
             .send(new MMXMessage.OnFinishedListener<String>() {
               public void onSuccess(String s) {
-                runOnUiThread(new Runnable() {
-                  public void run() {
-                    Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
-                  }
-                });
+                Toast.makeText(MyActivity.this, "Message sent.", Toast.LENGTH_LONG).show();
                 updateViewState();
               }
 
               public void onFailure(MMXMessage.FailureCode failureCode, final Throwable e) {
                 Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
-                runOnUiThread(new Runnable() {
-                  public void run() {
-                    Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                  }
-                });
+                Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
               }
             });
     MyMessageStore.addMessage(null, messageText, new Date(), false);
@@ -388,10 +375,10 @@ public class MyActivity extends Activity {
         Log.d(TAG, "loadUsers() successfully loaded " + users.size() + " users.");
         HashMap<String, User> userMap = new HashMap<String, User>();
         for (User user : users) {
-          userMap.put(user.getUserName(), user);
+          userMap.put(user.getUserName().toLowerCase(), user);
         }
         for (int i=TO_LIST.length; --i>=0;) {
-          TO_USERS[i] = userMap.get(TO_LIST[i]);
+          TO_USERS[i] = userMap.get(TO_LIST[i].toLowerCase());
         }
       }
 
