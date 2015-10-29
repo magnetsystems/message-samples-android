@@ -16,7 +16,6 @@ package com.magnet.demo.mmx.starter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +41,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.api.MMX;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,12 +67,13 @@ public class MyActivity extends Activity {
 
   private static final String TAG = MyActivity.class.getSimpleName();
   private static final String[] TO_LIST = {QUICKSTART_USERNAME, "amazing_bot", "echo_bot"};
+  private static final User[] TO_USERS = {null, null, null};
   private TextView mStatus = null;
   private ImageButton mSendButton = null;
   private EditText mSendText = null;
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
-  private String mToUsername = QUICKSTART_USERNAME;
+  private User mToUser = null;
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
@@ -145,6 +146,8 @@ public class MyActivity extends Activity {
     updateViewState();
   }
 
+
+
   private void loginHelper() {
     User.login(QUICKSTART_USERNAME, new String(QUICKSTART_PASSWORD), false, new ApiCallback<Boolean>() {
       public void success(Boolean aBoolean) {
@@ -152,6 +155,8 @@ public class MyActivity extends Activity {
         Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
           public void success(Boolean aBoolean) {
             MMX.start();
+            loadUsers();
+            mToUser = MMX.getCurrentUser();
           }
 
           public void failure(ApiError apiError) {
@@ -218,14 +223,16 @@ public class MyActivity extends Activity {
     private static final int TYPE_ME = 0;
     private static final int TYPE_THEM = 1;
     private String mUsername;
+    private Activity mActivity;
     private List<MyMessageStore.Message> mMessageList = null;
     private LayoutInflater mInflater;
     private DateFormat mFormatter = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
 
-    public MessageListAdapter(Context context, List<MyMessageStore.Message> messageList, String username) {
+    public MessageListAdapter(Activity activity, List<MyMessageStore.Message> messageList, String username) {
       mUsername = username;
       mMessageList = messageList;
-      mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+      mActivity = activity;
+      mInflater = (LayoutInflater) activity.getSystemService(LAYOUT_INFLATER_SERVICE);
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -293,7 +300,11 @@ public class MyActivity extends Activity {
 
     private void setMessageList(List<MyMessageStore.Message> messageList) {
       mMessageList = messageList;
-      notifyDataSetChanged();
+      mActivity.runOnUiThread(new Runnable() {
+        public void run() {
+          notifyDataSetChanged();
+        }
+      });
     }
 
     @Override
@@ -313,6 +324,10 @@ public class MyActivity extends Activity {
   }
 
   public void doSendMessage(View view) {
+    if (mToUser == null) {
+      Toast.makeText(this, "Unable to send.  Could not resolve user.", Toast.LENGTH_LONG).show();
+      return;
+    }
     String messageText = mSendText.getText().toString();
     if (messageText.isEmpty()) {
       //don't send an empty message
@@ -322,7 +337,7 @@ public class MyActivity extends Activity {
     content.put(KEY_MESSAGE_TEXT, messageText);
 
     HashSet<User> recipients = new HashSet<User>();
-    recipients.add(MMX.getCurrentUser());
+    recipients.add(mToUser);
 
     String messageID = new MMXMessage.Builder()
             .content(content)
@@ -360,10 +375,29 @@ public class MyActivity extends Activity {
                     new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
-                        mToUsername = TO_LIST[which];
+                        mToUser = TO_USERS[which];
                       }
                     })
             .create();
     toDialog.show();
+  }
+
+  private void loadUsers() {
+    User.getUsersByUserNames(Arrays.asList(TO_LIST), new ApiCallback<List<User>>() {
+      public void success(List<User> users) {
+        Log.d(TAG, "loadUsers() successfully loaded " + users.size() + " users.");
+        HashMap<String, User> userMap = new HashMap<String, User>();
+        for (User user : users) {
+          userMap.put(user.getUserName(), user);
+        }
+        for (int i=TO_LIST.length; --i>=0;) {
+          TO_USERS[i] = userMap.get(TO_LIST[i]);
+        }
+      }
+
+      public void failure(ApiError apiError) {
+        Log.e(TAG, "loadUsers() failed: " + apiError.getMessage(), apiError.getCause());
+      }
+    });
   }
 }
