@@ -14,7 +14,7 @@
  */
 package com.magnet.demo.mmx.starter;
 
-import com.magnet.android.config.MagnetAndroidPropertiesConfig;
+import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMX;
 
@@ -37,7 +37,7 @@ public class MyApplication extends Application {
     com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
     //First thing to do is init the Max API.
     Max.init(this.getApplicationContext(),
-            new MagnetAndroidPropertiesConfig(this, R.raw.magnetmax));
+            new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
     // Optionally register a wakeup broadcast intent.  This will be broadcast when a GCM message
     // for this MMX application.  If configure properly, the MMX server will send this GCM  to wakeup
     // the device when a message needs to be delivered.  It is up to the developer to define this intent

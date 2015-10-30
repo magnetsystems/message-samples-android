@@ -1,6 +1,6 @@
 package com.magnet.demo.mmx.rpsls;
 
-import com.magnet.android.User;
+import com.magnet.max.android.User;
 
 import java.util.Collections;
 import java.util.Date;

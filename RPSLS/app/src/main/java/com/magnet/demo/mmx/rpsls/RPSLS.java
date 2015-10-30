@@ -9,9 +9,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.magnet.android.ApiCallback;
-import com.magnet.android.ApiError;
-import com.magnet.android.User;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;

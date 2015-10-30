@@ -16,10 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.magnet.android.ApiCallback;
-import com.magnet.android.ApiError;
-import com.magnet.android.User;
-import com.magnet.android.auth.model.UserRegistrationInfo;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.User;
+import com.magnet.max.android.auth.model.UserRegistrationInfo;
 import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMX;
 
