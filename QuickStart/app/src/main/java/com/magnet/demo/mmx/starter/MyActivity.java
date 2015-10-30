@@ -16,8 +16,11 @@ package com.magnet.demo.mmx.starter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -75,10 +78,14 @@ public class MyActivity extends Activity {
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
   private User mToUser = null;
+  private int mNoteId = 0;
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
             public boolean onMessageReceived(MMXMessage mmxMessage) {
+              MyMessageStore.addMessage(mmxMessage, null,
+                      new Date(), true);
+              doNotify(mmxMessage);
               updateViewState();
               return false;
             }
@@ -105,6 +112,7 @@ public class MyActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    MMX.registerListener(mEventListener);
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
@@ -181,7 +189,7 @@ public class MyActivity extends Activity {
   @Override
   public void onDestroy() {
     MMX.unregisterListener(mEventListener);
-    MMX.logout(null);
+    User.logout(null);
     super.onDestroy();
   }
 
@@ -377,7 +385,7 @@ public class MyActivity extends Activity {
         for (User user : users) {
           userMap.put(user.getUserName().toLowerCase(), user);
         }
-        for (int i=TO_LIST.length; --i>=0;) {
+        for (int i = TO_LIST.length; --i >= 0; ) {
           TO_USERS[i] = userMap.get(TO_LIST[i].toLowerCase());
         }
       }
@@ -386,5 +394,19 @@ public class MyActivity extends Activity {
         Log.e(TAG, "loadUsers() failed: " + apiError.getMessage(), apiError.getCause());
       }
     });
+  }
+
+  private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {
+    Object textObj = message.getContent().get(MyActivity.KEY_MESSAGE_TEXT);
+    if (textObj != null) {
+      String messageText = textObj.toString();
+      User from = message.getSender();
+      NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+      Notification note = new Notification.Builder(this).setAutoCancel(true)
+              .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
+              .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+              .setContentTitle("Message from " + from.getUserName()).setContentText(messageText).build();
+      noteMgr.notify(mNoteId++, note);
+    }
   }
 }
