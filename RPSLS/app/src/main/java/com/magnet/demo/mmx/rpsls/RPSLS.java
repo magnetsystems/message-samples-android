@@ -9,6 +9,8 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.magnet.android.ApiCallback;
+import com.magnet.android.ApiError;
 import com.magnet.android.User;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -18,6 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -236,7 +239,6 @@ public class RPSLS {
       //sAvailablePlayers.add(new UserProfile("Skynet", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(467596800000l), true)); //October 26, 1984
       //sAvailablePlayers.add(new UserProfile("V'Ger", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(313372800000l), true)); //December 7, 1979
       //sAvailablePlayers.add(new UserProfile("Gort", new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(-576288000000l), true)); //September 28, 1951
-      sAvailablePlayers.add(new UserProfile("player_bot", null, new UserProfile.Stats(0,0,0,0,0,0,0,0), new Date(System.currentTimeMillis()), false)); //September 28, 1951
     }
 
     /**
@@ -313,6 +315,23 @@ public class RPSLS {
         public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
           Log.e(TAG, "setupGameMessaging(): unable to find availability channel: " +
                   MessageConstants.AVAILABILITY_TOPIC_NAME + ". " + failureCode, throwable);
+        }
+      });
+
+      String[] botNames = {"player_bot"};
+      User.getUsersByUserNames(Arrays.asList(botNames), new ApiCallback<List<User>>() {
+        public void success(List<User> users) {
+          Log.d(TAG, "setupGameMessaging(): attempt to find player_bot found " + users.size() + " users.");
+          if (users.size() > 0) {
+            sAvailablePlayers.add(new UserProfile(users.get(0).getUserName(), users.get(0),
+                    new UserProfile.Stats(0, 0, 0, 0, 0, 0, 0, 0),
+                    new Date(System.currentTimeMillis()), false)); //September 28, 1951
+          }
+        }
+
+        public void failure(ApiError apiError) {
+          Log.e(TAG, "setupGameMessage(): unable to resolve player_bot: " +
+                  apiError, apiError.getCause());
         }
       });
     }
