@@ -140,13 +140,9 @@ public class LoginActivity extends Activity {
             Log.e(TAG, "register() error: " + apiError, apiError.getCause());
             mConnecting.set(false);
 
-            runOnUiThread(new Runnable() {
-              public void run() {
-                Toast.makeText(LoginActivity.this, LoginActivity.this.getString(R.string.error_registration_generic)
-                        + apiError.getMessage(), Toast.LENGTH_LONG).show();
-                showProgress(false);
-              }
-            });
+            Toast.makeText(LoginActivity.this, LoginActivity.this.getString(R.string.error_registration_generic)
+                    + apiError.getMessage(), Toast.LENGTH_LONG).show();
+            showProgress(false);
           }
         });
       } else {
@@ -168,23 +164,15 @@ public class LoginActivity extends Activity {
             mConnecting.set(false);
             setResult(RESULT_OK);
             finish();
-            runOnUiThread(new Runnable() {
-              public void run() {
-                showProgress(false);
-              }
-            });
+            showProgress(false);
           }
 
           public void failure(final ApiError apiError) {
             Log.e(TAG, "loginHelper() MMX init error: " + apiError.getMessage(), apiError.getCause());
             mConnecting.set(false);
-            runOnUiThread(new Runnable() {
-              public void run() {
-                Toast.makeText(LoginActivity.this,
-                        "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
-                showProgress(false);
-              }
-            });
+            Toast.makeText(LoginActivity.this,
+                    "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
+            showProgress(false);
           }
         });
       }
@@ -192,13 +180,9 @@ public class LoginActivity extends Activity {
       public void failure(final ApiError apiError) {
         Log.e(TAG, "loginHelper() Login error: " + apiError.getMessage(), apiError.getCause());
         mConnecting.set(false);
-        runOnUiThread(new Runnable() {
-          public void run() {
-            Toast.makeText(LoginActivity.this,
-                    "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
-            showProgress(false);
-          }
-        });
+        Toast.makeText(LoginActivity.this,
+                "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
+        showProgress(false);
       }
     });
   }

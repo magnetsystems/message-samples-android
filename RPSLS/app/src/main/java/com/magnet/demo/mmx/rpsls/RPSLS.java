@@ -227,7 +227,7 @@ public class RPSLS {
     private static final LinkedList<UserProfile> sAvailablePlayers = new LinkedList<>();
     private static final DateFormat mDateFormatter = DateFormat.getDateTimeInstance();
     private static final HashMap<String, Game> sPendingGames = new HashMap<>(); //gameId:game
-    private static final Handler sHandler = new Handler(Looper.getMainLooper());
+    private static final Handler sMainHandler = new Handler(Looper.getMainLooper());
 
     static {
       //These AI players can be selected as opponents by the current player
@@ -292,37 +292,55 @@ public class RPSLS {
      * @param context the context
      */
     public static void setupGameMessaging(final Context context) {
-      final MMXChannel availabilityChannel = getAvailabilityChannel();
-      availabilityChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
-        public void onSuccess(String subId) {
-          Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +
-                  availabilityChannel.getName() + ", subId=" + subId);
+      MMXChannel.getPublicChannel(MessageConstants.AVAILABILITY_TOPIC_NAME, new MMXChannel.OnFinishedListener<MMXChannel>() {
+        @Override
+        public void onSuccess(MMXChannel mmxChannel) {
+          sAvailabilityChannel = mmxChannel;
+          sAvailabilityChannel.subscribe(new MMXChannel.OnFinishedListener<String>() {
+            public void onSuccess(String subId) {
+              Log.d(TAG, "setupGameMessaging(): subscribed successfully to topic: " +
+                      sAvailabilityChannel.getName() + ", subId=" + subId);
+            }
+
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+              Log.e(TAG, "setupGameMessaging(): unable to subscribe to availability topic", throwable);
+            }
+          });
+          fetchAvailablePlayers(context);
         }
 
+        @Override
         public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-          Log.e(TAG, "setupGameMessaging(): unable to subscribe to availability topic", throwable);
+          Log.e(TAG, "setupGameMessaging(): unable to find availability channel: " +
+                  MessageConstants.AVAILABILITY_TOPIC_NAME + ". " + failureCode, throwable);
         }
       });
-
-      fetchAvailablePlayers(context);
     }
 
     public static void fetchAvailablePlayers(final Context context) {
-      getAvailabilityChannel().getMessages(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
-              null, 0, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
-                public void onSuccess(ListResult<MMXMessage> mmxMessages) {
-                  Log.d(TAG, "fetchAvailablePlayers(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
-                  for (int i = mmxMessages.totalCount; --i >= 0; ) {
-                    //start with the last (oldest message);
-                    handleAvailabilityMessage(context, mmxMessages.items.get(i));
-                  }
+      sMainHandler.post(new Runnable() {
+        public void run() {
+          if (sAvailabilityChannel == null) {
+            sMainHandler.postDelayed(this, 2000);
+            return;
+          }
+          sAvailabilityChannel.getMessages(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
+                  null, 0, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
+                    public void onSuccess(ListResult<MMXMessage> mmxMessages) {
+                      Log.d(TAG, "fetchAvailablePlayers(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
+                      for (int i = mmxMessages.totalCount; --i >= 0; ) {
+                        //start with the last (oldest message);
+                        handleAvailabilityMessage(context, mmxMessages.items.get(i));
+                      }
 
-                }
+                    }
 
-                public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                  Log.e(TAG, "fetchAvailablePlayers(): caught exception while finding the latest available players", throwable);
-                }
-              });
+                    public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                      Log.e(TAG, "fetchAvailablePlayers(): caught exception while finding the latest available players", throwable);
+                    }
+                  });
+        }
+      });
     }
 
     /**
@@ -331,20 +349,29 @@ public class RPSLS {
      * @param context the context
      * @param isAvailable whether or not the current user is available
      */
-    public static void publishAvailability(Context context, boolean isAvailable) {
-      HashMap<String,String> messageContent = new HashMap<>();
-      MyProfile profile = MyProfile.getInstance(context);
-      setProfileToMessage(profile, messageContent);
-      messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
-      messageContent.put(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
-      messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-      getAvailabilityChannel().publish(messageContent, new MMXMessage.OnFinishedListener<String>() {
-        public void onSuccess(String messageId) {
-          Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
-        }
+    public static void publishAvailability(final Context context, final boolean isAvailable) {
+      sMainHandler.post(new Runnable() {
+        public void run() {
+          if (sAvailabilityChannel == null) {
+            sMainHandler.postDelayed(this, 2000);
+            return;
+          }
+          HashMap<String, String> messageContent = new HashMap<>();
+          MyProfile profile = MyProfile.getInstance(context);
+          setProfileToMessage(profile, messageContent);
+          messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
+          messageContent.put(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
+          messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
+          sAvailabilityChannel.publish(messageContent, new MMXMessage.OnFinishedListener<String>() {
+            public void onSuccess(String messageId) {
+              Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
+            }
 
-        public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-          Log.e(TAG, "publishAvailability(): unable to publish availability: " + failureCode, throwable);
+            public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+              Log.e(TAG, "publishAvailability(): unable to publish availability: " + failureCode, throwable);
+            }
+          });
+
         }
       });
     }
@@ -471,68 +498,56 @@ public class RPSLS {
         return false;
       } else {
         //show a UI whether or not to accept the invitation
-        sHandler.post(new Runnable() {
-          public void run() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                    .setTitle(context.getString(R.string.invitation_from, profile.getUsername()))
-                    .setMessage(R.string.accept_invitation_prompt)
-                    .setPositiveButton(R.string.btn_accept, new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        synchronized (sPendingGames) {
-                          sPendingGames.put(gameId, new Game(gameId, profile));
-                          HashSet<User> recipients = new HashSet<>();
-                          recipients.add(profile.getUser());
-                          MMXMessage message = new MMXMessage.Builder()
-                                  .content(buildAcceptPayload(context, gameId, true))
-                                  .recipients(recipients)
-                                  .build();
-                          message.send(new MMXMessage.OnFinishedListener<String>() {
-                            public void onSuccess(String messageId) {
-                              Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
-                              launchGameActivity(context, gameId);
-                            }
-
-                            public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
-                              Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
-                              sHandler.post(new Runnable() {
-                                public void run() {
-                                  Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
-                                }
-                              });
-                            }
-                          });
-                          dialog.dismiss();
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(context.getString(R.string.invitation_from, profile.getUsername()))
+                .setMessage(R.string.accept_invitation_prompt)
+                .setPositiveButton(R.string.btn_accept, new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    synchronized (sPendingGames) {
+                      sPendingGames.put(gameId, new Game(gameId, profile));
+                      HashSet<User> recipients = new HashSet<>();
+                      recipients.add(profile.getUser());
+                      MMXMessage message = new MMXMessage.Builder()
+                              .content(buildAcceptPayload(context, gameId, true))
+                              .recipients(recipients)
+                              .build();
+                      message.send(new MMXMessage.OnFinishedListener<String>() {
+                        public void onSuccess(String messageId) {
+                          Log.d(TAG, "handleInvitation(): sent acceptance message: " + messageId);
+                          launchGameActivity(context, gameId);
                         }
-                      }
-                    })
-                    .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        HashSet<User> recipients = new HashSet<>();
-                        recipients.add(profile.getUser());
-                        MMXMessage message = new MMXMessage.Builder()
-                                .content(buildAcceptPayload(context, gameId, false))
-                                .recipients(recipients)
-                                .build();
-                        message.send(new MMXMessage.OnFinishedListener<String>() {
-                          public void onSuccess(String messageId) {
-                            Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
-                          }
 
-                          public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
-                            Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
-                            sHandler.post(new Runnable() {
-                              public void run() {
-                                Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
-                              }
-                            });
-                          }
-                        });
-                        dialog.dismiss();
+                        public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
+                          Log.e(TAG, "handleInvitation(): unable to send acceptance message", throwable);
+                          Toast.makeText(context, "Unable to accept: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
+                        }
+                      });
+                      dialog.dismiss();
+                    }
+                  }
+                })
+                .setNegativeButton(R.string.btn_reject, new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    HashSet<User> recipients = new HashSet<>();
+                    recipients.add(profile.getUser());
+                    MMXMessage message = new MMXMessage.Builder()
+                            .content(buildAcceptPayload(context, gameId, false))
+                            .recipients(recipients)
+                            .build();
+                    message.send(new MMXMessage.OnFinishedListener<String>() {
+                      public void onSuccess(String messageId) {
+                        Log.d(TAG, "handleInvitation(): sent rejection message: " + messageId);
+                      }
+
+                      public void onFailure(final MMXMessage.FailureCode failureCode, final Throwable throwable) {
+                        Log.e(TAG, "handleInvitation(): unable to send rejection message", throwable);
+                        Toast.makeText(context, "Unable to reject: " + failureCode + ", " + throwable, Toast.LENGTH_LONG).show();
                       }
                     });
-            builder.show();
-          }
-        });
+                    dialog.dismiss();
+                  }
+                });
+        builder.show();
         return true;
       }
     }
@@ -599,20 +614,16 @@ public class RPSLS {
     private static void checkStartGame(final Context context, final Game game) {
       final UserProfile opponent = game.getSelectedOpponent();
       if (opponent != null) {
-        sHandler.post(new Runnable() {
-          public void run() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                    .setTitle(R.string.invitation_accepted)
-                    .setMessage(context.getString(R.string.starting_game, opponent.getUsername()))
-                    .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
-                      public void onClick(DialogInterface dialog, int which) {
-                        launchGameActivity(context, game.mGameId);
-                        dialog.dismiss();
-                      }
-                    });
-            builder.show();
-          }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setTitle(R.string.invitation_accepted)
+                .setMessage(context.getString(R.string.starting_game, opponent.getUsername()))
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
+                  public void onClick(DialogInterface dialog, int which) {
+                    launchGameActivity(context, game.mGameId);
+                    dialog.dismiss();
+                  }
+                });
+        builder.show();
       }
     }
 
@@ -672,34 +683,6 @@ public class RPSLS {
     }
 
     private static MMXChannel sAvailabilityChannel = null;
-
-    private synchronized static MMXChannel getAvailabilityChannel() {
-      if (sAvailabilityChannel == null) {
-        MMXChannel.OnFinishedListener<MMXChannel> listener =
-                new MMXChannel.OnFinishedListener<MMXChannel>() {
-          public void onSuccess(MMXChannel mmxChannel) {
-            sAvailabilityChannel = mmxChannel;
-            synchronized (this) {
-              this.notify();
-            }
-          }
-
-          public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-            synchronized (this) {
-              this.notify();
-            }
-          }
-        };
-        MMXChannel.getPublicChannel(MessageConstants.AVAILABILITY_TOPIC_NAME, listener);
-        synchronized (listener) {
-          try {
-            listener.wait(5000);
-          } catch (InterruptedException e) {
-          }
-        }
-      }
-      return sAvailabilityChannel;
-    }
 
     public static Game getGame(String gameId) {
       synchronized (sPendingGames) {
