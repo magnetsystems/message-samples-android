@@ -344,7 +344,7 @@ public class RPSLS {
             return;
           }
           sAvailabilityChannel.getMessages(new Date(System.currentTimeMillis() - (MessageConstants.AVAILABLE_PLAYERS_SINCE_DURATION)),
-                  null, 0, 100, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
+                  null, 100, 0, false, new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
                     public void onSuccess(ListResult<MMXMessage> mmxMessages) {
                       Log.d(TAG, "fetchAvailablePlayers(): found " + mmxMessages.totalCount + " availability items published in the last 30 minutes");
                       for (int i = mmxMessages.totalCount; --i >= 0; ) {
@@ -381,12 +381,12 @@ public class RPSLS {
           messageContent.put(MessageConstants.KEY_TYPE, MessageConstants.TYPE_AVAILABILITY);
           messageContent.put(MessageConstants.KEY_IS_AVAILABLE, String.valueOf(isAvailable));
           messageContent.put(MessageConstants.KEY_TIMESTAMP, String.valueOf(System.currentTimeMillis()));
-          sAvailabilityChannel.publish(messageContent, new MMXMessage.OnFinishedListener<String>() {
+          sAvailabilityChannel.publish(messageContent, new MMXChannel.OnFinishedListener<String>() {
             public void onSuccess(String messageId) {
               Log.d(TAG, "publishAvailability(): successfully published availability: " + messageId);
             }
 
-            public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
               Log.e(TAG, "publishAvailability(): unable to publish availability: " + failureCode, throwable);
             }
           });
