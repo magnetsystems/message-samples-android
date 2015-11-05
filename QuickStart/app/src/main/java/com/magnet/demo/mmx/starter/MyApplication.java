@@ -44,8 +44,6 @@ public class MyApplication extends Application {
     // and implement/declare the BroadcastReceiver to handle this intent and thus to call MMX.login()
     // to retrieve pending messages.
     Intent intent = new Intent("QUICKSTART_WAKEUP");
-    MMX.registerWakeupBroadcast(intent);
-
+    MMX.registerWakeupBroadcast(this, intent);
   }
-
 }
