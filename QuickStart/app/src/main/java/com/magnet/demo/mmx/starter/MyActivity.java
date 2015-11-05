@@ -189,7 +189,6 @@ public class MyActivity extends Activity {
   @Override
   public void onDestroy() {
     MMX.unregisterListener(mEventListener);
-    User.logout(null);
     super.onDestroy();
   }
 
