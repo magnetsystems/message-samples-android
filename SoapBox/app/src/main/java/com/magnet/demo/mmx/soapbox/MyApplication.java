@@ -2,6 +2,8 @@ package com.magnet.demo.mmx.soapbox;
 
 import android.app.Application;
 
+import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 
@@ -12,7 +14,9 @@ import com.magnet.mmx.client.api.MMXMessage;
 public class MyApplication extends Application {
   public void onCreate() {
     super.onCreate();
-    MMX.init(this, R.raw.soapbox);
+    //First thing to do is init the Max API.
+    Max.init(this.getApplicationContext(),
+            new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
     MMX.registerListener(new MMX.EventListener() {
       @Override
       public boolean onMessageReceived(MMXMessage mmxMessage) {

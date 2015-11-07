@@ -125,6 +125,7 @@ public class ChannelsManager {
     final String companyAnnouncementsName = "company_announcements";
     //create
     MMXChannel.create(companyAnnouncementsName, companyAnnouncementsName, true,
+            MMXChannel.PublishPermission.ANYONE,
             new MMXChannel.OnFinishedListener<MMXChannel>() {
               public void onSuccess(MMXChannel mmxChannel) {
               }
@@ -153,6 +154,7 @@ public class ChannelsManager {
     //create
     final String lunchBuddiesName = "lunch_buddies";
     MMXChannel.create(lunchBuddiesName, lunchBuddiesName, true,
+            MMXChannel.PublishPermission.ANYONE,
             new MMXChannel.OnFinishedListener<MMXChannel>() {
       public void onSuccess(MMXChannel mmxChannel) {
       }

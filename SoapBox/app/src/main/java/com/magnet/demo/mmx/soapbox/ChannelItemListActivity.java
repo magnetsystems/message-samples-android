@@ -61,7 +61,7 @@ public class ChannelItemListActivity extends Activity {
 
     final String channelName = getIntent().getStringExtra(ChannelListActivity.EXTRA_CHANNEL_NAME);
     Log.d(TAG, "onCreate(): channelName=" + channelName);
-    MMXChannel.findPublicChannelsByName(channelName, 0, 100,
+    MMXChannel.findPublicChannelsByName(channelName, 100, 0,
             new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
       @Override
       public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
@@ -108,7 +108,7 @@ public class ChannelItemListActivity extends Activity {
   private void updateChannelItems() {
     synchronized (this) {
       if (mChannel != null) {
-        mChannel.getMessages(null, null, 0, 25, false,
+        mChannel.getMessages(null, null, 25, 0, false,
                 new MMXChannel.OnFinishedListener<ListResult<com.magnet.mmx.client.api.MMXMessage>>() {
                   public void onSuccess(ListResult<com.magnet.mmx.client.api.MMXMessage> mmxMessages) {
                     //reverse the list
@@ -186,8 +186,8 @@ public class ChannelItemListActivity extends Activity {
       menu.removeItem(R.id.action_unsubscribe);
     }
 
-    if (!mChannel.getOwnerUsername()
-            .equalsIgnoreCase(MMX.getCurrentUser().getUsername())) {
+    if (!mChannel.getOwnerId()
+            .equalsIgnoreCase(MMX.getCurrentUser().getUserIdentifier())) {
       menu.removeItem(R.id.action_delete);
     }
 
@@ -291,7 +291,7 @@ public class ChannelItemListActivity extends Activity {
       int type = getItemViewType(position);
       MMXMessage message = getItem(position);
       int colorResId = 0;
-      String authorStr = message.getSender().getUsername();
+      String authorStr = message.getSender().getUserName();
       if (authorStr == null) {
         authorStr = getContext().getString(R.string.chat_unknown);
       }
@@ -329,7 +329,7 @@ public class ChannelItemListActivity extends Activity {
     @Override
     public int getItemViewType(int position) {
       MMXMessage message = getItem(position);
-      if (mProfile.getUsername().equals(message.getSender().getUsername())) {
+      if (mProfile.getUsername().equalsIgnoreCase(message.getSender().getUserName())) {
         //me
         return TYPE_ME;
       } else {

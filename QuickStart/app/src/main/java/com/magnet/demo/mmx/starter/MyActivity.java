@@ -16,8 +16,11 @@ package com.magnet.demo.mmx.starter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -33,11 +36,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.magnet.max.android.User;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.auth.model.UserRegistrationInfo;
+import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMXMessage;
-import com.magnet.mmx.client.api.MMXUser;
 import com.magnet.mmx.client.api.MMX;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,36 +72,27 @@ public class MyActivity extends Activity {
 
   private static final String TAG = MyActivity.class.getSimpleName();
   private static final String[] TO_LIST = {QUICKSTART_USERNAME, "amazing_bot", "echo_bot"};
+  private static final User[] TO_USERS = {null, null, null};
   private TextView mStatus = null;
   private ImageButton mSendButton = null;
   private EditText mSendText = null;
   private ListView mMessageListView = null;
   private MessageListAdapter mMessageListAdapter = null;
-  private String mToUsername = QUICKSTART_USERNAME;
-  private AtomicBoolean mLoginSuccess = new AtomicBoolean(false);
+  private User mToUser = null;
+  private int mNoteId = 0;
 
   private MMX.EventListener mEventListener =
           new MMX.EventListener() {
             public boolean onMessageReceived(MMXMessage mmxMessage) {
+              MyMessageStore.addMessage(mmxMessage, null,
+                      new Date(), true);
+              doNotify(mmxMessage);
               updateViewState();
               return false;
             }
 
             @Override
-            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
-              return false;
-            }
-          };
-
-  private MMX.EventListener mEventListener =
-          new MMX.EventListener() {
-            public boolean onMessageReceived(MMXMessage mmxMessage) {
-              updateViewState();
-              return false;
-            }
-
-            @Override
-            public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
+            public boolean onMessageAcknowledgementReceived(User user, String messageId) {
               return false;
             }
 
@@ -114,22 +113,24 @@ public class MyActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    MMX.registerListener(mEventListener);
 
     // Register this activity as a listener to receive and show incoming
     // messages.  See #onDestroy for the unregister call.
-    MMX.registerListener(mEventListener);
-    MMXUser quickstartUser = new MMXUser.Builder()
-            .username(QUICKSTART_USERNAME)
-            .displayName(QUICKSTART_USERNAME)
-            .build();
-    quickstartUser.register(QUICKSTART_PASSWORD, new MMXUser.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
+    User.register(new UserRegistrationInfo.Builder()
+            .userName(QUICKSTART_USERNAME)
+            .firstName(QUICKSTART_USERNAME)
+            .password(new String(QUICKSTART_PASSWORD))
+            .build(), new ApiCallback<User>() {
+      @Override
+      public void success(User user) {
         Log.d(TAG, "register user succeeded");
         loginHelper();
       }
 
-      public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-        Log.d(TAG, "register user failed because: " + failureCode);
+      @Override
+      public void failure(ApiError apiError) {
+        Log.d(TAG, "register user failed because: " + apiError);
         loginHelper();
       }
     });
@@ -155,14 +156,28 @@ public class MyActivity extends Activity {
     updateViewState();
   }
 
+
+
   private void loginHelper() {
-    MMX.login(QUICKSTART_USERNAME, QUICKSTART_PASSWORD, new MMX.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
-        MMX.start();
+    User.login(QUICKSTART_USERNAME, new String(QUICKSTART_PASSWORD), false, new ApiCallback<Boolean>() {
+      public void success(Boolean aBoolean) {
+        Log.d(TAG, "login(): success! boolean=" + aBoolean);
+        Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
+          public void success(Boolean aBoolean) {
+            MMX.start();
+            loadUsers();
+            mToUser = MMX.getCurrentUser();
+          }
+
+          public void failure(ApiError apiError) {
+            Toast.makeText(MyActivity.this, "Unable to initialize MMX: " + apiError, Toast.LENGTH_LONG).show();
+          }
+        });
         updateViewState();
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable e) {
+      public void failure(ApiError apiError) {
+        Log.d(TAG, "login(): failure! error=" + apiError);
         updateViewState();
       }
     });
@@ -175,7 +190,6 @@ public class MyActivity extends Activity {
   @Override
   public void onDestroy() {
     MMX.unregisterListener(mEventListener);
-    MMX.logout(null);
     super.onDestroy();
   }
 
@@ -194,9 +208,9 @@ public class MyActivity extends Activity {
   private void updateViewState() {
     runOnUiThread(new Runnable() {
       public void run() {
-        MMXUser user = MMX.getCurrentUser();
+        User user = User.getCurrentUser();
         if (user != null) {
-          String username = user.getUsername();
+          String username = user.getUserName();
           String status = getString(R.string.status_authenticated) +
                   (username != null ? " as " + username : " " + getString(R.string.user_anonymously));
           mStatus.setText(status);
@@ -249,7 +263,7 @@ public class MyActivity extends Activity {
           }
           //set author and color
           MMXMessage msg = message.getMessage();
-          String authorStr = msg.getSender().getUsername();
+          String authorStr = msg.getSender().getUserName();
           for (int i=TO_LIST.length; --i >= 0;) {
             if (TO_LIST[i].equalsIgnoreCase(authorStr)) {
               colorResId = COLOR_IDS[i];
@@ -313,6 +327,10 @@ public class MyActivity extends Activity {
   }
 
   public void doSendMessage(View view) {
+    if (mToUser == null) {
+      Toast.makeText(this, "Unable to send.  Could not resolve user.", Toast.LENGTH_LONG).show();
+      return;
+    }
     String messageText = mSendText.getText().toString();
     if (messageText.isEmpty()) {
       //don't send an empty message
@@ -321,8 +339,8 @@ public class MyActivity extends Activity {
     HashMap<String, String> content = new HashMap<String, String>();
     content.put(KEY_MESSAGE_TEXT, messageText);
 
-    HashSet<MMXUser> recipients = new HashSet<MMXUser>();
-    recipients.add(new MMXUser.Builder().username(mToUsername).build());
+    HashSet<User> recipients = new HashSet<User>();
+    recipients.add(mToUser);
 
     String messageID = new MMXMessage.Builder()
             .content(content)
@@ -334,7 +352,7 @@ public class MyActivity extends Activity {
                 updateViewState();
               }
 
-              public void onFailure(MMXMessage.FailureCode failureCode, Throwable e) {
+              public void onFailure(MMXMessage.FailureCode failureCode, final Throwable e) {
                 Log.e(TAG, "doSendMessage() failure: " + failureCode, e);
                 Toast.makeText(MyActivity.this, "Exception: " + e.getMessage(), Toast.LENGTH_LONG).show();
               }
@@ -352,10 +370,43 @@ public class MyActivity extends Activity {
                     new DialogInterface.OnClickListener() {
                       @Override
                       public void onClick(DialogInterface dialog, int which) {
-                        mToUsername = TO_LIST[which];
+                        mToUser = TO_USERS[which];
                       }
                     })
             .create();
     toDialog.show();
+  }
+
+  private void loadUsers() {
+    User.getUsersByUserNames(Arrays.asList(TO_LIST), new ApiCallback<List<User>>() {
+      public void success(List<User> users) {
+        Log.d(TAG, "loadUsers() successfully loaded " + users.size() + " users.");
+        HashMap<String, User> userMap = new HashMap<String, User>();
+        for (User user : users) {
+          userMap.put(user.getUserName().toLowerCase(), user);
+        }
+        for (int i = TO_LIST.length; --i >= 0; ) {
+          TO_USERS[i] = userMap.get(TO_LIST[i].toLowerCase());
+        }
+      }
+
+      public void failure(ApiError apiError) {
+        Log.e(TAG, "loadUsers() failed: " + apiError.getMessage(), apiError.getCause());
+      }
+    });
+  }
+
+  private void doNotify(com.magnet.mmx.client.api.MMXMessage message) {
+    Object textObj = message.getContent().get(MyActivity.KEY_MESSAGE_TEXT);
+    if (textObj != null) {
+      String messageText = textObj.toString();
+      User from = message.getSender();
+      NotificationManager noteMgr = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+      Notification note = new Notification.Builder(this).setAutoCancel(true)
+              .setSmallIcon(R.drawable.ic_launcher).setWhen(System.currentTimeMillis())
+              .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+              .setContentTitle("Message from " + from.getUserName()).setContentText(messageText).build();
+      noteMgr.notify(mNoteId++, note);
+    }
   }
 }

@@ -16,8 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.User;
+import com.magnet.max.android.auth.model.UserRegistrationInfo;
+import com.magnet.max.android.Max;
 import com.magnet.mmx.client.api.MMX;
-import com.magnet.mmx.client.api.MMXUser;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -121,39 +125,24 @@ public class LoginActivity extends Activity {
       showProgress(true);
       mConnecting.set(true);
       if (register) {
-        MMXUser user = new MMXUser.Builder().username(username).build();
-        user.register(password.getBytes(), new MMXUser.OnFinishedListener<Void>() {
-          public void onSuccess(Void aVoid) {
+        UserRegistrationInfo userInfo = new UserRegistrationInfo.Builder()
+                .userName(username)
+                .password(password)
+                .build();
+        User.register(userInfo, new ApiCallback<User>() {
+          @Override
+          public void success(User user) {
             loginHelper(username, password);
           }
 
-          public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-            if (MMXUser.FailureCode.REGISTRATION_INVALID_USERNAME.equals(failureCode)) {
-              runOnUiThread(new Runnable() {
-                public void run() {
-                  mUsernameView.setError(getString(R.string.error_invalid_email));
-                  mUsernameView.requestFocus();
-                }
-              });
-            } else if (MMXUser.FailureCode.REGISTRATION_USER_ALREADY_EXISTS.equals(failureCode)) {
-              runOnUiThread(new Runnable() {
-                public void run() {
-                  mUsernameView.setError(getString(R.string.error_invalid_email_exists));
-                  mUsernameView.requestFocus();
-                }
-              });
-            } else {
-              Log.e(TAG, "register() error: " + failureCode, throwable);
-              Toast.makeText(LoginActivity.this,
-                      "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
-            }
+          @Override
+          public void failure(final ApiError apiError) {
+            Log.e(TAG, "register() error: " + apiError, apiError.getCause());
             mConnecting.set(false);
 
-            runOnUiThread(new Runnable() {
-              public void run () {
-                showProgress(false);
-              }
-            });
+            Toast.makeText(LoginActivity.this, LoginActivity.this.getString(R.string.error_registration_generic)
+                    + apiError.getMessage(), Toast.LENGTH_LONG).show();
+            showProgress(false);
           }
         });
       } else {
@@ -163,40 +152,35 @@ public class LoginActivity extends Activity {
   }
 
   private void loginHelper(String username, String password) {
-    MMX.login(username, password.getBytes(), new MMX.OnFinishedListener<Void>() {
-      public void onSuccess(Void aVoid) {
-        //login success
-        MMX.start();
-        ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
-        mConnecting.set(false);
-        setResult(RESULT_OK);
-        finish();
-        runOnUiThread(new Runnable() {
-          public void run() {
+    User.login(username, password, false, new ApiCallback<Boolean>() {
+      public void success(Boolean aBoolean) {
+        Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
+          public void success(Boolean aBoolean) {
+            //login success
+            MMX.start();
+            ChannelsManager.getInstance(LoginActivity.this).provisionChannels();
+            mConnecting.set(false);
+            setResult(RESULT_OK);
+            finish();
+            showProgress(false);
+          }
+
+          public void failure(final ApiError apiError) {
+            Log.e(TAG, "loginHelper() MMX init error: " + apiError.getMessage(), apiError.getCause());
+            mConnecting.set(false);
+            Toast.makeText(LoginActivity.this,
+                    "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
             showProgress(false);
           }
         });
       }
 
-      public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-        if (MMX.FailureCode.SERVER_AUTH_FAILED.equals(failureCode)) {
-          runOnUiThread(new Runnable() {
-            public void run() {
-              mPasswordView.setError(getString(R.string.error_incorrect_password));
-              mPasswordView.requestFocus();
-            }
-          });
-        } else {
-          Log.e(TAG, "loginHelper() error: " + failureCode, throwable);
-          Toast.makeText(LoginActivity.this,
-                  "Error occured: " + failureCode + ". " + throwable, Toast.LENGTH_LONG).show();
-        }
+      public void failure(final ApiError apiError) {
+        Log.e(TAG, "loginHelper() Login error: " + apiError.getMessage(), apiError.getCause());
         mConnecting.set(false);
-        runOnUiThread(new Runnable() {
-          public void run() {
-            showProgress(false);
-          }
-        });
+        Toast.makeText(LoginActivity.this,
+                "Error occured: " + apiError.getMessage(), Toast.LENGTH_LONG).show();
+        showProgress(false);
       }
     });
   }
