@@ -20,6 +20,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.Max;
+import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -155,14 +159,22 @@ public class ChannelListActivity extends Activity {
       public void onClick(final DialogInterface dialog, int which) {
         switch (which) {
           case DialogInterface.BUTTON_POSITIVE:
-            MMX.logout(new MMX.OnFinishedListener<Void>() {
-              public void onSuccess(Void aVoid) {
-                ChannelListActivity.this.finish();
+            User.logout(new ApiCallback<Boolean>() {
+              public void success(Boolean aBoolean) {
+                Max.deInitModule(MMX.getModule(), new ApiCallback<Boolean>() {
+                  public void success(Boolean aBoolean) {
+                    ChannelListActivity.this.finish();
+                  }
+
+                  public void failure(ApiError apiError) {
+                    ChannelListActivity.this.finish();
+                  }
+                });
               }
 
-              public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                Toast.makeText(ChannelListActivity.this, "Logout failed: " + failureCode +
-                        ", " + throwable.getMessage(), Toast.LENGTH_LONG).show();
+              public void failure(ApiError apiError) {
+                Toast.makeText(ChannelListActivity.this, "Logout failed: " + apiError +
+                        ", " + apiError.getMessage(), Toast.LENGTH_LONG).show();
               }
             });
             break;
