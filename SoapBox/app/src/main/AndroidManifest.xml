@@ -31,6 +31,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".MyBroadcastReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="SOAPBOX_WAKEUP" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
