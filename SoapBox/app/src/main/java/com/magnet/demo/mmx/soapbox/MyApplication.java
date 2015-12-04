@@ -2,6 +2,7 @@ package com.magnet.demo.mmx.soapbox;
 
 import android.app.Application;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.max.android.Max;
@@ -26,6 +27,8 @@ public class MyApplication extends Application {
     MMX.registerListener(new MMX.EventListener() {
       @Override
       public boolean onMessageReceived(MMXMessage mmxMessage) {
+        Toast.makeText(MyApplication.this.getApplicationContext(),
+            mmxMessage.toString(), Toast.LENGTH_LONG).show();
         return false;
       }
     });

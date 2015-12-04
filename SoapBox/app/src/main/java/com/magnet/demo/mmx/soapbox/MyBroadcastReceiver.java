@@ -40,14 +40,15 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     Log.d(TAG, "onReceive(): received intent: "+intent+", push event="+event);
     if (event == null) {
       Toast.makeText(context, "Received a non-MMX GCM", Toast.LENGTH_LONG).show();
-      return;
+    } else if (event.getType().equals("retrieve")) {
+      // Message wake-up; an ad-hoc message is available.
+      showNotification(context, "A message is ready from MMX", null);
     } else if (PubSubNotification.getType().equals(event.getType())) {
-      // Pubsub wake-up; get the its payload and show it in the status bar
+      // Pubsub wake-up; get the payload and show it in the status bar
       PubSubNotification pubsub = event.getCustomObject(PubSubNotification.class);
       showNotification(context, pubsub.getText(),
           (pubsub.getChannel().getUserId() == null) ?
               pubsub.getChannel().getName() : pubsub.getChannel().toString());
-      return;
     } else {
       // Push messaging from client; get the custom payload as map (if any)
       Map<String, Object> payload = event.getCustomMap();
