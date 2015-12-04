@@ -40,7 +40,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
     Log.d(TAG, "onReceive(): received intent: "+intent+", push event="+event);
     if (event == null) {
       Toast.makeText(context, "Received a non-MMX GCM", Toast.LENGTH_LONG).show();
-    } else if (event.getType().equals("retrieve")) {
+    } else if ("retrieve".equals(event.getType())) {
       // Message wake-up; an ad-hoc message is available.
       showNotification(context, "A message is ready from MMX", null);
     } else if (PubSubNotification.getType().equals(event.getType())) {
