@@ -130,7 +130,11 @@ public class MyActivity extends Activity {
       @Override
       public void failure(ApiError apiError) {
         Log.d(TAG, "register user failed because: " + apiError);
-        loginHelper();
+        if(apiError.getKind() == 409) {
+          loginHelper();
+        } else {
+          Toast.makeText(MyActivity.this, "Unable to register user, please check your network and try later", Toast.LENGTH_LONG);
+        }
       }
     });
     setContentView(R.layout.activity_my_activity);
