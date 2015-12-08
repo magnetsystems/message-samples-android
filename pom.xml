@@ -18,11 +18,11 @@
     <distributionManagement>
         <snapshotRepository>
             <id>snapshots</id>
-            <url>http://dev-repo.magneteng.com:8081/artifactory/blowfish-snapshot-local</url>
+            <url>http://dev-repo.magneteng.com:8081/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
         <repository>
             <id>release</id>
-            <url>http://dev-repo.magneteng.com:8081/artifactory/blowfish-release-local</url>
+            <url>http://repo.magneteng.com:8081/artifactory/libs-release-local</url>
         </repository>
     </distributionManagement>
     
