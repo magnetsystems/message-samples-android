@@ -17,6 +17,7 @@ package com.magnet.demo.mmx.soapbox;
 import java.util.Map;
 
 import com.magnet.mmx.client.api.MMXPushEvent;
+import com.magnet.mmx.protocol.GCMPayload;
 import com.magnet.mmx.protocol.PubSubNotification;
 
 import android.app.Notification;
@@ -35,6 +36,7 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
   private static final int PUBSUB_ID = 1111;
   private static final String TAG = MyBroadcastReceiver.class.getSimpleName();
 
+  @Override
   public void onReceive(Context context, Intent intent) {
     MMXPushEvent event = MMXPushEvent.fromIntent(intent);
     Log.d(TAG, "onReceive(): received intent: "+intent+", push event="+event);
@@ -42,13 +44,11 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
       Toast.makeText(context, "Received a non-MMX GCM", Toast.LENGTH_LONG).show();
     } else if ("retrieve".equals(event.getType())) {
       // Message wake-up; an ad-hoc message is available.
-      showNotification(context, "A message is ready from MMX", null);
+      showNotification(context, "A message is available.", "Click here to fetch the message");
     } else if (PubSubNotification.getType().equals(event.getType())) {
-      // Pubsub wake-up; get the payload and show it in the status bar
-      PubSubNotification pubsub = event.getCustomObject(PubSubNotification.class);
-      showNotification(context, pubsub.getText(),
-          (pubsub.getChannel().getUserId() == null) ?
-              pubsub.getChannel().getName() : pubsub.getChannel().toString());
+      // Pubsub push notification; get the payload and show it in the status bar
+      GCMPayload pushMsg = event.getPushMessage();
+      showNotification(context, pushMsg.getTitle(), pushMsg.getBody());
     } else {
       // Push messaging from client; get the custom payload as map (if any)
       Map<String, Object> payload = event.getCustomMap();
