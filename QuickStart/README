@@ -1,0 +1,3 @@
+This application depends on Android SDK API level 19 (4.4.2) or higher and requires the installation of the Google Play services and Google Repository module using Android SDK Manager.
+ -Extras-->Google Play services
+ -Extras-->Google Repository
