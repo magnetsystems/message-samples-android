@@ -85,10 +85,10 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.magnet.samples.android.quickstart.receivers.MessageReceiver"
+            android:name=".receivers.PushMessageReceiver"
             android:exported="false">
             <intent-filter>
-                <action android:name="MY_WAKEUP_ACTION" />
+                <action android:name="MY_PUSH_ACTION" />
             </intent-filter>
         </receiver>
 

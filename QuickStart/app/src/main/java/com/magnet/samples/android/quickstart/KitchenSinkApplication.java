@@ -18,8 +18,10 @@
 package com.magnet.samples.android.quickstart;
 
 import android.app.Application;
+import android.content.Intent;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.mmx.client.api.MMX;
 
 public class KitchenSinkApplication extends Application {
 
@@ -30,6 +32,8 @@ public class KitchenSinkApplication extends Application {
         instance = this;
         Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
         com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
+
+        MMX.registerWakeupBroadcast(this, new Intent("MY_PUSH_ACTION"));
     }
 
     public static KitchenSinkApplication getInstance() {

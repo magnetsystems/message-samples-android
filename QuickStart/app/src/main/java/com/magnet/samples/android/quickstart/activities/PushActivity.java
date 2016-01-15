@@ -18,6 +18,7 @@
 package com.magnet.samples.android.quickstart.activities;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,8 @@ import java.util.Map;
 public class PushActivity extends BaseActivity {
 
     private CheckBox soundOn;
+
+    private final Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,25 +74,30 @@ public class PushActivity extends BaseActivity {
     }
 
     private void sendMessage(String messageText, boolean needSound) {
+        showMessage("Your message will be sent in 5 seconds. Please put your app in the background to see the notification in the tray");
+
         Map<String, Object> content = new HashMap<>();
         content.put("content", messageText);
         content.put("soundOn", needSound);
-        MMXPushMessage.Builder builder = new MMXPushMessage.Builder();
+        final MMXPushMessage.Builder builder = new MMXPushMessage.Builder();
         builder.content(content).recipient(User.getCurrentUser()).type("text");
-        builder.build().send(new MMXPushMessage.OnFinishedListener<PushResult>() {
-            @Override
-            public void onSuccess(PushResult pushResult) {
-                Logger.debug("send message", "success");
-                showMessage("Your message will be sent in 5 seconds. Please put your app in the background to see the notification in the tray");
-            }
+        mHandler.postDelayed(new Runnable() {
+            @Override public void run() {
+                builder.build().send(new MMXPushMessage.OnFinishedListener<PushResult>() {
+                    @Override
+                    public void onSuccess(PushResult pushResult) {
+                        Logger.debug("send message", "success");
+                     }
 
-            @Override
-            public void onFailure(MMXPushMessage.FailureCode failureCode, Throwable throwable) {
-                //showMessage("Can't send message : " + failureCode + " : " + throwable.getMessage());
-                Logger.error("send message", throwable, "error : ", failureCode);
-                Utils.showWarning(PushActivity.this, "Push failed",  "Please make sure you have followed the instruction in https://developer.magnet.com/docs/message/v2.1/android/set-up-gcm/index.html and set mmx-gcmSenderId in res/raw/magnetmax.properties");
+                    @Override
+                    public void onFailure(MMXPushMessage.FailureCode failureCode, Throwable throwable) {
+                        //showMessage("Can't send message : " + failureCode + " : " + throwable.getMessage());
+                        Logger.error("send message", throwable, "error : ", failureCode);
+                        Utils.showWarning(PushActivity.this, "Push failed",  "Please make sure you have followed the instruction in https://developer.magnet.com/docs/message/v2.1/android/set-up-gcm/index.html and set mmx-gcmSenderId in res/raw/magnetmax.properties");
+                    }
+                });
             }
-        });
+        }, 5000);
     }
 
 }
