@@ -21,6 +21,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+  <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:id="@+id/tvTitle"
+      android:singleLine="false"/>
+
   <EditText
       android:id="@+id/chatMessage"
       android:layout_width="match_parent"

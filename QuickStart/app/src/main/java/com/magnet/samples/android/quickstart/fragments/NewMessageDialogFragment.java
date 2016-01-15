@@ -17,15 +17,18 @@
 package com.magnet.samples.android.quickstart.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.magnet.max.android.Attachment;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -88,12 +91,15 @@ public class NewMessageDialogFragment extends DialogFragment implements View.OnC
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
 
+    TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+    tvTitle.setText(mTitle);
+
     attachmentSwitch = (Switch) view.findViewById(R.id.chatAttachmentOn);
 
     mMessageEditText = (EditText) view.findViewById(R.id.chatMessage);
     mMessageEditText.requestFocus();
 
-    getDialog().setTitle(mTitle);
+    //getDialog().setTitle(mTitle);
     getDialog().setCancelable(true);
 
     view.findViewById(R.id.btnSend).setOnClickListener(this);
@@ -114,6 +120,24 @@ public class NewMessageDialogFragment extends DialogFragment implements View.OnC
   public void onDetach() {
     super.onDetach();
     mNewMessageListener = null;
+  }
+
+  @Override
+  public Dialog onCreateDialog(Bundle savedInstanceState) {
+    Dialog dialog = super.onCreateDialog(savedInstanceState);
+    // request a window without the title
+    dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+    return dialog;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+
+    Dialog dialog = getDialog();
+    if (dialog != null) {
+      dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
   }
 
   @Override public void onClick(View v) {
