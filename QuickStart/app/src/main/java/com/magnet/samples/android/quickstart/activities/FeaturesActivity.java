@@ -23,9 +23,12 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.magnet.max.android.config.MaxAndroidConfig;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.max.android.util.StringUtil;
+import com.magnet.mmx.client.common.Log;
 import com.magnet.samples.android.quickstart.R;
 import com.magnet.samples.android.quickstart.helpers.Utils;
 
@@ -69,8 +72,8 @@ public class FeaturesActivity extends BaseActivity {
     private boolean isGCMConfigured() {
         boolean isSenderIdValid = false;
 
-        if(Build.FINGERPRINT.contains("generic")) {
-            Utils.showWarning(this, "Push is not configured",  "Push can't be test on emulator, please use a device");
+        if(!isGooglePlayServiceInstalled()) {
+            Utils.showWarning(this, "Google Play Service is not configured",  "Please install Google Play Service on your device or emulator");
         } else {
             MaxAndroidConfig config = new MaxAndroidPropertiesConfig(this, R.raw.magnetmax);
             String senderId = config.getAllConfigs().get("mmx-gcmSenderId");
@@ -87,6 +90,22 @@ public class FeaturesActivity extends BaseActivity {
         }
 
         return isSenderIdValid;
+    }
+
+    private boolean isGooglePlayServiceInstalled() {
+        //try {
+        //    Class.forName("com.google.android.gms.gcm.GoogleCloudMessaging");
+        //    return true;
+        //} catch (ClassNotFoundException e) {
+        //
+        //}
+        //
+        //return false;
+        final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        if (status == ConnectionResult.SUCCESS) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -16,7 +16,7 @@
   -->
 
 <resources>
-    <string name="app_name">KitchenSink</string>
+    <string name="app_name">QuickStart</string>
     <string name="loginTitle">Welcome to Magnet Message!</string>
     <string name="username">Username</string>
     <string name="password">Password</string>

@@ -29,7 +29,7 @@ import com.magnet.mmx.client.api.MMXPushEvent;
 import com.magnet.samples.android.quickstart.util.Logger;
 import java.util.Map;
 
-public class MessageReceiver extends BroadcastReceiver {
+public class PushMessageReceiver extends BroadcastReceiver {
 
     private Uri alarmSound;
 
