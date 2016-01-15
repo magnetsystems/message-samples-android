@@ -87,5 +87,6 @@
     <string name="publishPermission">Publish Permission</string>
     <string name="defaultUser">amumu1</string>
     <string name="cancel">Cancel</string>
+    <string name="tags">Tags</string>
 
 </resources>

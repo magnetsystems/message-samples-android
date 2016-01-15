@@ -38,7 +38,7 @@
         android:ems="10"
         android:hint="@string/summary"
         android:inputType="textMultiLine|textCapSentences"
-        android:lines="3" />
+        android:singleLine="false" />
 
     <Switch
         android:id="@+id/createChannelPublic"
@@ -62,11 +62,18 @@
         android:entries="@array/createChannelPermissions"
         android:spinnerMode="dropdown" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tags"
+        android:layout_marginTop="@dimen/defaultMargin"
+        android:layout_gravity="start"
+        android:id="@+id/tvTags"/>
+
     <EditText
         android:id="@+id/createChannelTags"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/defaultMargin"
         android:hint="@string/createChannelTagsHint"
         android:inputType="textCapWords" />
 
