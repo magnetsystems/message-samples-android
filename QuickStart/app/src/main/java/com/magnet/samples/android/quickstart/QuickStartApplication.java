@@ -23,9 +23,9 @@ import com.magnet.max.android.Max;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.mmx.client.api.MMX;
 
-public class KitchenSinkApplication extends Application {
+public class QuickStartApplication extends Application {
 
-    private static KitchenSinkApplication instance;
+    private static QuickStartApplication instance;
 
     public void onCreate() {
         super.onCreate();
@@ -36,7 +36,7 @@ public class KitchenSinkApplication extends Application {
         MMX.registerWakeupBroadcast(this, new Intent("MY_PUSH_ACTION"));
     }
 
-    public static KitchenSinkApplication getInstance() {
+    public static QuickStartApplication getInstance() {
         return instance;
     }
 
