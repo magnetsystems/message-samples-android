@@ -32,6 +32,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.samples.android.quickstart.R;
 import com.magnet.samples.android.quickstart.adapters.ChannelListAdapter;
 import com.magnet.samples.android.quickstart.util.Logger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -43,6 +44,7 @@ public class FindChannelActivity extends BaseActivity implements AdapterView.OnI
     private EditText searchText;
     private ListView searchResult;
     private ChannelListAdapter adapter;
+    private List<MMXChannel> mChannels;
     private AlertDialog alertDialog;
 
     @Override
@@ -82,12 +84,14 @@ public class FindChannelActivity extends BaseActivity implements AdapterView.OnI
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (position) {
             case 0:
+            case 1:
                 searchText.setHint("Name");
                 break;
-            case 1:
-                searchText.setHint("J*");
-                break;
             case 2:
+            case 3:
+                searchText.setHint("Prefix");
+                break;
+            case 4:
                 searchText.setHint("Tag1, Tag2, Tag3");
                 break;
         }
@@ -121,12 +125,18 @@ public class FindChannelActivity extends BaseActivity implements AdapterView.OnI
         if (!query.isEmpty()) {
             switch (modeChooser.getSelectedItemPosition()) {
                 case 0:
-                    searchByName(query);
+                    getChannelByName(query, true);
                     break;
                 case 1:
-                    searchStartedWith(query);
+                    getChannelByName(query, false);
                     break;
                 case 2:
+                    searchStartedWith(query, true);
+                    break;
+                case 3:
+                    searchStartedWith(query, false);
+                    break;
+                case 4:
                     searchByTags(query);
                     break;
             }
@@ -177,29 +187,51 @@ public class FindChannelActivity extends BaseActivity implements AdapterView.OnI
         MMXChannel.findByTags(tags, 100, 0, finishedListener);
     }
 
-    private void searchByName(String query) {
-        MMXChannel.getPublicChannel(query, new MMXChannel.OnFinishedListener<MMXChannel>() {
+    private void getChannelByName(String name, boolean isPublic) {
+        final String tag = "get " + (isPublic ? "public" : "private") + " channel by name ";
+        MMXChannel.OnFinishedListener<MMXChannel> listener = new MMXChannel.OnFinishedListener<MMXChannel>() {
             @Override
             public void onSuccess(MMXChannel mmxChannel) {
-                Logger.debug("find channels", "success");
+                Logger.debug(tag, "success");
                 updateList(Arrays.asList(mmxChannel));
             }
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                showMessage("Can't find channels : " + failureCode + " : " + throwable.getMessage());
-                Logger.error("find channels", throwable, "error : ", failureCode);
+                showMessage("Can't " + tag + failureCode + " : " + throwable.getMessage());
+                Logger.error(tag, throwable, "error : ", failureCode);
             }
-        });
+        };
+
+        if(isPublic) {
+            MMXChannel.getPublicChannel(name, listener);
+        } else {
+            MMXChannel.getPrivateChannel(name, listener);
+        }
     }
 
-    private void searchStartedWith(String query) {
-        MMXChannel.findPublicChannelsByName(query, 100, 0, finishedListener);
+    private void searchStartedWith(String query, boolean isPublic) {
+        if(isPublic) {
+            MMXChannel.findPublicChannelsByName(query, 100, 0, finishedListener);
+        } else {
+            MMXChannel.findPrivateChannelsByName(query, 100, 0, finishedListener);
+        }
     }
 
     private void updateList(List<MMXChannel> channels) {
-        adapter = new ChannelListAdapter(this, channels);
-        searchResult.setAdapter(adapter);
+        if(null == adapter) {
+            mChannels = new ArrayList<>(channels);
+            adapter = new ChannelListAdapter(this, mChannels);
+            searchResult.setAdapter(adapter);
+        } else {
+            mChannels.clear();
+            mChannels.addAll(channels);
+            adapter.notifyDataSetChanged();
+
+            if(null == channels || channels.isEmpty()) {
+                showMessage("No channel matches");
+            }
+        }
     }
 
     private HashSet<String> getTagsFromString(String line) {
