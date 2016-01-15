@@ -34,12 +34,12 @@
     <string name="chatTitle"><![CDATA[Send & Receive Messages]]></string>
     <string name="send">Send</string>
     <string name="msgImageDescription">Message image from attachment</string>
-    <string name="managementLoginBtn">Log In/Log Out</string>
+    <string name="managementLoginBtn">Log Out</string>
     <string name="managementSearchBtn">Search for Users</string>
     <string name="managementRetrieveBtn">Retrieve Users (by ID or userName)</string>
     <string name="managementTitle">User Management</string>
     <string name="userRegisterTitle">Register a new User</string>
-    <string name="userLoginTitle">Log In/Log Out</string>
+    <string name="userLoginTitle">Log Out</string>
     <string name="userSearchTitle">Search Users</string>
     <string name="userRetrieveTitle">Retrieve Users</string>
     <string name="search">Search</string>
