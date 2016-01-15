@@ -17,10 +17,17 @@
 
 package com.magnet.samples.android.quickstart.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import com.magnet.max.android.config.MaxAndroidConfig;
+import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.samples.android.quickstart.R;
+import com.magnet.samples.android.quickstart.helpers.Utils;
 
 /**
  * For complete feature list, @see <a href="https://developer.magnet.com/docs/message/overview/features/index.html">Features</a>
@@ -50,11 +57,36 @@ public class FeaturesActivity extends BaseActivity {
                 startActivity(new Intent(this, UserManagementActivity.class));
                 break;
             case R.id.featurePushBtn:
-                startActivity(new Intent(this, PushActivity.class));
+                if(isGCMConfigured()) {
+                    startActivity(new Intent(this, PushActivity.class));
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    private boolean isGCMConfigured() {
+        boolean isSenderIdValid = false;
+
+        if(Build.FINGERPRINT.contains("generic")) {
+            Utils.showWarning(this, "Push is not configured",  "Push can't be test on emulator, please use a device");
+        } else {
+            MaxAndroidConfig config = new MaxAndroidPropertiesConfig(this, R.raw.magnetmax);
+            String senderId = config.getAllConfigs().get("mmx-gcmSenderId");
+            if (StringUtil.isNotEmpty(senderId)) {
+                try {
+                    long sendIdLong = Long.parseLong(senderId);
+                    isSenderIdValid = true;
+                } catch (NumberFormatException e) {
+                }
+                if (!isSenderIdValid) {
+                    Utils.showWarning(this, "Push is not configured",  "Please follow the instruction in https://developer.magnet.com/docs/message/v2.1/android/set-up-gcm/index.html and set mmx-gcmSenderId in res/raw/magnetmax.properties");
+                }
+            }
+        }
+
+        return isSenderIdValid;
     }
 
 }

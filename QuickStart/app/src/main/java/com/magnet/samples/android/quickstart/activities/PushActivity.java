@@ -26,6 +26,7 @@ import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXPushMessage;
 import com.magnet.mmx.protocol.PushResult;
 import com.magnet.samples.android.quickstart.R;
+import com.magnet.samples.android.quickstart.helpers.Utils;
 import com.magnet.samples.android.quickstart.util.Logger;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,8 +85,9 @@ public class PushActivity extends BaseActivity {
 
             @Override
             public void onFailure(MMXPushMessage.FailureCode failureCode, Throwable throwable) {
-                showMessage("Can't send message : " + failureCode + " : " + throwable.getMessage());
+                //showMessage("Can't send message : " + failureCode + " : " + throwable.getMessage());
                 Logger.error("send message", throwable, "error : ", failureCode);
+                Utils.showWarning(PushActivity.this, "Push failed",  "Please make sure you have followed the instruction in https://developer.magnet.com/docs/message/v2.1/android/set-up-gcm/index.html and set mmx-gcmSenderId in res/raw/magnetmax.properties");
             }
         });
     }
