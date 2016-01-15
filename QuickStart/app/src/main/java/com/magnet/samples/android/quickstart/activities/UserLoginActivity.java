@@ -17,6 +17,7 @@
 
 package com.magnet.samples.android.quickstart.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -143,13 +144,21 @@ public class UserLoginActivity extends BaseActivity {
                     @Override
                     public void success(Boolean aBoolean) {
                         Logger.debug("deInitModule", "success");
-                        currentMode();
+                        goToLoginScreen();
+                        //currentMode();
                     }
 
                     @Override
                     public void failure(ApiError apiError) {
                         showMessage("Can't deInit module : " + apiError.getMessage());
                         Logger.error("deInit module", apiError, "error");
+                        goToLoginScreen();
+                    }
+
+                    private void goToLoginScreen() {
+                        Intent i = new Intent(UserLoginActivity.this, LoginActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(i);
                     }
                 });
             }
