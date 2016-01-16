@@ -41,7 +41,6 @@
             android:id="@+id/loginUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/defaultUser"
             android:hint="@string/username" />
 
         <EditText
@@ -50,7 +49,6 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="@string/password"
-            android:text="lolggwp"
             android:inputType="textPassword" />
 
         <LinearLayout
