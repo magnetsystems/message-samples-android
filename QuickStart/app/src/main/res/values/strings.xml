@@ -1,19 +1,95 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<!--
+  ~  Copyright (c) 2016 Magnet Systems, Inc.
+  ~
+  ~  Licensed under the Apache License, Version 2.0 (the "License");
+  ~  you may not use this file except in compliance with the License.
+  ~  You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~  Unless required by applicable law or agreed to in writing, software
+  ~  distributed under the License is distributed on an "AS IS" BASIS,
+  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  ~
+  -->
 
-    <string name="app_name">MMX Quickstart</string>
-    <string name="title_activity_message_list">MessageListActivity</string>
-    <string name="title_activity_my">Quickstart</string>
-    <string name="label_status">Status:</string>
-    <string name="status_unknown">unknown</string>
-    <string name="status_connected">connected</string>
-    <string name="status_authenticated">authenticated</string>
-    <string name="status_unavailable">service unavailable</string>
-    <string name="user_anonymously">anonymously</string>
-    <string name="chat_me">Me - </string>
-    <string name="default_text_hello_world">Hello World!</string>
-    <string name="message_hint">Message</string>
-    <string name="event_disconnected">You have been disconnected.</string>
-    <string name="reconnect">Reconnect</string>
-    <string name="title_send_to">Send messages to:</string>
+<resources>
+    <string name="app_name">QuickStart</string>
+    <string name="loginTitle">Welcome to Magnet Message!</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="login">Log In</string>
+    <string name="featuresTitle">Features</string>
+    <string name="chatBtn">Chat</string>
+    <string name="publishBtn">Publish/Subscribe</string>
+    <string name="managementBtn">User Management</string>
+    <string name="pushBtn">Push</string>
+    <string name="logoutBtn">Log Out</string>
+    <string name="chatFetchAllBtn">Fetch messages posted last 24 hours</string>
+    <string name="message">Message</string>
+    <string name="addAttachment">Add attachment</string>
+    <string name="chatTitle"><![CDATA[Send & Receive Messages]]></string>
+    <string name="send">Send</string>
+    <string name="msgImageDescription">Message image from attachment</string>
+    <string name="managementLoginBtn">Log Out</string>
+    <string name="managementSearchBtn">Search for Users</string>
+    <string name="managementRetrieveBtn">Retrieve Users (by ID or userName)</string>
+    <string name="managementTitle">User Management</string>
+    <string name="userRegisterTitle">Register a new User</string>
+    <string name="userLoginTitle">Log Out</string>
+    <string name="userSearchTitle">Search Users</string>
+    <string name="userRetrieveTitle">Retrieve Users</string>
+    <string name="search">Search</string>
+    <string name="userSearchHint">userID1, userID2, userID3</string>
+    <string name="pushTitle">Pushes</string>
+    <string name="pushSoundOn">Need play sound</string>
+    <string name="createChannel">Create channel</string>
+    <string name="subscribedChannels">Subscribed channels</string>
+    <string name="allPublicChannels">All public channels</string>
+    <string name="privateChannels">My private channels</string>
+    <string name="findChannels">Find channels</string>
+    <string name="save">Save</string>
+    <string name="name">Name</string>
+    <string name="summary">Summary</string>
+    <string name="isPublic">Public</string>
+    <string name="createChannelTagsHint">Tag1, Tag2, Tag3</string>
+    <string name="channelLocking">Channel locking</string>
+
+    <string-array name="userSearchModes">
+        <item>userName BEGINSWITH</item>
+        <item>userName ENDSWITH</item>
+    </string-array>
+
+    <string-array name="findChannelModes">
+        <item>Public Channel By name</item>
+        <item>Private Channel By name</item>
+        <item>Public Channel Name Starting with</item>
+        <item>Private Channel Name Starting with</item>
+        <item>By tags</item>
+    </string-array>
+
+    <string-array name="userRetrieveModes">
+        <item>Retrieve by ID</item>
+        <item>Retrieve by userName</item>
+    </string-array>
+
+    <string-array name="createChannelPermissions">
+        <item>Owner</item>
+        <item>Subscribers</item>
+        <item>Any one</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="findChannelTitle">Find channels</string>
+    <string name="invite">Invite</string>
+    <string name="publishPermission">Publish Permission</string>
+    <string name="defaultUser">amumu1</string>
+    <string name="cancel">Cancel</string>
+    <string name="tags">Tags</string>
+    <string name="lastActiveTime">Last Active Time :</string>
+
 </resources>
