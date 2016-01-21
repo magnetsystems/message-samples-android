@@ -36,6 +36,7 @@ import com.magnet.samples.android.quickstart.helpers.Utils;
  * For complete feature list, @see <a href="https://developer.magnet.com/docs/message/overview/features/index.html">Features</a>
  */
 public class FeaturesActivity extends BaseActivity {
+    private static final String TAG = FeaturesActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +103,7 @@ public class FeaturesActivity extends BaseActivity {
         //
         //return false;
         final int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(getApplicationContext());
+        Log.d(TAG, "----------------GooglePlayServicesUtil.isGooglePlayServicesAvailable : " + status);
         if (status == ConnectionResult.SUCCESS) {
             return true;
         }
