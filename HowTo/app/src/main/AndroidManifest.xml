@@ -17,22 +17,22 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.magnet.samples.android.quickstart">
+    package="com.magnet.samples.android.howto">
 
     <permission
-        android:name="com.magnet.samples.android.quickstart.permission.C2D_MESSAGE"
+        android:name="com.magnet.samples.android.howto.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
     <uses-permission android:name="com.magnet.samples.android.quickstart.permission.C2D_MESSAGE" />
 
     <application
-        android:name=".QuickStartApplication"
+        android:name="com.magnet.samples.android.howto.QuickStartApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.magnet.samples.android.quickstart.activities.LoginActivity">
+        <activity android:name="com.magnet.samples.android.howto.activities.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,40 +40,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.FeaturesActivity"
+            android:name="com.magnet.samples.android.howto.activities.FeaturesActivity"
             android:label="@string/featuresTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.ChatActivity"
+            android:name="com.magnet.samples.android.howto.activities.ChatActivity"
             android:label="@string/chatTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.UserManagementActivity"
+            android:name="com.magnet.samples.android.howto.activities.UserManagementActivity"
             android:label="@string/managementTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.UserRegisterActivity"
+            android:name="com.magnet.samples.android.howto.activities.UserRegisterActivity"
             android:label="@string/userRegisterTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.UserLoginActivity"
+            android:name="com.magnet.samples.android.howto.activities.UserLoginActivity"
             android:label="@string/userLoginTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.UserSearchActivity"
+            android:name="com.magnet.samples.android.howto.activities.UserSearchActivity"
             android:label="@string/userSearchTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.UserRetrieveActivity"
+            android:name="com.magnet.samples.android.howto.activities.UserRetrieveActivity"
             android:label="@string/userRetrieveTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.PushActivity"
+            android:name="com.magnet.samples.android.howto.activities.PushActivity"
             android:label="@string/pushTitle" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.PubSubActivity"
+            android:name="com.magnet.samples.android.howto.activities.PubSubActivity"
             android:label="@string/publishBtn" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.CreateChannelActivity"
+            android:name="com.magnet.samples.android.howto.activities.CreateChannelActivity"
             android:label="@string/createChannel" />
-        <activity android:name="com.magnet.samples.android.quickstart.activities.ChannelListActivity" />
+        <activity android:name="com.magnet.samples.android.howto.activities.ChannelListActivity" />
         <activity
-            android:name="com.magnet.samples.android.quickstart.activities.FindChannelActivity"
+            android:name="com.magnet.samples.android.howto.activities.FindChannelActivity"
             android:label="@string/findChannelTitle" />
-        <activity android:name="com.magnet.samples.android.quickstart.activities.ChannelActivity" />
+        <activity android:name="com.magnet.samples.android.howto.activities.ChannelActivity" />
 
         <receiver
             android:name="com.magnet.mmx.client.MMXGcmBroadcastReceiver"
@@ -85,7 +85,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".receivers.PushMessageReceiver"
+            android:name="com.magnet.samples.android.howto.receivers.PushMessageReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="MY_PUSH_ACTION" />
