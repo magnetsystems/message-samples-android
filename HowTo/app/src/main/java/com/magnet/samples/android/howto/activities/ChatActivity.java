@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.ListResult;
@@ -47,22 +48,25 @@ public class ChatActivity extends BaseActivity implements
     private MMXChannel myChatChannel;
     private AlertDialog dialog;
     private ListView messagesList;
+    private Button chatFetchAllBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         messagesList = (ListView) findViewById(R.id.chatMessagesList);
-        findViewById(R.id.chatFetchAllBtn).setOnClickListener(this);
+        chatFetchAllBtn = (Button) findViewById(R.id.chatFetchAllBtn);
+        chatFetchAllBtn.setOnClickListener(this);
+        chatFetchAllBtn.setEnabled(false);
 
         final User currentUser = User.getCurrentUser();
         if (currentUser != null) {
-            final String name = currentUser.getUserName();
+            final String name = getDefaultChannelName();
             MMXChannel.getPrivateChannel(name, new MMXChannel.OnFinishedListener<MMXChannel>() {
                 @Override
                 public void onSuccess(MMXChannel mmxChannel) {
                     Logger.debug("get channel", "success");
-                    myChatChannel = mmxChannel;
+                    setCurrentChannel(mmxChannel);
                 }
 
                 @Override
@@ -74,7 +78,7 @@ public class ChatActivity extends BaseActivity implements
                             @Override
                             public void onSuccess(MMXChannel mmxChannel) {
                                 Logger.debug("create channel", "success");
-                                myChatChannel = mmxChannel;
+                                setCurrentChannel(mmxChannel);
                             }
 
                             @Override
@@ -155,6 +159,17 @@ public class ChatActivity extends BaseActivity implements
                 Logger.error("get all messages", throwable, "error : ", failureCode);
             }
         });
+    }
+
+    private void setCurrentChannel(MMXChannel channel) {
+        myChatChannel = channel;
+        chatFetchAllBtn.setEnabled(true);
+    }
+
+    private String getDefaultChannelName() {
+        String name = User.getCurrentUser().getUserName();
+        name = name.replace('@', '_');
+        return name;
     }
 
     private final MMX.EventListener eventListener = new MMX.EventListener() {
