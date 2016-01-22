@@ -9,6 +9,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sample.version>2.3.2</sample.version>
     </properties>
 
     <dependencies>
@@ -43,7 +44,7 @@
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
                                     <arg value="-y" />
-                                    <arg value="${basedir}/target/android-samples/quickstart-android.zip" />
+                                    <arg value="${basedir}/target/android-samples/howto-android.zip" />
                                     <arg value="HowTo" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
@@ -81,7 +82,7 @@
                     <secretKey>${secretKey}</secretKey>
                     <bucketName>${bucketName}</bucketName>
                     <source>${project.build.directory}/android-samples</source>
-                    <destination>${version}/android-samples</destination>
+                    <destination>${sample.version}/android-samples</destination>
                     <recursive>true</recursive>
                 </configuration>
             </plugin>
