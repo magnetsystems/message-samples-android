@@ -21,7 +21,7 @@ import android.util.Log;
 
 public class Logger {
 
-    private static final String APP_TAG = "QuickStart";
+    private static final String APP_TAG = "HowTo";
 
     public static void debug (Object... args) {
         debug(null, args);
