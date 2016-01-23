@@ -62,20 +62,8 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void success(Boolean aBoolean) {
                 Logger.debug("login", "success");
-                Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
-                    @Override
-                    public void success(Boolean aBoolean) {
-                        Logger.debug("init module", "success");
-                        MMX.start();
-                        switchToFeatures();
-                    }
-
-                    @Override
-                    public void failure(ApiError apiError) {
-                        showMessage("Can't init module : " + apiError.getMessage());
-                        Logger.error("init module.", apiError, "error");
-                    }
-                });
+                MMX.start();
+                switchToFeatures();
             }
 
             @Override
