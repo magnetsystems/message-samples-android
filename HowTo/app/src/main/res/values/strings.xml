@@ -28,7 +28,7 @@
     <string name="managementBtn">User Management</string>
     <string name="pushBtn">Push</string>
     <string name="logoutBtn">Log Out</string>
-    <string name="chatFetchAllBtn">Fetch messages posted last 24 hours</string>
+    <string name="chatFetchAllBtn">Touch here to fetch messages posted in last 24 hours</string>
     <string name="message">Message</string>
     <string name="addAttachment">Add attachment</string>
     <string name="chatTitle"><![CDATA[Send & Receive Messages]]></string>
