@@ -30,8 +30,9 @@ public class HowToApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
+
         com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
+        Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
 
         MMX.registerWakeupBroadcast(this, new Intent("MY_PUSH_ACTION"));
     }
