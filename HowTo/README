@@ -1,3 +1,5 @@
-This application depends on Android SDK API level 19 (4.4.2) or higher and requires the installation of the Google Play services and Google Repository module using Android SDK Manager.
- -Extras-->Google Play services
- -Extras-->Google Repository
+This application demonstrates Magnet Message APIs. 
+Prerequisites :   
+- Android SDK API level 21 (5.0) or higher 
+- Google Play services and Google Repository module (follow the instruction here : http://developer.android.com/sdk/installing/adding-packages.html)
+- Android Studio 1.3+
