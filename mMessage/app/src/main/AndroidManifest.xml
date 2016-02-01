@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.magnet.magnetchat">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.magnet.imessage.permission.C2D_MESSAGE" />
+
+    <application
+        android:name="com.magnet.magnetchat.core.CurrentApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.magnet.magnetchat.ui.LoginActivity"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.magnet.magnetchat.ui.RegisterActivity"
+            android:label="Register a new account" />
+        <activity
+            android:name="com.magnet.magnetchat.ui.HomeActivity"
+            android:label="@string/title_activity_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.magnet.magnetchat.ui.ChangePasswordActivity"
+            android:label="Change Password" />
+        <activity android:name="com.magnet.magnetchat.ui.ChooseUserActivity" />
+        <activity
+            android:name="com.magnet.magnetchat.ui.ChatActivity"
+            android:label="Chat" />
+        <activity android:name="com.magnet.magnetchat.ui.DetailsActivity" />
+        <activity
+            android:name="nl.changer.polypicker.ImagePickerActivity"
+            android:theme="@style/AppTheme" />
+
+        <receiver
+            android:name="com.magnet.mmx.client.MMXGcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.magnet.magnetchat" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.magnet.magnetchat.receivers.WakeupReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="MMX_WAKEUP_ACTION" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
