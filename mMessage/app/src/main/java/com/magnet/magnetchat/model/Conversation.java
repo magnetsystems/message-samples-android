@@ -6,6 +6,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
+import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
@@ -18,10 +19,11 @@ import java.util.Map;
 
 public class Conversation {
 
-    private Map<String, User> suppliers;
+    private Map<String, UserProfile> suppliers;
     private List<Message> messages;
     private boolean hasUnreadMessage;
     private MMXChannel channel;
+    private Date lastActiveTime;
 
     public interface OnSendMessageListener {
         void onSuccessSend(Message message);
@@ -32,22 +34,25 @@ public class Conversation {
     public Conversation() {
     }
 
-    public Map<String, User> getSuppliers() {
+    public Map<String, UserProfile> getSuppliers() {
         if (suppliers == null) {
             suppliers = new HashMap<>();
         }
         return suppliers;
     }
 
-    public List<User> getSuppliersList() {
+    public List<UserProfile> getSuppliersList() {
         return new ArrayList<>(getSuppliers().values());
     }
 
-    public void setSuppliers(Map<String, User> suppliers) {
+    public void setSuppliers(Map<String, UserProfile> suppliers) {
+        if(null != this.suppliers) {
+            this.suppliers.clear();
+        }
         this.suppliers = suppliers;
     }
 
-    public void addSupplier(User user) {
+    public void addSupplier(UserProfile user) {
         getSuppliers().put(user.getUserIdentifier(), user);
     }
 
@@ -57,6 +62,17 @@ public class Conversation {
 
     public void setHasUnreadMessage(boolean hasUnreadMessage) {
         this.hasUnreadMessage = hasUnreadMessage;
+    }
+
+    public Date getLastActiveTime() {
+        if (lastActiveTime == null && channel != null) {
+            return channel.getLastTimeActive();
+        }
+        return lastActiveTime;
+    }
+
+    public void setLastActiveTime(Date lastActiveTime) {
+        this.lastActiveTime = lastActiveTime;
     }
 
     public MMXChannel getChannel() {

@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.ConversatioinCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
@@ -18,6 +19,7 @@ import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
+import com.magnet.max.android.UserProfile;
 import java.util.List;
 
 public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, AdapterView.OnItemClickListener {
@@ -44,7 +46,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         currentMode = ActivityMode.MODE_TO_CREATE;
         String channelName = getIntent().getStringExtra(TAG_ADD_USER_TO_CHANNEL);
         if (channelName != null) {
-            conversation = CurrentApplication.getInstance().getConversationByName(channelName);
+            conversation = ConversatioinCache.getInstance().getConversationByName(channelName);
             currentMode = ActivityMode.MODE_TO_ADD_USER;
         }
         setTitle("New Message");
@@ -56,7 +58,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        User selectedUser = adapter.getItem(position);
+        UserProfile selectedUser = adapter.getItem(position);
         switch (currentMode) {
             case MODE_TO_ADD_USER:
                 addUserToChannel(selectedUser);
@@ -91,7 +93,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         return true;
     }
 
-    private void addUserToChannel(final User user) {
+    private void addUserToChannel(final UserProfile user) {
         findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
         ChannelHelper.getInstance().addUserToConversation(conversation, user, new ChannelHelper.OnAddUserListener() {
             @Override
@@ -103,7 +105,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             @Override
             public void onUserSetExists(String channelSetName) {
                 findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
-                Conversation anotherConversation = CurrentApplication.getInstance().getConversationByName(channelSetName);
+                Conversation anotherConversation = ConversatioinCache.getInstance().getConversationByName(channelSetName);
                 startActivity(ChatActivity.getIntentWithChannel(anotherConversation));
                 finish();
             }
@@ -131,7 +133,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             public void success(List<User> users) {
                 users.remove(User.getCurrentUser());
                 if (conversation != null) {
-                    for (User user : conversation.getSuppliers().values()) {
+                    for (UserProfile user : conversation.getSuppliers().values()) {
                         users.remove(user);
                     }
                 }
@@ -149,7 +151,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         });
     }
 
-    private void updateList(List<User> users) {
+    private void updateList(List<? extends UserProfile> users) {
         adapter = new UsersAdapter(this, users);
         userList.setAdapter(adapter);
     }

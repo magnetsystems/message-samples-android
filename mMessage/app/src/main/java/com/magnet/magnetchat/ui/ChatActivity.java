@@ -14,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.ConversatioinCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.FileHelper;
@@ -31,6 +33,7 @@ import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.User;
+import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -41,6 +44,7 @@ import nl.changer.polypicker.Config;
 import nl.changer.polypicker.ImagePickerActivity;
 
 public class ChatActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    public static final String TAG = ChatActivity.class.getSimpleName();
 
     public static final String TAG_CHANNEL_NAME = "channelName";
     public static final String TAG_CREATE_WITH_USER_ID = "createWithUserId";
@@ -83,7 +87,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         } else {
             channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
             if (channelName != null) {
-                currentConversation = CurrentApplication.getInstance().getConversationByName(channelName);
+                currentConversation = ConversatioinCache.getInstance().getConversationByName(channelName);
                 if (currentConversation == null) {
                     finish();
                     return;
@@ -283,11 +287,11 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             finish();
             return;
         }
-        if (CurrentApplication.getInstance().getConversations().get(channelName) == null) {
-            CurrentApplication.getInstance().addConversation(channelName, conversation);
+        if (ConversatioinCache.getInstance().getConversation(channelName) == null) {
+            ConversatioinCache.getInstance().addConversation(channelName, conversation);
         }
         currentConversation = conversation;
-        List<User> suppliersList = conversation.getSuppliersList();
+        List<UserProfile> suppliersList = conversation.getSuppliersList();
         if (conversation.getSuppliers().size() == 1) {
             setTitle(UserHelper.getInstance().userNamesAsString(suppliersList));
             findViewById(R.id.chatSuppliers).setVisibility(View.GONE);
@@ -305,7 +309,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onSuccessSend(Message message) {
             findViewById(R.id.chatMessageProgress).setVisibility(View.GONE);
-            CurrentApplication.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+            ConversatioinCache.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
                 clearFieldText(R.id.chatMessageField);
             }
@@ -328,7 +332,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         @Override
         public void onChannelExists(MMXChannel channel) {
-            currentConversation = CurrentApplication.getInstance().getConversationByName(channel.getName());
+            currentConversation = ConversatioinCache.getInstance().getConversationByName(channel.getName());
             if (currentConversation == null) {
                 ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
             } else {
@@ -365,9 +369,13 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
+            Log.d(TAG, "Received message : " + mmxMessage);
             if (adapter != null && mmxMessage.getChannel() != null && channelName.equals(mmxMessage.getChannel().getName())) {
+                currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
                 updateList();
                 currentConversation.setHasUnreadMessage(false);
+
+                return true;
             }
             return false;
         }

@@ -17,10 +17,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.ConversatioinCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
@@ -35,6 +37,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private List<Conversation> conversations;
     private AlertDialog leaveDialog;
     private Thread searchThread;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(username);
         setSupportActionBar(toolbar);
+
+        mProgressBar = (ProgressBar) findViewById(R.id.homeProgress);
 
         SearchView searchView = (SearchView) findViewById(R.id.homeSearch);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -75,7 +81,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     hideKeyboard();
-                    showList(CurrentApplication.getInstance().getConversations());
+                    showList(ConversatioinCache.getInstance().getConversations());
                 }
                 return false;
             }
@@ -166,8 +172,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onResume() {
         super.onResume();
 
-        showAllConversations();
-        ChannelHelper.getInstance().rereadConversations(null);
+        if(ConversatioinCache.getInstance().isConversationListUpdated()) {
+            showAllConversations();
+            ConversatioinCache.getInstance().resetConversationListUpdated();
+        }
+        //ChannelHelper.getInstance().rereadConversations(null);
         MMX.registerListener(eventListener);
         registerReceiver(onAddedConversation, new IntentFilter("com.magnet.imessage.ADDED_CONVERSATION"));
     }
@@ -192,18 +201,18 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void showAllConversations() {
-        showList(CurrentApplication.getInstance().getConversations());
+        showList(ConversatioinCache.getInstance().getConversations());
     }
 
-    private void showList(Map<String, Conversation> conversationMap) {
+    private void showList(List<Conversation> conversationsToShow) {
         if(null == adapter) {
-            conversations = new ArrayList<>(conversationMap.values());
-            adapter = new ConversationsAdapter(this, conversations);
+            conversations = new ArrayList<>(conversationsToShow);
+            adapter = new ConversationsAdapter(this, conversationsToShow);
             conversationsList.setAdapter(adapter);
         } else {
-            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
             conversations.clear();
-            conversations.addAll(conversationMap.values());
+            conversations.addAll(conversationsToShow);
             adapter.notifyDataSetChanged();
         }
     }
@@ -231,17 +240,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    findViewById(R.id.homeProgress).setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     ChannelHelper.getInstance().deleteChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                         @Override
                         public void onSuccess() {
-                            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             showAllConversations();
                         }
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             showMessage("Can't delete the conversation");
                         }
                     });
@@ -253,17 +262,17 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Leave", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    findViewById(R.id.homeProgress).setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
                     ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                         @Override
                         public void onSuccess() {
-                            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             showAllConversations();
                         }
 
                         @Override
                         public void onFailure(Throwable throwable) {
-                            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+                            mProgressBar.setVisibility(View.GONE);
                             showMessage("Can't leave the conversation");
                         }
                     });
@@ -275,11 +284,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void searchMessage(final String query) {
-        final Map<String, Conversation> searchResult = new LinkedHashMap<>();
-        for (Conversation conversation : CurrentApplication.getInstance().getConversations().values()) {
+        final List<Conversation> searchResult = new ArrayList<>();
+        for (Conversation conversation : ConversatioinCache.getInstance().getConversations()) {
             for (Message message : conversation.getMessages()) {
                 if (message.getText() != null && message.getText().toLowerCase().contains(query.toLowerCase())) {
-                    searchResult.put(conversation.getChannel().getName(), conversation);
+                    searchResult.add(conversation);
                 }
             }
         }
@@ -289,13 +298,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
-            findViewById(R.id.homeProgress).setVisibility(View.GONE);
-            showList(CurrentApplication.getInstance().getConversations());
+            mProgressBar.setVisibility(View.GONE);
+            showAllConversations();
         }
 
         @Override
         public void onFailure(Throwable throwable) {
-            findViewById(R.id.homeProgress).setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
         }
     };
 

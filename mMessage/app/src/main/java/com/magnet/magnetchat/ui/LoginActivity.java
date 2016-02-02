@@ -2,40 +2,52 @@ package com.magnet.magnetchat.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.InternetConnection;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
 
 public class LoginActivity extends BaseActivity {
+    private static final String TAG = LoginActivity.class.getSimpleName();
 
     private CheckBox remember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginForgotPaswordBtn, R.id.loginSignInBtn);
-        remember = (CheckBox) findViewById(R.id.loginRemember);
-        String[] credence = UserPreference.getInstance().readCredence();
-        if (User.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-            finish();
-        } else if (credence != null) {
-            setText(R.id.loginEmail, credence[0]);
-            setText(R.id.loginPassword, credence[1]);
-            remember.setChecked(true);
-            if (InternetConnection.getInstance().isAnyConnectionAvailable()) {
-                changeLoginMode(true);
-                UserHelper.getInstance().checkAuthentication(loginListener);
-            }
+
+        //String[] credence = UserPreference.getInstance().readCredence();
+        if(User.SessionStatus.LoggedIn == User.getSessionStatus()) {
+            goToHomeActivity();
+        } else if(User.SessionStatus.CanResume == User.getSessionStatus()) {
+            User.resumeSession(new ApiCallback<Boolean>() {
+                @Override public void success(Boolean aBoolean) {
+                    if(aBoolean) {
+                        goToHomeActivity();
+                    } else {
+                        handleError("");
+                    }
+                }
+
+                @Override public void failure(ApiError apiError) {
+                    handleError(apiError.getMessage());
+                }
+
+                private void handleError(String errorMessage) {
+                    Log.d(TAG, "Failed to resume sessioin due to " + errorMessage);
+                    setupView();
+                }
+            });
+        } else {
+            setupView();
         }
     }
 
@@ -61,6 +73,12 @@ public class LoginActivity extends BaseActivity {
                 runLoginFromFields();
                 break;
         }
+    }
+
+    private void setupView() {
+        setContentView(R.layout.activity_login);
+        setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginForgotPaswordBtn, R.id.loginSignInBtn);
+        remember = (CheckBox) findViewById(R.id.loginRemember);
     }
 
     private void runLoginFromFields() {
@@ -99,6 +117,11 @@ public class LoginActivity extends BaseActivity {
             findViewById(R.id.loginSignInBtn).setVisibility(View.VISIBLE);
             findViewById(R.id.loginProgress).setVisibility(View.GONE);
         }
+    }
+
+    private void goToHomeActivity() {
+        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+        finish();
     }
 
     private UserHelper.OnLoginListener loginListener = new UserHelper.OnLoginListener() {

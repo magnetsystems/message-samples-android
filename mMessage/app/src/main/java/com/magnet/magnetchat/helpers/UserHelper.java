@@ -1,12 +1,14 @@
 package com.magnet.magnetchat.helpers;
 
-import com.magnet.magnetchat.core.CurrentApplication;
+import com.magnet.magnetchat.core.ConversatioinCache;
 import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
+import com.magnet.max.android.UserProfile;
 import com.magnet.max.android.auth.model.UserRegistrationInfo;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 
 import java.util.List;
@@ -98,8 +100,7 @@ public class UserHelper {
         User.logout(new ApiCallback<Boolean>() {
             @Override
             public void success(Boolean aBoolean) {
-                UserPreference.getInstance().cleanCredence();
-                CurrentApplication.getInstance().removeConversations();
+                ConversatioinCache.getInstance().resetConversations();
                 Logger.debug("logout", "success");
                 if (listener != null)
                     listener.onSuccess();
@@ -114,11 +115,11 @@ public class UserHelper {
         });
     }
 
-    public String userNameAsString(User user) {
-        return String.format("%s %s", user.getFirstName(), user.getLastName());
+    public String userNameAsString(UserProfile user) {
+        return StringUtil.isNotEmpty(user.getDisplayName()) ? user.getDisplayName() : String.format("%s %s", user.getFirstName(), user.getLastName());
     }
 
-    public String userNamesAsString(List<User> userList) {
+    public String userNamesAsString(List<UserProfile> userList) {
         String users = "";
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {

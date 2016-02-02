@@ -88,7 +88,7 @@ public class ConversationsAdapter extends BaseAdapter {
         } else {
             viewHolder.newMessage.setVisibility(View.INVISIBLE);
         }
-        viewHolder.date.setText(DateHelper.getConversationLastDate(conversation.getChannel().getLastTimeActive()));
+        viewHolder.date.setText(DateHelper.getConversationLastDate(conversation.getLastActiveTime()));
         List<Message> messages = conversation.getMessages();
         if (messages != null && messages.size() > 0) {
             Message message = messages.get(messages.size() - 1);

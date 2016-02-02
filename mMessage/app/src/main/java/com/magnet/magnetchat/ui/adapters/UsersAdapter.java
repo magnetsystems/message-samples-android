@@ -11,9 +11,10 @@ import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.max.android.User;
 
+import com.magnet.max.android.UserProfile;
 import java.util.List;
 
-public class UsersAdapter extends ArrayAdapter<User> {
+public class UsersAdapter extends ArrayAdapter<UserProfile> {
 
     private LayoutInflater inflater;
     private AddUserListener addUser;
@@ -28,12 +29,12 @@ public class UsersAdapter extends ArrayAdapter<User> {
         void addUser();
     }
 
-    public UsersAdapter(Context context, List<User> users) {
+    public UsersAdapter(Context context, List<? extends UserProfile> users) {
         this(context, users, null);
     }
 
-    public UsersAdapter(Context context, List<User> users, AddUserListener addUser) {
-        super(context, R.layout.item_user, users);
+    public UsersAdapter(Context context, List<? extends UserProfile> users, AddUserListener addUser) {
+        super(context, R.layout.item_user, (List<UserProfile>) users);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (addUser != null) {
             this.addUser = addUser;
@@ -60,7 +61,7 @@ public class UsersAdapter extends ArrayAdapter<User> {
             });
             return addUserView;
         } else {
-            User user = getItem(position);
+            UserProfile user = getItem(position);
             final ViewHolder viewHolder;
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.item_user, parent, false);

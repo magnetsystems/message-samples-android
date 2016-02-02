@@ -6,7 +6,10 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
+import com.magnet.magnetchat.ui.LoginActivity;
 import com.magnet.mmx.client.api.MMXPushEvent;
 import com.magnet.mmx.protocol.PubSubNotification;
 
@@ -26,17 +29,16 @@ public class WakeupReceiver extends BroadcastReceiver {
 
     private void showNotification(Context context, String title, String text) {
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
-                new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_DEFAULT)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .setPackage(context.getPackageName()),
+                new Intent(context, LoginActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Notification note = new Notification.Builder(context)
                 .setAutoCancel(true)
                 .setSmallIcon(context.getApplicationInfo().icon)
                 .setContentTitle(title)
                 .setContentText(text)
                 .setContentIntent(pIntent)
+                .setSound(alarmSound)
                 .build();
         NotificationManager noteMgr = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
