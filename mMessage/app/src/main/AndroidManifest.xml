@@ -56,6 +56,9 @@
                 <action android:name="MMX_WAKEUP_ACTION" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="392ad02e0008b4f01f7693a818b2f722905adea1" />
     </application>
 
 </manifest>

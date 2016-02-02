@@ -9,6 +9,7 @@ import android.os.Vibrator;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.crashlytics.android.Crashlytics;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.InternetConnection;
@@ -21,6 +22,7 @@ import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
+import io.fabric.sdk.android.Fabric;
 
 public class CurrentApplication extends MultiDexApplication {
 
@@ -31,6 +33,7 @@ public class CurrentApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         instance = this;
         Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
         UserPreference.getInstance(this);
