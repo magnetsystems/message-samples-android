@@ -108,7 +108,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 showLeaveDialog(adapter.getItem(position));
-                return false;
+                return true;
             }
         });
         ChannelHelper.getInstance().readConversations(readChannelInfoListener);
