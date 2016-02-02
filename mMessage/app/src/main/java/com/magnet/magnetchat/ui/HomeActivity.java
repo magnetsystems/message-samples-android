@@ -303,13 +303,19 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private UserHelper.OnLogoutListener logoutListener = new UserHelper.OnLogoutListener() {
         @Override
         public void onSuccess() {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
-            finish();
+            goToHomeActivity();
         }
 
         @Override
         public void onFailedLogin(ApiError apiError) {
-            showMessage("Can't sign out");
+            //showMessage("Can't sign out");
+            // Go to home acitivity anyway
+            goToHomeActivity();
+        }
+
+        private void goToHomeActivity() {
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            finish();
         }
     };
 
