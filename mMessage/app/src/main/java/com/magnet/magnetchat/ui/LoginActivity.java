@@ -2,7 +2,6 @@ package com.magnet.magnetchat.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -24,7 +23,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //String[] credence = UserPreference.getInstance().readCredence();
+        Logger.debug("SessionStatus", User.getSessionStatus());
         if(User.SessionStatus.LoggedIn == User.getSessionStatus()) {
             goToHomeActivity();
         } else if(User.SessionStatus.CanResume == User.getSessionStatus()) {
@@ -42,7 +41,7 @@ public class LoginActivity extends BaseActivity {
                 }
 
                 private void handleError(String errorMessage) {
-                    Log.d(TAG, "Failed to resume sessioin due to " + errorMessage);
+                    Logger.debug(TAG, "Failed to resume session due to ", errorMessage);
                     setupView();
                 }
             });

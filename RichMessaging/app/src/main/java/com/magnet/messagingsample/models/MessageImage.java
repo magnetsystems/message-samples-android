@@ -1,17 +1,21 @@
 package com.magnet.messagingsample.models;
 
+import com.magnet.max.android.Attachment;
+
 /**
  * Created by edwardyang on 9/10/15.
  */
 public class MessageImage {
 
     public boolean left;
-    public String imageUrl;
+    public Attachment imageAttachment;
+    public String username;
 
-    public MessageImage(boolean left, String imageUrl) {
+    public MessageImage(boolean left, Attachment imageAttachment, String username) {
         super();
         this.left = left;
-        this.imageUrl = imageUrl;
+        this.imageAttachment = imageAttachment;
+        this.username = username;
     }
 
 }

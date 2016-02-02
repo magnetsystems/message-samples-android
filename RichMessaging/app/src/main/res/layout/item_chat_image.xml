@@ -1,19 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/wrapper">
+    android:layout_height="wrap_content">
 
-    <ImageView
+    <include
+        android:id="@+id/avatar"
+        layout="@layout/layout_avatar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxWidth="200dp"
-        android:id="@+id/ivMessageImage"
-        android:src="@mipmap/ic_launcher"
-        android:adjustViewBounds="true"
-        android:layout_gravity="center"
-        android:layout_margin="5dip"
-        android:background="@drawable/bubble_yellow"
-        android:focusableInTouchMode="false" />
+        android:layout_margin="5dip"/>
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/wrapper"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvChatUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/ivMessageImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@drawable/bubble_yellow"
+            android:focusableInTouchMode="false"
+            android:maxWidth="200dp"
+            android:src="@mipmap/ic_launcher" />
+
+    </LinearLayout>
+
+</RelativeLayout>

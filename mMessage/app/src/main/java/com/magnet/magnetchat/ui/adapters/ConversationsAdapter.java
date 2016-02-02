@@ -108,8 +108,8 @@ public class ConversationsAdapter extends BaseAdapter {
                     break;
                 case Message.TYPE_TEXT:
                     String text = message.getText().replace(System.getProperty("line.separator"), " ");
-                    if (text.length() > 17) {
-                        text = text.substring(0, 15) + "...";
+                    if (text.length() > 23) {
+                        text = text.substring(0, 20) + "...";
                     }
                     viewHolder.lastMessage.setText(text);
                     break;

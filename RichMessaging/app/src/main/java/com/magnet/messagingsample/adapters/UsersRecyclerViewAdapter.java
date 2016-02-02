@@ -6,14 +6,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.magnet.max.android.User;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.activities.ChatActivity;
-import com.magnet.messagingsample.models.User;
-import com.magnet.mmx.client.api.ListResult;
-import com.magnet.mmx.client.api.MMXUser;
 
 import java.util.List;
 
@@ -44,7 +41,7 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
     public void goToChatActivity(User targetUser) {
         Intent intent;
         intent = new Intent(mActivity, ChatActivity.class);
-        intent.putExtra("User", targetUser);
+        intent.putExtra("User", targetUser.getUserName());
         mActivity.startActivity(intent);
     }
 
@@ -67,7 +64,7 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
         }
 
         User item = users.get(position);
-        holder.tvUsername.setText(item.getUsername());
+        holder.tvUsername.setText(item.getUserName());
     }
 
     @Override
@@ -83,11 +80,7 @@ public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecycler
         users.clear();
     }
 
-    public void addAll(List<MMXUser> mmxUsers) {
-        for (int i = 0; i < mmxUsers.size(); i++) {
-            User user = new User();
-            user.setUsername(mmxUsers.get(i).getUsername());
-            users.add(user);
-        }
+    public void addAll(List<User> mmxUsers) {
+        users.addAll(mmxUsers);
     }
 }

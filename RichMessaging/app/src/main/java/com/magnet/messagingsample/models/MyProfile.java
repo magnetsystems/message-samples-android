@@ -13,7 +13,7 @@ public final class MyProfile extends UserProfile {
   private static MyProfile sInstance = null;
   private Context mContext = null;
   private SharedPreferences mSharedPrefs = null;
-  private byte[] mPassword = null;
+  private String mPassword = null;
 
   private MyProfile(Context context) {
     super();
@@ -26,7 +26,7 @@ public final class MyProfile extends UserProfile {
     setUsername(mSharedPrefs.getString(PREF_USERNAME, null));
     setDisplayName(mSharedPrefs.getString(PREF_DISPLAYNAME, null));
     String password = mSharedPrefs.getString(PREF_PASSWORD, null);
-    mPassword = password != null ? password.getBytes() : null;
+    mPassword = password != null ? password : null;
   }
 
   public static synchronized MyProfile getInstance(Context context) {
@@ -36,7 +36,7 @@ public final class MyProfile extends UserProfile {
     return sInstance;
   }
 
-  public byte[] getPassword() {
+  public String getPassword() {
     return mPassword;
   }
 
@@ -50,7 +50,7 @@ public final class MyProfile extends UserProfile {
     mSharedPrefs.edit().putString(PREF_DISPLAYNAME, displayName).apply();
   }
 
-  public void setPassword(byte[] password) {
+  public void setPassword(String password) {
     mPassword = password;
     mSharedPrefs.edit().putString(PREF_PASSWORD, new String(password)).apply();
   }

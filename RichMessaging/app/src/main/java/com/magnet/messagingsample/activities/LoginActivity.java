@@ -1,11 +1,9 @@
 package com.magnet.messagingsample.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,20 +19,24 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.Max;
+import com.magnet.max.android.User;
+import com.magnet.max.android.auth.model.UserRegistrationInfo;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.models.MyProfile;
 import com.magnet.mmx.client.api.MMX;
-import com.magnet.mmx.client.api.MMXUser;
 
 import org.json.JSONObject;
 
-import java.util.HashSet;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final int ERROR_USER_EXISTS = 409;
 
     final String TAG = "LoginActivity";
 
@@ -65,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                         String name = jsonResp.getString("name");
                         String id = jsonResp.getString("id");
                         mProfile.setUsername(email);
-                        mProfile.setPassword(id.getBytes()); //FIXME: Find a better way to generate this password
+                        mProfile.setPassword(id); //FIXME: Find a better way to generate this password
                         mProfile.setDisplayName(name);
                         attemptRegister(mProfile.getUsername(), mProfile.getPassword(), false);
                     } catch (final Exception ex) {
@@ -117,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                attemptLogin(username, password.getBytes());
+                attemptLogin(username, password);
             }
         });
 
@@ -126,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                attemptRegister(username, password.getBytes(), true);
+                attemptRegister(username, password, true);
             }
         });
 
@@ -142,46 +144,48 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void attemptLogin(String user, byte[] pass) {
-        MMX.login(user, pass, new MMX.OnFinishedListener<Void>() {
-            public void onSuccess(Void aVoid) {
-                //if an EventListener has already been registered, start receiving messages
-                MMX.start();
-                goToUserSelectActivity();
+    private void attemptLogin(String user, String pass) {
+        User.login(user, pass, false, new ApiCallback<Boolean>() {
+            @Override
+            public void success(Boolean aBoolean) {
+                Max.initModule(MMX.getModule(), new ApiCallback<Boolean>() {
+                    @Override
+                    public void success(Boolean aBoolean) {
+                        Log.d(TAG, "attemptLogin() success");
+                        MMX.start();
+                        goToUserSelectActivity();
+                    }
 
+                    @Override
+                    public void failure(ApiError apiError) {
+                        Log.e(TAG, "attemptLogin() init module error: " + apiError);
+                    }
+                });
             }
 
-            public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
-                Log.e(TAG, "attemptLogin() error: " + failureCode, throwable);
-                if (MMX.FailureCode.SERVER_AUTH_FAILED.equals(failureCode)) {
-                    //login failed, probably an incorrect password
-                    Toast.makeText(LoginActivity.this, "Invalid username and/or password.", Toast.LENGTH_LONG).show();
-                }
+            @Override
+            public void failure(ApiError apiError) {
+                Log.e(TAG, "attemptLogin() error: " + apiError);
             }
         });
     }
 
-    private void attemptRegister(final String user, final byte[] pass, final boolean isNewUser) {
-        MMXUser mmxUser = new MMXUser.Builder().username(user).displayName(user).build();
-        mmxUser.register(pass, new MMXUser.OnFinishedListener<Void>() {
-            public void onSuccess(Void aVoid) {
-                Log.e(TAG, "attemptRegister() success");
+    private void attemptRegister(final String username, final String pass, final boolean isNewUser) {
+        UserRegistrationInfo.Builder infoBuilder = new UserRegistrationInfo.Builder();
+        infoBuilder.userName(username).password(pass);
+        User.register(infoBuilder.build(), new ApiCallback<User>() {
+            @Override
+            public void success(User user) {
+                Log.d(TAG, "attemptRegister() success");
                 mLoginSuccess.set(true);
-                attemptLogin(user, pass);
+                attemptLogin(username, pass);
             }
 
-            public void onFailure(MMXUser.FailureCode failureCode, Throwable throwable) {
-                if (MMXUser.FailureCode.REGISTRATION_INVALID_USERNAME.equals(failureCode)) {
-                    Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
-                    Toast.makeText(LoginActivity.this, "Sorry, that's not a valid username.", Toast.LENGTH_LONG).show();
-                }
-                if (MMXUser.FailureCode.REGISTRATION_USER_ALREADY_EXISTS.equals(failureCode)) {
-                    if (isNewUser) {
-                        Log.e(TAG, "attemptRegister() error: " + failureCode, throwable);
-                        Toast.makeText(LoginActivity.this, "Sorry, this user already exists.", Toast.LENGTH_LONG).show();
-                    } else {
-                        attemptLogin(user, pass);
-                    }
+            @Override
+            public void failure(ApiError apiError) {
+                Log.e(TAG, "attemptRegister() error: " + apiError);
+                if (apiError.getKind() == ERROR_USER_EXISTS) {
+                    attemptLogin(username, pass);
                 }
                 mLoginSuccess.set(false);
             }

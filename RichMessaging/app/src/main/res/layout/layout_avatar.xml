@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.magnet.messagingsample.helpers.CircleImageView
+        android:id="@+id/ivAvatarImage"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:src="@drawable/sqr_img" />
+
+    <TextView
+        android:id="@+id/tvUserInitials"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textColor="#a3a3a3"
+        android:textSize="20sp" />
+
+</RelativeLayout>

@@ -2,16 +2,11 @@ package com.magnet.messagingsample.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
-import android.content.CursorLoader;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,12 +18,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.facebook.Profile;
-import com.facebook.login.LoginManager;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
+import com.magnet.max.android.Attachment;
+import com.magnet.max.android.User;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.adapters.MessageRecyclerViewAdapter;
 import com.magnet.messagingsample.helpers.FileHelper;
@@ -36,24 +29,16 @@ import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
 import com.magnet.messagingsample.models.MessageVideo;
-import com.magnet.messagingsample.models.User;
 import com.magnet.messagingsample.services.GPSTracker;
-import com.magnet.messagingsample.services.S3UploadService;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
-import com.magnet.mmx.client.api.MMXUser;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
 import nl.changer.polypicker.Config;
@@ -64,15 +49,16 @@ public class ChatActivity extends AppCompatActivity {
     final String TAG = "ChatActivity";
 
     public static final String KEY_MESSAGE_TEXT = "text";
-    public static final String KEY_MESSAGE_IMAGE = "photo";
+    public static final String MIME_IMAGE = "image/*";
     public static final String KEY_MESSAGE_MAP = "location";
-    public static final String KEY_MESSAGE_VIDEO = "video";
+    public static final String MIME_VIDEO = "video/*";
     final private int INTENT_REQUEST_GET_IMAGES = 14;
     final private int INTENT_SELECT_VIDEO = 13;
 
     GPSTracker mGPS;
 
     private User mUser;
+    private String mUserName;
     List<Object> messageList;
 
     private MessageRecyclerViewAdapter adapter;
@@ -87,25 +73,33 @@ public class ChatActivity extends AppCompatActivity {
     private MMX.EventListener mEventListener = new MMX.EventListener() {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             String type = mmxMessage.getContent().get("type");
+            String username = mmxMessage.getSender().getUserName();
+            if (mmxMessage.getAttachments().size() > 0) {
+                type = mmxMessage.getAttachments().get(0).getMimeType();
+            }
             switch (type) {
                 case KEY_MESSAGE_TEXT:
-                    updateList(type, mmxMessage.getContent().get("message"), true);
+                    updateList(username, type, mmxMessage.getContent().get("message"), null, true);
                     break;
-                case KEY_MESSAGE_IMAGE:
-                    updateList(type, mmxMessage.getContent().get("url"), true);
+                case MIME_IMAGE:
+                    if (mmxMessage.getAttachments().size() > 0) {
+                        updateList(username, type, "", mmxMessage.getAttachments().get(0), true);
+                    }
                     break;
                 case KEY_MESSAGE_MAP:
-                    updateList(type, mmxMessage.getContent().get("latitude") + "," + mmxMessage.getContent().get("longitude"), true);
+                    updateList(username, type, mmxMessage.getContent().get("latitude") + "," + mmxMessage.getContent().get("longitude"), null, true);
                     break;
-                case KEY_MESSAGE_VIDEO:
-                    updateList(type, mmxMessage.getContent().get("url"), true);
+                case MIME_VIDEO:
+                    if (mmxMessage.getAttachments().size() > 0) {
+                        updateList(username, type, "", mmxMessage.getAttachments().get(0), true);
+                    }
                     break;
             }
             return false;
         }
 
         @Override
-        public boolean onMessageAcknowledgementReceived(MMXUser mmXid, String s) {
+        public boolean onMessageAcknowledgementReceived(User mmXid, String s) {
             return false;
         }
     };
@@ -122,15 +116,29 @@ public class ChatActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-        mUser = getIntent().getParcelableExtra("User");
+        mUserName = getIntent().getStringExtra("User");
+        User.getUsersByUserNames(Arrays.asList(mUserName), new ApiCallback<List<User>>() {
+            @Override
+            public void success(List<User> usersList) {
+                for (User user : usersList) {
+                    if (user.getUserName().equals(mUserName)) {
+                        mUser = user;
+                    }
+                }
+            }
+
+            @Override
+            public void failure(ApiError apiError) {
+                Toast.makeText(ChatActivity.this, "Unable to find user.", Toast.LENGTH_LONG).show();
+            }
+        });
 
         MMX.registerListener(mEventListener);
-        S3UploadService.init(this);
         mGPS = new GPSTracker(this);
 
         ActionBar ab = getActionBar();
         if (ab != null) {
-            ab.setTitle("Chatting With: " + mUser.getUsername());
+            ab.setTitle("Chatting With: " + mUserName);
         }
 
         rvMessages = (RecyclerView) findViewById(R.id.rvMessages);
@@ -190,16 +198,17 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void sendMessage() {
+        String username = User.getCurrentUser().getUserName();
         String messageText = etMessage.getText().toString();
         if (messageText.isEmpty()) {
             return;
         }
-        updateList(KEY_MESSAGE_TEXT, messageText, false);
+        updateList(username, KEY_MESSAGE_TEXT, messageText, null, false);
 
         HashMap<String, String> content = new HashMap<>();
         content.put("type", KEY_MESSAGE_TEXT);
         content.put("message", messageText);
-        send(content);
+        send(content, null);
         etMessage.setText(null);
     }
 
@@ -238,43 +247,35 @@ public class ChatActivity extends AppCompatActivity {
 
                 if (uris != null && uris.length > 0) {
                     for (Uri uri : uris) {
-                        sendMedia(KEY_MESSAGE_IMAGE, uri.toString());
+                        sendMedia(MIME_IMAGE, uri.toString());
                     }
                 }
             } else if (requestCode == INTENT_SELECT_VIDEO) {
                 Uri videoUri = intent.getData();
                 String videoPath = FileHelper.getPath(this, videoUri);
-                sendMedia(KEY_MESSAGE_VIDEO, videoPath);
+                sendMedia(MIME_VIDEO, videoPath);
             }
         }
     }
 
-    private void sendMedia(final String mediaType, String filePath) {
+    private void sendMedia(final String mimeType, String filePath) {
         File f = new File(filePath);
-        final String key = S3UploadService.generateKey(f);
-        S3UploadService.uploadFile(key, f, new TransferListener() {
-            public void onStateChanged(int id, TransferState state) {
-                switch (state) {
-                    case COMPLETED:
-                        updateList(mediaType, S3UploadService.buildUrl(key), false);
-                        HashMap<String, String> content = new HashMap<>();
-                        content.put("type", mediaType);
-                        content.put("url", S3UploadService.buildUrl(key));
-                        send(content);
-                        break;
-                    case CANCELED:
-                    case FAILED:
-                        Toast.makeText(ChatActivity.this, "Unable to upload.", Toast.LENGTH_LONG).show();
-                        break;
-                }
+        Attachment attachment = new Attachment(f, mimeType, f.getName(), mimeType);
+        attachment.upload(new Attachment.UploadListener() {
+            @Override
+            public void onStart(Attachment attachment) {
             }
 
-            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-
+            @Override
+            public void onComplete(Attachment attachment) {
+                String username = User.getCurrentUser().getUserName();
+                updateList(username, mimeType, "", attachment, false);
+                send(null, attachment);
             }
 
-            public void onError(int id, Exception ex) {
-                Log.e(TAG, "send(): exception during upload", ex);
+            @Override
+            public void onError(Attachment attachment, Throwable throwable) {
+                Log.e(TAG, "send(): exception during upload", throwable);
             }
         });
     }
@@ -284,25 +285,31 @@ public class ChatActivity extends AppCompatActivity {
             double myLat = mGPS.getLatitude();
             double myLong = mGPS.getLongitude();
             String latlng = (Double.toString(myLat) + "," + Double.toString(myLong));
+            String username = User.getCurrentUser().getUserName();
 
-            updateList(KEY_MESSAGE_MAP, latlng, false);
+            updateList(username, KEY_MESSAGE_MAP, latlng, null, false);
 
             HashMap<String, String> content = new HashMap<>();
             content.put("type", KEY_MESSAGE_MAP);
             content.put("latitude", Double.toString(myLat));
             content.put("longitude", Double.toString(myLong));
-            send(content);
+            send(content, null);
         }else{
             mGPS.showSettingsAlert(this);
         }
     }
 
-    private void send(HashMap<String, String> content) {
-        HashSet<MMXUser> recipients = new HashSet<>();
-        recipients.add(new MMXUser.Builder().username(mUser.getUsername()).build());
-
-        String messageID = new MMXMessage.Builder()
-            .content(content)
+    private void send(HashMap<String, String> content, Attachment attachment) {
+        HashSet<User> recipients = new HashSet<>();
+        recipients.add(mUser);
+        MMXMessage.Builder messageBuilder = new MMXMessage.Builder();
+        if (content != null) {
+            messageBuilder.content(content);
+        }
+        if (attachment != null) {
+            messageBuilder.attachments(attachment);
+        }
+        String messageID = messageBuilder
             .recipients(recipients)
                 .build()
                 .send(new MMXMessage.OnFinishedListener<String>() {
@@ -317,19 +324,19 @@ public class ChatActivity extends AppCompatActivity {
             });
     }
 
-    public void updateList(String type, String content, boolean orientation) {
+    public void updateList(String username, String type, String content, Attachment attachment, boolean orientation) {
         switch (type) {
             case KEY_MESSAGE_TEXT:
-                adapter.add(new MessageText(orientation, content));
+                adapter.add(new MessageText(orientation, content, username));
                 break;
-            case KEY_MESSAGE_IMAGE:
-                adapter.add(new MessageImage(orientation, content));
+            case MIME_IMAGE:
+                adapter.add(new MessageImage(orientation, attachment, username));
                 break;
             case KEY_MESSAGE_MAP:
-                adapter.add(new MessageMap(orientation, content));
+                adapter.add(new MessageMap(orientation, content, username));
                 break;
-            case KEY_MESSAGE_VIDEO:
-                adapter.add(new MessageVideo(orientation, content));
+            case MIME_VIDEO:
+                adapter.add(new MessageVideo(orientation, attachment, username));
                 break;
         }
         runOnUiThread(new Runnable() {
@@ -348,7 +355,6 @@ public class ChatActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         MMX.unregisterListener(mEventListener);
-        S3UploadService.destroy();
         mGPS.stopUsingGPS();
         super.onDestroy();
     }

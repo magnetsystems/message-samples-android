@@ -1,12 +1,8 @@
 package com.magnet.messagingsample.activities;
 
-import android.support.v7.app.ActionBar;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,7 +11,6 @@ import com.magnet.messagingsample.helpers.TouchImageView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.IOException;
 
 public class ImageViewActivity extends AppCompatActivity {
 
@@ -32,11 +27,11 @@ public class ImageViewActivity extends AppCompatActivity {
             ab.setDisplayHomeAsUpEnabled(true);
         }
 
-        String imageUrl = getIntent().getStringExtra("imageUrl");
+        String imagePath = getIntent().getStringExtra("imagePath");
         ivMessageImage = (TouchImageView) findViewById(R.id.ivMessageImage);
 
-        if (imageUrl != null) {
-            Picasso.with(this).load(imageUrl).into(ivMessageImage);
+        if (imagePath != null) {
+            Picasso.with(this).load(new File(imagePath)).into(ivMessageImage);
         }
     }
 

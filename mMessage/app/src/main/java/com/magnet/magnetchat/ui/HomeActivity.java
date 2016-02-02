@@ -22,8 +22,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.ConversatioinCache;
-import com.magnet.magnetchat.core.CurrentApplication;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
@@ -37,10 +36,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
@@ -81,7 +77,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     hideKeyboard();
-                    showList(ConversatioinCache.getInstance().getConversations());
+                    showList(ConversationCache.getInstance().getConversations());
                 }
                 return false;
             }
@@ -171,14 +167,12 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-
-        if(ConversatioinCache.getInstance().isConversationListUpdated()) {
+        if(ConversationCache.getInstance().isConversationListUpdated()) {
             showAllConversations();
-            ConversatioinCache.getInstance().resetConversationListUpdated();
+            ConversationCache.getInstance().resetConversationListUpdated();
         }
-        //ChannelHelper.getInstance().rereadConversations(null);
         MMX.registerListener(eventListener);
-        registerReceiver(onAddedConversation, new IntentFilter("com.magnet.imessage.ADDED_CONVERSATION"));
+        registerReceiver(onAddedConversation, new IntentFilter(ChannelHelper.ACTION_ADDED_CONVERSATION));
     }
 
     @Override
@@ -201,13 +195,13 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void showAllConversations() {
-        showList(ConversatioinCache.getInstance().getConversations());
+        showList(ConversationCache.getInstance().getConversations());
     }
 
     private void showList(List<Conversation> conversationsToShow) {
         if(null == adapter) {
             conversations = new ArrayList<>(conversationsToShow);
-            adapter = new ConversationsAdapter(this, conversationsToShow);
+            adapter = new ConversationsAdapter(this, conversations);
             conversationsList.setAdapter(adapter);
         } else {
             mProgressBar.setVisibility(View.GONE);
@@ -244,7 +238,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     ChannelHelper.getInstance().deleteChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                         @Override
                         public void onSuccess() {
-                            mProgressBar.setVisibility(View.GONE);
                             showAllConversations();
                         }
 
@@ -266,7 +259,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                         @Override
                         public void onSuccess() {
-                            mProgressBar.setVisibility(View.GONE);
                             showAllConversations();
                         }
 
@@ -285,7 +277,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
     private void searchMessage(final String query) {
         final List<Conversation> searchResult = new ArrayList<>();
-        for (Conversation conversation : ConversatioinCache.getInstance().getConversations()) {
+        for (Conversation conversation : ConversationCache.getInstance().getConversations()) {
             for (Message message : conversation.getMessages()) {
                 if (message.getText() != null && message.getText().toLowerCase().contains(query.toLowerCase())) {
                     searchResult.add(conversation);

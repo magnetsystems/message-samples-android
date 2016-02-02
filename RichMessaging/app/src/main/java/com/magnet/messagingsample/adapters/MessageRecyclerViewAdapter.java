@@ -3,21 +3,29 @@ package com.magnet.messagingsample.adapters;
 /**
  * Created by edwardyang on 9/15/15.
  */
+
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.Profile;
+import com.magnet.max.android.Attachment;
 import com.magnet.messagingsample.R;
 import com.magnet.messagingsample.activities.ImageViewActivity;
 import com.magnet.messagingsample.activities.MapViewActivity;
 import com.magnet.messagingsample.activities.VideoViewActivity;
+import com.magnet.messagingsample.helpers.CircleImageView;
+import com.magnet.messagingsample.helpers.TextHelper;
 import com.magnet.messagingsample.models.MessageImage;
 import com.magnet.messagingsample.models.MessageMap;
 import com.magnet.messagingsample.models.MessageText;
@@ -29,6 +37,8 @@ import java.util.List;
 
 public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    final String TAG = "MessageAdapter";
+
     private static final int TEXT_TYPE = 0;
     private static final int IMAGE_TYPE = 1;
     private static final int MAP_TYPE = 2;
@@ -36,30 +46,45 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
 
     private List<Object> messageItems;
     public Activity mActivity;
+    private File defaultFolder;
 
     public MessageRecyclerViewAdapter(Activity activity, List<Object> items) {
         this.messageItems = items;
         this.mActivity = activity;
+        defaultFolder = activity.getCacheDir();
     }
 
-    class ViewHolderText extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
+        protected RelativeLayout avatar;
+        protected LinearLayout wrapper;
+        protected TextView tvChatUsername;
+        protected TextView tvUserInitials;
+        protected CircleImageView ivAvatarImage;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
+            this.avatar = (RelativeLayout) itemView.findViewById(R.id.avatar);
+            this.tvChatUsername = (TextView) itemView.findViewById(R.id.tvChatUsername);
+            this.tvUserInitials = (TextView) itemView.findViewById(R.id.tvUserInitials);
+            this.ivAvatarImage = (CircleImageView) itemView.findViewById(R.id.ivAvatarImage);
+        }
+    }
+
+    class ViewHolderText extends ViewHolder {
         public TextView tvMessageText;
-        private LinearLayout wrapper;
 
         public ViewHolderText(View itemView) {
             super(itemView);
-            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
             this.tvMessageText = (TextView) itemView.findViewById(R.id.tvMessageText);
         }
     }
 
-    class ViewHolderImage extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolderImage extends ViewHolder implements View.OnClickListener {
         public ImageView ivMessageImage;
-        private LinearLayout wrapper;
 
         public ViewHolderImage(View itemView) {
             super(itemView);
-            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
             this.ivMessageImage = (ImageView) itemView.findViewById(R.id.ivMessageImage);
             itemView.setOnClickListener(this);
         }
@@ -68,18 +93,31 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         public void onClick(View view) {
             if (messageItems.size() > 0) {
                 MessageImage item = (MessageImage) messageItems.get(getAdapterPosition());
-                goToImageViewActivity(item.imageUrl);
+                File file = new File(defaultFolder, item.imageAttachment.getAttachmentId());
+                if (!file.exists()) {
+                    item.imageAttachment.download(file, new Attachment.DownloadAsFileListener() {
+                        @Override
+                        public void onComplete(File file) {
+                            goToImageViewActivity(file.getAbsolutePath());
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+                            Log.e(TAG, "downloadImageError", throwable);
+                        }
+                    });
+                } else {
+                    goToImageViewActivity(file.getAbsolutePath());
+                }
             }
         }
     }
 
-    class ViewHolderMap extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private LinearLayout wrapper;
+    class ViewHolderMap extends ViewHolder implements View.OnClickListener {
         public ImageView ivMessageLocation;
 
         public ViewHolderMap(View itemView) {
             super(itemView);
-            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
             this.ivMessageLocation = (ImageView) itemView.findViewById(R.id.ivMessageLocation);
             itemView.setOnClickListener(this);
         }
@@ -93,13 +131,11 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    class ViewHolderVideo extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private LinearLayout wrapper;
+    class ViewHolderVideo extends ViewHolder implements View.OnClickListener {
         public ImageView ivVideoPlayButton;
 
         public ViewHolderVideo(View itemView) {
             super(itemView);
-            this.wrapper = (LinearLayout) itemView.findViewById(R.id.wrapper);
             this.ivVideoPlayButton = (ImageView) itemView.findViewById(R.id.ivVideoPlayButton);
             itemView.setOnClickListener(this);
         }
@@ -108,7 +144,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         public void onClick(View view) {
             if (messageItems.size() > 0) {
                 MessageVideo item = (MessageVideo) messageItems.get(getAdapterPosition());
-                goToVideoViewActivity(item.videoUrl);
+                goToVideoViewActivity(item.videoAttachment.getDownloadUrl());
             }
         }
     }
@@ -180,21 +216,85 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
+    private void placeLayouts(RelativeLayout imageLayout, LinearLayout messageLayout, boolean left) {
+        RelativeLayout.LayoutParams imageParams = (RelativeLayout.LayoutParams) imageLayout.getLayoutParams();
+        RelativeLayout.LayoutParams messageParams = (RelativeLayout.LayoutParams) messageLayout.getLayoutParams();
+        if (left) {
+            imageParams.removeRule(RelativeLayout.ALIGN_BOTTOM);
+            imageParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+            imageParams.addRule(RelativeLayout.ALIGN_PARENT_START);
+            messageParams.removeRule(RelativeLayout.START_OF);
+            messageParams.addRule(RelativeLayout.END_OF, imageLayout.getId());
+            messageParams.leftMargin = 0;
+            messageParams.rightMargin = 10;
+        } else {
+            imageParams.removeRule(RelativeLayout.ALIGN_PARENT_START);
+            imageParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+            imageParams.addRule(RelativeLayout.ALIGN_BOTTOM, messageLayout.getId());
+            messageParams.removeRule(RelativeLayout.END_OF);
+            messageParams.addRule(RelativeLayout.START_OF, imageLayout.getId());
+            messageParams.leftMargin = 10;
+            messageParams.rightMargin = 0;
+        }
+        imageLayout.setLayoutParams(imageParams);
+        messageLayout.setLayoutParams(messageParams);
+    }
+
+    private void configureBasicViewHolder(ViewHolder vh, String username, boolean left) {
+        vh.wrapper.setGravity(left ? Gravity.LEFT : Gravity.RIGHT);
+        vh.tvChatUsername.setText(username);
+        vh.tvChatUsername.setVisibility(left ? View.VISIBLE : View.INVISIBLE);
+        if (!left) {
+            Profile profile = Profile.getCurrentProfile();
+            if (profile != null) {
+                Uri photoUri = profile.getProfilePictureUri(100, 100);
+                if (photoUri != null) {
+                    vh.tvUserInitials.setText("");
+                    Picasso.with(mActivity).load(photoUri).into(vh.ivAvatarImage);
+                }
+            } else {
+                vh.tvUserInitials.setText(TextHelper.getInitials(username));
+            }
+        } else {
+            Picasso.with(mActivity).load(R.drawable.sqr_img).into(vh.ivAvatarImage);
+            vh.tvUserInitials.setText(TextHelper.getInitials(username));
+        }
+        placeLayouts(vh.avatar, vh.wrapper, left);
+    }
+
     private void configureViewHolder1(ViewHolderText vh, int position) {
         MessageText item = (MessageText) messageItems.get(position);
         if (item != null) {
             vh.tvMessageText.setText(item.text);
             vh.tvMessageText.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            configureBasicViewHolder(vh, item.username, item.left);
         }
     }
 
-    private void configureViewHolder2(ViewHolderImage vh, int position) {
+    private void configureViewHolder2(final ViewHolderImage vh, int position) {
         MessageImage item = (MessageImage) messageItems.get(position);
         if (item != null) {
             vh.ivMessageImage.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
-            Picasso.with(mActivity).load(item.imageUrl).into(vh.ivMessageImage);
+            configureBasicViewHolder(vh, item.username, item.left);
+            vh.ivMessageImage.setImageDrawable(null);
+            File file = new File(defaultFolder, item.imageAttachment.getAttachmentId());
+            if (!file.exists()) {
+                item.imageAttachment.download(file, new Attachment.DownloadAsFileListener() {
+                    @Override
+                    public void onComplete(File file) {
+                        Log.d(TAG, "downloadImage : success " + file.getName());
+                        Picasso.with(mActivity).load(file).into(vh.ivMessageImage);
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        Log.e(TAG, "downloadImage : Error", throwable);
+                    }
+                });
+            } else {
+                Log.d(TAG, "downloadImage : image exists " + file.getName());
+                Picasso.with(mActivity).load(file).into(vh.ivMessageImage);
+            }
         }
     }
 
@@ -202,7 +302,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         final MessageMap item = (MessageMap) messageItems.get(position);
         if (item != null) {
             vh.ivMessageLocation.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            configureBasicViewHolder(vh, item.username, item.left);
             String loc = "http://maps.google.com/maps/api/staticmap?center="+item.latlng+"&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C"+item.latlng;
             Picasso.with(mActivity).load(loc).into(vh.ivMessageLocation);
         }
@@ -212,7 +312,7 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         final MessageVideo item = (MessageVideo) messageItems.get(position);
         if (item != null) {
             vh.ivVideoPlayButton.setBackgroundResource(item.left ? R.drawable.bubble_yellow : R.drawable.bubble_green);
-            vh.wrapper.setGravity(item.left ? Gravity.LEFT : Gravity.RIGHT);
+            configureBasicViewHolder(vh, item.username, item.left);
         }
     }
 
@@ -223,10 +323,10 @@ public class MessageRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVie
         mActivity.startActivity(intent);
     }
 
-    public void goToImageViewActivity(String url) {
+    public void goToImageViewActivity(String path) {
         Intent intent;
         intent = new Intent(mActivity, ImageViewActivity.class);
-        intent.putExtra("imageUrl", url);
+        intent.putExtra("imagePath", path);
         mActivity.startActivity(intent);
     }
 

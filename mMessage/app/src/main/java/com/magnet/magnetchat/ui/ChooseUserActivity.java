@@ -9,7 +9,7 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.ConversatioinCache;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
@@ -46,7 +46,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         currentMode = ActivityMode.MODE_TO_CREATE;
         String channelName = getIntent().getStringExtra(TAG_ADD_USER_TO_CHANNEL);
         if (channelName != null) {
-            conversation = ConversatioinCache.getInstance().getConversationByName(channelName);
+            conversation = ConversationCache.getInstance().getConversationByName(channelName);
             currentMode = ActivityMode.MODE_TO_ADD_USER;
         }
         setTitle("New Message");
@@ -105,7 +105,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             @Override
             public void onUserSetExists(String channelSetName) {
                 findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
-                Conversation anotherConversation = ConversatioinCache.getInstance().getConversationByName(channelSetName);
+                Conversation anotherConversation = ConversationCache.getInstance().getConversationByName(channelSetName);
                 startActivity(ChatActivity.getIntentWithChannel(anotherConversation));
                 finish();
             }

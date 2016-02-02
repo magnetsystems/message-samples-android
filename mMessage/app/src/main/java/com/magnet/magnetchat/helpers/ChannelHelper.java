@@ -2,8 +2,7 @@ package com.magnet.magnetchat.helpers;
 
 import android.content.Intent;
 
-import android.util.Log;
-import com.magnet.magnetchat.core.ConversatioinCache;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
@@ -84,80 +83,27 @@ public class ChannelHelper {
         MMXChannel.getAllSubscriptions(new MMXChannel.OnFinishedListener<List<MMXChannel>>() {
             @Override
             public void onSuccess(final List<MMXChannel> channels) {
-                Log.d(TAG, "getAllSubscriptions success : " + channels);
-
+                Logger.debug(TAG, "getAllSubscriptions success : " + channels);
+                ConversationCache.getInstance().resetConversations();
                 fetchChannelDetails(channels, listener);
             }
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                Log.e(TAG, "getAllSubscriptions failed", throwable);
+                Logger.error(TAG, throwable, "getAllSubscriptions failed");
                 if (listener != null)
                     listener.onFailure(throwable);
             }
         });
     }
 
-    //public void rereadConversations(final OnReadChannelInfoListener listener) {
-    //    MMXChannel.getAllSubscriptions(new MMXChannel.OnFinishedListener<List<MMXChannel>>() {
-    //        @Override
-    //        public void onSuccess(List<MMXChannel> channels) {
-    //            Logger.debug("reread conversations", "success");
-    //            for (MMXChannel channel : channels) {
-    //                if (CurrentApplication.getInstance().getConversations().get(channel.getName()) == null) {
-    //                    readChannelInfo(channel, new OnReadChannelInfoListener() {
-    //                        @Override
-    //                        public void onSuccessFinish(Conversation conversation) {
-    //                            CurrentApplication.getInstance().addConversation(conversation.getChannel().getName(), conversation);
-    //                            CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
-    //                            if (listener != null)
-    //                                listener.onSuccessFinish(conversation);
-    //                        }
-    //
-    //                        @Override
-    //                        public void onFailure(Throwable throwable) {
-    //                            if (listener != null)
-    //                                listener.onFailure(throwable);
-    //                        }
-    //                    });
-    //                }
-    //            }
-    //            if (CurrentApplication.getInstance().getConversations().size() > channels.size()) {
-    //                List<String> channelsNames = new ArrayList<>(CurrentApplication.getInstance().getConversations().keySet());
-    //                for (String name : channelsNames) {
-    //                    boolean contains = false;
-    //                    for (MMXChannel channel : channels) {
-    //                        if (channel.getName().equals(name)) {
-    //                            contains = true;
-    //                            break;
-    //                        }
-    //                    }
-    //                    if (!contains) {
-    //                        CurrentApplication.getInstance().getConversations().remove(name);
-    //                    }
-    //                }
-    //                CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
-    //            }
-    //        }
-    //
-    //        @Override
-    //        public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-    //            Logger.error("reread conversations", throwable);
-    //            if (listener != null)
-    //                listener.onFailure(throwable);
-    //        }
-    //    });
-    //}
-
     public void readChannelInfo(final MMXChannel channel, final OnReadChannelInfoListener listener) {
         if (channel == null) {
             if(null != listener) {
                 listener.onFailure(new Exception("channel shouldn't be null"));
             }
-
             return;
         }
-
         fetchChannelDetails(Arrays.asList(channel), listener);
     }
 
@@ -166,36 +112,34 @@ public class ChannelHelper {
             new ChannelDetailOptions.Builder().numOfMessages(100).numOfSubcribers(10).build(),
             new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                 @Override public void onSuccess(List<ChannelDetail> channelDetails) {
-                    //Clear all local conversations
-                    ConversatioinCache.getInstance().resetConversations();
                     Conversation lastConversation = null;
-                    for(int i = 0; i < channels.size(); i++) {
-                        final MMXChannel channel = channels.get(i);
+                    for(int i = 0; i < channelDetails.size(); i++) {
                         final ChannelDetail channelDetail = channelDetails.get(i);
+                        final MMXChannel channel = channelDetail.getChannel();
                         final Conversation conversation = new Conversation();
                         lastConversation = conversation;
                         conversation.setChannel(channel);
 
                         conversation.setSuppliers(new HashMap<String, UserProfile>());
-                        Log.d(TAG, "channel subscribers " + channelDetail.getSubscribers() + " channel " + channel.getName());
+                        Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
                         for (UserProfile up : channelDetail.getSubscribers()) {
                             if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
                                 conversation.addSupplier(up);
                             }
                         }
 
-                        Log.d(TAG, "channel messages " + channelDetail.getMessages() + " channel " + channel.getName());
+                        Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
                         for (MMXMessage mmxMessage : channelDetail.getMessages()) {
                             conversation.addMessage(Message.createMessageFrom(mmxMessage));
                         }
 
-                        ConversatioinCache.getInstance().addConversation(conversation.getChannel().getName(), conversation);
-                        //CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
+                        ConversationCache.getInstance().addConversation(channel.getName(), conversation);
                     }
 
                     if (listener != null) {
                         listener.onSuccessFinish(lastConversation);
                     }
+                    CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
                 }
 
                 @Override public void onFailure(MMXChannel.FailureCode failureCode,
@@ -222,6 +166,7 @@ public class ChannelHelper {
                         conversation.addSupplier(user);
                     }
                 }
+                listener.onSuccessFinish(conversation);
             }
 
             @Override
@@ -362,7 +307,7 @@ public class ChannelHelper {
     public void receiveMessage(MMXMessage mmxMessage) {
         Message message = Message.createMessageFrom(mmxMessage);
         if (mmxMessage.getChannel() != null) {
-            Conversation conversation = ConversatioinCache.getInstance().getConversationByName(mmxMessage.getChannel().getName());
+            Conversation conversation = ConversationCache.getInstance().getConversationByName(mmxMessage.getChannel().getName());
             if (conversation != null) {
                 conversation.addMessage(message);
                 conversation.setLastActiveTime(new Date());
@@ -374,7 +319,18 @@ public class ChannelHelper {
                     conversation.setHasUnreadMessage(true);
                 }
             } else {
-                readChannelInfo(mmxMessage.getChannel(), null);
+                readChannelInfo(mmxMessage.getChannel(), new OnReadChannelInfoListener() {
+                    @Override
+                    public void onSuccessFinish(Conversation conversation) {
+                        conversation.setHasUnreadMessage(true);
+                        conversation.setLastActiveTime(new Date());
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+
+                    }
+                });
             }
         }
         Logger.debug("new message");
@@ -397,7 +353,7 @@ public class ChannelHelper {
             channel.unsubscribe(new MMXChannel.OnFinishedListener<Boolean>() {
                 @Override
                 public void onSuccess(Boolean aBoolean) {
-                    ConversatioinCache.getInstance().removeConversation(channel.getName());
+                    ConversationCache.getInstance().removeConversation(channel.getName());
                     Logger.debug("unsubscribe", "success");
                     if (listener != null)
                         listener.onSuccess();
@@ -419,7 +375,7 @@ public class ChannelHelper {
             channel.delete(new MMXChannel.OnFinishedListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    ConversatioinCache.getInstance().removeConversation(channel.getName());
+                    ConversationCache.getInstance().removeConversation(channel.getName());
                     Logger.debug("delete", "success");
                     if (listener != null)
                         listener.onSuccess();

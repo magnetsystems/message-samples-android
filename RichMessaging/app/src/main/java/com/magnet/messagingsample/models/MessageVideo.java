@@ -1,17 +1,21 @@
 package com.magnet.messagingsample.models;
 
+import com.magnet.max.android.Attachment;
+
 /**
  * Created by edwardyang on 9/10/15.
  */
 public class MessageVideo {
 
     public boolean left;
-    public String videoUrl;
+    public Attachment videoAttachment;
+    public String username;
 
-    public MessageVideo(boolean left, String videoUrl) {
+    public MessageVideo(boolean left, Attachment videoAttachment, String username) {
         super();
         this.left = left;
-        this.videoUrl = videoUrl;
+        this.videoAttachment = videoAttachment;
+        this.username = username;
     }
 
 }

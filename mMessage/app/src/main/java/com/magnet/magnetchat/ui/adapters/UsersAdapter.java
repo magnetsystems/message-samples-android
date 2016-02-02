@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.max.android.User;
-
 import com.magnet.max.android.UserProfile;
+
 import java.util.List;
 
 public class UsersAdapter extends ArrayAdapter<UserProfile> {
@@ -78,6 +77,9 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
             }
             if (user.getLastName() != null) {
                 viewHolder.lastName.setText(user.getLastName());
+            }
+            if (user.getFirstName() == null && user.getLastName() == null) {
+                viewHolder.firstName.setText(user.getDisplayName());
             }
         }
         return convertView;

@@ -7,11 +7,13 @@ public class MessageMap {
 
     public boolean left;
     public String latlng;
+    public String username;
 
-    public MessageMap(boolean left, String latlng) {
+    public MessageMap(boolean left, String latlng, String username) {
         super();
         this.left = left;
         this.latlng = latlng;
+        this.username = username;
     }
 
 }

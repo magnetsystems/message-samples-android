@@ -12,9 +12,8 @@ repositories {
 android {
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
-
     defaultConfig {
-        applicationId "com.magnet.imessage"
+        applicationId 'com.magnet.magnetchat'
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
@@ -30,6 +29,8 @@ android {
     }
     lintOptions {
         abortOnError false
+    }
+    productFlavors {
     }
 }
 

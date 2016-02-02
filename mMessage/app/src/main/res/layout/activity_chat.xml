@@ -13,7 +13,8 @@
         android:background="#f6f6f6"
         android:padding="15dp"
         android:text="To:"
-        android:textColor="#7d7d7d" />
+        android:textColor="#7d7d7d"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/chatBottom"

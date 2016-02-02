@@ -7,11 +7,13 @@ public class MessageText {
 
     public boolean left;
     public String text;
+    public String username;
 
-    public MessageText(boolean left, String text) {
+    public MessageText(boolean left, String text, String username) {
         super();
         this.left = left;
         this.text = text;
+        this.username = username;
     }
 
 }

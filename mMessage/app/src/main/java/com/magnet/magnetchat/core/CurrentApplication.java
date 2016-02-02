@@ -84,17 +84,17 @@ public class CurrentApplication extends MultiDexApplication {
 
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
+            ChannelHelper.getInstance().receiveMessage(mmxMessage);
             if (mmxMessage.getSender() != null && !mmxMessage.getSender().getUserIdentifier().equals(
                 User.getCurrentUserId())) {
                 messageNotification();
             }
-            ChannelHelper.getInstance().receiveMessage(mmxMessage);
             return false;
         }
 
         @Override
         public boolean onMessageAcknowledgementReceived(User from, String messageId) {
-            ConversatioinCache.getInstance().approveMessage(messageId);
+            ConversationCache.getInstance().approveMessage(messageId);
             return false;
         }
     };

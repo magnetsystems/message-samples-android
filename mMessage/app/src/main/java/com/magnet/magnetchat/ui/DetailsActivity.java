@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.ConversatioinCache;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
@@ -24,7 +24,7 @@ public class DetailsActivity extends BaseActivity {
         setContentView(R.layout.activity_details);
         channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
         if (channelName != null) {
-            Conversation currentConversation = ConversatioinCache.getInstance().getConversationByName(channelName);
+            Conversation currentConversation = ConversationCache.getInstance().getConversationByName(channelName);
             UsersAdapter adapter;
             if (currentConversation.getChannel().getOwnerId().equals(User.getCurrentUserId())) {
                 adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), addUserListener);

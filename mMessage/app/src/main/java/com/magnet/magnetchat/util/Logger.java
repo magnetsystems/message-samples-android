@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class Logger {
 
-    private static final String APP_TAG = "MagnetMessage";
+    private static final String APP_TAG = "mMessage";
 
     public static void debug (Object... args) {
         debug(null, args);
@@ -21,7 +21,7 @@ public class Logger {
     private static String makeMessage(Object... args) {
         String msg = "---------";
         for (int i = 0; i < args.length - 1; i++) {
-            msg += args[i] + ", ";
+            msg += args[i] + " ";
         }
         if (args.length > 0) {
             msg += args[args.length - 1];

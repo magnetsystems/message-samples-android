@@ -23,7 +23,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.ConversatioinCache;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.FileHelper;
@@ -87,7 +87,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         } else {
             channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
             if (channelName != null) {
-                currentConversation = ConversatioinCache.getInstance().getConversationByName(channelName);
+                currentConversation = ConversationCache.getInstance().getConversationByName(channelName);
                 if (currentConversation == null) {
                     finish();
                     return;
@@ -287,8 +287,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             finish();
             return;
         }
-        if (ConversatioinCache.getInstance().getConversation(channelName) == null) {
-            ConversatioinCache.getInstance().addConversation(channelName, conversation);
+        if (ConversationCache.getInstance().getConversation(channelName) == null) {
+            ConversationCache.getInstance().addConversation(channelName, conversation);
         }
         currentConversation = conversation;
         List<UserProfile> suppliersList = conversation.getSuppliersList();
@@ -302,6 +302,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             setText(R.id.chatSuppliers, "To: " + suppliers);
         }
         conversation.setHasUnreadMessage(false);
+        ConversationCache.getInstance().setConversationListUpdated();
         setMessagesList(conversation.getMessages());
     }
 
@@ -309,7 +310,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onSuccessSend(Message message) {
             findViewById(R.id.chatMessageProgress).setVisibility(View.GONE);
-            ConversatioinCache.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+            ConversationCache.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
                 clearFieldText(R.id.chatMessageField);
             }
@@ -332,7 +333,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         @Override
         public void onChannelExists(MMXChannel channel) {
-            currentConversation = ConversatioinCache.getInstance().getConversationByName(channel.getName());
+            currentConversation = ConversationCache.getInstance().getConversationByName(channel.getName());
             if (currentConversation == null) {
                 ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
             } else {

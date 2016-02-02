@@ -1,6 +1,6 @@
 package com.magnet.magnetchat.helpers;
 
-import com.magnet.magnetchat.core.ConversatioinCache;
+import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
@@ -91,7 +91,7 @@ public class UserHelper {
         if (User.getCurrentUser() == null) {
             String[] credence = UserPreference.getInstance().readCredence();
             if (credence != null) {
-                login(credence[0], credence[1], false, onLoginListener);
+                login(credence[0], credence[1], true, onLoginListener);
             }
         }
     }
@@ -100,7 +100,7 @@ public class UserHelper {
         User.logout(new ApiCallback<Boolean>() {
             @Override
             public void success(Boolean aBoolean) {
-                ConversatioinCache.getInstance().resetConversations();
+                ConversationCache.getInstance().resetConversations();
                 Logger.debug("logout", "success");
                 if (listener != null)
                     listener.onSuccess();
