@@ -35,6 +35,7 @@ public class CurrentApplication extends MultiDexApplication {
         Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
         UserPreference.getInstance(this);
         InternetConnection.getInstance(this);
+        com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
         MMX.registerListener(eventListener);
         MMX.registerWakeupBroadcast(this, new Intent("MMX_WAKEUP_ACTION"));
     }
