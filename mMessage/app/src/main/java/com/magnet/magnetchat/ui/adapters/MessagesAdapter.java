@@ -64,7 +64,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         if(!Utils.isGooglePlayServiceInstalled(context)) {
                             Utils.showMessage(context, "It seems Google play services is not available, can't use location API");
                         } else {
-                            String urjimi = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
+                            String uri = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                             context.startActivity(intent);
                         }

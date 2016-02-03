@@ -264,6 +264,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            showMessage("Location permission is not enabled");
             return;
         }
         Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
