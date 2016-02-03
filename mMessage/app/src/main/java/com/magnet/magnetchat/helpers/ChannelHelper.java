@@ -186,39 +186,22 @@ public class ChannelHelper {
             }
             userInConversation.add(User.getCurrentUserId());
             userInConversation.add(user.getUserIdentifier());
-            findChannelByUsers(userInConversation, new OnFindChannelByUsersListener() {
-                @Override
-                public void onSuccessFound(final List<MMXChannel> mmxChannels) {
-                    if (mmxChannels.size() == 0) {
-                        Set<User> userSet = new HashSet<>();
-                        userSet.add((User) user);
-                        conversation.getChannel().addSubscribers(userSet, new MMXChannel.OnFinishedListener<List<String>>() {
-                            @Override
-                            public void onSuccess(List<String> strings) {
-                                Logger.debug("add user", "success");
-                                conversation.addSupplier(user);
-                                if (listener != null) {
-                                    listener.onSuccessAdded();
-                                }
-                            }
 
-                            @Override
-                            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                                Logger.error("add user", throwable);
-                                if (listener != null) {
-                                    listener.onFailure(throwable);
-                                }
-                            }
-                        });
-                    } else {
-                        if (listener != null) {
-                            listener.onUserSetExists(mmxChannels.get(0).getName());
-                        }
+            Set<User> userSet = new HashSet<>();
+            userSet.add((User) user);
+            conversation.getChannel().addSubscribers(userSet, new MMXChannel.OnFinishedListener<List<String>>() {
+                @Override
+                public void onSuccess(List<String> strings) {
+                    Logger.debug("add user", "success");
+                    conversation.addSupplier(user);
+                    if (listener != null) {
+                        listener.onSuccessAdded();
                     }
                 }
 
                 @Override
-                public void onFailure(Throwable throwable) {
+                public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                    Logger.error("add user", throwable);
                     if (listener != null) {
                         listener.onFailure(throwable);
                     }
