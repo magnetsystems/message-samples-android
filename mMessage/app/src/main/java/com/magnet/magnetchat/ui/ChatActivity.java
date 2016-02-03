@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import android.widget.ProgressBar;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -36,6 +37,7 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -69,6 +71,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private AlertDialog attachmentDialog;
     private GoogleApiClient googleApiClient;
 
+    private ProgressBar chatMessageProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +80,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        chatMessageProgress = (ProgressBar) findViewById(R.id.chatMessageProgress);
 
         findViewById(R.id.chatSendBtn).setOnClickListener(this);
         findViewById(R.id.chatAddAttachment).setOnClickListener(this);
@@ -189,15 +195,19 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
                 if (uris.length > 0) {
                     for (Uri uri : uris) {
-                        findViewById(R.id.chatMessageProgress).setVisibility(View.VISIBLE);
+                        chatMessageProgress.setVisibility(View.VISIBLE);
                         currentConversation.sendPhoto(uri.toString(), sendMessageListener);
                     }
                 }
             } else if (requestCode == INTENT_SELECT_VIDEO) {
-                findViewById(R.id.chatMessageProgress).setVisibility(View.VISIBLE);
                 Uri videoUri = intent.getData();
                 String videoPath = FileHelper.getPath(this, videoUri);
-                currentConversation.sendVideo(videoPath, sendMessageListener);
+                if (StringUtil.isNotEmpty(videoPath)) {
+                    chatMessageProgress.setVisibility(View.VISIBLE);
+                    currentConversation.sendVideo(videoPath, sendMessageListener);
+                } else {
+                    showMessage("Can't read the video file");
+                }
             }
         }
     }
@@ -357,7 +367,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private Conversation.OnSendMessageListener sendMessageListener = new Conversation.OnSendMessageListener() {
         @Override
         public void onSuccessSend(Message message) {
-            findViewById(R.id.chatMessageProgress).setVisibility(View.GONE);
+            chatMessageProgress.setVisibility(View.GONE);
             ConversationCache.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
                 clearFieldText(R.id.chatMessageField);
@@ -367,7 +377,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         @Override
         public void onFailure(Throwable throwable) {
-            findViewById(R.id.chatMessageProgress).setVisibility(View.GONE);
+            chatMessageProgress.setVisibility(View.GONE);
             Logger.error("send messages", throwable);
             showMessage("Can't send message");
         }

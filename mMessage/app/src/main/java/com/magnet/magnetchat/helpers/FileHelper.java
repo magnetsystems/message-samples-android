@@ -66,7 +66,7 @@ public class FileHelper {
 
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {
         Cursor cursor = null;
-        final String column = "_data";
+        final String column = android.provider.MediaStore.MediaColumns.DATA;
         final String[] projection = {
                 column
         };
