@@ -305,6 +305,7 @@ public class ChannelHelper {
     }
 
     public void receiveMessage(MMXMessage mmxMessage) {
+        Logger.debug("new message");
         Message message = Message.createMessageFrom(mmxMessage);
         if (mmxMessage.getChannel() != null) {
             Conversation conversation = ConversationCache.getInstance().getConversationByName(mmxMessage.getChannel().getName());
@@ -333,7 +334,6 @@ public class ChannelHelper {
                 });
             }
         }
-        Logger.debug("new message");
         mmxMessage.acknowledge(new MMXMessage.OnFinishedListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {

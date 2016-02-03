@@ -27,6 +27,7 @@ import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.FileHelper;
+import com.magnet.magnetchat.helpers.PermissionHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
@@ -45,6 +46,7 @@ import nl.changer.polypicker.Config;
 import nl.changer.polypicker.ImagePickerActivity;
 
 public class ChatActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
     public static final String TAG = ChatActivity.class.getSimpleName();
 
     public static final String TAG_CHANNEL_NAME = "channelName";
@@ -55,6 +57,10 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     public static final int INTENT_REQUEST_GET_IMAGES = 14;
     public static final int INTENT_SELECT_VIDEO = 13;
+
+    public static final int REQUEST_LOCATION = 1111;
+    public static final int REQUEST_VIDEO = 1112;
+    public static final int REQUEST_IMAGE = 1113;
 
     private Conversation currentConversation;
     private MessagesAdapter adapter;
@@ -197,6 +203,32 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        boolean allPermitted = true;
+        for (int grantResult : grantResults) {
+            if (grantResult == PackageManager.PERMISSION_DENIED) {
+                allPermitted = false;
+                break;
+            }
+        }
+        if (allPermitted) {
+            switch (requestCode) {
+                case REQUEST_IMAGE:
+                    selectImage();
+                    break;
+                case REQUEST_LOCATION:
+                    sendLocation();
+                    break;
+                case REQUEST_VIDEO:
+                    selectVideo();
+                    break;
+            }
+        } else {
+            showMessage("Can't do it without permission");
+        }
+    }
+
+    @Override
     public void onConnected(Bundle bundle) {
     }
 
@@ -208,6 +240,10 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     }
 
+    private boolean needPermission(int requestCode, String... permissions) {
+        return PermissionHelper.checkPermission(this, requestCode, permissions);
+    }
+
     private void showAttachmentDialog() {
         if (attachmentDialog == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -216,13 +252,19 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                 public void onClick(DialogInterface dialog, int which) {
                     switch (which) {
                         case 0:
-                            selectImage();
+                            if (!needPermission(REQUEST_IMAGE, PermissionHelper.CAMERA_PERMISSION, PermissionHelper.STORAGE_PERMISSION)) {
+                                selectImage();
+                            }
                             break;
                         case 1:
-                            sendLocation();
+                            if (!needPermission(REQUEST_LOCATION, PermissionHelper.LOCATION_PERMISSION1, PermissionHelper.LOCATION_PERMISSION2)) {
+                                sendLocation();
+                            }
                             break;
                         case 2:
-                            selectVideo();
+                            if (!needPermission(REQUEST_VIDEO, PermissionHelper.STORAGE_PERMISSION)) {
+                                selectVideo();
+                            }
                             break;
                         case 3:
                             break;

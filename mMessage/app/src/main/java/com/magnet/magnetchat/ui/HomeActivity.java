@@ -40,12 +40,14 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
+    private AlertDialog leaveDialog;
+    private AlertDialog deleteDialog;
+
     private DrawerLayout drawer;
     private String username;
     private ConversationsAdapter adapter;
     private ListView conversationsList;
     private List<Conversation> conversations;
-    private AlertDialog leaveDialog;
     private Thread searchThread;
     private ProgressBar mProgressBar;
 
@@ -167,7 +169,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void onResume() {
         super.onResume();
-        if(ConversationCache.getInstance().isConversationListUpdated()) {
+        if (ConversationCache.getInstance().isConversationListUpdated()) {
             showAllConversations();
             ConversationCache.getInstance().resetConversationListUpdated();
         }
@@ -181,6 +183,9 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         unregisterReceiver(onAddedConversation);
         if (leaveDialog != null && leaveDialog.isShowing()) {
             leaveDialog.dismiss();
+        }
+        if (deleteDialog != null && deleteDialog.isShowing()) {
+            deleteDialog.dismiss();
         }
         if (searchThread != null) {
             searchThread.interrupt();
@@ -199,7 +204,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void showList(List<Conversation> conversationsToShow) {
-        if(null == adapter) {
+        if (null == adapter) {
             conversations = new ArrayList<>(conversationsToShow);
             adapter = new ConversationsAdapter(this, conversations);
             conversationsList.setAdapter(adapter);
@@ -218,20 +223,20 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void showLeaveDialog(final Conversation conversation) {
-        if (leaveDialog == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(false);
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    leaveDialog.dismiss();
-                }
-            });
-            leaveDialog = builder.create();
-        }
-        if (conversation.getChannel().getOwnerId().equals(User.getCurrentUserId())) {
-            leaveDialog.setMessage("Are you sure that you want to delete conversation");
-            leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+        if (User.getCurrentUserId().equals(conversation.ownerId())) {
+            if (deleteDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteDialog.dismiss();
+                    }
+                });
+                deleteDialog = builder.create();
+                deleteDialog.setMessage("Are you sure that you want to delete conversation");
+            }
+            deleteDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -247,11 +252,23 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                             showMessage("Can't delete the conversation");
                         }
                     });
-                    leaveDialog.dismiss();
+                    deleteDialog.dismiss();
                 }
             });
+            deleteDialog.show();
         } else {
-            leaveDialog.setMessage("Are you sure that you want to leave conversation");
+            if (leaveDialog == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(false);
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        leaveDialog.dismiss();
+                    }
+                });
+                leaveDialog = builder.create();
+                leaveDialog.setMessage("Are you sure that you want to leave conversation");
+            }
             leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Leave", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -271,8 +288,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                     leaveDialog.dismiss();
                 }
             });
+            leaveDialog.show();
         }
-        leaveDialog.show();
     }
 
     private void searchMessage(final String query) {

@@ -89,9 +89,24 @@ public class UserHelper {
 
     public void checkAuthentication(OnLoginListener onLoginListener) {
         if (User.getCurrentUser() == null) {
-            String[] credence = UserPreference.getInstance().readCredence();
-            if (credence != null) {
-                login(credence[0], credence[1], true, onLoginListener);
+            Logger.debug("SessionStatus", User.getSessionStatus());
+            if (User.SessionStatus.CanResume == User.getSessionStatus()) {
+                User.resumeSession(new ApiCallback<Boolean>() {
+                    @Override
+                    public void success(Boolean aBoolean) {
+                        Logger.debug("resume session", "success");
+                    }
+
+                    @Override
+                    public void failure(ApiError apiError) {
+                        Logger.error("resume session", apiError);
+                    }
+                });
+            } else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
+                String[] credence = UserPreference.getInstance().readCredence();
+                if (credence != null) {
+                    login(credence[0], credence[1], true, onLoginListener);
+                }
             }
         }
     }
