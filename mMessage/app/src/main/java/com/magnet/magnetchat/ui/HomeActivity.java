@@ -281,6 +281,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             for (Message message : conversation.getMessages()) {
                 if (message.getText() != null && message.getText().toLowerCase().contains(query.toLowerCase())) {
                     searchResult.add(conversation);
+                    break;
                 }
             }
         }
