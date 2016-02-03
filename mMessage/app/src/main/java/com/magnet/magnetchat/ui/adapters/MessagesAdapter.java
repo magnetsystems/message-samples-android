@@ -18,6 +18,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 
@@ -60,9 +61,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             if (message.getType() != null) {
                 switch (message.getType()) {
                     case Message.TYPE_MAP:
-                        String uri = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
-                        intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                        context.startActivity(intent);
+                        if(!Utils.isGooglePlayServiceInstalled(context)) {
+                            Utils.showMessage(context, "It seems Google play services is not available, can't use location API");
+                        } else {
+                            String urjimi = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
+                            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                            context.startActivity(intent);
+                        }
                         break;
                     case Message.TYPE_VIDEO:
                         String newVideoPath = message.getAttachment().getDownloadUrl();

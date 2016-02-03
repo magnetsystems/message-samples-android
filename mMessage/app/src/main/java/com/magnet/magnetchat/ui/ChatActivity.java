@@ -32,6 +32,7 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMX;
@@ -257,6 +258,10 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void sendLocation() {
+        if(!Utils.isGooglePlayServiceInstalled(this)) {
+            showMessage("It seems Google play services is not available, can't use location API");
+        }
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
