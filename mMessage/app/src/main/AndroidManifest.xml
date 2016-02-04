@@ -20,7 +20,8 @@
         <activity android:name="com.magnet.magnetchat.ui.LoginActivity"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale">
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
