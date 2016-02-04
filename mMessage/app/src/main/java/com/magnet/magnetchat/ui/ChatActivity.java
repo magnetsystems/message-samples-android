@@ -203,10 +203,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             } else if (requestCode == INTENT_SELECT_VIDEO) {
                 Uri videoUri = intent.getData();
                 String videoPath = FileHelper.getPath(this, videoUri);
+                Log.d(TAG, "selected video from Uri : " + videoUri + " file paht : " + videoPath);
                 if (StringUtil.isNotEmpty(videoPath)) {
                     chatMessageProgress.setVisibility(View.VISIBLE);
                     currentConversation.sendVideo(videoPath, sendMessageListener);
                 } else {
+                    Log.e(TAG, "Can't read video from Uri : " + videoUri);
                     showMessage("Can't read the video file");
                 }
             }
@@ -319,6 +321,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private void sendLocation() {
         if(!Utils.isGooglePlayServiceInstalled(this)) {
             showMessage("It seems Google play services is not available, can't use location API");
+            return;
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -385,7 +388,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onFailure(Throwable throwable) {
             chatMessageProgress.setVisibility(View.GONE);
-            Logger.error("send messages", throwable);
+            Log.e(TAG, "send message error", throwable);
             showMessage("Can't send message");
         }
     };
