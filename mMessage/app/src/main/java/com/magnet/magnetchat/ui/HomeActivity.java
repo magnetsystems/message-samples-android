@@ -41,7 +41,6 @@ import java.util.List;
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
 
     private AlertDialog leaveDialog;
-    private AlertDialog deleteDialog;
 
     private DrawerLayout drawer;
     private String username;
@@ -184,9 +183,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         if (leaveDialog != null && leaveDialog.isShowing()) {
             leaveDialog.dismiss();
         }
-        if (deleteDialog != null && deleteDialog.isShowing()) {
-            deleteDialog.dismiss();
-        }
         if (searchThread != null) {
             searchThread.interrupt();
             searchThread = null;
@@ -223,73 +219,38 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void showLeaveDialog(final Conversation conversation) {
-        if (User.getCurrentUserId().equals(conversation.ownerId())) {
-            if (deleteDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(false);
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteDialog.dismiss();
-                    }
-                });
-                deleteDialog = builder.create();
-                deleteDialog.setMessage("Are you sure that you want to delete conversation");
-            }
-            deleteDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Delete", new DialogInterface.OnClickListener() {
+        if (leaveDialog == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(false);
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    ChannelHelper.getInstance().deleteChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
-                        @Override
-                        public void onSuccess() {
-                            showAllConversations();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            mProgressBar.setVisibility(View.GONE);
-                            showMessage("Can't delete the conversation");
-                        }
-                    });
-                    deleteDialog.dismiss();
-                }
-            });
-            deleteDialog.show();
-        } else {
-            if (leaveDialog == null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(false);
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        leaveDialog.dismiss();
-                    }
-                });
-                leaveDialog = builder.create();
-                leaveDialog.setMessage("Are you sure that you want to leave conversation");
-            }
-            leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Leave", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
-                        @Override
-                        public void onSuccess() {
-                            showAllConversations();
-                        }
-
-                        @Override
-                        public void onFailure(Throwable throwable) {
-                            mProgressBar.setVisibility(View.GONE);
-                            showMessage("Can't leave the conversation");
-                        }
-                    });
                     leaveDialog.dismiss();
                 }
             });
-            leaveDialog.show();
+            leaveDialog = builder.create();
+            leaveDialog.setMessage("Are you sure that you want to leave conversation");
         }
+        leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Leave", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mProgressBar.setVisibility(View.VISIBLE);
+                ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
+                    @Override
+                    public void onSuccess() {
+                        showAllConversations();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        mProgressBar.setVisibility(View.GONE);
+                        showMessage("Can't leave the conversation");
+                    }
+                });
+                leaveDialog.dismiss();
+            }
+        });
+        leaveDialog.show();
     }
 
     private void searchMessage(final String query) {
