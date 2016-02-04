@@ -70,7 +70,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
                             try {
                                 context.startActivity(intent);
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
+                                Log.e(TAG, "Can find any app to show map", e);
                                 Utils.showMessage(context, "Can find any app to show map");
                             }
                         }
@@ -82,7 +83,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                             intent.setDataAndType(Uri.parse(newVideoPath), "video/*");
                             try {
                                 context.startActivity(intent);
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
+                                Log.e(TAG, "Can find any app to play video", e);
                                 Utils.showMessage(context, "Can find any app to play video");
                             }
                         }
@@ -95,7 +97,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                                 intent.setDataAndType(Uri.parse(newImagePath), "image/*");
                                 try {
                                     context.startActivity(intent);
-                                } catch (Exception e) {
+                                } catch (Throwable e) {
+                                    Log.e(TAG, "Can find any app to view image", e);
                                     Utils.showMessage(context, "Can find any app to view image");
                                 }
                             }
