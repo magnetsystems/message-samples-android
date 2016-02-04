@@ -3,6 +3,8 @@ package com.magnet.magnetchat.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -18,15 +20,17 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
-
 import com.magnet.max.android.UserProfile;
+
 import java.util.List;
 
 public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, AdapterView.OnItemClickListener {
 
     public static final String TAG_ADD_USER_TO_CHANNEL = "addUserToChannel";
 
-    private enum ActivityMode {MODE_TO_CREATE, MODE_TO_ADD_USER};
+    private enum ActivityMode {MODE_TO_CREATE, MODE_TO_ADD_USER}
+
+    ;
 
     private UsersAdapter adapter;
     private ListView userList;
@@ -60,16 +64,16 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        UserProfile selectedUser = adapter.getItem(position);
-        switch (currentMode) {
-            case MODE_TO_ADD_USER:
-                addUserToChannel(selectedUser);
-                break;
-            case MODE_TO_CREATE:
-                startActivity(ChatActivity.getIntentForNewChannel(selectedUser.getUserIdentifier()));
-                finish();
-                break;
-        }
+        adapter.setSelectUser(view, position);
+//        switch (currentMode) {
+//            case MODE_TO_ADD_USER:
+//                addUserToChannel(selectedUser);
+//                break;
+//            case MODE_TO_CREATE:
+//                startActivity(ChatActivity.getIntentForNewChannel(selectedUser.getUserIdentifier()));
+//                finish();
+//                break;
+//        }
     }
 
     @Override
@@ -95,9 +99,42 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         return true;
     }
 
-    private void addUserToChannel(final UserProfile user) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_add_user, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menuAddUserNext:
+                if (adapter != null && adapter.getSelectedUsers().size() > 0) {
+                    switch (currentMode) {
+                        case MODE_TO_ADD_USER:
+                            addUserToChannel(adapter.getSelectedUsers());
+                            break;
+                        case MODE_TO_CREATE:
+                            List<UserProfile> profileList = adapter.getSelectedUsers();
+                            String[] userIds = new String[profileList.size()];
+                            for (int i = 0; i < userIds.length; i++) {
+                                userIds[i] = profileList.get(i).getUserIdentifier();
+                            }
+                            startActivity(ChatActivity.getIntentForNewChannel(userIds));
+                            finish();
+                            break;
+                    }
+                } else {
+                    showMessage("Nobody was selected");
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void addUserToChannel(final List<UserProfile> userList) {
         findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
-        ChannelHelper.getInstance().addUserToConversation(conversation, user, new ChannelHelper.OnAddUserListener() {
+        ChannelHelper.getInstance().addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
             @Override
             public void onSuccessAdded() {
                 findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);

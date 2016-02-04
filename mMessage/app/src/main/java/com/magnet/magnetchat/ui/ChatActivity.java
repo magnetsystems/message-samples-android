@@ -94,9 +94,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         layoutManager.setReverseLayout(false);
         messagesListView.setLayoutManager(layoutManager);
         if (getIntent().getBooleanExtra(TAG_CREATE_NEW, false)) {
-            String userId = getIntent().getStringExtra(TAG_CREATE_WITH_USER_ID);
-            if (userId != null) {
-                ChannelHelper.getInstance().createChannelForUsers(userId, createListener);
+            String[] userIds = getIntent().getStringArrayExtra(TAG_CREATE_WITH_USER_ID);
+            if (userIds != null) {
+                ChannelHelper.getInstance().createChannelForUsers(userIds, createListener);
             }
         } else {
             channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
@@ -462,7 +462,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         return intent;
     }
 
-    public static Intent getIntentForNewChannel(String userId) {
+    public static Intent getIntentForNewChannel(String[] userId) {
         Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
         intent.putExtra(TAG_CREATE_NEW, true);
         intent.putExtra(TAG_CREATE_WITH_USER_ID, userId);

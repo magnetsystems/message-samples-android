@@ -11,12 +11,14 @@ import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.max.android.UserProfile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UsersAdapter extends ArrayAdapter<UserProfile> {
 
     private LayoutInflater inflater;
     private AddUserListener addUser;
+    private List<UserProfile> selectedUsers;
 
     private class ViewHolder {
         ImageView icon;
@@ -34,6 +36,7 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
 
     public UsersAdapter(Context context, List<? extends UserProfile> users, AddUserListener addUser) {
         super(context, R.layout.item_user, (List<UserProfile>) users);
+        selectedUsers = new ArrayList<>();
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (addUser != null) {
             this.addUser = addUser;
@@ -46,6 +49,31 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
             return super.getCount() + 1;
         }
         return super.getCount();
+    }
+
+    public void setSelectUser(View view, int position) {
+        if (view != null) {
+            UserProfile selectedUser = getItem(position);
+            if (selectedUsers.contains(selectedUser)) {
+                selectedUsers.remove(selectedUser);
+            } else {
+                selectedUsers.add(selectedUser);
+            }
+            colorSelected(view, position);
+        }
+    }
+
+    public List<UserProfile> getSelectedUsers() {
+        return selectedUsers;
+    }
+
+    private void colorSelected(View view, int position) {
+        UserProfile selectedUser = getItem(position);
+        if (selectedUsers.contains(selectedUser)) {
+            view.setBackgroundResource(R.color.itemSelected);
+        } else {
+            view.setBackgroundResource(R.color.itemNotSelected);
+        }
     }
 
     @Override
@@ -81,6 +109,7 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
             if (user.getFirstName() == null && user.getLastName() == null) {
                 viewHolder.firstName.setText(user.getDisplayName());
             }
+            colorSelected(convertView, position);
         }
         return convertView;
     }
