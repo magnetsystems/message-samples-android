@@ -19,6 +19,7 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -55,7 +56,7 @@ public class CurrentApplication extends MultiDexApplication {
 
 
 
-    public void messageNotification() {
+    public void messageNotification(String fromUserName) {
         if (notification == null) {
             PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(Intent.ACTION_MAIN)
                             .addCategory(Intent.CATEGORY_DEFAULT)
@@ -63,7 +64,10 @@ public class CurrentApplication extends MultiDexApplication {
                             .setPackage(this.getPackageName()),
                     PendingIntent.FLAG_UPDATE_CURRENT);
             notification = new Notification.Builder(this).setAutoCancel(true).setSmallIcon(getApplicationInfo().icon)
-                    .setContentTitle("New message is available").setContentIntent(intent).build();
+                    .setContentTitle("New message is available")
+                    //.setContentTitle("New message is available" + (StringUtil.isNotEmpty(fromUserName) ? (" from " + fromUserName) : ""))
+                    .setContentInfo(fromUserName)
+                    .setContentIntent(intent).build();
         }
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -91,7 +95,7 @@ public class CurrentApplication extends MultiDexApplication {
             ChannelHelper.getInstance().receiveMessage(mmxMessage);
             if (mmxMessage.getSender() != null && !mmxMessage.getSender().getUserIdentifier().equals(
                 User.getCurrentUserId())) {
-                messageNotification();
+                messageNotification(mmxMessage.getSender().getDisplayName());
             }
             return false;
         }
