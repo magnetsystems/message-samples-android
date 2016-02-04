@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+    private final static String TAG = MessagesAdapter.class.getSimpleName();
 
     private LayoutInflater inflater;
     private List<Message> messageList;
@@ -220,7 +222,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         configureMediaMsg(holder);
         final Attachment attachment = message.getAttachment();
         if (attachment != null) {
-            Glide.with(context).load(Uri.parse(attachment.getDownloadUrl())).centerCrop().placeholder(R.drawable.photo_msg).into(holder.image);
+            String attachmentId = null;
+            try {
+                attachmentId = attachment.getDownloadUrl();
+            } catch (IllegalStateException e) {
+                Log.d(TAG, "Attachment is not ready2", e);
+            }
+            if(null != attachmentId) {
+                Glide.with(context)
+                    .load(Uri.parse(attachmentId))
+                    .centerCrop()
+                    .placeholder(R.drawable.photo_msg)
+                    .into(holder.image);
+            } else {
+                Glide.with(context)
+                    .load(R.drawable.photo_msg)
+                    .centerCrop()
+                    .into(holder.image);
+            }
         }
     }
 
