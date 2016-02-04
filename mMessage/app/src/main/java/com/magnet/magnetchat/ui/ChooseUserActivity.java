@@ -48,8 +48,10 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         if (channelName != null) {
             conversation = ConversationCache.getInstance().getConversationByName(channelName);
             currentMode = ActivityMode.MODE_TO_ADD_USER;
+            setTitle("Add Contact");
+        } else {
+            setTitle("New Message");
         }
-        setTitle("New Message");
     }
 
     @Override

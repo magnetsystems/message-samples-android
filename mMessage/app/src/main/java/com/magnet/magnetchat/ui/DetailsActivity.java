@@ -33,6 +33,8 @@ public class DetailsActivity extends BaseActivity {
             }
             ListView listView = (ListView) findViewById(R.id.detailsSubscribersList);
             listView.setAdapter(adapter);
+
+            setTitle("Details");
         }
     }
 
