@@ -68,7 +68,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         } else {
                             String uri = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                            context.startActivity(intent);
+                            try {
+                                context.startActivity(intent);
+                            } catch (Exception e) {
+                                Utils.showMessage(context, "Can find any app to show map");
+                            }
                         }
                         break;
                     case Message.TYPE_VIDEO:
@@ -76,7 +80,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         if (newVideoPath != null) {
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newVideoPath));
                             intent.setDataAndType(Uri.parse(newVideoPath), "video/*");
-                            context.startActivity(intent);
+                            try {
+                                context.startActivity(intent);
+                            } catch (Exception e) {
+                                Utils.showMessage(context, "Can find any app to play video");
+                            }
                         }
                         break;
                     case Message.TYPE_PHOTO:
@@ -85,7 +93,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                             if (newImagePath != null) {
                                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newImagePath));
                                 intent.setDataAndType(Uri.parse(newImagePath), "image/*");
-                                context.startActivity(intent);
+                                try {
+                                    context.startActivity(intent);
+                                } catch (Exception e) {
+                                    Utils.showMessage(context, "Can find any app to view image");
+                                }
                             }
                         }
                         break;
