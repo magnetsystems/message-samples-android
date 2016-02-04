@@ -393,6 +393,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private ChannelHelper.OnCreateChannelListener createListener = new ChannelHelper.OnCreateChannelListener() {
         @Override
         public void onSuccessCreated(MMXChannel channel) {
+            channelName = channel.getName();
             ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
         }
 
@@ -436,7 +437,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             Log.d(TAG, "Received message : " + mmxMessage);
-            if (adapter != null && mmxMessage.getChannel() != null && channelName.equals(mmxMessage.getChannel().getName())) {
+            if (adapter != null && mmxMessage.getChannel() != null && StringUtil.isStringValueEqual(channelName, mmxMessage.getChannel().getName())) {
                 currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
                 updateList();
                 currentConversation.setHasUnreadMessage(false);

@@ -317,17 +317,18 @@ public class ChannelHelper {
                 });
             }
         }
-        mmxMessage.acknowledge(new MMXMessage.OnFinishedListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Logger.debug("acknowledge", "success");
-            }
-
-            @Override
-            public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-                Logger.error("acknowledge", throwable, "error");
-            }
-        });
+        // Don't need to acknowledge channel message
+        //mmxMessage.acknowledge(new MMXMessage.OnFinishedListener<Void>() {
+        //    @Override
+        //    public void onSuccess(Void aVoid) {
+        //        Logger.debug("acknowledge", "success");
+        //    }
+        //
+        //    @Override
+        //    public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
+        //        Logger.error("acknowledge", throwable, "error");
+        //    }
+        //});
     }
 
     public void unsubscribeFromChannel(final Conversation conversation, final OnLeaveChannelListener listener) {
