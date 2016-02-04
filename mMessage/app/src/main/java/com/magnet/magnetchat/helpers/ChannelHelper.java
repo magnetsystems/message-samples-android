@@ -220,8 +220,8 @@ public class ChannelHelper {
         findChannelByUsers(Arrays.asList(userId, User.getCurrentUserId()), new OnFindChannelByUsersListener() {
             @Override
             public void onSuccessFound(List<MMXChannel> mmxChannels) {
-                if (mmxChannels.size() > 0) {
-                    Logger.debug("channel exists");
+                if (mmxChannels.size() == 1) { // Use existing one if only one found
+                    Logger.debug("channel with same subscribers exists, use it");
                     if (listener != null)
                         listener.onChannelExists(mmxChannels.get(0));
                 } else {
