@@ -19,7 +19,6 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
-import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -56,7 +55,7 @@ public class CurrentApplication extends MultiDexApplication {
 
 
 
-    public void messageNotification(String fromUserName) {
+    public void messageNotification(String channleName, String fromUserName) {
         if (notification == null) {
             PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(Intent.ACTION_MAIN)
                             .addCategory(Intent.CATEGORY_DEFAULT)
@@ -71,7 +70,7 @@ public class CurrentApplication extends MultiDexApplication {
         }
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(12345, notification);
+        manager.notify(channleName, 12345, notification);
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
     }
@@ -95,7 +94,7 @@ public class CurrentApplication extends MultiDexApplication {
             ChannelHelper.getInstance().receiveMessage(mmxMessage);
             if (mmxMessage.getSender() != null && !mmxMessage.getSender().getUserIdentifier().equals(
                 User.getCurrentUserId())) {
-                messageNotification(mmxMessage.getSender().getDisplayName());
+                messageNotification(null != mmxMessage.getChannel() ? mmxMessage.getChannel().getName() : "", mmxMessage.getSender().getDisplayName());
             }
             return false;
         }
