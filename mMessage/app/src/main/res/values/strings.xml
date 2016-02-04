@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Magnet Messager</string>
+    <string name="app_name">Magnet Messeger</string>
     <string name="title_activity_home">HomeActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
