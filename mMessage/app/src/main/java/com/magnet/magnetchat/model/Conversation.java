@@ -2,6 +2,7 @@ package com.magnet.magnetchat.model;
 
 import android.location.Location;
 
+import android.util.Log;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Attachment;
@@ -10,6 +11,7 @@ import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Conversation {
+    private static final String TAG = Conversation.class.getSimpleName();
 
     private Map<String, UserProfile> suppliers;
     private List<Message> messages;
@@ -115,6 +118,7 @@ public class Conversation {
     }
 
     public void sendVideo(final String filePath, final OnSendMessageListener listener) {
+        Log.d(TAG, "sending video " + filePath);
         if (channel != null) {
             File file = new File(filePath);
             Attachment attachment = new Attachment(file, Message.makeVideoFileType(filePath), file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
@@ -126,6 +130,7 @@ public class Conversation {
     }
 
     public void sendPhoto(final String filePath, final OnSendMessageListener listener) {
+        Log.d(TAG, "sending photo " + filePath);
         if (channel != null) {
             File file = new File(filePath);
             Attachment attachment = new Attachment(file, Message.FILE_TYPE_PHOTO, file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
