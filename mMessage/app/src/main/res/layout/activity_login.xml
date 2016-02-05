@@ -1,85 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/LayoutStyle"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff"
-    android:gravity="center_horizontal|center_vertical"
-    android:orientation="vertical"
-    android:padding="15dp">
+    android:scrollbars="none"
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/magnet_icon" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Sign in to your account" />
-
-    <EditText
-        android:id="@+id/loginEmail"
-        style="@style/EditFieldStyle"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:hint="Email Address"
-        android:inputType="textEmailAddress" />
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:padding="15dp">
 
-    <EditText
-        android:id="@+id/loginPassword"
-        style="@style/EditFieldStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:ems="10"
-        android:hint="Password"
-        android:inputType="textPassword" />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/magnet_icon" />
 
-    <CheckBox
-        android:id="@+id/loginRemember"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Remember me" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/loginSignInBtn"
-        style="@style/ButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Sign in" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Sign in to your account" />
 
-    <ProgressBar
-        android:id="@+id/loginProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:visibility="gone" />
+        <EditText
+            android:id="@+id/loginEmail"
+            style="@style/EditFieldStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress" />
 
-    <TextView
-        android:id="@+id/loginCreateAccountBtn"
-        style="@style/ButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginTop="20dp"
-        android:text="Create account" />
+        <EditText
+            android:id="@+id/loginPassword"
+            style="@style/EditFieldStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword" />
 
-</LinearLayout>
+        <CheckBox
+            android:id="@+id/loginRemember"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Remember me" />
+
+        <TextView
+            android:id="@+id/loginSignInBtn"
+            style="@style/ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Sign in" />
+
+        <ProgressBar
+            android:id="@+id/loginProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/loginCreateAccountBtn"
+            style="@style/ButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginTop="20dp"
+            android:text="Create account" />
+
+    </LinearLayout>
+</ScrollView>
