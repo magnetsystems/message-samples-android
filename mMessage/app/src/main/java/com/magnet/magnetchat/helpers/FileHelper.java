@@ -3,16 +3,40 @@ package com.magnet.magnetchat.helpers;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+
 public class FileHelper {
 
     public static String getPath(final Context context, final Uri uri) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && DocumentsContract.isDocumentUri(context, uri)) {
+            InputStream is = null;
+            if (uri.getAuthority() != null) {
+                try {
+                    is = context.getContentResolver().openInputStream(uri);
+                    Bitmap bmp = BitmapFactory.decodeStream(is);
+                    return writeToTempImageAndGetPathUri(context, bmp).toString();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }finally {
+                    try {
+                        is.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && DocumentsContract.isDocumentUri(context, uri)) {
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
@@ -61,6 +85,13 @@ public class FileHelper {
             return uri.getPath();
         }
         return null;
+    }
+
+    public static Uri writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
     public static String getDataColumn(Context context, Uri uri, String selection, String[] selectionArgs) {

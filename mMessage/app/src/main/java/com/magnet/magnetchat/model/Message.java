@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class Message {
 
-    private static final String FILE_TYPE_VIDEO = "video/";
+    private static final String FILE_TYPE_VIDEO = "video/*";
     public static final String FILE_TYPE_PHOTO = "image/*";
 
     public static final String TYPE_TEXT = "text";
@@ -156,13 +156,12 @@ public class Message {
     }
 
     public static String makeVideoFileType(String fileName) {
-        String mimeFormat = "*";
         int idx = fileName.lastIndexOf(".");
         if (idx >= 0 && idx < fileName.length() - 1) {
             String format = fileName.substring(idx + 1);
-            mimeFormat = MimeTypeMap.getSingleton().getMimeTypeFromExtension(format);
+            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(format);
         }
-        return FILE_TYPE_VIDEO + mimeFormat;
+        return FILE_TYPE_VIDEO;
     }
 
 }

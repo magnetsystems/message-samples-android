@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -203,12 +202,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             } else if (requestCode == INTENT_SELECT_VIDEO) {
                 Uri videoUri = intent.getData();
                 String videoPath = FileHelper.getPath(this, videoUri);
-                Log.d(TAG, "selected video from Uri : " + videoUri + " file path : " + videoPath);
+                Logger.debug(TAG, "selected video from Uri : " + videoUri + " file path : " + videoPath);
                 if (StringUtil.isNotEmpty(videoPath)) {
                     chatMessageProgress.setVisibility(View.VISIBLE);
                     currentConversation.sendVideo(videoPath, sendMessageListener);
                 } else {
-                    Log.e(TAG, "Can't read video from Uri : " + videoUri);
+                    Logger.error(TAG, "Can't read video from Uri : " + videoUri);
                     showMessage("Can't read the video file");
                 }
             }
@@ -388,7 +387,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onFailure(Throwable throwable) {
             chatMessageProgress.setVisibility(View.GONE);
-            Log.e(TAG, "send message error", throwable);
+            Logger.error(TAG, "send message error", throwable);
             showMessage("Can't send message");
         }
     };
@@ -423,7 +422,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         public void onSuccessFinish(Conversation lastConversation) {
             if (lastConversation == null) {
                 String message = "Can't load conversation";
-                Log.d(TAG, message);
+                Logger.debug(TAG, message);
                 showMessage(message);
                 finish();
             } else {
@@ -441,7 +440,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            Log.d(TAG, "Received message in : " + mmxMessage);
+            Logger.debug(TAG, "Received message in : " + mmxMessage);
             if (adapter != null && mmxMessage.getChannel() != null && StringUtil.isStringValueEqual(channelName, mmxMessage.getChannel().getName())) {
                 currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
                 updateList();

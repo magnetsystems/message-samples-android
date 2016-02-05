@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -63,7 +64,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             if (message.getType() != null) {
                 switch (message.getType()) {
                     case Message.TYPE_MAP:
-                        if(!Utils.isGooglePlayServiceInstalled(context)) {
+                        if (!Utils.isGooglePlayServiceInstalled(context)) {
                             Utils.showMessage(context, "It seems Google play services is not available, can't use location API");
                         } else {
                             String uri = String.format(Locale.ENGLISH, "geo:%s?z=16&q=%s", message.getLatitudeLongitude(), message.getLatitudeLongitude());
@@ -80,8 +81,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         String newVideoPath = message.getAttachment().getDownloadUrl();
                         Log.d(TAG, "paying video : " + newVideoPath);
                         if (newVideoPath != null) {
+                            String type = "video/*";
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                type = message.getAttachment().getMimeType();
+                            }
                             intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newVideoPath));
-                            intent.setDataAndType(Uri.parse(newVideoPath), "video/*");
+                            intent.setDataAndType(Uri.parse(newVideoPath), type);
                             try {
                                 context.startActivity(intent);
                             } catch (Throwable e) {
@@ -245,17 +250,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             } catch (IllegalStateException e) {
                 Log.d(TAG, "Attachment is not ready2", e);
             }
-            if(null != attachmentId) {
+            if (null != attachmentId) {
                 Glide.with(context)
-                    .load(Uri.parse(attachmentId))
-                    .centerCrop()
-                    .placeholder(R.drawable.photo_msg)
-                    .into(holder.image);
+                        .load(Uri.parse(attachmentId))
+                        .centerCrop()
+                        .placeholder(R.drawable.photo_msg)
+                        .into(holder.image);
             } else {
                 Glide.with(context)
-                    .load(R.drawable.photo_msg)
-                    .centerCrop()
-                    .into(holder.image);
+                        .load(R.drawable.photo_msg)
+                        .centerCrop()
+                        .into(holder.image);
             }
         }
     }

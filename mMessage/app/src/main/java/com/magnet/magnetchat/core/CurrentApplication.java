@@ -53,9 +53,7 @@ public class CurrentApplication extends MultiDexApplication {
         return instance;
     }
 
-
-
-    public void messageNotification(String channleName, String fromUserName) {
+    public void messageNotification(String channelName, String fromUserName) {
         if (notification == null) {
             PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(Intent.ACTION_MAIN)
                             .addCategory(Intent.CATEGORY_DEFAULT)
@@ -70,7 +68,7 @@ public class CurrentApplication extends MultiDexApplication {
         }
 
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(channleName, 12345, notification);
+        manager.notify(channelName, 12345, notification);
         Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
     }

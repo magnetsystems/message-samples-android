@@ -2,7 +2,6 @@ package com.magnet.magnetchat.helpers;
 
 import android.content.Intent;
 
-import android.util.Log;
 import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.model.Conversation;
@@ -121,7 +120,7 @@ public class ChannelHelper {
                 new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
-                        Log.d(TAG, "getChannelDetail successfully : " + channelDetails);
+                        Logger.debug(TAG, "getChannelDetail successfully : " + channelDetails);
                         Conversation lastConversation = null;
                         for (int i = 0; i < channelDetails.size(); i++) {
                             final ChannelDetail channelDetail = channelDetails.get(i);
@@ -155,7 +154,7 @@ public class ChannelHelper {
                     @Override
                     public void onFailure(MMXChannel.FailureCode failureCode,
                                           Throwable throwable) {
-                        Log.e(TAG, "getChannelDetail failed : ", throwable);
+                        Logger.error(TAG, "getChannelDetail failed : ", throwable);
                         if (listener != null) {
                             listener.onFailure(throwable);
                         }
@@ -320,7 +319,7 @@ public class ChannelHelper {
                             conversation.setHasUnreadMessage(true);
                             conversation.setLastActiveTime(new Date());
                         } else {
-                            Log.e(TAG, "Can't load conversation for new message : " + mmxMessage);
+                            Logger.error(TAG, "Can't load conversation for new message : " + mmxMessage);
                         }
                     }
 
@@ -331,18 +330,6 @@ public class ChannelHelper {
                 });
             }
         }
-        // Don't need to acknowledge channel message
-        //mmxMessage.acknowledge(new MMXMessage.OnFinishedListener<Void>() {
-        //    @Override
-        //    public void onSuccess(Void aVoid) {
-        //        Logger.debug("acknowledge", "success");
-        //    }
-        //
-        //    @Override
-        //    public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-        //        Logger.error("acknowledge", throwable, "error");
-        //    }
-        //});
     }
 
     public void unsubscribeFromChannel(final Conversation conversation, final OnLeaveChannelListener listener) {
