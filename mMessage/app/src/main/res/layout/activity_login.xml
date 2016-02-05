@@ -34,6 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:hint="Email Address"
         android:inputType="textEmailAddress" />
 
@@ -42,6 +44,8 @@
         style="@style/EditFieldStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword" />
@@ -59,6 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Sign in" />
 
     <ProgressBar
@@ -73,6 +78,7 @@
         style="@style/ButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginTop="20dp"
         android:text="Create account" />
 

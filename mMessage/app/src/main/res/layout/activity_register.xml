@@ -80,6 +80,7 @@
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="15dp"
             android:text="Register" />
 
@@ -95,6 +96,7 @@
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="25dp"
             android:text="Return to Sign in" />
     </LinearLayout>
