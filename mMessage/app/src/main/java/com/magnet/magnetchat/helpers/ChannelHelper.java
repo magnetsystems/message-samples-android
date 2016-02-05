@@ -86,14 +86,21 @@ public class ChannelHelper {
             public void onSuccess(final List<MMXChannel> channels) {
                 Logger.debug(TAG, "getAllSubscriptions success : " + channels);
                 ConversationCache.getInstance().resetConversations();
-                fetchChannelDetails(channels, listener);
+                if(null != channels && channels.size() > 0) {
+                    fetchChannelDetails(channels, listener);
+                } else {
+                    if (listener != null) {
+                        listener.onSuccessFinish(null);
+                    }
+                }
             }
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                 Logger.error(TAG, throwable, "getAllSubscriptions failed");
-                if (listener != null)
+                if (listener != null) {
                     listener.onFailure(throwable);
+                }
             }
         });
     }
