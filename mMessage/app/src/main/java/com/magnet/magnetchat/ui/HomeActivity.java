@@ -49,7 +49,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ConversationsAdapter adapter;
     private ListView conversationsList;
     private List<Conversation> conversations;
-    private Thread searchThread;
     private ProgressBar mProgressBar;
 
     @Override
@@ -70,9 +69,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (searchThread == null) {
-                    searchMessage(query);
-                }
+                searchMessage(query);
                 return true;
             }
 
@@ -184,10 +181,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         unregisterReceiver(onAddedConversation);
         if (leaveDialog != null && leaveDialog.isShowing()) {
             leaveDialog.dismiss();
-        }
-        if (searchThread != null) {
-            searchThread.interrupt();
-            searchThread = null;
         }
         super.onPause();
     }
