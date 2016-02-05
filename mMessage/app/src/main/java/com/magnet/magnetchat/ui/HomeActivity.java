@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener {
+    private static final String TAG = HomeActivity.class.getSimpleName();
 
     private AlertDialog leaveDialog;
 
@@ -273,6 +275,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             if(null != lastConversation) {
                 showAllConversations();
             } else {
+                Log.w(TAG, "No conversation is available");
                 showMessage("No conversation is available");
             }
         }
