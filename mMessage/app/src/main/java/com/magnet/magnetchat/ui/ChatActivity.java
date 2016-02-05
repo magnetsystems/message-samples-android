@@ -196,7 +196,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                 if (uris.length > 0) {
                     for (Uri uri : uris) {
                         chatMessageProgress.setVisibility(View.VISIBLE);
-                        currentConversation.sendPhoto(uri.toString(), sendMessageListener);
+                        String filePath = uri.toString();
+                        currentConversation.sendPhoto(filePath, FileHelper.getMimeType(this, uri, filePath, Message.FILE_TYPE_PHOTO), sendMessageListener);
                     }
                 }
             } else if (requestCode == INTENT_SELECT_VIDEO) {
@@ -205,7 +206,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                 Logger.debug(TAG, "selected video from Uri : " + videoUri + " file path : " + videoPath);
                 if (StringUtil.isNotEmpty(videoPath)) {
                     chatMessageProgress.setVisibility(View.VISIBLE);
-                    currentConversation.sendVideo(videoPath, sendMessageListener);
+                    currentConversation.sendVideo(videoPath, FileHelper.getMimeType(this, videoUri, videoPath, Message.FILE_TYPE_VIDEO), sendMessageListener);
                 } else {
                     Logger.error(TAG, "Can't read video from Uri : " + videoUri);
                     showMessage("Can't read the video file");

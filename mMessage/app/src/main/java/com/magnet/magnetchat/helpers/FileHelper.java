@@ -11,28 +11,32 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import android.util.Log;
+import android.webkit.MimeTypeMap;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class FileHelper {
+    private final static String TAG = FileHelper.class.getSimpleName();
 
     public static String getPath(final Context context, final Uri uri) {
+        String path = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && DocumentsContract.isDocumentUri(context, uri)) {
             InputStream is = null;
             if (uri.getAuthority() != null) {
                 try {
                     is = context.getContentResolver().openInputStream(uri);
                     Bitmap bmp = BitmapFactory.decodeStream(is);
-                    return writeToTempImageAndGetPathUri(context, bmp).toString();
+                    path = writeToTempImageAndGetPathUri(context, bmp).toString();
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    Log.e(TAG, "Failed to read content", e);
                 }finally {
                     try {
                         is.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        //e.printStackTrace();
                     }
                 }
             }
@@ -43,7 +47,7 @@ public class FileHelper {
                 final String[] split = docId.split(":");
                 final String type = split[0];
                 if ("primary".equalsIgnoreCase(type)) {
-                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                    path = Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
             }
             // DownloadsProvider
@@ -53,7 +57,7 @@ public class FileHelper {
                 final Uri contentUri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
 
-                return getDataColumn(context, contentUri, null, null);
+                path = getDataColumn(context, contentUri, null, null);
             }
             // MediaProvider
             else if (isMediaDocument(uri)) {
@@ -73,24 +77,28 @@ public class FileHelper {
                 final String[] selectionArgs = new String[]{
                         split[1]
                 };
-                return getDataColumn(context, contentUri, selection, selectionArgs);
+                path = getDataColumn(context, contentUri, selection, selectionArgs);
             }
         }
         // MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            return getDataColumn(context, uri, null, null);
+            path = getDataColumn(context, uri, null, null);
         }
         // File
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
-            return uri.getPath();
+            path = uri.getPath();
         }
-        return null;
+
+        Log.d(TAG, "Get path " + path + " from Uri " + uri);
+
+        return path;
     }
 
     public static Uri writeToTempImageAndGetPathUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        Log.d(TAG, "writeToTempImageAndGetPathUri : " + path);
         return Uri.parse(path);
     }
 
@@ -111,6 +119,39 @@ public class FileHelper {
                 cursor.close();
         }
         return null;
+    }
+
+    public static String getMimeType(Context context, Uri uri, String fileName, String type) {
+        String result = null;
+        if(null != uri) {
+            String typeFromUri = getMimeType(context, uri);
+            if(null != typeFromUri) {
+                result = typeFromUri;
+            }
+        }
+
+        if(null == result && null != fileName) {
+            result = getMimeType(fileName, type);
+        }
+
+        Log.d(TAG, "Mime type for " + uri + " file name " + fileName + " is " + result);
+
+        return result;
+    }
+
+    public static String getMimeType(Context context, Uri uri) {
+        String result = context.getContentResolver().getType(uri);
+        Log.d(TAG, "Mime type for uri " + uri + " is " + result);
+        return result;
+    }
+
+    public static String getMimeType(String fileName, String type) {
+        int idx = fileName.lastIndexOf(".");
+        if (idx >= 0 && idx < fileName.length() - 1) {
+            String format = fileName.substring(idx + 1);
+            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(format);
+        }
+        return type + "/*";
     }
 
     public static boolean isExternalStorageDocument(Uri uri) {

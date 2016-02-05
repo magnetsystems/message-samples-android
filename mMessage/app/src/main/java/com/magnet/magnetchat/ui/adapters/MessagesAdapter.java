@@ -79,7 +79,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         break;
                     case Message.TYPE_VIDEO:
                         String newVideoPath = message.getAttachment().getDownloadUrl();
-                        Log.d(TAG, "paying video : " + newVideoPath);
+                        Log.d(TAG, "paying video : " + newVideoPath + "\n" + message.getAttachment());
                         if (newVideoPath != null) {
                             String type = "video/*";
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -98,7 +98,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                     case Message.TYPE_PHOTO:
                         if (message.getAttachment() != null) {
                             String newImagePath = message.getAttachment().getDownloadUrl();
-                            Log.d(TAG, "Viewing photo : " + newImagePath);
+                            Log.d(TAG, "Viewing photo : " + newImagePath + "\n" + message.getAttachment());
                             if (newImagePath != null) {
                                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(newImagePath));
                                 intent.setDataAndType(Uri.parse(newImagePath), "image/*");

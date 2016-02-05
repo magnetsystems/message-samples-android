@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class Message {
 
-    private static final String FILE_TYPE_VIDEO = "video/*";
-    public static final String FILE_TYPE_PHOTO = "image/*";
+    public static final String FILE_TYPE_VIDEO = "video";
+    public static final String FILE_TYPE_PHOTO = "image";
 
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_PHOTO = "photo";
@@ -153,15 +153,6 @@ public class Message {
         Map<String, String> content = new HashMap<>();
         content.put(TAG_TYPE, TYPE_PHOTO);
         return content;
-    }
-
-    public static String makeVideoFileType(String fileName) {
-        int idx = fileName.lastIndexOf(".");
-        if (idx >= 0 && idx < fileName.length() - 1) {
-            String format = fileName.substring(idx + 1);
-            return MimeTypeMap.getSingleton().getMimeTypeFromExtension(format);
-        }
-        return FILE_TYPE_VIDEO;
     }
 
 }

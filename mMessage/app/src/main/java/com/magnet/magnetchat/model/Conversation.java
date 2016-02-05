@@ -115,11 +115,11 @@ public class Conversation {
         }
     }
 
-    public void sendVideo(final String filePath, final OnSendMessageListener listener) {
+    public void sendVideo(final String filePath, final String mimeType, final OnSendMessageListener listener) {
         Logger.debug(TAG, "sending video " + filePath);
         if (channel != null) {
             File file = new File(filePath);
-            Attachment attachment = new Attachment(file, Message.makeVideoFileType(filePath), file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
+            Attachment attachment = new Attachment(file, mimeType, file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
             Map<String, String> content = Message.makeVideoContent();
             sendMessage(content, attachment, listener);
         } else {
@@ -127,11 +127,11 @@ public class Conversation {
         }
     }
 
-    public void sendPhoto(final String filePath, final OnSendMessageListener listener) {
+    public void sendPhoto(final String filePath, final String mimeType, final OnSendMessageListener listener) {
         Logger.debug(TAG, "sending photo " + filePath);
         if (channel != null) {
             File file = new File(filePath);
-            Attachment attachment = new Attachment(file, Message.FILE_TYPE_PHOTO, file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
+            Attachment attachment = new Attachment(file, mimeType, file.getName(), "From " + UserHelper.getInstance().userNameAsString(User.getCurrentUser()));
             Map<String, String> content = Message.makePhotoContent();
             sendMessage(content, attachment, listener);
         } else {
