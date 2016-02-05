@@ -203,7 +203,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             } else if (requestCode == INTENT_SELECT_VIDEO) {
                 Uri videoUri = intent.getData();
                 String videoPath = FileHelper.getPath(this, videoUri);
-                Log.d(TAG, "selected video from Uri : " + videoUri + " file paht : " + videoPath);
+                Log.d(TAG, "selected video from Uri : " + videoUri + " file path : " + videoPath);
                 if (StringUtil.isNotEmpty(videoPath)) {
                     chatMessageProgress.setVisibility(View.VISIBLE);
                     currentConversation.sendVideo(videoPath, sendMessageListener);
@@ -422,7 +422,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
             if (lastConversation == null) {
-                showMessage("Can't start conversation");
+                String message = "Can't load conversation";
+                Log.d(TAG, message);
+                showMessage(message);
                 finish();
             } else {
                 prepareConversation(lastConversation);
@@ -439,7 +441,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            Log.d(TAG, "Received message : " + mmxMessage);
+            Log.d(TAG, "Received message in : " + mmxMessage);
             if (adapter != null && mmxMessage.getChannel() != null && StringUtil.isStringValueEqual(channelName, mmxMessage.getChannel().getName())) {
                 currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
                 updateList();

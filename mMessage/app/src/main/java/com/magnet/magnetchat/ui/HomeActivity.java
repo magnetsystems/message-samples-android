@@ -270,7 +270,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
             mProgressBar.setVisibility(View.GONE);
-            showAllConversations();
+            if(null != lastConversation) {
+                showAllConversations();
+            } else {
+                showMessage("No conversation is available");
+            }
         }
 
         @Override

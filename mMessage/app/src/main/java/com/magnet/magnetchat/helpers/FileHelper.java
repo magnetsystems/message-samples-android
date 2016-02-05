@@ -54,7 +54,13 @@ public class FileHelper {
         }
         // MediaStore (and general)
         else if ("content".equalsIgnoreCase(uri.getScheme())) {
-            return getDataColumn(context, uri, null, null);
+            if (isNewGooglePhotosUri(uri)) {
+                String pathUri = uri.getPath();
+                String newUri = pathUri.substring(pathUri.indexOf("content"), pathUri.lastIndexOf("/ACTUAL"));
+                return getDataColumn(context, Uri.parse(newUri), null, null);
+            } else {
+                return getDataColumn(context, uri, null, null);
+            }
         }
         // File
         else if ("file".equalsIgnoreCase(uri.getScheme())) {
@@ -92,6 +98,10 @@ public class FileHelper {
 
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isNewGooglePhotosUri(Uri uri) {
+        return "com.google.android.apps.photos.contentprovider".equals(uri.getAuthority());
     }
 
 }

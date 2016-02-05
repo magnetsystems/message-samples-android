@@ -2,6 +2,7 @@ package com.magnet.magnetchat.helpers;
 
 import android.content.Intent;
 
+import android.util.Log;
 import com.magnet.magnetchat.core.ConversationCache;
 import com.magnet.magnetchat.core.CurrentApplication;
 import com.magnet.magnetchat.model.Conversation;
@@ -113,6 +114,7 @@ public class ChannelHelper {
                 new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
+                        Log.d(TAG, "getChannelDetail successfully : " + channelDetails);
                         Conversation lastConversation = null;
                         for (int i = 0; i < channelDetails.size(); i++) {
                             final ChannelDetail channelDetail = channelDetails.get(i);
@@ -146,6 +148,7 @@ public class ChannelHelper {
                     @Override
                     public void onFailure(MMXChannel.FailureCode failureCode,
                                           Throwable throwable) {
+                        Log.e(TAG, "getChannelDetail failed : ", throwable);
                         if (listener != null) {
                             listener.onFailure(throwable);
                         }
@@ -287,7 +290,7 @@ public class ChannelHelper {
         });
     }
 
-    public void receiveMessage(MMXMessage mmxMessage) {
+    public void receiveMessage(final MMXMessage mmxMessage) {
         Logger.debug("new message");
         Message message = Message.createMessageFrom(mmxMessage);
         if (mmxMessage.getChannel() != null) {
@@ -306,8 +309,12 @@ public class ChannelHelper {
                 readChannelInfo(mmxMessage.getChannel(), new OnReadChannelInfoListener() {
                     @Override
                     public void onSuccessFinish(Conversation conversation) {
-                        conversation.setHasUnreadMessage(true);
-                        conversation.setLastActiveTime(new Date());
+                        if(null != conversation) {
+                            conversation.setHasUnreadMessage(true);
+                            conversation.setLastActiveTime(new Date());
+                        } else {
+                            Log.e(TAG, "Can't load conversation for new message : " + mmxMessage);
+                        }
                     }
 
                     @Override

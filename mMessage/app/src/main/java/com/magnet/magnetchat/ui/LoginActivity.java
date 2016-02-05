@@ -65,9 +65,6 @@ public class LoginActivity extends BaseActivity {
             case R.id.loginCreateAccountBtn:
                 startActivity(new Intent(this, RegisterActivity.class));
                 break;
-            case R.id.loginForgotPaswordBtn:
-//                startActivity(new Intent(this, RegisterActivity.class));
-                break;
             case R.id.loginSignInBtn:
                 runLoginFromFields();
                 break;
@@ -76,7 +73,7 @@ public class LoginActivity extends BaseActivity {
 
     private void setupView() {
         setContentView(R.layout.activity_login);
-        setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginForgotPaswordBtn, R.id.loginSignInBtn);
+        setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginSignInBtn);
         remember = (CheckBox) findViewById(R.id.loginRemember);
     }
 
