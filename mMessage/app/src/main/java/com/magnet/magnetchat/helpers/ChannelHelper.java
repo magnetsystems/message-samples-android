@@ -129,7 +129,6 @@ public class ChannelHelper {
                             lastConversation = conversation;
                             conversation.setChannel(channel);
 
-                            conversation.setSuppliers(new HashMap<String, UserProfile>());
                             Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
                             for (UserProfile up : channelDetail.getSubscribers()) {
                                 if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
@@ -162,37 +161,10 @@ public class ChannelHelper {
                 });
     }
 
-    public void updateConversationUserList(final Conversation conversation, final OnReadChannelInfoListener listener) {
-        final MMXChannel channel = conversation.getChannel();
-        if (channel == null) {
-            return;
-        }
-        channel.getAllSubscribers(100, 0, new MMXChannel.OnFinishedListener<ListResult<User>>() {
-            @Override
-            public void onSuccess(ListResult<User> userListResult) {
-                conversation.setSuppliers(new HashMap<String, UserProfile>());
-                Logger.debug("channel subscribers", "success. channel " + channel.getName());
-                for (User user : userListResult.items) {
-                    if (!user.getUserIdentifier().equals(User.getCurrentUserId())) {
-                        conversation.addSupplier(user);
-                    }
-                }
-                listener.onSuccessFinish(conversation);
-            }
-
-            @Override
-            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                Logger.error("channel messages", throwable);
-                if (listener != null)
-                    listener.onFailure(throwable);
-            }
-        });
-    }
-
     public void addUserToConversation(final Conversation conversation, final List<UserProfile> userList, final OnAddUserListener listener) {
         Set<User> userSet = new HashSet<>();
         for (UserProfile user : userList) {
-            if (!conversation.getSuppliers().containsKey(user.getUserIdentifier())) {
+            if (null == conversation.getSupplier(user.getUserIdentifier())) {
                 userSet.add((User) user);
             }
         }
@@ -306,7 +278,7 @@ public class ChannelHelper {
                 conversation.setLastActiveTime(new Date());
                 User sender = message.getMmxMessage().getSender();
                 if (sender != null && !sender.equals(User.getCurrentUser())) {
-                    if (conversation.getSuppliers().get(sender.getUserIdentifier()) == null) {
+                    if (conversation.getSupplier(sender.getUserIdentifier()) == null) {
                         conversation.addSupplier(sender);
                     }
                     conversation.setHasUnreadMessage(true);

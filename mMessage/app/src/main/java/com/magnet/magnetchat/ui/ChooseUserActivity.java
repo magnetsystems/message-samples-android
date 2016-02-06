@@ -172,7 +172,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             public void success(List<User> users) {
                 users.remove(User.getCurrentUser());
                 if (conversation != null) {
-                    for (UserProfile user : conversation.getSuppliers().values()) {
+                    for (UserProfile user : conversation.getSuppliersList()) {
                         users.remove(user);
                     }
                 }

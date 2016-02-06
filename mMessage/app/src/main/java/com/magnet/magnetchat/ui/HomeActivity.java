@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -45,18 +46,21 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private AlertDialog leaveDialog;
 
     private DrawerLayout drawer;
+    private ListView conversationsList;
+    private ProgressBar mProgressBar;
+    private SwipeRefreshLayout swipeContainer;
+
+    private List<Conversation> conversations;
     private String username;
     private ConversationsAdapter adapter;
-    private ListView conversationsList;
-    private List<Conversation> conversations;
-    private ProgressBar mProgressBar;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         if (User.getCurrentUser() != null) {
-            username = UserHelper.getInstance().userNameAsString(User.getCurrentUser());
+            username = User.getCurrentUser().getDisplayName();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -77,7 +81,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             public boolean onQueryTextChange(String newText) {
                 if (newText.isEmpty()) {
                     hideKeyboard();
-                    showList(ConversationCache.getInstance().getConversations());
+                    showAllConversations();
                 }
                 return false;
             }
@@ -111,6 +115,24 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
                 return true;
             }
         });
+        getConversations(true);
+
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getConversations(false);
+            }
+        });
+        swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
+
+    }
+
+    private void getConversations(boolean showProgress) {
+        if(showProgress) {
+            mProgressBar.setVisibility(View.VISIBLE);
+        }
         ChannelHelper.getInstance().readConversations(readChannelInfoListener);
     }
 
@@ -118,8 +140,10 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (adapter != null) {
             Conversation conversation = adapter.getItem(position);
-            if (conversation != null && conversation.getSuppliers() != null)
+            if (conversation != null) {
+                Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
                 startActivity(ChatActivity.getIntentWithChannel(conversation));
+            }
         }
     }
 
@@ -200,7 +224,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             adapter = new ConversationsAdapter(this, conversations);
             conversationsList.setAdapter(adapter);
         } else {
-            mProgressBar.setVisibility(View.GONE);
             conversations.clear();
             conversations.addAll(conversationsToShow);
             adapter.notifyDataSetChanged();
@@ -264,7 +287,8 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
-            mProgressBar.setVisibility(View.GONE);
+            finishGetChannels();
+
             if(null != lastConversation) {
                 showAllConversations();
             } else {
@@ -275,6 +299,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         @Override
         public void onFailure(Throwable throwable) {
+            finishGetChannels();
+        }
+
+        private void finishGetChannels() {
+            swipeContainer.setRefreshing(false);
             mProgressBar.setVisibility(View.GONE);
         }
     };
@@ -301,28 +330,28 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            Logger.debug("onMessageReceived");
+            Logger.debug(TAG, "onMessageReceived");
             showAllConversations();
             return false;
         }
 
         @Override
         public boolean onMessageAcknowledgementReceived(User from, String messageId) {
-            Logger.debug("onMessageAcknowledgementReceived");
+            Logger.debug(TAG, "onMessageAcknowledgementReceived");
             updateList();
             return false;
         }
 
         @Override
         public boolean onInviteReceived(MMXChannel.MMXInvite invite) {
-            Logger.debug("onInviteReceived");
+            Logger.debug(TAG, "onInviteReceived");
             updateList();
             return false;
         }
 
         @Override
         public boolean onInviteResponseReceived(MMXChannel.MMXInviteResponse inviteResponse) {
-            Logger.debug("onInviteResponseReceived");
+            Logger.debug(TAG, "onInviteResponseReceived");
             updateList();
             return false;
         }

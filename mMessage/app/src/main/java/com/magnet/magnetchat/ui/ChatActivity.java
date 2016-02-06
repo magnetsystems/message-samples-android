@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +39,12 @@ import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.max.android.util.StringUtil;
+import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import java.util.HashMap;
 import java.util.List;
 
 import nl.changer.polypicker.Config;
@@ -102,10 +105,11 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             if (channelName != null) {
                 currentConversation = ConversationCache.getInstance().getConversationByName(channelName);
                 if (currentConversation == null) {
+                    showMessage("Can load the conversation");
                     finish();
                     return;
                 }
-                ChannelHelper.getInstance().updateConversationUserList(currentConversation, readChannelInfoListener);
+                updateConversationUserList();
             }
         }
 
@@ -359,8 +363,15 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             ConversationCache.getInstance().addConversation(channelName, conversation);
         }
         currentConversation = conversation;
-        List<UserProfile> suppliersList = conversation.getSuppliersList();
-        if (conversation.getSuppliers().size() == 1) {
+        updateUsers();
+        conversation.setHasUnreadMessage(false);
+        ConversationCache.getInstance().setConversationListUpdated();
+        setMessagesList(conversation.getMessages());
+    }
+
+    private void updateUsers() {
+        List<UserProfile> suppliersList = currentConversation.getSuppliersList();
+        if (suppliersList.size() == 1) {
             setTitle(UserHelper.getInstance().userNamesAsString(suppliersList));
             findViewById(R.id.chatSuppliers).setVisibility(View.GONE);
         } else {
@@ -369,9 +380,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             String suppliers = UserHelper.getInstance().userNamesAsString(suppliersList);
             setText(R.id.chatSuppliers, "To: " + suppliers);
         }
-        conversation.setHasUnreadMessage(false);
-        ConversationCache.getInstance().setConversationListUpdated();
-        setMessagesList(conversation.getMessages());
     }
 
     private Conversation.OnSendMessageListener sendMessageListener = new Conversation.OnSendMessageListener() {
@@ -407,7 +415,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                 ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
             } else {
                 prepareConversation(currentConversation);
-                MMX.registerListener(eventListener);
             }
         }
 
@@ -455,9 +462,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public boolean onMessageAcknowledgementReceived(User from, String messageId) {
             if (adapter != null) {
-                updateList();
+                //updateList();
             }
-            return false;
+            return true;
         }
     };
 
@@ -473,5 +480,44 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         intent.putExtra(TAG_CREATE_NEW, true);
         intent.putExtra(TAG_CREATE_WITH_USER_ID, userId);
         return intent;
+    }
+
+    private void updateConversationUserList() {
+        final MMXChannel channel = currentConversation.getChannel();
+        if (channel == null) {
+            return;
+        }
+        channel.getAllSubscribers(100, 0, new MMXChannel.OnFinishedListener<ListResult<User>>() {
+            @Override
+            public void onSuccess(ListResult<User> userListResult) {
+                boolean subscribersUpdated = userListResult.items.size() != currentConversation.getSuppliersList().size();
+                if(!subscribersUpdated) {
+                    for (User u : userListResult.items) {
+                        if(null == currentConversation.getSupplier(u.getUserIdentifier())) {
+                            subscribersUpdated = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(subscribersUpdated) {
+                    Logger.debug("channel subscribers", "success. channel " + channel.getName() + " : " + userListResult.items);
+                    for (User user : userListResult.items) {
+                        if (!user.getUserIdentifier().equals(User.getCurrentUserId())) {
+                            currentConversation.addSupplier(user);
+                        }
+                    }
+
+                    updateUsers();
+                }
+
+                Log.d(TAG, "subscribersUpdated = " + subscribersUpdated);
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                Logger.error(TAG, "channel subscribers", throwable);
+            }
+        });
     }
 }

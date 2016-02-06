@@ -7,6 +7,8 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,12 @@ public class ConversationCache {
 
     private AtomicBoolean isConversationListUpdated = new AtomicBoolean(false);
 
+    private Comparator<Conversation> conversationComparator = new Comparator<Conversation>() {
+        @Override public int compare(Conversation lhs, Conversation rhs) {
+            return 0 - lhs.getLastActiveTime().compareTo(rhs.getLastActiveTime());
+        }
+    };
+
     private ConversationCache() {
         conversations = new TreeMap<>();
     }
@@ -34,7 +42,9 @@ public class ConversationCache {
     }
 
     public List<Conversation> getConversations() {
-        return new ArrayList<>(conversations.values());
+        ArrayList<Conversation> list = new ArrayList<>(conversations.values());
+        Collections.sort(list, conversationComparator);
+        return list;
     }
 
     public Map<String, Message> getMessagesToApproveDeliver() {

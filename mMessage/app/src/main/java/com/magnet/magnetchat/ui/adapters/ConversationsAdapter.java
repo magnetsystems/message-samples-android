@@ -15,6 +15,7 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.max.android.User;
 
+import com.magnet.max.android.UserProfile;
 import java.util.List;
 
 public class ConversationsAdapter extends BaseAdapter {
@@ -69,18 +70,16 @@ public class ConversationsAdapter extends BaseAdapter {
             return convertView;
         }
         Conversation conversation = getItem(position);
-        if (conversation.getSuppliers() != null) {
-            if (conversation.getSuppliers().size() == 0) {
-                User currentUser = User.getCurrentUser();
-                viewHolder.users.setText(String.format("%s %s", currentUser.getFirstName(), currentUser.getLastName()));
+        List<UserProfile> suppliers = conversation.getSuppliersList();
+        if (suppliers.size() == 0) {
+            User currentUser = User.getCurrentUser();
+            viewHolder.users.setText(String.format("%s %s", currentUser.getFirstName(), currentUser.getLastName()));
+        } else {
+            viewHolder.users.setText(UserHelper.getInstance().userNamesAsString(conversation.getSuppliersList()));
+            if (suppliers.size() > 1) {
+                viewHolder.icon.setImageResource(R.mipmap.ic_many);
             } else {
-                String suppliers = UserHelper.getInstance().userNamesAsString(conversation.getSuppliersList());
-                viewHolder.users.setText(suppliers);
-                if (conversation.getSuppliers().size() > 1) {
-                    viewHolder.icon.setImageResource(R.mipmap.ic_many);
-                } else {
-                    viewHolder.icon.setImageResource(R.mipmap.ic_one);
-                }
+                viewHolder.icon.setImageResource(R.mipmap.ic_one);
             }
         }
         if (conversation.hasUnreadMessage()) {

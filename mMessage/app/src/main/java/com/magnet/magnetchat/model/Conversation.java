@@ -12,6 +12,8 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,12 @@ public class Conversation {
     private MMXChannel channel;
     private Date lastActiveTime;
 
+    private Comparator<UserProfile> userProfileComparator = new Comparator<UserProfile>() {
+        @Override public int compare(UserProfile lhs, UserProfile rhs) {
+            return 0 - lhs.getDisplayName().compareTo(rhs.getDisplayName());
+        }
+    };
+
     public interface OnSendMessageListener {
         void onSuccessSend(Message message);
 
@@ -35,22 +43,21 @@ public class Conversation {
     public Conversation() {
     }
 
-    public Map<String, UserProfile> getSuppliers() {
+    private Map<String, UserProfile> getSuppliers() {
         if (suppliers == null) {
             suppliers = new HashMap<>();
         }
         return suppliers;
     }
 
-    public List<UserProfile> getSuppliersList() {
-        return new ArrayList<>(getSuppliers().values());
+    public UserProfile getSupplier(String id) {
+        return getSuppliers().get(id);
     }
 
-    public void setSuppliers(Map<String, UserProfile> suppliers) {
-        if(null != this.suppliers) {
-            this.suppliers.clear();
-        }
-        this.suppliers = suppliers;
+    public List<UserProfile> getSuppliersList() {
+        ArrayList<UserProfile> list = new ArrayList<>(getSuppliers().values());
+        Collections.sort(list, userProfileComparator);
+        return list;
     }
 
     public void addSupplier(UserProfile user) {
