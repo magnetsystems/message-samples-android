@@ -1,7 +1,6 @@
 package com.magnet.magnetchat.helpers;
 
 import com.magnet.magnetchat.core.ConversationCache;
-import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -69,9 +68,9 @@ public class UserHelper {
         User.login(email, password, remember, new ApiCallback<Boolean>() {
             @Override
             public void success(Boolean aBoolean) {
-                if (remember) {
-                    UserPreference.getInstance().saveCredence(email, password);
-                }
+                //if (remember) {
+                //    UserPreference.getInstance().saveCredence(email, password);
+                //}
                 MMX.start();
                 Logger.debug("login", "success");
                 if (onLoginListener != null)
@@ -102,11 +101,8 @@ public class UserHelper {
                         Logger.error("resume session", apiError);
                     }
                 });
-            } else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
-                String[] credence = UserPreference.getInstance().readCredence();
-                if (credence != null) {
-                    login(credence[0], credence[1], true, onLoginListener);
-                }
+            } else {
+
             }
         }
     }

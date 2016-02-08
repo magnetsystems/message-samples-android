@@ -14,7 +14,6 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.InternetConnection;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
@@ -36,7 +35,6 @@ public class CurrentApplication extends MultiDexApplication {
         Fabric.with(this, new Crashlytics());
         instance = this;
         Max.init(this.getApplicationContext(), new MaxAndroidPropertiesConfig(this, R.raw.magnetmax));
-        UserPreference.getInstance(this);
         InternetConnection.getInstance(this);
         com.magnet.mmx.client.common.Log.setLoggable(null, com.magnet.mmx.client.common.Log.VERBOSE);
         MMX.registerListener(eventListener);
