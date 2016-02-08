@@ -18,6 +18,7 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -58,10 +59,10 @@ public class CurrentApplication extends MultiDexApplication {
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             .setPackage(this.getPackageName()),
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            notification = new Notification.Builder(this).setAutoCancel(true).setSmallIcon(getApplicationInfo().icon)
-                    .setContentTitle("New message is available")
-                    //.setContentTitle("New message is available" + (StringUtil.isNotEmpty(fromUserName) ? (" from " + fromUserName) : ""))
-                    .setContentInfo(fromUserName)
+            notification = new Notification.Builder(this).setAutoCancel(true).setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Magnet Messenger")
+                    .setContentText((StringUtil.isNotEmpty(fromUserName) ? "New message from " + fromUserName : "New message is available"))
+                    //.setContentInfo(fromUserName)
                     .setContentIntent(intent).build();
         }
 
