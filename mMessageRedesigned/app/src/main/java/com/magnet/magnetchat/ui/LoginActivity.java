@@ -35,6 +35,11 @@ public class LoginActivity extends BaseActivity {
     }
 
     @Override
+    protected int getBaseViewID() {
+        return R.id.main_content;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginSignInBtn);
@@ -106,17 +111,17 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void showLoginFailed() {
-        showInfoDialog("Email or password is incorrect", "Please check your information and try again");
+        showMessage("Email or password is incorrect", "Please check your information and try again");
         changeLoginMode(false);
     }
 
     private void showLoginErrorCause(String cause) {
-        showInfoDialog(null, cause + " Please try again");
+        showMessage(cause + " Please try again");
         changeLoginMode(false);
     }
 
     private void showNoConnection() {
-        showInfoDialog("No connection", "Please check your Internet connection and try again");
+        showMessage("No connection", "Please check your Internet connection and try again");
         changeLoginMode(false);
     }
 

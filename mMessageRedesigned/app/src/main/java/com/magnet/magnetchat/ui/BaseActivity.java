@@ -72,7 +72,40 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param message curren message
      */
     public void showMessage(String message) {
-        SnackBarHelper.show(message);
+        if (getBaseViewID() != -1) {
+            SnackBarHelper.show(getBaseView(), message);
+        }
+    }
+
+    private View getBaseView() {
+        return (View) findViewById(getBaseViewID());
+    }
+
+    /**
+     * Method which privde the getting of base view ID
+     *
+     * @return
+     */
+    protected int getBaseViewID() {
+        return -1;
+    }
+
+    ;
+
+    /**
+     * Method which provide the show message in the snack bar
+     *
+     * @param message curren message
+     */
+    public void showMessage(String... message) {
+        if (getBaseViewID() == -1) {
+            return;
+        }
+        StringBuilder messages = new StringBuilder();
+        for (String str : message) {
+            messages.append(String.format("%s\n", str));
+        }
+        SnackBarHelper.show(getBaseView(), messages.toString().trim());
     }
 
     /**
