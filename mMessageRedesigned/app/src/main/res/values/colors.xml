@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#0058fd</color>
+    <color name="messageBackgroundFromMe">#0062ff</color>
+    <color name="messageBackgroundToMe">#e6e6e6</color>
+    <color name="buttonsTextColor">#0058fd</color>
+    <color name="itemSelected">#c3c3c3</color>
+    <color name="itemNotSelected">#fff</color>
+</resources>
