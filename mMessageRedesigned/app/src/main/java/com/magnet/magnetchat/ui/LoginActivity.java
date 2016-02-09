@@ -8,24 +8,36 @@ import android.widget.CheckBox;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
 
+import butterknife.InjectView;
+
 public class LoginActivity extends BaseActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
-    private CheckBox remember;
+    @InjectView(R.id.loginRemember)
+    CheckBox remember;
+    @InjectView(R.id.loginEmail)
+    FEditText editEmail;
+    @InjectView(R.id.loginPassword)
+    FEditText editPassword;
+    @InjectView(R.id.viewProgressLogin)
+    View viewLoginProgress;
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_login;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
         setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginSignInBtn);
-        remember = (CheckBox) findViewById(R.id.loginRemember);
-
         Logger.debug("SessionStatus", User.getSessionStatus());
         if (User.SessionStatus.LoggedIn == User.getSessionStatus()) {
             goToHomeActivity();
@@ -47,20 +59,21 @@ public class LoginActivity extends BaseActivity {
 
                 private void handleError(String errorMessage) {
                     Logger.debug(TAG, "Failed to resume session due to ", errorMessage);
-                    setupView();
                 }
             });
-        } else {
-            setupView();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         if (User.getCurrentUser() != null) {
-            ((View) findViewById(R.id.viewLoginingInProgress)).setVisibility(View.VISIBLE);
+            changeLoginMode(true);
+        } else {
+            changeLoginMode(false);
         }
+
     }
 
     @Override
@@ -76,14 +89,10 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private void setupView() {
-
-    }
-
     private void runLoginFromFields() {
         if (InternetConnectionManager.getInstance().isAnyConnectionAvailable()) {
-            final String email = getFieldText(R.id.loginEmail);
-            final String password = getFieldText(R.id.loginPassword);
+            final String email = editEmail.getStringValue();
+            final String password = editPassword.getStringValue();
             boolean shouldRemember = remember.isChecked();
             if (checkStrings(email, password)) {
                 changeLoginMode(true);
@@ -98,39 +107,44 @@ public class LoginActivity extends BaseActivity {
 
     private void showLoginFailed() {
         showInfoDialog("Email or password is incorrect", "Please check your information and try again");
+        changeLoginMode(false);
     }
 
     private void showLoginErrorCause(String cause) {
         showInfoDialog(null, cause + " Please try again");
+        changeLoginMode(false);
     }
 
     private void showNoConnection() {
         showInfoDialog("No connection", "Please check your Internet connection and try again");
+        changeLoginMode(false);
     }
 
     private void changeLoginMode(boolean runLogining) {
         if (runLogining) {
-            findViewById(R.id.loginSignInBtn).setVisibility(View.GONE);
-            findViewById(R.id.loginProgress).setVisibility(View.VISIBLE);
+            viewLoginProgress.setVisibility(View.VISIBLE);
         } else {
-            findViewById(R.id.loginSignInBtn).setVisibility(View.VISIBLE);
-            findViewById(R.id.loginProgress).setVisibility(View.GONE);
+            viewLoginProgress.setVisibility(View.GONE);
         }
     }
 
     private void goToHomeActivity() {
         Intent homeScreen = new Intent(LoginActivity.this, HomeActivity.class);
-        homeScreen.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(homeScreen);
+        this.finish();
+    }
+
+    private void goToHomeActivity(boolean changeLoginMode) {
+        Intent homeScreen = new Intent(LoginActivity.this, HomeActivity.class);
+        startActivity(homeScreen);
+        changeLoginMode(changeLoginMode);
+        this.finish();
     }
 
     private UserHelper.OnLoginListener loginListener = new UserHelper.OnLoginListener() {
         @Override
         public void onSuccess() {
-            Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            changeLoginMode(false);
-            startActivity(intent);
+            goToHomeActivity(false);
         }
 
         @Override

@@ -9,6 +9,7 @@ import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.core.managers.MMXManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
+import com.magnet.magnetchat.core.managers.TypeFaceManager;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -38,6 +39,7 @@ public class CurrentApplication extends MultiDexApplication {
         MMXManager.getInstance(this);
         SharedPreferenceManager.getInstance(this);
         InternetConnectionManager.getInstance(this);
+        TypeFaceManager.getInstance(this);
         ChannelCacheManager.getInstance();
     }
 

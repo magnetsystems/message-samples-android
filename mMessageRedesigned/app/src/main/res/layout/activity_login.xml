@@ -1,101 +1,168 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
 
-    <LinearLayout
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBGMain">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_230"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+
+            <ImageView
+                android:layout_width="@dimen/dimen_150"
+                android:layout_height="@dimen/dimen_150"
+                android:src="@drawable/magnet_icon_white" />
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/colorBGMain50"
+                android:textSize="@dimen/text_20"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="vertical"
-        android:padding="15dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/magnet_icon" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/app_name"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Sign in to your account" />
-
-        <EditText
-            android:id="@+id/loginEmail"
-            style="@style/EditFieldStyle"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="5dp"
-            android:hint="Email Address"
-            android:inputType="textEmailAddress" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/loginPassword"
-            style="@style/EditFieldStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/loginRemember"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Remember me" />
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_40"
+                    android:text="Sign in to your account"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textSize="@dimen/text_17"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/loginSignInBtn"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Sign in"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/loginEmail"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_64"
+                    android:layout_marginRight="@dimen/dimen_64"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:hint="Email Address"
+                    android:inputType="textEmailAddress"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textColorHint="@color/colorBGMainHintText"
+                    android:textSize="@dimen/text_15" />
 
-        <ProgressBar
-            android:id="@+id/loginProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:visibility="gone" />
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/loginPassword"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_64"
+                    android:layout_marginRight="@dimen/dimen_64"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textColorHint="@color/colorBGMainHintText"
+                    android:textSize="@dimen/text_15" />
 
-        <TextView
-            android:id="@+id/loginCreateAccountBtn"
-            style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Create account"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
+                <com.magnet.magnetchat.ui.custom.CCheckBox
+                    android:id="@+id/loginRemember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Remember me"
+                    android:textSize="@dimen/text_15" />
 
-    <FrameLayout
-        android:id="@+id/viewLoginingInProgress"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:id="@+id/loginSignInBtn"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Sign in"
+                    android:textColor="@color/colorBGMain"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Logining in progress. Please wait..."
-            android:textSize="16sp" />
-    </FrameLayout>
-</FrameLayout>
+                <ProgressBar
+                    android:id="@+id/loginProgress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_20"
+                    android:visibility="gone" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:id="@+id/loginCreateAccountBtn"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Create account"
+                    android:textColor="@color/colorBGMain"
+                    android:textSize="@dimen/text_16"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/viewProgressLogin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:focusableInTouchMode="true"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <ProgressBar
+                        style="@android:style/Widget.Holo.ProgressBar.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp" />
+
+                    <com.magnet.magnetchat.ui.custom.FTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Login in progress. Please wait..."
+                        android:textColor="@color/colorBGMainPrimaryText"
+                        android:textSize="@dimen/text_15" />
+                </LinearLayout>
+
+            </FrameLayout>
+        </FrameLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

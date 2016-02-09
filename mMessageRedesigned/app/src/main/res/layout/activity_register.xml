@@ -12,13 +12,13 @@
         android:orientation="vertical"
         android:padding="25dp">
 
-        <TextView
+        <com.magnet.magnetchat.ui.custom.FTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:text="Enter your name" />
 
-        <EditText
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:id="@+id/registerFirstName"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:hint="First name"
             android:inputType="textCapWords" />
 
-        <EditText
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:id="@+id/registerLastName"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"
@@ -34,14 +34,14 @@
             android:hint="Last name"
             android:inputType="textCapWords" />
 
-        <TextView
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="15dp"
             android:text="Enter your email address" />
 
-        <EditText
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:id="@+id/registerEmail"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"
@@ -50,14 +50,14 @@
             android:hint="Email Address"
             android:inputType="textEmailAddress" />
 
-        <TextView
+        <com.magnet.magnetchat.ui.custom.FTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="15dp"
             android:text="Enter your password" />
 
-        <EditText
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:id="@+id/registerPassword"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
             android:hint="Password"
             android:inputType="textPassword" />
 
-        <EditText
+        <com.magnet.magnetchat.ui.custom.FEditText
             android:id="@+id/registerRepeatPassword"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"
@@ -75,14 +75,14 @@
             android:hint="Password again"
             android:inputType="textPassword" />
 
-        <TextView
+        <com.magnet.magnetchat.ui.custom.FTextView
             android:id="@+id/registerSaveBtn"
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="15dp"
-            android:text="Register" />
+            android:text="Register"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ProgressBar
             android:id="@+id/registerProgress"
@@ -91,14 +91,14 @@
             android:layout_marginTop="15dp"
             android:visibility="gone" />
 
-        <TextView
+        <com.magnet.magnetchat.ui.custom.FTextView
             android:id="@+id/registerReturnBtn"
             style="@style/ButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="25dp"
-            android:text="Return to Sign in" />
+            android:text="Return to Sign in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
 </ScrollView>

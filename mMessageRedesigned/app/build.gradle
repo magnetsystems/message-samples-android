@@ -48,8 +48,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile ("com.magnet.max.android:magnet-max-android-sdk:2.4.0@aar") {
-        transitive=true
+    compile('com.magnet.max.android:magnet-max-android-sdk:2.4.0@aar') {
+        transitive = true
     }
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
@@ -63,4 +63,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.jakewharton:butterknife:5.1.1'
 }

@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,10 +12,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.magnet.magnetchat.helpers.SnackBarHelper;
+import com.magnet.magnetchat.util.AppLogger;
+
+import butterknife.ButterKnife;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,6 +28,19 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     private AlertDialog infoDialog;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getLayoutResource());
+        ButterKnife.inject(this);
+    }
+
+    /**
+     * Method which provide to create the Dialog
+     *
+     * @param title   dialog title
+     * @param message dialog message
+     */
     protected void showInfoDialog(String title, String message) {
         if (infoDialog == null) {
             AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
@@ -43,79 +58,57 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         infoDialog.show();
     }
 
-    protected String getFieldText(int fieldId) {
-        EditText editText = (EditText) findViewById(fieldId);
-        if (editText != null) {
-            return editText.getText().toString().trim();
-        }
-        return null;
-    }
-
-    protected void clearFieldText(int fieldId) {
-        EditText editText = (EditText) findViewById(fieldId);
-        if (editText != null) {
-            editText.setText("");
-        }
-    }
-
-    protected boolean getCheckBoxStatus(int checkBoxId) {
-        CheckBox checkBox = (CheckBox) findViewById(checkBoxId);
-        if (checkBox != null) {
-            return checkBox.isChecked();
-        }
-        return false;
-    }
-
+    /**
+     * Method which provide the keyboard hiding
+     */
     public void hideKeyboard() {
         InputMethodManager inputMethod = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethod.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
     }
 
+    /**
+     * Method which provide the show message in the snack bar
+     *
+     * @param message curren message
+     */
     public void showMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        SnackBarHelper.show(message);
     }
 
+    /**
+     * Method whihc provide the show message form the resource
+     *
+     * @param stringRes current resource ID
+     */
     public void showMessage(int stringRes) {
         showMessage(getString(stringRes));
     }
 
-    public void setText(int textViewId, String text) {
-        TextView textView = (TextView) findViewById(textViewId);
-        if (textView != null) {
-            textView.setText(text);
-            textView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    public void setText(int textViewId, int stringRes) {
-        setText(textViewId, getString(stringRes));
-    }
-
-    public void setTextTemporary(final int textViewId, String text, final boolean visible) {
-        setText(textViewId, text);
-        MAIN_THREAD_HANDLER.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setText(textViewId, "");
-                if (!visible) {
-                    findViewById(textViewId).setVisibility(View.GONE);
-                }
-            }
-        }, 10 * 1000);
-    }
-
     @Override
     protected void onPause() {
+        //Dismiss dialog on pause
         if (infoDialog != null && infoDialog.isShowing()) {
             infoDialog.dismiss();
         }
         super.onPause();
     }
 
+    /**
+     * Method which provide the string checking
+     *
+     * @param str current string value
+     * @return checking value
+     */
     protected boolean checkString(String str) {
         return str != null && !str.isEmpty();
     }
 
+    /**
+     * Method which provide the checking of strings
+     *
+     * @param str current strings
+     * @return checking value
+     */
     protected boolean checkStrings(String... str) {
         for (String string : str) {
             if (!checkString(string)) {
@@ -124,8 +117,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
         return true;
     }
-
-
 
     /**
      * Interface which provide the doing some action inside the Handler thread
@@ -204,7 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param data current intent
      */
     protected void onActivityResult(int requestCode, Intent data) {
-
+        AppLogger.info(this, String.format("%d", requestCode), data.toString());
     }
 
     /**
@@ -285,4 +276,11 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
             }
         }, (int) (delayTime * 1000));
     }
+
+    /**
+     * Method which provide the get layout resource
+     *
+     * @return current layout id
+     */
+    protected abstract int getLayoutResource();
 }

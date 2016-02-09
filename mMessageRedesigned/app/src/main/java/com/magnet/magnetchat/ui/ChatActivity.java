@@ -25,15 +25,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.application.CurrentApplication;
-import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.PermissionHelper;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
+import com.magnet.magnetchat.ui.custom.FEditText;
+import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
@@ -46,6 +48,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.List;
 
+import butterknife.InjectView;
 import nl.changer.polypicker.Config;
 import nl.changer.polypicker.ImagePickerActivity;
 
@@ -75,10 +78,20 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private ProgressBar chatMessageProgress;
 
+    @InjectView(R.id.chatMessageField)
+    FEditText editMessage;
+    @InjectView(R.id.chatSuppliers)
+    FTextView textChatSupliers;
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_chat;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -120,7 +133,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chatSendBtn:
-                String text = getFieldText(R.id.chatMessageField);
+                String text = editMessage.getStringValue();
                 if (text != null && !text.isEmpty()) {
                     sendText(text);
                 }
@@ -322,7 +335,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void sendLocation() {
-        if(!Utils.isGooglePlayServiceInstalled(this)) {
+        if (!Utils.isGooglePlayServiceInstalled(this)) {
             showMessage("It seems Google play services is not available, can't use location API");
             return;
         }
@@ -377,7 +390,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             setTitle("Group");
             findViewById(R.id.chatSuppliers).setVisibility(View.VISIBLE);
             String suppliers = UserHelper.getDisplayNames(suppliersList);
-            setText(R.id.chatSuppliers, "To: " + suppliers);
+            textChatSupliers.setText(String.format("To: %s", suppliers));
         }
     }
 
@@ -387,7 +400,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             chatMessageProgress.setVisibility(View.GONE);
             ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
-                clearFieldText(R.id.chatMessageField);
+                editMessage.clear();
             }
             updateList();
         }
@@ -490,16 +503,16 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             @Override
             public void onSuccess(ListResult<User> userListResult) {
                 boolean subscribersUpdated = userListResult.items.size() != currentConversation.getSuppliersList().size();
-                if(!subscribersUpdated) {
+                if (!subscribersUpdated) {
                     for (User u : userListResult.items) {
-                        if(null == currentConversation.getSupplier(u.getUserIdentifier())) {
+                        if (null == currentConversation.getSupplier(u.getUserIdentifier())) {
                             subscribersUpdated = true;
                             break;
                         }
                     }
                 }
 
-                if(subscribersUpdated) {
+                if (subscribersUpdated) {
                     Logger.debug("channel subscribers", "success. channel " + channel.getName() + " : " + userListResult.items);
                     for (User user : userListResult.items) {
                         if (!user.getUserIdentifier().equals(User.getCurrentUserId())) {

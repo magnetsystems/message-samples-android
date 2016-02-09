@@ -54,11 +54,14 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     private String username;
     private ConversationsAdapter adapter;
 
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_home;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
         if (User.getCurrentUser() != null) {
             username = User.getCurrentUser().getDisplayName();
         }
@@ -130,7 +133,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void getConversations(boolean showProgress) {
-        if(showProgress) {
+        if (showProgress) {
             mProgressBar.setVisibility(View.VISIBLE);
         }
         ChannelHelper.getInstance().readConversations(readChannelInfoListener);
@@ -289,7 +292,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         public void onSuccessFinish(Conversation lastConversation) {
             finishGetChannels();
 
-            if(null != lastConversation) {
+            if (null != lastConversation) {
                 showAllConversations();
             } else {
                 Log.w(TAG, "No conversation is available");

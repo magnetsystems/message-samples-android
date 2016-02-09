@@ -30,17 +30,19 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     private enum ActivityMode {MODE_TO_CREATE, MODE_TO_ADD_USER}
 
-    ;
-
     private UsersAdapter adapter;
     private ListView userList;
     private ActivityMode currentMode;
     private Conversation conversation;
 
     @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_choose_user;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choose_user);
         userList = (ListView) findViewById(R.id.chooseUserList);
         userList.setOnItemClickListener(this);
         SearchView search = (SearchView) findViewById(R.id.chooseUserSearch);

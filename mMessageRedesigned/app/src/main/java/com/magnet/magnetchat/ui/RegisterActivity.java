@@ -8,14 +8,32 @@ import com.google.gson.Gson;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
+import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.max.android.ApiError;
 
+import butterknife.InjectView;
+
 public class RegisterActivity extends BaseActivity {
+
+    @InjectView(R.id.registerFirstName)
+    FEditText editFirstName;
+    @InjectView(R.id.registerLastName)
+    FEditText editLastName;
+    @InjectView(R.id.registerEmail)
+    FEditText editEmail;
+    @InjectView(R.id.registerPassword)
+    FEditText editPassword;
+    @InjectView(R.id.registerRepeatPassword)
+    FEditText editRepeatPassword;
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_register;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
         setOnClickListeners(R.id.registerReturnBtn, R.id.registerSaveBtn);
     }
 
@@ -24,11 +42,13 @@ public class RegisterActivity extends BaseActivity {
         hideKeyboard();
         switch (v.getId()) {
             case R.id.registerSaveBtn:
-                String firstName = getFieldText(R.id.registerFirstName);
-                String lastName = getFieldText(R.id.registerLastName);
-                String email = getFieldText(R.id.registerEmail);
-                String password = getFieldText(R.id.registerPassword);
-                String passwordRepeat = getFieldText(R.id.registerRepeatPassword);
+
+                String firstName = editFirstName.getStringValue();
+                String lastName = editLastName.getStringValue();
+                String email = editEmail.getStringValue();
+                String password = editPassword.getStringValue();
+                String passwordRepeat = editRepeatPassword.getStringValue();
+
                 if (!checkStrings(firstName, lastName, email, password, passwordRepeat)) {
                     showInfoDialog(null, "Input all fields");
                     return;

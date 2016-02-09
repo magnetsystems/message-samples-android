@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.application.CurrentApplication;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.max.android.User;
@@ -19,9 +19,13 @@ public class DetailsActivity extends BaseActivity {
     private String channelName;
 
     @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_details;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
         channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
         if (channelName != null) {
             Conversation currentConversation = ChannelCacheManager.getInstance().getConversationByName(channelName);

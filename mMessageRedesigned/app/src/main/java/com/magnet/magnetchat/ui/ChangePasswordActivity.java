@@ -5,18 +5,32 @@ import android.view.View;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
+import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.max.android.auth.model.UpdateProfileRequest;
 
+import butterknife.InjectView;
+
 public class ChangePasswordActivity extends BaseActivity {
+
+    @InjectView(R.id.changePasswordOld)
+    FEditText editOldPassword;
+    @InjectView(R.id.changePasswordNew)
+    FEditText editNewPassword;
+    @InjectView(R.id.changePasswordRepeat)
+    FEditText editNewPasswordRepeat;
+
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_change_password;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_change_password);
         setOnClickListeners(R.id.changePasswordSubmitBtn);
     }
 
@@ -26,9 +40,9 @@ public class ChangePasswordActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.changePasswordSubmitBtn:
                 setUpdateMode(true);
-                String oldPassword = getFieldText(R.id.changePasswordOld);
-                final String newPassword = getFieldText(R.id.changePasswordNew);
-                String newRepeat = getFieldText(R.id.changePasswordRepeat);
+                String oldPassword = editOldPassword.getStringValue();
+                final String newPassword = editNewPassword.getStringValue();
+                String newRepeat = editNewPasswordRepeat.getStringValue();
                 final String[] credence = SharedPreferenceManager.getInstance().readCredence();
                 if (checkStrings(oldPassword, newPassword, newRepeat)) {
                     if (!oldPassword.equals(credence[1])) {
