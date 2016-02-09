@@ -39,7 +39,8 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.magnet.magnetchat.ui.ChangePasswordActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
