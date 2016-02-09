@@ -64,6 +64,7 @@ public class LoginActivity extends BaseActivity {
 
                 private void handleError(String errorMessage) {
                     Logger.debug(TAG, "Failed to resume session due to ", errorMessage);
+                    changeLoginMode(false);
                 }
             });
         }

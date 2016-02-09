@@ -32,6 +32,9 @@
 
     <style name="EditFieldStyle" parent="Base.Widget.AppCompat.EditText">
         <item name="android:background">@drawable/backgrounf_edit_text</item>
+        <item name="android:textColor">@color/colorBGMainPrimaryText</item>
+        <item name="android:textColorHint">@color/colorBGMainHintText</item>
+        <item name="android:textSize">@dimen/text_15</item>
     </style>
 
     <style name="ButtonStyle">

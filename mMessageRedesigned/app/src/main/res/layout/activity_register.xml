@@ -15,25 +15,54 @@
         android:layout_height="wrap_content"
         android:background="@color/colorBGMain">
 
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical"-->
+        <!--app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">-->
+
+        <!--<ImageView-->
+        <!--android:layout_width="@dimen/dimen_50"-->
+        <!--android:layout_height="@dimen/dimen_50"-->
+        <!--android:src="@drawable/magnet_icon_white" />-->
+
+        <!--<com.magnet.magnetchat.ui.custom.FTextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/app_name"-->
+        <!--android:textColor="@color/colorBGMain50"-->
+        <!--android:textSize="@dimen/text_20"-->
+        <!--android:textStyle="bold" />-->
+        <!--</LinearLayout>-->
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_230"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginBottom="@dimen/dimen_10"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_marginRight="@dimen/dimen_10"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_collapseMode="pin">
 
             <ImageView
-                android:layout_width="@dimen/dimen_150"
-                android:layout_height="@dimen/dimen_150"
-                android:src="@drawable/magnet_icon_white" />
+                android:id="@+id/buttonBack"
+                android:layout_width="@dimen/dimen_30"
+                android:layout_height="@dimen/dimen_30"
+                android:background="@drawable/back_arrow_circled" />
 
             <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/dimen_40"
+                android:gravity="center"
+                android:text="Create account"
                 android:textColor="@color/colorBGMain50"
                 android:textSize="@dimen/text_20"
                 android:textStyle="bold" />
+
         </LinearLayout>
 
 
@@ -44,101 +73,143 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="25dp">
+            android:layout_height="wrap_content">
 
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:text="Enter your name" />
-
-            <com.magnet.magnetchat.ui.custom.FEditText
-                android:id="@+id/registerFirstName"
-                style="@style/EditFieldStyle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="First name"
-                android:inputType="textCapWords" />
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="25dp">
 
-            <com.magnet.magnetchat.ui.custom.FEditText
-                android:id="@+id/registerLastName"
-                style="@style/EditFieldStyle"
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_10"
+                    android:text="Enter your name"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textStyle="bold" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/registerFirstName"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="First name"
+                    android:inputType="textCapWords" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/registerLastName"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:hint="Last name"
+                    android:inputType="textCapWords" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_10"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Enter your email address"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textStyle="bold" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/registerEmail"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Email Address"
+                    android:inputType="textEmailAddress" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_10"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Enter your password"
+                    android:textColor="@color/colorBGMainPrimaryText"
+                    android:textStyle="bold" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/registerPassword"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/registerRepeatPassword"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:ems="10"
+                    android:hint="Password again"
+                    android:inputType="textPassword" />
+
+                <!--<com.magnet.magnetchat.ui.custom.FTextView-->
+                <!--android:id="@+id/registerSaveBtn"-->
+                <!--style="@style/ButtonStyle"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="@dimen/dimen_15"-->
+                <!--android:text="Register"-->
+                <!--android:textColor="@color/colorBGMainPrimaryText"-->
+                <!--android:textStyle="bold" />-->
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/viewProgressLogin"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Last name"
-                android:inputType="textCapWords" />
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:focusableInTouchMode="true"
+                android:visibility="gone">
 
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="15dp"
-                android:text="Enter your email address" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
 
-            <com.magnet.magnetchat.ui.custom.FEditText
-                android:id="@+id/registerEmail"
-                style="@style/EditFieldStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Email Address"
-                android:inputType="textEmailAddress" />
+                    <ProgressBar
+                        style="@android:style/Widget.Holo.ProgressBar.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="5dp" />
 
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="15dp"
-                android:text="Enter your password" />
+                    <com.magnet.magnetchat.ui.custom.FTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Login in progress. Please wait..."
+                        android:textColor="@color/colorBGMainPrimaryText"
+                        android:textSize="@dimen/text_15" />
+                </LinearLayout>
 
-            <com.magnet.magnetchat.ui.custom.FEditText
-                android:id="@+id/registerPassword"
-                style="@style/EditFieldStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Password"
-                android:inputType="textPassword" />
+            </FrameLayout>
+        </FrameLayout>
 
-            <com.magnet.magnetchat.ui.custom.FEditText
-                android:id="@+id/registerRepeatPassword"
-                style="@style/EditFieldStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Password again"
-                android:inputType="textPassword" />
 
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:id="@+id/registerSaveBtn"
-                style="@style/ButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:text="Register"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ProgressBar
-                android:id="@+id/registerProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:visibility="gone" />
-
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:id="@+id/registerReturnBtn"
-                style="@style/ButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="Return to Sign in"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/registerSaveBtn"
+        android:layout_width="@dimen/dimen_60"
+        android:layout_height="@dimen/dimen_60"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/dimen_10"
+        android:background="@color/colorBGMain"
+        android:foregroundGravity="bottom"
+        android:src="@drawable/check_user_icon" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -12,6 +12,13 @@ import com.magnet.magnetchat.R;
  * Created by dlernatovich on 2/9/16.
  */
 public class SnackBarHelper {
+
+    /**
+     * Method which provide to show the SnackBar
+     *
+     * @param currentView base view
+     * @param message     snack bar message
+     */
     public static void show(View currentView, String message) {
         final Snackbar snackbar = Snackbar.make(currentView, message, Snackbar.LENGTH_LONG)
                 .setAction("Close", new View.OnClickListener() {
