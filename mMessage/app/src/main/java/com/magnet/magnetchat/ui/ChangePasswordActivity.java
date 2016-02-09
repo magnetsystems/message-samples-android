@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.preferences.UserPreference;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -29,14 +28,14 @@ public class ChangePasswordActivity extends BaseActivity {
                 String oldPassword = getFieldText(R.id.changePasswordOld);
                 final String newPassword = getFieldText(R.id.changePasswordNew);
                 String newRepeat = getFieldText(R.id.changePasswordRepeat);
-                final String[] credence = UserPreference.getInstance().readCredence();
+                //final String[] credence = UserPreference.getInstance().readCredence();
                 if (checkStrings(oldPassword, newPassword, newRepeat)) {
-                    if (!oldPassword.equals(credence[1])) {
-                        showDialog("Wrong password", "You input wrong password. Please, try again");
-                        return;
-                    }
+                    //if (!oldPassword.equals(credence[1])) {
+                    //    showDialog("Wrong password", "You input wrong password. Please, try again");
+                    //    return;
+                    //}
                     if (!newPassword.equals(newRepeat)) {
-                        showDialog("Wrong password", "Passwords do not match. Please, try again");
+                        showDialog("Wrong password", "Passwords do not match. Please try again");
                         return;
                     }
                     UpdateProfileRequest.Builder builder = new UpdateProfileRequest.Builder();
@@ -45,7 +44,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         @Override
                         public void success(User user) {
                             setUpdateMode(false);
-                            UserPreference.getInstance().saveCredence(credence[0], newPassword);
+                            //UserPreference.getInstance().saveCredence(credence[0], newPassword);
                             showMessage("Password was successfully changed");
                             Logger.debug("change password", "success");
                             finish();
