@@ -28,15 +28,4 @@ public class SnackBarHelper {
         }
         snackbar.show();
     }
-
-    public static void show(View currentView, String message, String actionButtonText) {
-        Snackbar snackbar = Snackbar.make(currentView, message, Snackbar.LENGTH_LONG).setAction(actionButtonText, null);
-        View view = snackbar.getView();
-        TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
-        if (tv != null) {
-            tv.setTextColor(Color.WHITE);
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, currentView.getContext().getResources().getDimension(R.dimen.text_14));
-        }
-        snackbar.show();
-    }
 }
