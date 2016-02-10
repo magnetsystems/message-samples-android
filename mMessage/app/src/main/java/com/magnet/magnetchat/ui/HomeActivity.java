@@ -167,7 +167,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuHomeCreateConversation:
-                startActivity(ChooseUserActivity.getIntentToCreateChannel());
+                startActivity(new Intent(this, ChooseUserActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

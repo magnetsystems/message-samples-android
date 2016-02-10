@@ -14,6 +14,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.InternetConnection;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.ui.LoginActivity;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
@@ -54,7 +55,7 @@ public class CurrentApplication extends MultiDexApplication {
 
     public void messageNotification(String channelName, String fromUserName) {
         if (notification == null) {
-            PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(Intent.ACTION_MAIN)
+            PendingIntent intent = PendingIntent.getActivity(this, 0, new Intent(this, LoginActivity.class)
                             .addCategory(Intent.CATEGORY_DEFAULT)
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             .setPackage(this.getPackageName()),

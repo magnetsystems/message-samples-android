@@ -195,10 +195,6 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         userList.setAdapter(adapter);
     }
 
-    public static Intent getIntentToCreateChannel() {
-        return new Intent(CurrentApplication.getInstance(), ChooseUserActivity.class);
-    }
-
     public static Intent getIntentToAddUserToChannel(String channelName) {
         Intent intent = new Intent(CurrentApplication.getInstance(), ChooseUserActivity.class);
         intent.putExtra(TAG_ADD_USER_TO_CHANNEL, channelName);
