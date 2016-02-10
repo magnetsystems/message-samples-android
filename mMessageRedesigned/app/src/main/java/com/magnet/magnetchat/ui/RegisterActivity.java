@@ -72,9 +72,8 @@ public class RegisterActivity extends BaseActivity {
 
         @Override
         public void onSuccess() {
-            startActivity(HomeActivity.class);
             changeLoginMode(false);
-            finish();
+            startActivity(HomeActivity.class, true);
         }
 
         @Override
