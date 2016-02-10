@@ -51,14 +51,14 @@ public class CustomSearchView extends SearchView {
             searchPlate.setTypeface(TypeFaceManager.getInstance().getBarriolFont());
             searchPlate.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
-            LinearLayout editFrame = (LinearLayout) findViewById(searchEditFrameID);
-            editFrame.setBackgroundResource(R.drawable.background_edit_text_small);
+//            LinearLayout editFrame = (LinearLayout) findViewById(searchEditFrameID);
+//            editFrame.setBackgroundResource(R.drawable.background_edit_text_small);
 
 
-            Field searchField = SearchView.class.getDeclaredField("mCloseButton");
-            searchField.setAccessible(true);
-            ImageView closeBtn = (ImageView) searchField.get(this);
-            closeBtn.setImageResource(R.drawable.ic_close_icon_small);
+//            Field searchField = SearchView.class.getDeclaredField("mCloseButton");
+//            searchField.setAccessible(true);
+//            ImageView closeBtn = (ImageView) searchField.get(this);
+//            closeBtn.setImageResource(R.drawable.ic_close_icon_small);
 
             ImageView searchButton = (ImageView) findViewById(searchIconID);
             searchButton.setImageResource(R.drawable.ic_search_blue);
