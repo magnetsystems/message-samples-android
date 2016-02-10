@@ -70,4 +70,13 @@
         <item name="android:textSize">@dimen/text_15</item>
     </style>
 
+    <style name="style_textview_h1">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorBGMain</item>
+        <item name="android:textSize">@dimen/text_20</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

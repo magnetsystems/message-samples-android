@@ -34,13 +34,8 @@
                 android:visibility="gone" />
 
             <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
                 android:text="Register a new account"
-                android:textColor="@color/colorBGMain"
-                android:textSize="@dimen/text_20"
-                android:textStyle="bold" />
+                style="@style/style_textview_h1" />
 
         </LinearLayout>
 

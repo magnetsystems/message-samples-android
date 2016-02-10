@@ -3,16 +3,14 @@ package com.magnet.magnetchat.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.application.CurrentApplication;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
@@ -43,6 +41,9 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setOnClickListeners(R.id.registerSaveBtn);
+
         userList = (ListView) findViewById(R.id.chooseUserList);
         userList.setOnItemClickListener(this);
         SearchView search = (SearchView) findViewById(R.id.chooseUserSearch);
@@ -62,20 +63,18 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.registerSaveBtn:
+                onAddUserPressed();
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         adapter.setSelectUser(view, position);
-//        switch (currentMode) {
-//            case MODE_TO_ADD_USER:
-//                addUserToChannel(selectedUser);
-//                break;
-//            case MODE_TO_CREATE:
-//                startActivity(ChatActivity.getIntentForNewChannel(selectedUser.getUserIdentifier()));
-//                finish();
-//                break;
-//        }
     }
 
     @Override
@@ -101,37 +100,28 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         return true;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_user, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuAddUserNext:
-                if (adapter != null && adapter.getSelectedUsers().size() > 0) {
-                    switch (currentMode) {
-                        case MODE_TO_ADD_USER:
-                            addUserToChannel(adapter.getSelectedUsers());
-                            break;
-                        case MODE_TO_CREATE:
-                            List<UserProfile> profileList = adapter.getSelectedUsers();
-                            String[] userIds = new String[profileList.size()];
-                            for (int i = 0; i < userIds.length; i++) {
-                                userIds[i] = profileList.get(i).getUserIdentifier();
-                            }
-                            startActivity(ChatActivity.getIntentForNewChannel(userIds));
-                            finish();
-                            break;
+    /**
+     * Method which prvide to create channel or add user
+     */
+    private void onAddUserPressed() {
+        if (adapter != null && adapter.getSelectedUsers().size() > 0) {
+            switch (currentMode) {
+                case MODE_TO_ADD_USER:
+                    addUserToChannel(adapter.getSelectedUsers());
+                    break;
+                case MODE_TO_CREATE:
+                    List<UserProfile> profileList = adapter.getSelectedUsers();
+                    String[] userIds = new String[profileList.size()];
+                    for (int i = 0; i < userIds.length; i++) {
+                        userIds[i] = profileList.get(i).getUserIdentifier();
                     }
-                } else {
-                    showMessage("Nobody was selected");
-                }
-                break;
+                    startActivity(ChatActivity.getIntentForNewChannel(userIds));
+                    finish();
+                    break;
+            }
+        } else {
+            showMessage("Nobody was selected");
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void addUserToChannel(final List<UserProfile> userList) {
@@ -139,13 +129,13 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         ChannelHelper.getInstance().addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
             @Override
             public void onSuccessAdded() {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 finish();
             }
 
             @Override
             public void onUserSetExists(String channelSetName) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 Conversation anotherConversation = ChannelCacheManager.getInstance().getConversationByName(channelSetName);
                 startActivity(ChatActivity.getIntentWithChannel(anotherConversation));
                 finish();
@@ -153,7 +143,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onWasAlreadyAdded() {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 showMessage("User was already added");
                 finish();
 
@@ -161,7 +151,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onFailure(Throwable throwable) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 showMessage("Can't add user to channel");
             }
         });
@@ -178,14 +168,14 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
                         users.remove(user);
                     }
                 }
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 Logger.debug("find users", "success");
                 updateList(users);
             }
 
             @Override
             public void failure(ApiError apiError) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.GONE);
+                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 showMessage("Can't find users");
                 Logger.error("find users", apiError);
             }

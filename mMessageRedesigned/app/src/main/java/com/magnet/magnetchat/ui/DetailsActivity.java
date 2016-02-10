@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ListView;
 
@@ -26,6 +27,10 @@ public class DetailsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
         if (channelName != null) {
             Conversation currentConversation = ChannelCacheManager.getInstance().getConversationByName(channelName);
