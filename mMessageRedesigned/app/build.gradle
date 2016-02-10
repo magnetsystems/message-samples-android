@@ -32,8 +32,17 @@ android {
         // Enabling multidex support.
         multiDexEnabled true
     }
+    signingConfigs {
+        release {
+            storeFile file("MMessageAppKey.jks")
+            storePassword "magnetwin123"
+            keyAlias "MMessageAppKey"
+            keyPassword "magnetwin123"
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
