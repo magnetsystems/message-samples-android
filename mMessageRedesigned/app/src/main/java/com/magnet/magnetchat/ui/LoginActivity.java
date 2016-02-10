@@ -135,16 +135,12 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void goToHomeActivity() {
-        Intent homeScreen = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(homeScreen);
-        this.finish();
+        startActivity(HomeActivity.class, true);
     }
 
     private void goToHomeActivity(boolean changeLoginMode) {
-        Intent homeScreen = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(homeScreen);
+        startActivity(HomeActivity.class, true);
         changeLoginMode(changeLoginMode);
-        this.finish();
     }
 
     private UserHelper.OnLoginListener loginListener = new UserHelper.OnLoginListener() {

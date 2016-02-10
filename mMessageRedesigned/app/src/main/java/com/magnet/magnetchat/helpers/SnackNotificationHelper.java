@@ -9,10 +9,9 @@ import android.widget.TextView;
 import com.magnet.magnetchat.R;
 
 /**
- * Created by dlernatovich on 2/9/16.
+ * Created by dlernatovich on 2/10/16.
  */
-public class SnackBarHelper {
-
+public class SnackNotificationHelper {
     /**
      * Method which provide to show the SnackBar
      *
@@ -26,7 +25,7 @@ public class SnackBarHelper {
                     public void onClick(View v) {
                     }
                 })
-                .setActionTextColor(Color.YELLOW);
+                .setActionTextColor(currentView.getResources().getColor(R.color.colorAccent));
         View view = snackbar.getView();
         TextView tv = (TextView) view.findViewById(android.support.design.R.id.snackbar_text);
         if (tv != null) {

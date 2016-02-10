@@ -13,7 +13,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBGMain">
+        android:background="@color/colorPrimary">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,15 +25,15 @@
             <ImageView
                 android:layout_width="@dimen/dimen_150"
                 android:layout_height="@dimen/dimen_150"
-                android:src="@drawable/magnet_icon_white" />
+                android:src="@drawable/magnet_icon_red" />
 
-            <com.magnet.magnetchat.ui.custom.FTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textColor="@color/colorBGMain50"
-                android:textSize="@dimen/text_20"
-                android:textStyle="bold" />
+            <!--<com.magnet.magnetchat.ui.custom.FTextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/app_name"-->
+            <!--android:textColor="@android:color/white"-->
+            <!--android:textSize="@dimen/text_20"-->
+            <!--android:textStyle="bold" />-->
         </LinearLayout>
 
 
@@ -56,13 +56,9 @@
                 android:orientation="vertical">
 
                 <com.magnet.magnetchat.ui.custom.FTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="@style/style_text_title"
                     android:layout_marginTop="@dimen/dimen_40"
-                    android:text="Sign in to your account"
-                    android:textColor="@color/colorBGMainPrimaryText"
-                    android:textSize="@dimen/text_17"
-                    android:textStyle="bold" />
+                    android:text="Sign in to your account" />
 
                 <com.magnet.magnetchat.ui.custom.FEditText
                     android:id="@+id/loginEmail"
@@ -73,10 +69,7 @@
                     android:layout_marginRight="@dimen/dimen_64"
                     android:layout_marginTop="@dimen/dimen_5"
                     android:hint="Email Address"
-                    android:inputType="textEmailAddress"
-                    android:textColor="@color/colorBGMainPrimaryText"
-                    android:textColorHint="@color/colorBGMainHintText"
-                    android:textSize="@dimen/text_15" />
+                    android:inputType="textEmailAddress" />
 
                 <com.magnet.magnetchat.ui.custom.FEditText
                     android:id="@+id/loginPassword"
@@ -88,10 +81,7 @@
                     android:layout_marginTop="@dimen/dimen_5"
                     android:ems="10"
                     android:hint="Password"
-                    android:inputType="textPassword"
-                    android:textColor="@color/colorBGMainPrimaryText"
-                    android:textColorHint="@color/colorBGMainHintText"
-                    android:textSize="@dimen/text_15" />
+                    android:inputType="textPassword" />
 
                 <com.magnet.magnetchat.ui.custom.CCheckBox
                     android:id="@+id/loginRemember"
@@ -107,17 +97,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_15"
-                    android:text="Sign in"
-                    android:textColor="@color/colorBGMain"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
-
-                <ProgressBar
-                    android:id="@+id/loginProgress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_20"
-                    android:visibility="gone" />
+                    android:text="Sign in" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView
                     android:id="@+id/loginCreateAccountBtn"
@@ -125,10 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_15"
-                    android:text="Create account"
-                    android:textColor="@color/colorBGMain"
-                    android:textSize="@dimen/text_16"
-                    android:textStyle="bold" />
+                    android:text="Create account" />
             </LinearLayout>
 
             <FrameLayout
@@ -153,11 +130,8 @@
                         android:layout_marginRight="5dp" />
 
                     <com.magnet.magnetchat.ui.custom.FTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Login in progress. Please wait..."
-                        android:textColor="@color/colorBGMainPrimaryText"
-                        android:textSize="@dimen/text_15" />
+                        style="@style/style_text_default"
+                        android:text="Login in progress. Please wait..." />
                 </LinearLayout>
 
             </FrameLayout>

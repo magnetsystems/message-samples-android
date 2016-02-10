@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
@@ -31,6 +31,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
+import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
@@ -143,8 +144,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 
-            final SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-            search.setIconified(false);
+            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menu_search).getActionView();
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
@@ -165,12 +165,11 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
             search.setOnCloseListener(new SearchView.OnCloseListener() {
                 @Override
                 public boolean onClose() {
-                    showAllConversations();
                     search.onActionViewCollapsed();
+                    showAllConversations();
                     return true;
                 }
             });
-
         }
 
         return true;

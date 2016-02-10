@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#607d8b</color>
-    <color name="colorPrimaryDark">#37474f</color>
-    <color name="colorAccent">#607d8b</color>
-    <color name="messageBackgroundFromMe">#de607d8b</color>
+    <color name="colorPrimary">#f5f5f5</color>
+    <color name="colorPrimaryDark">#979797</color>
+    <color name="colorAccent">#517daa</color>
+    <color name="messageBackgroundFromMe">#517daa</color>
     <color name="messageBackgroundToMe">#e6e6e6</color>
-    <color name="buttonsTextColor">#de607d8b</color>
+    <color name="buttonsTextColor">#517daa</color>
     <color name="itemSelected">#c3c3c3</color>
     <color name="itemNotSelected">#fff</color>
 
     <!--BLUE GRAY-->
-    <color name="colorBGMain">#607d8b</color>
-    <color name="colorBGMainPrimaryText">#de607d8b</color>
-    <color name="colorBGMainSecondaryText">#8a607d8b</color>
-    <color name="colorBGMainHintText">#61607d8b</color>
-    <color name="colorBGMain50">#eceff1</color>
-    <color name="colorBGMain100">#cfd8dc</color>
-    <color name="colorBGMain200">#b0bec5</color>
-    <color name="colorBGMain300">#90a4ae</color>
-    <color name="colorBGMain400">#78909c</color>
-    <color name="colorBGMain500">#607d8b</color>
-    <color name="colorBGMain600">#546e7a</color>
-    <color name="colorBGMain700">#455a64</color>
-    <color name="colorBGMain800">#37474f</color>
-    <color name="colorBGMain900">#263238</color>
+    <color name="colorBGMain">#517daa</color>
+    <color name="colorBGMainPrimaryText">#517daa</color>
+    <color name="colorBGMainSecondaryText">#8e517daa</color>
+    <color name="colorBGMainHintText">#51517daa</color>
+    <color name="colorLightGray">#cccccc</color>
 </resources>

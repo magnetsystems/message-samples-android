@@ -1,11 +1,11 @@
 package com.magnet.magnetchat.ui.custom;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.CheckBox;
 
-import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.TypeFaceManager;
 
 /**
@@ -31,7 +31,7 @@ public class CCheckBox extends CheckBox {
         if (this.isInEditMode()) {
             return;
         }
-        setTextColor(getResources().getColor(R.color.colorBGMain));
+        setTextColor(Color.BLACK);
         Typeface typeface = this.getTypeface();
         if (typeface != null && typeface.isBold()) {
             this.setTypeface(getBoldTypeface());

@@ -13,7 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.magnet.magnetchat.helpers.SnackBarHelper;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.AppLogger;
 
 import butterknife.ButterKnife;
@@ -73,7 +73,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      */
     public void showMessage(String message) {
         if (getBaseViewID() != -1) {
-            SnackBarHelper.show(getBaseView(), message);
+            SnackNotificationHelper.show(getBaseView(), message);
         }
     }
 
@@ -105,7 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         for (String str : message) {
             messages.append(String.format("%s\n", str));
         }
-        SnackBarHelper.show(getBaseView(), messages.toString().trim());
+        SnackNotificationHelper.show(getBaseView(), messages.toString().trim());
     }
 
     /**
@@ -197,7 +197,22 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param activtyClass activity which should be starting
      */
     protected void startActivity(Class activtyClass) {
+//        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
         startActivity(new Intent(this, activtyClass));
+    }
+
+    /**
+     * Method which provide starting the Activity
+     *
+     * @param activtyClass activity which should be starting
+     */
+    protected void startActivity(Class activtyClass, boolean isNeedClear) {
+//        Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP
+        Intent intent = new Intent(this, activtyClass);
+        if (isNeedClear) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        }
+        startActivity(intent);
     }
 
     //====================ACTIVITY FOR RESULT METHODS====================

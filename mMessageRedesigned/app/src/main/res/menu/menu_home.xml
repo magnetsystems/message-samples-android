@@ -10,7 +10,7 @@
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_search_tabbar"
-        android:title="Find messages"
-        app:actionViewClass="android.support.v7.widget.SearchView"
-        app:showAsAction="always|withText|collapseActionView" />
+        android:title="Search messages"
+        app:actionViewClass="com.magnet.magnetchat.ui.custom.CustomSearchView"
+        app:showAsAction="ifRoom" />
 </menu>
