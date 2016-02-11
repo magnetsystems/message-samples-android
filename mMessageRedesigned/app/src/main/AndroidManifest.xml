@@ -48,7 +48,8 @@
         <activity
             android:name="com.magnet.magnetchat.ui.ChooseUserActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.magnet.magnetchat.ui.ChatActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
