@@ -73,7 +73,7 @@ public class RegisterActivity extends BaseActivity {
         @Override
         public void onSuccess() {
             changeLoginMode(false);
-            startActivity(HomeActivity.class, true);
+            startActivity(EditProfileActivity.class, true);
         }
 
         @Override

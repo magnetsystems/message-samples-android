@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@android:color/white"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    style="@style/style_textview_h1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="My Profile" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:id="@+id/buttonClose"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:padding="@dimen/dimen_10"
+                    android:text="Close" />
+            </FrameLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageAvatar"
+                android:layout_width="@dimen/dimen_60"
+                android:layout_height="@dimen/dimen_60"
+                android:src="@mipmap/ic_user" />
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                style="@style/ButtonStyle"
+                android:id="@+id/buttonChoosePicture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Change profile picture" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_15"
+            android:layout_marginTop="@dimen/dimen_15">
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:id="@+id/textEmail"
+                style="@style/style_text_default"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="android@gmail.com" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_marginRight="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                style="@style/style_text_default"
+                android:layout_width="@dimen/dimen_0"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="First name" />
+
+            <com.magnet.magnetchat.ui.custom.FEditText
+                android:id="@+id/editFirstName"
+                style="@style/EditFieldStyle"
+                android:layout_width="@dimen/dimen_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="Input your name here"
+                android:text="Android" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_10"
+            android:layout_marginRight="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                style="@style/style_text_default"
+                android:layout_width="@dimen/dimen_0"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Last name" />
+
+            <com.magnet.magnetchat.ui.custom.FEditText
+                android:id="@+id/editLastName"
+                style="@style/EditFieldStyle"
+                android:layout_width="@dimen/dimen_0"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:hint="Input your last name here"
+                android:text="User" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_30">
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:id="@+id/buttonSaveChanges"
+                style="@style/ButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Save changes" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_please_wait" />
+
+</FrameLayout>

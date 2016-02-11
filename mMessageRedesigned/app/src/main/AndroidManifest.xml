@@ -60,6 +60,10 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait" />
         <activity
+            android:name="com.magnet.magnetchat.ui.EditProfileActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="nl.changer.polypicker.ImagePickerActivity"
             android:theme="@style/AppTheme" />
 

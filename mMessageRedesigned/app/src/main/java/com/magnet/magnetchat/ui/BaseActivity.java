@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 
 import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.AppLogger;
@@ -226,6 +228,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         startActivityForResult(new Intent(this, activtyClass), ON_BASE_ACTIVITY_RESULTS);
     }
 
+    /**
+     * Method which provide starting the Activity for results
+     *
+     * @param activtyClass activity which should be starting
+     */
+    protected void startActivityForResults(Intent activtyClass) {
+        startActivityForResult(activtyClass, ON_BASE_ACTIVITY_RESULTS);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
@@ -331,4 +342,18 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @return current layout id
      */
     protected abstract int getLayoutResource();
+
+    /**
+     * Method which provide the set image by source path
+     *
+     * @param imageView image view
+     * @param path      image path
+     */
+    protected void setImageBySource(ImageView imageView, String path) {
+        try {
+            imageView.setImageBitmap(BitmapFactory.decodeFile(path));
+        } catch (Exception ex) {
+            AppLogger.error(this, ex.toString());
+        }
+    }
 }

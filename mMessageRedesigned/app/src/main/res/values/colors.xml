@@ -15,4 +15,5 @@
     <color name="colorBGMainSecondaryText">#8e517daa</color>
     <color name="colorBGMainHintText">#51517daa</color>
     <color name="colorLightGray">#cccccc</color>
+    <color name="colorDarkTransparent">#88000000</color>
 </resources>
