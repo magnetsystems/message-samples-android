@@ -2,7 +2,6 @@
 <resources>
     <string-array name="entries_home_drawer">
         <item>Home</item>
-        <item>Events</item>
         <item>Sign out</item>
     </string-array>
 </resources>

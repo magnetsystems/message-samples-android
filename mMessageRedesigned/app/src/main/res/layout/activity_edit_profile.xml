@@ -46,12 +46,10 @@
             android:layout_margin="@dimen/dimen_10"
             android:orientation="horizontal">
 
-            <com.magnet.magnetchat.ui.custom.RoundedImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageAvatar"
-                style="@style/styleCropImageCenter"
                 android:layout_width="@dimen/dimen_60"
-                android:layout_height="@dimen/dimen_60"
-                android:src="@mipmap/ic_user" />
+                android:layout_height="@dimen/dimen_60" />
 
             <com.magnet.magnetchat.ui.custom.FTextView
                 android:id="@+id/buttonChoosePicture"

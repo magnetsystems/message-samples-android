@@ -12,10 +12,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import android.widget.TextView;
 import butterknife.OnClick;
+import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
@@ -25,6 +28,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.magnetchat.util.CircleTransform;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
@@ -33,6 +37,7 @@ import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
+import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -64,6 +69,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
+
+    @InjectView(R.id.llUserProfile)
+    LinearLayout llUserProfile;
+
+    @InjectView(R.id.ivUserAvatar) CircleImageView ivUserAvatar;
 
     private User currentUser;
 
@@ -104,6 +114,29 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         listHomeDrawer.setOnItemClickListener(menuClickListener);
 
         setFragment(AppFragment.HOME);
+
+        Glide.with(this).load(User.getCurrentUser().getAvatarUrl()).placeholder(R.mipmap.ic_user).centerCrop().into(ivUserAvatar);
+    }
+
+    @OnClick({R.id.llPrimary, R.id.ivPrimaryBackground})
+    public void onPrimaryFrameClick(View v) {
+        //Log.d(TAG, "------------------------ clicked " + v);
+        if(null != primaryChannel) {
+            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(primaryChannel.getChannel().getName())));
+        }
+    }
+
+    @OnClick({R.id.llSecondary, R.id.ivSecondaryBackground})
+    public void onSecondaryFrameClick(View v) {
+        //Log.d(TAG, "------------------------ clicked " + v);
+        if(null != primaryChannel) {
+            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
+        }
+    }
+
+    @OnClick(R.id.llUserProfile)
+    public void onEditUserProfileClick(View v) {
+        startActivity(new Intent(this, EditProfileActivity.class));
     }
 
     private void loadHighlightedChannel(final String tag) {
@@ -220,9 +253,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             case HOME:
                 viewEvents.setVisibility(View.VISIBLE);
                 break;
-            case EVENTS:
-                viewEvents.setVisibility(View.GONE);
-                break;
+            //case EVENTS:
+            //    viewEvents.setVisibility(View.GONE);
+            //    break;
         }
         replace(FragmentFactory.getFragment(fragment, this), R.id.container);
     }
@@ -230,22 +263,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     public void onReceiveFragmentEvent(Event event) {
 
-    }
-
-    @OnClick({R.id.llPrimary, R.id.ivPrimaryBackground})
-    public void onPrimaryFrameClick(View v) {
-        Log.d(TAG, "------------------------ clicked " + v);
-        if(null != primaryChannel) {
-            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(primaryChannel.getChannel().getName())));
-        }
-    }
-
-    @OnClick({R.id.llSecondary, R.id.ivSecondaryBackground})
-    public void onSecondaryFrameClick(View v) {
-        Log.d(TAG, "------------------------ clicked " + v);
-        if(null != primaryChannel) {
-            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
-        }
     }
 
     /**
@@ -259,10 +276,10 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                 case 0:
                     setFragment(AppFragment.HOME);
                     break;
+                //case 1:
+                //    setFragment(AppFragment.EVENTS);
+                //    break;
                 case 1:
-                    setFragment(AppFragment.EVENTS);
-                    break;
-                case 2:
                     UserHelper.logout(logoutListener);
                     break;
                 default:

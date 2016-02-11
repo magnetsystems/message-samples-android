@@ -32,6 +32,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/llUserProfile"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginBottom="@dimen/dimen_5"
@@ -40,12 +41,11 @@
                 android:layout_marginTop="@dimen/dimen_5"
                 android:orientation="horizontal">
 
-                <ImageView
-                    style="@style/styleFitImageCenter"
-                    android:layout_width="@dimen/dimen_0"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:src="@mipmap/ic_user" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivUserAvatar"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_weight="1" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView
                     android:id="@+id/textUserName"

@@ -2,28 +2,34 @@ package com.magnet.magnetchat.ui.activities;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.magnetchat.util.CircleTransform;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.max.android.auth.model.UpdateProfileRequest;
 
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Artli_000 on 11.02.2016.
  */
 public class EditProfileActivity extends BaseActivity {
+    private final static String TAG = EditProfileActivity.class.getSimpleName();
 
     private static final int RESULT_LOAD_IMAGE = 1;
     @InjectView(R.id.buttonClose)
@@ -43,8 +49,7 @@ public class EditProfileActivity extends BaseActivity {
     @InjectView(R.id.viewProgress)
     View viewProgress;
 
-    @InjectView(R.id.imageAvatar)
-    ImageView imageViewAvatar;
+    @InjectView(R.id.imageAvatar) CircleImageView imageViewAvatar;
 
     private User currentUser;
 
@@ -68,6 +73,8 @@ public class EditProfileActivity extends BaseActivity {
                 buttonChoosePicture);
 
         onUserUpdate();
+
+        Glide.with(this).load(User.getCurrentUser().getAvatarUrl()).placeholder(R.mipmap.ic_user).centerCrop().into(imageViewAvatar);
     }
 
     /**
@@ -161,6 +168,17 @@ public class EditProfileActivity extends BaseActivity {
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
             setImageBySource(imageViewAvatar, picturePath);
+
+            User.getCurrentUser().setAvatar(((BitmapDrawable) imageViewAvatar.getDrawable()).getBitmap(), null,
+                new ApiCallback<String>() {
+                    @Override public void success(String s) {
+                        Log.d(TAG, "Set user avatar successfuly");
+                    }
+
+                    @Override public void failure(ApiError apiError) {
+                        Log.e(TAG, "Failed to set user avatar", apiError);
+                    }
+                });
         }
     }
 }
