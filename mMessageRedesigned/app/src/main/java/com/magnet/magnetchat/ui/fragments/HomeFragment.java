@@ -245,7 +245,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 showAllConversations();
             } else {
                 Log.w(TAG, "No conversation is available");
-                Toast.makeText(getActivity(), "No conversation is available", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity(), "No conversation is available", Toast.LENGTH_LONG).show();
             }
         }
 
