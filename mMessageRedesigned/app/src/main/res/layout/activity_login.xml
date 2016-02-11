@@ -9,36 +9,6 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_230"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
-
-            <ImageView
-                android:layout_width="@dimen/dimen_150"
-                android:layout_height="@dimen/dimen_150"
-                android:src="@drawable/magnet_icon_red" />
-
-            <!--<com.magnet.magnetchat.ui.custom.FTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/app_name"-->
-            <!--android:textColor="@android:color/white"-->
-            <!--android:textSize="@dimen/text_20"-->
-            <!--android:textStyle="bold" />-->
-        </LinearLayout>
-
-
-    </android.support.design.widget.AppBarLayout>
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,6 +24,12 @@
                 android:background="#fff"
                 android:gravity="center_horizontal|center_vertical"
                 android:orientation="vertical">
+
+                <ImageView
+                    android:layout_marginTop="@dimen/dimen_40"
+                    android:layout_width="@dimen/dimen_80"
+                    android:layout_height="@dimen/dimen_80"
+                    android:src="@drawable/small_logo"/>
 
                 <com.magnet.magnetchat.ui.custom.FTextView
                     style="@style/style_text_title"
@@ -96,7 +72,7 @@
                     style="@style/ButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_15"
+                    android:layout_marginTop="@dimen/dimen_25"
                     android:text="Sign in" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView

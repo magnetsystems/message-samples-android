@@ -5000,4 +5000,7 @@
     <dimen name="text_2498">2498sp</dimen>
     <dimen name="dimen_2499">2499dp</dimen>
     <dimen name="text_2499">2499sp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
 </resources>
