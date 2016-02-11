@@ -9,14 +9,14 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <android.support.v4.widget.NestedScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -84,36 +84,10 @@
                     android:layout_marginTop="@dimen/dimen_15"
                     android:text="Create account" />
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/viewProgressLogin"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:focusableInTouchMode="true"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <ProgressBar
-                        style="@android:style/Widget.Holo.ProgressBar.Large"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="5dp" />
-
-                    <com.magnet.magnetchat.ui.custom.FTextView
-                        style="@style/style_text_default"
-                        android:text="Login in progress. Please wait..." />
-                </LinearLayout>
-
-            </FrameLayout>
         </FrameLayout>
 
-    </android.support.v4.widget.NestedScrollView>
+        <include layout="@layout/layout_please_wait" />
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

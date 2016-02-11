@@ -54,6 +54,11 @@ public class EditProfileActivity extends BaseActivity {
     }
 
     @Override
+    protected int getBaseViewID() {
+        return R.id.main_content;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         currentUser = User.getCurrentUser();
@@ -93,7 +98,7 @@ public class EditProfileActivity extends BaseActivity {
             @Override
             public void success(User user) {
                 showProgress(false);
-                onBackPressed();
+                showMessage("You\'ve updated your profile");
             }
 
             @Override

@@ -26,8 +26,8 @@ public class LoginActivity extends BaseActivity {
     FEditText editEmail;
     @InjectView(R.id.loginPassword)
     FEditText editPassword;
-    @InjectView(R.id.viewProgressLogin)
-    View viewLoginProgress;
+    @InjectView(R.id.viewProgress)
+    View viewProgress;
 
     @Override
     protected int getLayoutResource() {
@@ -127,10 +127,10 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void changeLoginMode(boolean runLogining) {
-        if (runLogining) {
-            viewLoginProgress.setVisibility(View.VISIBLE);
+        if (runLogining == true) {
+            viewProgress.setVisibility(View.VISIBLE);
         } else {
-            viewLoginProgress.setVisibility(View.GONE);
+            viewProgress.setVisibility(View.GONE);
         }
     }
 

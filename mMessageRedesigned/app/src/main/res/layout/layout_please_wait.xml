@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorDarkTransparent"
-    android:focusableInTouchMode="true"
+    android:clickable="true"
     android:visibility="gone"
     tools:showIn="@layout/activity_edit_profile">
 
