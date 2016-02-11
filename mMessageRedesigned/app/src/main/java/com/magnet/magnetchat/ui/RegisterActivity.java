@@ -24,8 +24,8 @@ public class RegisterActivity extends BaseActivity {
     FEditText editPassword;
     @InjectView(R.id.registerRepeatPassword)
     FEditText editRepeatPassword;
-    @InjectView(R.id.viewProgressLogin)
-    View viewProgressRegister;
+    @InjectView(R.id.viewProgress)
+    View viewProgress;
 
     @Override
     protected int getLayoutResource() {
@@ -89,10 +89,11 @@ public class RegisterActivity extends BaseActivity {
     };
 
     private void changeLoginMode(boolean runRegister) {
+        hideKeyboard();
         if (runRegister) {
-            viewProgressRegister.setVisibility(View.VISIBLE);
+            viewProgress.setVisibility(View.VISIBLE);
         } else {
-            viewProgressRegister.setVisibility(View.GONE);
+            viewProgress.setVisibility(View.GONE);
         }
     }
 
