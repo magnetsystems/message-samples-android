@@ -112,7 +112,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void showLoginFailed() {
-        showMessage("Email or password is incorrect", "Please check your information and try again");
+        showMessage("Email or password is incorrect", "Please check them and try again");
         changeLoginMode(false);
     }
 
@@ -122,7 +122,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void showNoConnection() {
-        showMessage("No connection", "Please check your Internet connection and try again");
+        showMessage("No connection", "Check Internet connection and try again");
         changeLoginMode(false);
     }
 
