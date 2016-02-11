@@ -26,10 +26,11 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_marginTop="@dimen/dimen_40"
+                    style="@style/styleFitImageCenter"
                     android:layout_width="@dimen/dimen_80"
                     android:layout_height="@dimen/dimen_80"
-                    android:src="@drawable/small_logo"/>
+                    android:layout_marginTop="@dimen/dimen_40"
+                    android:src="@drawable/magnet_icon_red" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView
                     style="@style/style_text_title"
