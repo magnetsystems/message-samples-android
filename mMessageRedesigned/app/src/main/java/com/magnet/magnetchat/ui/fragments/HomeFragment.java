@@ -214,7 +214,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                     @Override
                     public void onFailure(Throwable throwable) {
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "Can't leave the conversation", Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getActivity(), "Can't leave the conversation", Toast.LENGTH_LONG).show();
                     }
                 });
                 leaveDialog.dismiss();
