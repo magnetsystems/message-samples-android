@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
@@ -29,6 +28,7 @@ import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -214,7 +214,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                     @Override
                     public void onFailure(Throwable throwable) {
                         mProgressBar.setVisibility(View.GONE);
-                        Toast.makeText(getActivity(), "Can't leave the conversation", Toast.LENGTH_LONG).show();
+                        Utils.showMessage(getActivity(), "Can't leave the conversation");
                     }
                 });
                 leaveDialog.dismiss();
@@ -245,7 +245,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 showAllConversations();
             } else {
                 Log.w(TAG, "No conversation is available");
-                Toast.makeText(getActivity(), "No conversation is available", Toast.LENGTH_LONG).show();
+                Utils.showMessage(getActivity(), "No conversation is available");
             }
         }
 
