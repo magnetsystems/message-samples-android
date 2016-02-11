@@ -130,7 +130,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 @Override
                 public boolean onQueryTextChange(String newText) {
                     if (newText.isEmpty()) {
-//                        hideKeyboard();
+                        hideKeyboard();
                         showAllConversations();
                     }
                     return false;
