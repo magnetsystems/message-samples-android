@@ -8,6 +8,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
 import com.magnet.magnetchat.ui.custom.FEditText;
+import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 
 import butterknife.InjectView;
@@ -61,13 +62,21 @@ public class RegisterActivity extends BaseActivity {
     private final UserHelper.OnRegisterListener onRegisterListener = new UserHelper.OnRegisterListener() {
         @Override
         public void onFailedRegistration(ApiError apiError) {
-            MagnetError error = new Gson().fromJson(apiError.getMessage(), MagnetError.class);
-            String message = null;
-            if (error != null) {
-                message = error.getErrorMessage();
+            try {
+                MagnetError error = new Gson().fromJson(apiError.getMessage(), MagnetError.class);
+                String message = null;
+                if (error != null) {
+                    message = error.getErrorMessage();
+                }
+                showMessage("Can't create account", message);
+                changeLoginMode(false);
+            } catch (Exception ex) {
+                AppLogger.error(this, ex.toString());
+                changeLoginMode(false);
+                showMessage("Error while user creating.\nPlease try again.");
+            } finally {
+                changeLoginMode(false);
             }
-            showMessage("Can't create account", message);
-            changeLoginMode(false);
         }
 
         @Override
@@ -78,13 +87,21 @@ public class RegisterActivity extends BaseActivity {
 
         @Override
         public void onFailedLogin(ApiError apiError) {
-            MagnetError error = new Gson().fromJson(apiError.getMessage(), MagnetError.class);
-            String message = null;
-            if (error != null) {
-                message = error.getErrorMessage();
+            try {
+                MagnetError error = new Gson().fromJson(apiError.getMessage(), MagnetError.class);
+                String message = null;
+                if (error != null) {
+                    message = error.getErrorMessage();
+                }
+                showMessage("Can't login", message);
+                changeLoginMode(false);
+            } catch (Exception e) {
+                AppLogger.error(this, e.toString());
+                changeLoginMode(false);
+                showMessage("Error while user creating.\nPlease try again.");
+            } finally {
+                changeLoginMode(false);
             }
-            showMessage("Can't login", message);
-            changeLoginMode(false);
         }
     };
 
