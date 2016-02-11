@@ -3,8 +3,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/menuChangePassword"
-            android:title="Change Password" />
+            android:id="@+id/menuHome"
+            android:title="Home" />
+        <item
+            android:id="@+id/menuEvents"
+            android:title="Events" />
         <item
             android:id="@+id/menuSignOut"
             android:title="Sign out" />
