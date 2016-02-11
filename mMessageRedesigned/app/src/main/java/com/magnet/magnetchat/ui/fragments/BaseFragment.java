@@ -1,17 +1,22 @@
 package com.magnet.magnetchat.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+
+import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 
 import butterknife.ButterKnife;
 
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
     protected View containerView;
+    private BaseActivityCallback baseActivityCallback;
 
     public BaseFragment() {
     }
@@ -70,4 +75,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         getActivity().startActivity(new Intent(getActivity(), activtyClass));
     }
 
+    /**
+     * Method which provide the keyboard hiding
+     */
+    public void hideKeyboard() {
+        InputMethodManager inputMethod = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethod.hideSoftInputFromWindow(getActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
+    }
+
+    public void setBaseActivityCallback(BaseActivityCallback baseActivityCallback) {
+        this.baseActivityCallback = baseActivityCallback;
+    }
 }

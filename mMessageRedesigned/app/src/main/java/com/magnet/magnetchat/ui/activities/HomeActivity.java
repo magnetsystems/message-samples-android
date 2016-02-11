@@ -14,19 +14,22 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.callbacks.BaseActivityCallback;
+import com.magnet.magnetchat.constants.AppFragment;
+import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.ui.fragments.HomeFragment;
+import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
-public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class HomeActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BaseActivityCallback {
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle toggle;
 
     private String username;
 
-    private HomeFragment homeFragment;
+    private AppFragment currentFragment;
 
     @Override
     protected int getLayoutResource() {
@@ -57,7 +60,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         TextView navigationName = (TextView) navigationView.getHeaderView(0).findViewById(R.id.homeUserName);
         navigationName.setText(username);
 
-        showHomeFragment();
+        setFragment(AppFragment.HOME);
     }
 
     @Override
@@ -98,7 +101,7 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menuHome:
-                showHomeFragment();
+                setFragment(AppFragment.HOME);
                 break;
             case R.id.menuEvents:
                 break;
@@ -113,17 +116,6 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void onClick(View v) {
 
-    }
-
-    private void replaceToFragment(Fragment fragment) {
-        replace(fragment, R.id.homeContent);
-    }
-
-    private void showHomeFragment() {
-        if (homeFragment == null) {
-            homeFragment = new HomeFragment();
-        }
-        replaceToFragment(homeFragment);
     }
 
     private UserHelper.OnLogoutListener logoutListener = new UserHelper.OnLogoutListener() {
@@ -145,4 +137,31 @@ public class HomeActivity extends BaseActivity implements NavigationView.OnNavig
         }
     };
 
+    /**
+     * method which provide the setting of the current fragment co container view
+     *
+     * @param fragment current fragment type
+     */
+    private void setFragment(AppFragment fragment) {
+        AppLogger.info(this, "setFragment: " + fragment + " : " + currentFragment);
+
+        if (fragment.equals(currentFragment)) {
+            return;
+        }
+
+        currentFragment = fragment;
+
+        switch (fragment) {
+            case HOME:
+                break;
+            case EVENTS:
+                break;
+        }
+        replace(FragmentFactory.getFragment(fragment, this), R.id.container);
+    }
+
+    @Override
+    public void onReceiveFragmentEvent(Event event) {
+
+    }
 }
