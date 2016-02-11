@@ -124,22 +124,8 @@ public class ChannelHelper {
                         for (int i = 0; i < channelDetails.size(); i++) {
                             final ChannelDetail channelDetail = channelDetails.get(i);
                             final MMXChannel channel = channelDetail.getChannel();
-                            final Conversation conversation = new Conversation();
+                            final Conversation conversation = new Conversation(channelDetail);
                             lastConversation = conversation;
-                            conversation.setChannel(channel);
-
-                            Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
-                            for (UserProfile up : channelDetail.getSubscribers()) {
-                                if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
-                                    conversation.addSupplier(up);
-                                }
-                            }
-
-                            Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
-                            for (MMXMessage mmxMessage : channelDetail.getMessages()) {
-                                conversation.addMessage(Message.createMessageFrom(mmxMessage));
-                            }
-
                             ChannelCacheManager.getInstance().addConversation(channel.getName(), conversation);
                         }
 

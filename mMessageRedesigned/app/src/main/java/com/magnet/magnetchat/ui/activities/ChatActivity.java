@@ -58,6 +58,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public static final String TAG = ChatActivity.class.getSimpleName();
 
     public static final String TAG_CHANNEL_NAME = "channelName";
+    public static final String TAG_CHANNEL_DETAIL = "channelDetail";
     public static final String TAG_CREATE_WITH_USER_ID = "createWithUserId";
     public static final String TAG_CREATE_NEW = "createNew";
 

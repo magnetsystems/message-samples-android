@@ -7,6 +7,7 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
+import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
@@ -41,6 +42,22 @@ public class Conversation {
     }
 
     public Conversation() {
+    }
+
+    public Conversation(ChannelDetail channelDetail) {
+        this.channel = channelDetail.getChannel();
+
+        Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
+        for (UserProfile up : channelDetail.getSubscribers()) {
+            if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
+                this.addSupplier(up);
+            }
+        }
+
+        Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
+        for (MMXMessage mmxMessage : channelDetail.getMessages()) {
+            this.addMessage(Message.createMessageFrom(mmxMessage));
+        }
     }
 
     private Map<String, UserProfile> getSuppliers() {
