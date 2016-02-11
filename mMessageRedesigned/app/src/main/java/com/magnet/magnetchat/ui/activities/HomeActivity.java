@@ -110,7 +110,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         MMXChannel.findByTags(new HashSet<String>(Arrays.asList(tag)), 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
             @Override public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
                 if(null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
-                    getChannelDetail(mmxChannelListResult.items.get(0), tag);
+                    MMXChannel channel = mmxChannelListResult.items.get(0);
+                    subscribeChannel(channel);
+                    getChannelDetail(channel, tag);
                 } else {
                     Log.w(TAG, "Couldn't find channel for tag " + tag);
                 }
@@ -148,6 +150,19 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                     Log.e(TAG, "Failed to load channel detail for channel " + channel);
                 }
             });
+    }
+
+    private void subscribeChannel(final MMXChannel channel) {
+        channel.subscribe(new MMXChannel.OnFinishedListener<String>() {
+            @Override public void onSuccess(String s) {
+                Log.d(TAG, "Subscribed to channel " + channel.getName());
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                Log.e(TAG, "Failed to subscribe channel " + channel.getName());
+            }
+        });
     }
 
     @Override
