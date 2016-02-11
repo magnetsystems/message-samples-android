@@ -26,6 +26,8 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     public static final String TAG_ADD_USER_TO_CHANNEL = "addUserToChannel";
 
+    private final String SEARCH_QUERY = "firstName:%s* OR lastName:%s*";
+
     private enum ActivityMode {MODE_TO_CREATE, MODE_TO_ADD_USER}
 
     private UsersAdapter adapter;
@@ -49,6 +51,14 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         SearchView search = (SearchView) findViewById(R.id.chooseUserSearch);
         search.setOnQueryTextListener(this);
         search.setOnCloseListener(this);
+        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    hideKeyboard();
+                }
+            }
+        });
         searchUsers("");
         currentMode = ActivityMode.MODE_TO_CREATE;
         String channelName = getIntent().getStringExtra(TAG_ADD_USER_TO_CHANNEL);
@@ -74,6 +84,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        hideKeyboard();
         adapter.setSelectUser(view, position);
     }
 
@@ -101,7 +112,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     }
 
     /**
-     * Method which prvide to create channel or add user
+     * Method which provide to create channel or add user
      */
     private void onAddUserPressed() {
         if (adapter != null && adapter.getSelectedUsers().size() > 0) {
@@ -159,7 +170,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     private void searchUsers(@NonNull String query) {
         findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
-        User.search("lastName:" + query + "*", 100, 0, "lastName:asc", new ApiCallback<List<User>>() {
+        User.search(String.format(SEARCH_QUERY, query, query), 100, 0, "lastName:asc", new ApiCallback<List<User>>() {
             @Override
             public void success(List<User> users) {
                 users.remove(User.getCurrentUser());
