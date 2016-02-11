@@ -19,10 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.magnet.magnetchat.ui.LoginActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:name=".ui.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,33 +28,38 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.magnet.magnetchat.ui.RegisterActivity"
+            android:name=".ui.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"/>
+        <activity
+            android:name=".ui.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="Register a new account"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.magnet.magnetchat.ui.HomeActivity"
+            android:name=".ui.HomeActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="com.magnet.magnetchat.ui.ChangePasswordActivity"
+            android:name=".ui.ChangePasswordActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="Change Password"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.magnet.magnetchat.ui.ChooseUserActivity"
+            android:name=".ui.ChooseUserActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.magnet.magnetchat.ui.ChatActivity"
+            android:name=".ui.ChatActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="Chat"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.magnet.magnetchat.ui.DetailsActivity"
+            android:name=".ui.DetailsActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait" />
         <activity
@@ -73,7 +76,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.magnet.magnetchat.receivers.WakeupReceiver"
+            android:name=".receivers.WakeupReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="MMX_WAKEUP_ACTION" />
