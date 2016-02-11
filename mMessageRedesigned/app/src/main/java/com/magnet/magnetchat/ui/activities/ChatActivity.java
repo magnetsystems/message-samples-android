@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui;
+package com.magnet.magnetchat.ui.activities;
 
 import android.Manifest;
 import android.app.Activity;

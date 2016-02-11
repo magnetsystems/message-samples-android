@@ -7,7 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.magnet.magnetchat.ui.LoginActivity;
+import com.magnet.magnetchat.ui.activities.LoginActivity;
 import com.magnet.mmx.client.api.MMXPushEvent;
 import com.magnet.mmx.protocol.PubSubNotification;
 

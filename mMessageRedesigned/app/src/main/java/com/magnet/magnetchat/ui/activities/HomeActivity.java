@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui;
+package com.magnet.magnetchat.ui.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.ui.fragments.HomeFragment;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 

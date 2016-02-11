@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui;
+package com.magnet.magnetchat.ui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;

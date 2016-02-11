@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui;
+package com.magnet.magnetchat.ui.fragments;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -24,6 +24,8 @@ import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.ui.activities.ChatActivity;
+import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;

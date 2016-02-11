@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui;
+package com.magnet.magnetchat.ui.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.View;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.ui.custom.FEditText;
+import com.magnet.magnetchat.ui.activities.BaseActivity;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
