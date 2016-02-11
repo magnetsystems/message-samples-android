@@ -12,21 +12,9 @@
     tools:context="com.magnet.magnetchat.ui.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
-    <ProgressBar
-        android:id="@+id/homeProgress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
-
-    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/swipeContainer"
+    <FrameLayout
+        android:id="@+id/homeContent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent" />
 
-        <ListView
-            android:id="@+id/homeConversationsList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>
