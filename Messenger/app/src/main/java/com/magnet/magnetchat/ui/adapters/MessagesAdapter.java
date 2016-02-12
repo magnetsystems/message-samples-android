@@ -46,6 +46,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         TextView delivered;
         ImageView image;
         Message message;
+        ImageView imageMyAvatar;
+        ImageView imageOtherAvatar;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -55,6 +57,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             this.image = (ImageView) itemView.findViewById(R.id.itemMessageImage);
             this.text = (TextView) itemView.findViewById(R.id.itemMessageText);
             this.delivered = (TextView) itemView.findViewById(R.id.itemMessageDelivered);
+            this.imageMyAvatar = (ImageView) itemView.findViewById(R.id.imageMyAvatar);
+            this.imageOtherAvatar = (ImageView) itemView.findViewById(R.id.imageOtherAvatar);
             this.image.setOnClickListener(this);
         }
 
@@ -201,8 +205,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     private void makeMessageToMe(ViewHolder viewHolder, Message message) {
+
+        viewHolder.imageMyAvatar.setVisibility(View.GONE);
+        viewHolder.imageOtherAvatar.setVisibility(View.VISIBLE);
+
         viewHolder.messageArea.setGravity(Gravity.LEFT | Gravity.START);
-        viewHolder.text.setBackgroundResource(R.drawable.out_message_gray_bg);
+        viewHolder.text.setBackgroundResource(R.drawable.bubble_odd);
         viewHolder.text.setTextColor(Color.BLACK);
         viewHolder.delivered.setVisibility(View.GONE);
         if (message.getSender() != null) {
@@ -212,8 +220,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     private void makeMessageFromMe(ViewHolder viewHolder, Message message) {
+
+        viewHolder.imageMyAvatar.setVisibility(View.VISIBLE);
+        viewHolder.imageOtherAvatar.setVisibility(View.GONE);
+
         viewHolder.messageArea.setGravity(Gravity.RIGHT | Gravity.END);
-        viewHolder.text.setBackgroundResource(R.drawable.in_message_bg);
+        viewHolder.text.setBackgroundResource(R.drawable.bubble);
         viewHolder.text.setTextColor(Color.WHITE);
         viewHolder.sender.setVisibility(View.GONE);
         if (message.isDelivered()) {

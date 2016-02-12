@@ -41,12 +41,20 @@
                 android:layout_marginTop="@dimen/dimen_5"
                 android:orientation="horizontal">
 
+                <View
+                    android:layout_width="@dimen/dimen_10"
+                    android:layout_height="match_parent" />
+
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivUserAvatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@mipmap/ic_user"
-                    android:layout_weight="1" />
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_user" />
+
+                <View
+                    android:layout_width="@dimen/dimen_10"
+                    android:layout_height="match_parent" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView
                     android:id="@+id/textUserName"
