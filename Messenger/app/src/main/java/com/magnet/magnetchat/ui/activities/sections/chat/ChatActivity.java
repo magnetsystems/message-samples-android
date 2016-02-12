@@ -94,6 +94,11 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     @Override
+    protected int getBaseViewID() {
+        return R.id.main_content;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
