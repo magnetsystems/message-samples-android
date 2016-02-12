@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
+import com.magnet.magnetchat.ui.activities.sections.splash.SplashActivity;
 import com.magnet.mmx.client.api.MMXPushEvent;
 import com.magnet.mmx.protocol.PubSubNotification;
 
@@ -27,7 +28,7 @@ public class WakeupReceiver extends BroadcastReceiver {
 
     private void showNotification(Context context, String title, String text) {
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, LoginActivity.class),
+                new Intent(context, SplashActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
         Notification note = new Notification.Builder(context)
                 .setAutoCancel(true)
