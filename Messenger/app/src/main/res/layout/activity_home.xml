@@ -45,6 +45,7 @@
                     android:id="@+id/ivUserAvatar"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:src="@mipmap/ic_user"
                     android:layout_weight="1" />
 
                 <com.magnet.magnetchat.ui.custom.FTextView

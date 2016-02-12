@@ -49,7 +49,8 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageAvatar"
                 android:layout_width="@dimen/dimen_60"
-                android:layout_height="@dimen/dimen_60" />
+                android:layout_height="@dimen/dimen_60"
+                android:src="@mipmap/ic_user"/>
 
             <com.magnet.magnetchat.ui.custom.FTextView
                 android:id="@+id/buttonChoosePicture"

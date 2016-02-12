@@ -72,7 +72,13 @@ public class EditProfileActivity extends BaseActivity {
 
         onUserUpdate();
 
-        Glide.with(this).load(User.getCurrentUser().getAvatarUrl()).placeholder(R.mipmap.ic_user).centerCrop().into(imageViewAvatar);
+        if(null != User.getCurrentUser().getAvatarUrl()) {
+            Glide.with(this)
+                .load(User.getCurrentUser().getAvatarUrl())
+                .placeholder(R.mipmap.ic_user)
+                .centerCrop()
+                .into(imageViewAvatar);
+        }
     }
 
     /**

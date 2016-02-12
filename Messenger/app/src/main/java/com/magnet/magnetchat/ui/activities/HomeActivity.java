@@ -120,7 +120,13 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             toolbar.setTitle(User.getCurrentUser().getDisplayName());
         }
 
-        Glide.with(this).load(User.getCurrentUser().getAvatarUrl()).placeholder(R.mipmap.ic_user).centerCrop().into(ivUserAvatar);
+        if(null != User.getCurrentUser().getAvatarUrl()) {
+            Glide.with(this)
+                .load(User.getCurrentUser().getAvatarUrl())
+                .placeholder(R.mipmap.ic_user)
+                .centerCrop()
+                .into(ivUserAvatar);
+        }
     }
 
     @OnClick({R.id.llPrimary, R.id.ivPrimaryBackground})
