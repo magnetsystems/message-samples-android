@@ -14,6 +14,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -21,34 +24,54 @@ import android.widget.SearchView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
+import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.ChannelDetail;
+import com.magnet.mmx.client.api.ChannelDetailOptions;
+import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class HomeFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
+    public static final String ASK_MAGNET = "askMagnet";
 
     private AlertDialog leaveDialog;
+
+    FrameLayout flPrimary;
+    FTextView tvPrimarySubscribers;
+
+    FrameLayout flSecondary;
 
     private ListView conversationsList;
     private ProgressBar mProgressBar;
     private SwipeRefreshLayout swipeContainer;
 
     private List<Conversation> conversations;
-    private String username;
     private ConversationsAdapter adapter;
+
+    private ChannelDetail primaryChannel;
+    private static final String PRIMARY_CHANNEL_TAG = "active";
+    private ChannelDetail secondaryChannel;
+    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
 
     @Override
     protected int getLayoutId() {
@@ -57,6 +80,12 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     protected void onCreateFragment(View containerView) {
+        if (!UserHelper.isMagnetEmployee()) {
+            loadMagnetSupportChannel();
+        }
+
+        loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
+
         mProgressBar = (ProgressBar) containerView.findViewById(R.id.homeProgress);
         conversationsList = (ListView) containerView.findViewById(R.id.homeConversationsList);
         conversationsList.setOnItemClickListener(this);
@@ -69,6 +98,20 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         });
         getConversations(true);
 
+        View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);
+        conversationsList.addHeaderView(header);
+        flPrimary = (FrameLayout) header.findViewById(R.id.flPrimary);
+        tvPrimarySubscribers = (FTextView) header.findViewById(R.id.tvPrimarySubscribers);
+        flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
+        flPrimary.setVisibility(View.GONE);
+        flSecondary.setVisibility(View.GONE);
+
+        LinearLayout llPrimary = (LinearLayout) header.findViewById(R.id.llPrimary);
+        ImageView ivPrimaryBackground = (ImageView) header.findViewById(R.id.ivPrimaryBackground);
+        LinearLayout llSecondary = (LinearLayout) header.findViewById(R.id.llSecondary);
+        ImageView ivSecondaryBackground = (ImageView) header.findViewById(R.id.ivSecondaryBackground);
+        setOnClickListeners(llPrimary, ivPrimaryBackground, llSecondary, ivSecondaryBackground);
+
         swipeContainer = (SwipeRefreshLayout) containerView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -79,6 +122,25 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        switch (v.getId()) {
+            case R.id.llPrimary:
+            case R.id.ivPrimaryBackground:
+                if (null != primaryChannel) {
+                    startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(primaryChannel.getChannel().getName())));
+                }
+                break;
+            case R.id.llSecondary:
+            case R.id.ivSecondaryBackground:
+                if (null != primaryChannel) {
+                    startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
+                }
+                break;
+        }
     }
 
     @Override
@@ -156,6 +218,119 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadHighlightedChannel(final String tag) {
+        MMXChannel.findByTags(new HashSet<String>(Arrays.asList(tag)), 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
+            @Override
+            public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
+                if (null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
+                    MMXChannel channel = mmxChannelListResult.items.get(0);
+                    subscribeChannel(channel);
+                    getChannelDetail(channel, tag);
+                } else {
+                    Log.w(TAG, "Couldn't find channel for tag " + tag);
+                }
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                Log.e(TAG, "Failed to load channel for tag " + tag);
+            }
+        });
+    }
+
+    private void getChannelDetail(final MMXChannel channel, final String tag) {
+        MMXChannel.getChannelDetail(Arrays.asList(channel),
+                new ChannelDetailOptions.Builder().numOfMessages(20).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+                    @Override
+                    public void onSuccess(List<ChannelDetail> channelDetails) {
+                        if (null != channelDetails && channelDetails.size() > 0) {
+                            if (PRIMARY_CHANNEL_TAG.equals(tag)) {
+                                flPrimary.setVisibility(View.VISIBLE);
+                                primaryChannel = channelDetails.get(0);
+                                ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(primaryChannel));
+                                tvPrimarySubscribers.setText(primaryChannel.getTotalSubscribers() + " Subscribers");
+                            } else {
+                                flSecondary.setVisibility(View.VISIBLE);
+                                secondaryChannel = channelDetails.get(0);
+                                ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(secondaryChannel));
+                            }
+                        } else {
+                            Log.w(TAG, "Couldn't find channel detail for channel " + channel);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                        Log.e(TAG, "Failed to load channel detail for channel " + channel);
+                    }
+                });
+    }
+
+    private void loadMagnetSupportChannel() {
+        MMXChannel.findPrivateChannelsByName(ASK_MAGNET, 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
+            @Override
+            public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
+                if (null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
+                    getChannelDetail(mmxChannelListResult.items.get(0), null);
+                } else {
+                    Log.w(TAG, "Couldn't find channel askMagnet, creating one");
+
+                    User.search("email:*@magnet.com", 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
+                        @Override
+                        public void success(List<User> users) {
+                            Set<String> userIds = new HashSet<String>();
+                            for (User u : users) {
+                                userIds.add(u.getUserIdentifier());
+                            }
+                            userIds.add(User.getCurrentUserId());
+                            if (null != users && !users.isEmpty()) {
+                                MMXChannel.create(ASK_MAGNET, "Magnet Support for " + User.getCurrentUser().getDisplayName(), false,
+                                        MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
+                                            @Override
+                                            public void onSuccess(MMXChannel channel) {
+                                                getChannelDetail(channel, null);
+                                            }
+
+                                            @Override
+                                            public void onFailure(MMXChannel.FailureCode failureCode,
+                                                                  Throwable throwable) {
+                                                Log.e(TAG, "Failed to create askMagnet channel due to" + failureCode, throwable);
+                                            }
+                                        });
+                            } else {
+                                Log.e(TAG, "Couldn't find any magnetsupport users");
+                            }
+                        }
+
+                        @Override
+                        public void failure(ApiError apiError) {
+                            Log.e(TAG, "Failed to search magnetsupport users" + apiError);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private void subscribeChannel(final MMXChannel channel) {
+        channel.subscribe(new MMXChannel.OnFinishedListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                Log.d(TAG, "Subscribed to channel " + channel.getName());
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                Log.e(TAG, "Failed to subscribe channel " + channel.getName());
+            }
+        });
     }
 
     private void getConversations(boolean showProgress) {
