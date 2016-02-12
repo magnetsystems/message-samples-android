@@ -146,7 +146,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (adapter != null) {
-            Conversation conversation = adapter.getItem(position);
+            Conversation conversation = adapter.getItem(position - 1);
             if (conversation != null) {
                 Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
                 startActivity(ChatActivity.getIntentWithChannel(conversation));
