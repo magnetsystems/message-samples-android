@@ -1,8 +1,7 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +11,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.model.Conversation;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.max.android.User;
 

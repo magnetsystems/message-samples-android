@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,9 @@ import android.widget.CheckBox;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
+import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
+import com.magnet.magnetchat.ui.activities.sections.register.RegisterActivity;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;

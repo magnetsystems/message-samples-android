@@ -7,7 +7,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 
-import com.magnet.magnetchat.ui.activities.HomeActivity;
+import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

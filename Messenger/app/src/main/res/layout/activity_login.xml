@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
-    tools:context=".ui.activities.HomeActivity">
+    tools:context=".ui.activities.sections.home.HomeActivity">
 
     <FrameLayout
         android:layout_width="match_parent"

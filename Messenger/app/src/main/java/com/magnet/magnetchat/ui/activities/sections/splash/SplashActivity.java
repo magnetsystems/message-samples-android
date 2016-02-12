@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.splash;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

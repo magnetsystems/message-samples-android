@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -6,12 +6,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.IntentHelper;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
+import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
@@ -27,9 +28,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by Artli_000 on 11.02.2016.
  */
 public class EditProfileActivity extends BaseActivity {
-    private final static String TAG = EditProfileActivity.class.getSimpleName();
 
     private static final int RESULT_LOAD_IMAGE = 1;
+
     @InjectView(R.id.buttonClose)
     View buttonClose;
     @InjectView(R.id.buttonSaveChanges)
@@ -47,7 +48,8 @@ public class EditProfileActivity extends BaseActivity {
     @InjectView(R.id.viewProgress)
     View viewProgress;
 
-    @InjectView(R.id.imageAvatar) CircleImageView imageViewAvatar;
+    @InjectView(R.id.imageAvatar)
+    CircleImageView imageViewAvatar;
 
     private User currentUser;
 
@@ -71,14 +73,7 @@ public class EditProfileActivity extends BaseActivity {
                 buttonChoosePicture);
 
         onUserUpdate();
-
-        if(null != User.getCurrentUser().getAvatarUrl()) {
-            Glide.with(this)
-                .load(User.getCurrentUser().getAvatarUrl())
-                .placeholder(R.mipmap.ic_user)
-                .centerCrop()
-                .into(imageViewAvatar);
-        }
+        onUpdateUserAvatar();
     }
 
     /**
@@ -90,6 +85,19 @@ public class EditProfileActivity extends BaseActivity {
             textEmail.setText(currentUser.getEmail());
             editFirstName.setText(currentUser.getFirstName());
             editLastName.setText(currentUser.getLastName());
+        }
+    }
+
+    /**
+     * Method which provide the updating of the user avatar
+     */
+    private void onUpdateUserAvatar() {
+        if ((currentUser != null) && (currentUser.getAvatarUrl() != null)) {
+            Glide.with(this)
+                    .load(User.getCurrentUser().getAvatarUrl())
+                    .placeholder(R.mipmap.ic_user)
+                    .centerCrop()
+                    .into(imageViewAvatar);
         }
     }
 
@@ -110,8 +118,6 @@ public class EditProfileActivity extends BaseActivity {
             public void success(User user) {
                 showProgress(false);
                 showMessage("You\'ve updated your profile");
-
-                onBackPressed();
             }
 
             @Override
@@ -127,12 +133,30 @@ public class EditProfileActivity extends BaseActivity {
      *
      * @param isNeedShowProgress
      */
-    private void showProgress(boolean isNeedShowProgress) {
+    protected void showProgress(boolean isNeedShowProgress) {
         if (isNeedShowProgress == true) {
             viewProgress.setVisibility(View.VISIBLE);
         } else {
             viewProgress.setVisibility(View.GONE);
         }
+    }
+
+    /**
+     * Method which provide the updating of the server avatar
+     */
+    private void updateServerAvatar() {
+        User.getCurrentUser().setAvatar(((BitmapDrawable) imageViewAvatar.getDrawable()).getBitmap(), null,
+                new ApiCallback<String>() {
+                    @Override
+                    public void success(String s) {
+                        AppLogger.error(this, "Set user avatar successfuly");
+                    }
+
+                    @Override
+                    public void failure(ApiError apiError) {
+                        AppLogger.error(this, String.format("Failed to set user avatar %s", apiError.toString()));
+                    }
+                });
     }
 
     @Override
@@ -157,8 +181,7 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         showProgress(false);
-        //startActivity(HomeActivity.class, true);
-        finish();
+        startActivity(HomeActivity.class, true);
     }
 
     @Override
@@ -176,16 +199,13 @@ public class EditProfileActivity extends BaseActivity {
             cursor.close();
             setImageBySource(imageViewAvatar, picturePath);
 
-            User.getCurrentUser().setAvatar(((BitmapDrawable) imageViewAvatar.getDrawable()).getBitmap(), null,
-                new ApiCallback<String>() {
-                    @Override public void success(String s) {
-                        Log.d(TAG, "Set user avatar successfuly");
-                    }
+            runOnMainThread(0.5, new OnActionPerformer() {
+                @Override
+                public void onActionPerform() {
+                    updateServerAvatar();
+                }
+            });
 
-                    @Override public void failure(ApiError apiError) {
-                        Log.e(TAG, "Failed to set user avatar", apiError);
-                    }
-                });
         }
     }
 }
