@@ -2,7 +2,9 @@ package com.magnet.magnetchat.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -31,6 +33,10 @@ public class DetailsActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
         if (channelName != null) {
             Conversation currentConversation = ChannelCacheManager.getInstance().getConversationByName(channelName);
@@ -50,6 +56,18 @@ public class DetailsActivity extends BaseActivity {
     @Override
     public void onClick(View v) {
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                //NavUtils.navigateUpFromSameTask(this);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private UsersAdapter.AddUserListener addUserListener = new UsersAdapter.AddUserListener() {
