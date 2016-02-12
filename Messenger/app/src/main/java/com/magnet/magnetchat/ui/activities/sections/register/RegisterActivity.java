@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;

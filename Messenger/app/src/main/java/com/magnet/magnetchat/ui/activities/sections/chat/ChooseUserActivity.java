@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;

@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.activities;
+package com.magnet.magnetchat.ui.activities.sections.chat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -34,6 +34,7 @@ import com.magnet.magnetchat.helpers.PermissionHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.ui.custom.FTextView;
