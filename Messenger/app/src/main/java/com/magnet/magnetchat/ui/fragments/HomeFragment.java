@@ -92,7 +92,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showLeaveDialog(adapter.getItem(position));
+                showLeaveDialog(adapter.getItem(position - 1));
                 return true;
             }
         });
