@@ -45,7 +45,7 @@ public class ChannelCacheManager {
     public List<Conversation> getConversations() {
         ArrayList<Conversation> list = new ArrayList<>();
         for(Conversation c : conversations.values()) {
-            if(!c.getChannel().getName().startsWith("global")) {
+            if(!c.getChannel().getName().startsWith("global_")) {
                 list.add(c);
             }
         }
