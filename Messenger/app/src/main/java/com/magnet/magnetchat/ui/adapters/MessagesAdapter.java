@@ -280,7 +280,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             viewHolder.viewMyAvatar.setUserName(userName);
             if ((null != user.getAvatarUrl())) {
                 Glide.with(context)
-                        .load(message.getSender().getAvatarUrl())
+                        .load(user.getAvatarUrl())
                         .fitCenter()
                         .into(viewHolder.imageMyAvatar);
             }
