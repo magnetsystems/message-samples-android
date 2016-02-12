@@ -6,10 +6,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
@@ -30,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfileActivity extends BaseActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final String TAG = EditProfileActivity.class.getSimpleName();
 
     @InjectView(R.id.buttonClose)
     View buttonClose;
@@ -188,24 +191,18 @@ public class EditProfileActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            String picturePath = FileHelper.getPath(this, selectedImage);
+            if(null != picturePath) {
+                setImageBySource(imageViewAvatar, picturePath);
 
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            setImageBySource(imageViewAvatar, picturePath);
-
-            runOnMainThread(0.5, new OnActionPerformer() {
-                @Override
-                public void onActionPerform() {
-                    updateServerAvatar();
-                }
-            });
-
+                runOnMainThread(0.5, new OnActionPerformer() {
+                    @Override public void onActionPerform() {
+                        updateServerAvatar();
+                    }
+                });
+            } else {
+                Log.e(TAG, "Failed to load image from Uri " + selectedImage);
+            }
         }
     }
 }
