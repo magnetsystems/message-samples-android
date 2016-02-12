@@ -83,7 +83,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     @InjectView(R.id.chatMessageField)
     FEditText editMessage;
     @InjectView(R.id.chatSuppliers)
-    FTextView textChatSupliers;
+    FTextView textChatSuppliers;
+    @InjectView(R.id.chatSendBtn)
+    FTextView sendMessageButton;
 
     @Override
     protected int getLayoutResource() {
@@ -103,7 +105,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         chatMessageProgress = (ProgressBar) findViewById(R.id.chatMessageProgress);
 
-        findViewById(R.id.chatSendBtn).setOnClickListener(this);
+        setOnClickListeners(sendMessageButton);
         findViewById(R.id.chatAddAttachment).setOnClickListener(this);
 
         messagesListView = (RecyclerView) findViewById(R.id.chatMessageList);
@@ -140,6 +142,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             case R.id.chatSendBtn:
                 String text = editMessage.getStringValue();
                 if (text != null && !text.isEmpty()) {
+                    sendMessageButton.setEnabled(false);
                     sendText(text);
                 }
                 break;
@@ -395,13 +398,14 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             setTitle("Group");
             //findViewById(R.id.chatSuppliers).setVisibility(View.VISIBLE);
             //String suppliers = UserHelper.getDisplayNames(suppliersList);
-            //textChatSupliers.setText(String.format("To: %s", suppliers));
+            //textChatSuppliers.setText(String.format("To: %s", suppliers));
         }
     }
 
     private Conversation.OnSendMessageListener sendMessageListener = new Conversation.OnSendMessageListener() {
         @Override
         public void onSuccessSend(Message message) {
+            sendMessageButton.setEnabled(true);
             chatMessageProgress.setVisibility(View.GONE);
             ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
@@ -412,6 +416,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
         @Override
         public void onFailure(Throwable throwable) {
+            sendMessageButton.setEnabled(true);
             chatMessageProgress.setVisibility(View.GONE);
             Logger.error(TAG, "send message error", throwable);
             showMessage("Can't send message");

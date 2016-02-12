@@ -136,7 +136,7 @@ public class RegisterActivity extends BaseActivity {
             showMessage("Passwords do not match", "Please enter your password and verify your password again");
             return;
         }
-        if (password.length() < 6) {
+        if (password.length() < 5) {
             showMessage("Password is too short", "Password should be at least 6 characters");
             return;
         }
