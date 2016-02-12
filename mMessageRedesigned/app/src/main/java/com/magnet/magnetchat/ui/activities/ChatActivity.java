@@ -393,9 +393,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             findViewById(R.id.chatSuppliers).setVisibility(View.GONE);
         } else {
             setTitle("Group");
-            findViewById(R.id.chatSuppliers).setVisibility(View.VISIBLE);
-            String suppliers = UserHelper.getDisplayNames(suppliersList);
-            textChatSupliers.setText(String.format("To: %s", suppliers));
+            //findViewById(R.id.chatSuppliers).setVisibility(View.VISIBLE);
+            //String suppliers = UserHelper.getDisplayNames(suppliersList);
+            //textChatSupliers.setText(String.format("To: %s", suppliers));
         }
     }
 

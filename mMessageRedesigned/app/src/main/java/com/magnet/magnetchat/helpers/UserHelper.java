@@ -20,6 +20,8 @@ public class UserHelper {
 
     private static final String EMAIL_TEMPLATE = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\\.)*(?:aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$";
 
+    private static final int MAX_USER_NAMES_LENGTH = 50;
+
     /**
      * Login listener
      */
@@ -186,16 +188,21 @@ public class UserHelper {
      * @return users list
      */
     public static String getDisplayNames(List<UserProfile> userList) {
-        String users = "";
+        StringBuilder users = new StringBuilder();
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {
-                users += getDisplayName(userList.get(i));
-                if (i != userList.size() - 1) {
-                    users += ", ";
+                users.append(userList.get(i).getDisplayName());
+                if (users.length() < MAX_USER_NAMES_LENGTH && i != userList.size() - 1) {
+                    users.append(", ");
+                } else {
+                    if(users.length() >= MAX_USER_NAMES_LENGTH){
+                        users.append(" ...");
+                        break;
+                    }
                 }
             }
         }
-        return users;
+        return users.toString();
     }
 
     /**
