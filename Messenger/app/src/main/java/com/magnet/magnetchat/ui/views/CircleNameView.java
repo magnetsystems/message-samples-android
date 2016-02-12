@@ -46,7 +46,7 @@ public class CircleNameView extends BaseView {
      */
     public void setUserName(String userName) {
         StringBuilder builder = new StringBuilder();
-        if (userName.isEmpty() == false) {
+        if ((userName != null) && (userName.isEmpty() == false)) {
             userName.trim();
             String[] nameArray = userName.split(" ");
             for (String name : nameArray) {
