@@ -80,7 +80,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     protected void onCreateFragment(View containerView) {
-        if (!UserHelper.isMagnetEmployee()) {
+        if (!UserHelper.isMagnetSupportMember()) {
             loadMagnetSupportChannel();
         }
 
@@ -277,7 +277,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 } else {
                     Log.w(TAG, "Couldn't find channel askMagnet, creating one");
 
-                    User.search("email:*@magnet.com", 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
+                    User.search("tags:" + UserHelper.MAGNET_SUPPORT_TAG, 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
                         @Override
                         public void success(List<User> users) {
                             Set<String> userIds = new HashSet<String>();

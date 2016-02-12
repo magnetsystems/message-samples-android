@@ -48,7 +48,7 @@ public class ChannelCacheManager {
         ArrayList<Conversation> list = new ArrayList<>();
         for(Conversation c : conversations.values()) {
             if(!c.getChannel().getName().startsWith("global_")
-                && (UserHelper.isMagnetEmployee() || !c.getChannel().getName().equals(
+                && (UserHelper.isMagnetSupportMember() || !c.getChannel().getName().equals(
                 HomeFragment.ASK_MAGNET))) {
                 list.add(c);
             }

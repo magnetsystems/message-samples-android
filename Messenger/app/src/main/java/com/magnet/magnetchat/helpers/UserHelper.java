@@ -22,6 +22,8 @@ public class UserHelper {
 
     private static final int MAX_USER_NAMES_LENGTH = 42;
 
+    public static final String MAGNET_SUPPORT_TAG = "magnetsupport";
+
     /**
      * Login listener
      */
@@ -218,8 +220,19 @@ public class UserHelper {
         return email.matches(EMAIL_TEMPLATE);
     }
 
-    public static boolean isMagnetEmployee() {
-        return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
+    public static boolean isMagnetSupportMember() {
+        //return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
+        if(null != User.getCurrentUser()) {
+            String[] tags = User.getCurrentUser().getTags();
+            if (null != tags) {
+                for (String t : tags) {
+                    if (MAGNET_SUPPORT_TAG.equalsIgnoreCase(t)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }
