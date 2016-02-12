@@ -175,6 +175,9 @@ public class UserHelper {
      * @return display name
      */
     public static String getDisplayName(UserProfile user) {
+        if (user == null) {
+            return "";
+        }
         if (StringUtil.isNotEmpty(user.getDisplayName())) {
             return user.getDisplayName();
         }
@@ -195,7 +198,7 @@ public class UserHelper {
                 if (users.length() < MAX_USER_NAMES_LENGTH && i != userList.size() - 1) {
                     users.append(", ");
                 } else {
-                    if(users.length() >= MAX_USER_NAMES_LENGTH){
+                    if (users.length() >= MAX_USER_NAMES_LENGTH) {
                         users.append(" ...");
                         break;
                     }

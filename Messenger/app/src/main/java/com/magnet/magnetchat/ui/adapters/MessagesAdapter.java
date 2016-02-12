@@ -256,6 +256,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     private void makeMessageFromMe(ViewHolder viewHolder, Message message) {
 
+        User user = User.getCurrentUser();
+
         viewHolder.imageMyAvatar.setVisibility(View.VISIBLE);
         viewHolder.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
         viewHolder.imageMyAvatar.setImageResource(android.R.color.transparent);
@@ -273,13 +275,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             viewHolder.delivered.setVisibility(View.GONE);
         }
 
-        if ((message.getSender() != null) && (null != message.getSender().getAvatarUrl())) {
-            String userName = UserHelper.getDisplayName(message.getSender());
+        if ((user != null)) {
+            String userName = UserHelper.getDisplayName(user);
             viewHolder.viewMyAvatar.setUserName(userName);
-            Glide.with(context)
-                    .load(message.getSender().getAvatarUrl())
-                    .fitCenter()
-                    .into(viewHolder.imageMyAvatar);
+            if ((null != user.getAvatarUrl())) {
+                Glide.with(context)
+                        .load(message.getSender().getAvatarUrl())
+                        .fitCenter()
+                        .into(viewHolder.imageMyAvatar);
+            }
         }
     }
 
