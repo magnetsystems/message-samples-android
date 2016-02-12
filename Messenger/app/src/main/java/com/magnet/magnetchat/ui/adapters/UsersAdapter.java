@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.max.android.UserProfile;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UsersAdapter extends ArrayAdapter<UserProfile> {
 
@@ -21,7 +23,7 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
     private List<UserProfile> selectedUsers;
 
     private class ViewHolder {
-        ImageView icon;
+        CircleImageView icon;
         TextView firstName;
         TextView lastName;
     }
@@ -93,7 +95,7 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
             if (convertView == null) {
                 convertView = inflater.inflate(R.layout.item_user, parent, false);
                 viewHolder = new ViewHolder();
-                viewHolder.icon = (ImageView) convertView.findViewById(R.id.itemUserIcon);
+                viewHolder.icon = (CircleImageView) convertView.findViewById(R.id.itemUserIcon);
                 viewHolder.firstName = (TextView) convertView.findViewById(R.id.itemUserFirstName);
                 viewHolder.lastName = (TextView) convertView.findViewById(R.id.itemUserLastName);
                 convertView.setTag(viewHolder);
@@ -108,6 +110,11 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
             }
             if (user.getFirstName() == null && user.getLastName() == null) {
                 viewHolder.firstName.setText(user.getDisplayName());
+            }
+            if (user.getAvatarUrl() != null) {
+                Glide.with(getContext()).load(user.getAvatarUrl()).placeholder(R.mipmap.ic_user).fitCenter().into(viewHolder.icon);
+            } else {
+                Glide.with(getContext()).load(R.mipmap.ic_user).fitCenter().into(viewHolder.icon);
             }
             colorSelected(convertView, position);
         }
