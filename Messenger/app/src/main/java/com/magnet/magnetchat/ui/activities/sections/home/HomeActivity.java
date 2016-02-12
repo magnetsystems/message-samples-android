@@ -7,11 +7,9 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -19,27 +17,14 @@ import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
-import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
-import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
-import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
-import com.magnet.mmx.client.api.ChannelDetail;
-import com.magnet.mmx.client.api.ChannelDetailOptions;
-import com.magnet.mmx.client.api.ListResult;
-import com.magnet.mmx.client.api.MMXChannel;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -47,7 +32,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     private static final String TAG = HomeActivity.class.getSimpleName();
-    public static final String ASK_MAGNET = "askMagnet";
 
     @InjectView(R.id.listHomeDrawer)
     ListView listHomeDrawer;
@@ -56,17 +40,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-
-    @InjectView(R.id.viewEvents)
-    View viewEvents;
-
-    @InjectView(R.id.flPrimary)
-    FrameLayout flPrimary;
-    @InjectView(R.id.tvPrimarySubscribers)
-    FTextView tvPrimarySubscribers;
-
-    @InjectView(R.id.flSecondary)
-    FrameLayout flSecondary;
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -80,11 +53,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     private AppFragment currentFragment;
 
-    private ChannelDetail primaryChannel;
-    private static final String PRIMARY_CHANNEL_TAG = "active";
-    private ChannelDetail secondaryChannel;
-    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
-
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_home;
@@ -93,15 +61,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        flPrimary.setVisibility(View.GONE);
-        flSecondary.setVisibility(View.GONE);
-
-        loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
-
-        if (!UserHelper.isMagnetEmployee()) {
-            loadMagnetSupportChannel();
-        }
 
         setSupportActionBar(toolbar);
 
@@ -132,138 +91,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         }
     }
 
-    @OnClick({R.id.llPrimary, R.id.ivPrimaryBackground})
-    public void onPrimaryFrameClick(View v) {
-        //Log.d(TAG, "------------------------ clicked " + v);
-        if (null != primaryChannel) {
-            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(primaryChannel.getChannel().getName())));
-        }
-    }
-
-    @OnClick({R.id.llSecondary, R.id.ivSecondaryBackground})
-    public void onSecondaryFrameClick(View v) {
-        //Log.d(TAG, "------------------------ clicked " + v);
-        if (null != primaryChannel) {
-            startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
-        }
-    }
-
     @OnClick(R.id.llUserProfile)
     public void onEditUserProfileClick(View v) {
         startActivity(new Intent(this, HomeEditProfileActivity.class));
-    }
-
-    private void loadHighlightedChannel(final String tag) {
-        MMXChannel.findByTags(new HashSet<String>(Arrays.asList(tag)), 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
-            @Override
-            public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
-                if (null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
-                    MMXChannel channel = mmxChannelListResult.items.get(0);
-                    subscribeChannel(channel);
-                    getChannelDetail(channel, tag);
-                } else {
-                    Log.w(TAG, "Couldn't find channel for tag " + tag);
-                }
-            }
-
-            @Override
-            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                Log.e(TAG, "Failed to load channel for tag " + tag);
-            }
-        });
-    }
-
-    private void getChannelDetail(final MMXChannel channel, final String tag) {
-        MMXChannel.getChannelDetail(Arrays.asList(channel),
-                new ChannelDetailOptions.Builder().numOfMessages(20).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
-                    @Override
-                    public void onSuccess(List<ChannelDetail> channelDetails) {
-                        if (null != channelDetails && channelDetails.size() > 0) {
-                            if (PRIMARY_CHANNEL_TAG.equals(tag)) {
-                                flPrimary.setVisibility(View.VISIBLE);
-                                primaryChannel = channelDetails.get(0);
-                                ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(primaryChannel));
-                                tvPrimarySubscribers.setText(primaryChannel.getTotalSubscribers() + " Subscribers");
-                            } else {
-                                flSecondary.setVisibility(View.VISIBLE);
-                                secondaryChannel = channelDetails.get(0);
-                                ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(secondaryChannel));
-                            }
-                        } else {
-                            Log.w(TAG, "Couldn't find channel detail for channel " + channel);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                        Log.e(TAG, "Failed to load channel detail for channel " + channel);
-                    }
-                });
-    }
-
-    private void loadMagnetSupportChannel() {
-        MMXChannel.findPrivateChannelsByName(ASK_MAGNET, 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
-            @Override
-            public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
-                if (null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
-                    getChannelDetail(mmxChannelListResult.items.get(0), null);
-                } else {
-                    Log.w(TAG, "Couldn't find channel askMagnet, creating one");
-
-                    User.search("email:*@magnet.com", 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
-                        @Override
-                        public void success(List<User> users) {
-                            Set<String> userIds = new HashSet<String>();
-                            for (User u : users) {
-                                userIds.add(u.getUserIdentifier());
-                            }
-                            userIds.add(User.getCurrentUserId());
-                            if (null != users && !users.isEmpty()) {
-                                MMXChannel.create(ASK_MAGNET, "Magnet Support for " + User.getCurrentUser().getDisplayName(), false,
-                                        MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
-                                            @Override
-                                            public void onSuccess(MMXChannel channel) {
-                                                getChannelDetail(channel, null);
-                                            }
-
-                                            @Override
-                                            public void onFailure(MMXChannel.FailureCode failureCode,
-                                                                  Throwable throwable) {
-                                                Log.e(TAG, "Failed to create askMagnet channel due to" + failureCode, throwable);
-                                            }
-                                        });
-                            } else {
-                                Log.e(TAG, "Couldn't find any magnetsupport users");
-                            }
-                        }
-
-                        @Override
-                        public void failure(ApiError apiError) {
-                            Log.e(TAG, "Failed to search magnetsupport users" + apiError);
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-
-            }
-        });
-    }
-
-    private void subscribeChannel(final MMXChannel channel) {
-        channel.subscribe(new MMXChannel.OnFinishedListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                Log.d(TAG, "Subscribed to channel " + channel.getName());
-            }
-
-            @Override
-            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                Log.e(TAG, "Failed to subscribe channel " + channel.getName());
-            }
-        });
     }
 
     @Override
@@ -318,7 +148,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                viewEvents.setVisibility(View.VISIBLE);
+//                viewEvents.setVisibility(View.VISIBLE);
                 break;
             //case EVENTS:
             //    viewEvents.setVisibility(View.GONE);
