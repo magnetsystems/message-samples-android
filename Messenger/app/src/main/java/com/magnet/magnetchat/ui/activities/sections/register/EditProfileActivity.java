@@ -149,7 +149,7 @@ public class EditProfileActivity extends BaseActivity {
                 new ApiCallback<String>() {
                     @Override
                     public void success(String s) {
-                        AppLogger.error(this, "Set user avatar successfuly");
+                        AppLogger.info(this, "Set user avatar successfuly " + s);
                     }
 
                     @Override
