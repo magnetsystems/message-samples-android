@@ -206,7 +206,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                             }
                             userIds.add(User.getCurrentUserId());
                             if(null != users && !users.isEmpty()) {
-                                MMXChannel.create(ASK_MAGNET, "Magnet Support", false,
+                                MMXChannel.create(ASK_MAGNET, "Magnet Support for " + User.getCurrentUser().getDisplayName(), false,
                                     MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
                                         @Override public void onSuccess(MMXChannel channel) {
                                             getChannelDetail(channel, null);
