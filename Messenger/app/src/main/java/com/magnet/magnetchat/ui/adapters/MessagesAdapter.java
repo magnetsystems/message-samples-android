@@ -20,6 +20,8 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.ui.views.CircleNameView;
+import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
@@ -48,6 +50,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         Message message;
         ImageView imageMyAvatar;
         ImageView imageOtherAvatar;
+        CircleNameView viewMyAvatar;
+        CircleNameView viewOtherAvatar;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -58,12 +62,31 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             this.text = (TextView) itemView.findViewById(R.id.itemMessageText);
             this.delivered = (TextView) itemView.findViewById(R.id.itemMessageDelivered);
             this.imageMyAvatar = (ImageView) itemView.findViewById(R.id.imageMyAvatar);
+            this.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
+            this.imageMyAvatar.setImageResource(android.R.color.transparent);
             this.imageOtherAvatar = (ImageView) itemView.findViewById(R.id.imageOtherAvatar);
+            this.imageOtherAvatar.setBackgroundResource(android.R.color.transparent);
+            this.imageOtherAvatar.setImageResource(android.R.color.transparent);
+            this.viewMyAvatar = (CircleNameView) itemView.findViewById(R.id.viewMyAvatar);
+            this.viewOtherAvatar = (CircleNameView) itemView.findViewById(R.id.viewOtherAvatar);
             this.image.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            try {
+                onOpenAttachment();
+            } catch (Exception e) {
+                AppLogger.error(this, e.toString());
+            }
+        }
+
+        /**
+         * Method which provide the opening of the attachment
+         *
+         * @throws Exception
+         */
+        private void onOpenAttachment() throws Exception {
             Intent intent;
             if (message.getType() != null) {
                 switch (message.getType()) {
@@ -207,22 +230,40 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     private void makeMessageToMe(ViewHolder viewHolder, Message message) {
 
         viewHolder.imageMyAvatar.setVisibility(View.GONE);
+        viewHolder.viewMyAvatar.setVisibility(View.GONE);
         viewHolder.imageOtherAvatar.setVisibility(View.VISIBLE);
+        viewHolder.imageOtherAvatar.setBackgroundResource(android.R.color.transparent);
+        viewHolder.imageOtherAvatar.setImageResource(android.R.color.transparent);
+        viewHolder.viewOtherAvatar.setVisibility(View.VISIBLE);
 
         viewHolder.messageArea.setGravity(Gravity.LEFT | Gravity.START);
         viewHolder.text.setBackgroundResource(R.drawable.bubble_odd);
         viewHolder.text.setTextColor(Color.BLACK);
         viewHolder.delivered.setVisibility(View.GONE);
         if (message.getSender() != null) {
-            viewHolder.sender.setText(UserHelper.getDisplayName(message.getSender()));
+            String userName = UserHelper.getDisplayName(message.getSender());
+            viewHolder.viewOtherAvatar.setUserName(userName);
+            viewHolder.sender.setText(userName);
+            if (null != message.getSender().getAvatarUrl()) {
+                Glide.with(context)
+                        .load(message.getSender().getAvatarUrl())
+                        .fitCenter()
+                        .into(viewHolder.imageOtherAvatar);
+            }
         }
         viewHolder.sender.setVisibility(View.VISIBLE);
     }
 
     private void makeMessageFromMe(ViewHolder viewHolder, Message message) {
 
+        User user = User.getCurrentUser();
+
         viewHolder.imageMyAvatar.setVisibility(View.VISIBLE);
+        viewHolder.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
+        viewHolder.imageMyAvatar.setImageResource(android.R.color.transparent);
+        viewHolder.viewMyAvatar.setVisibility(View.VISIBLE);
         viewHolder.imageOtherAvatar.setVisibility(View.GONE);
+        viewHolder.viewOtherAvatar.setVisibility(View.GONE);
 
         viewHolder.messageArea.setGravity(Gravity.RIGHT | Gravity.END);
         viewHolder.text.setBackgroundResource(R.drawable.bubble);
@@ -232,6 +273,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             viewHolder.delivered.setVisibility(View.VISIBLE);
         } else {
             viewHolder.delivered.setVisibility(View.GONE);
+        }
+
+        if ((user != null)) {
+            String userName = UserHelper.getDisplayName(user);
+            viewHolder.viewMyAvatar.setUserName(userName);
+            if ((null != user.getAvatarUrl())) {
+                Glide.with(context)
+                        .load(message.getSender().getAvatarUrl())
+                        .fitCenter()
+                        .into(viewHolder.imageMyAvatar);
+            }
         }
     }
 

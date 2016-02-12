@@ -36,6 +36,16 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <com.magnet.magnetchat.ui.views.CircleNameView
+                android:id="@+id/viewOtherAvatar"
+                android:layout_width="@dimen/dimen_50"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_marginRight="@dimen/dimen_10"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:visibility="gone" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageOtherAvatar"
                 android:layout_width="@dimen/dimen_50"
@@ -44,9 +54,18 @@
                 android:layout_marginBottom="@dimen/dimen_5"
                 android:layout_marginRight="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
-                android:background="@mipmap/ic_user"
                 android:visibility="gone" />
 
+            <com.magnet.magnetchat.ui.views.CircleNameView
+                android:id="@+id/viewMyAvatar"
+                android:layout_width="@dimen/dimen_50"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_marginLeft="@dimen/dimen_10"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:visibility="visible" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageMyAvatar"
@@ -57,8 +76,8 @@
                 android:layout_marginBottom="@dimen/dimen_5"
                 android:layout_marginLeft="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
-                android:background="@mipmap/ic_user"
                 android:visibility="visible" />
+
 
             <com.magnet.magnetchat.ui.custom.FTextView
                 android:id="@+id/itemMessageText"

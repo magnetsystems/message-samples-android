@@ -92,7 +92,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showLeaveDialog(adapter.getItem(position));
+                showLeaveDialog(adapter.getItem(position - 1));
                 return true;
             }
         });
@@ -146,7 +146,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (adapter != null) {
-            Conversation conversation = adapter.getItem(position);
+            Conversation conversation = adapter.getItem(position - 1);
             if (conversation != null) {
                 Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
                 startActivity(ChatActivity.getIntentWithChannel(conversation));
