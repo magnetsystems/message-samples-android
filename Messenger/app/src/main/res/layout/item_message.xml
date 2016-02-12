@@ -31,13 +31,47 @@
             android:textStyle="bold"
             android:visibility="gone" />
 
-        <com.magnet.magnetchat.ui.custom.FTextView
-            android:id="@+id/itemMessageText"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#dddde4"
-            android:gravity="center_vertical"
-            android:padding="10dp" />
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageOtherAvatar"
+                android:layout_width="@dimen/dimen_50"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_marginRight="@dimen/dimen_10"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:background="@mipmap/ic_user"
+                android:visibility="gone" />
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageMyAvatar"
+                android:layout_width="@dimen/dimen_50"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_marginLeft="@dimen/dimen_10"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:background="@mipmap/ic_user"
+                android:visibility="visible" />
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:id="@+id/itemMessageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
+                android:layout_toLeftOf="@id/imageMyAvatar"
+                android:layout_toRightOf="@id/imageOtherAvatar"
+                android:background="#dddde4"
+                android:gravity="center_vertical"
+                android:padding="10dp" />
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/itemMessageImage"
