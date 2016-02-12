@@ -106,6 +106,8 @@ public class EditProfileActivity extends BaseActivity {
             public void success(User user) {
                 showProgress(false);
                 showMessage("You\'ve updated your profile");
+
+                onBackPressed();
             }
 
             @Override
@@ -151,7 +153,8 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         showProgress(false);
-        startActivity(HomeActivity.class, true);
+        //startActivity(HomeActivity.class, true);
+        finish();
     }
 
     @Override
