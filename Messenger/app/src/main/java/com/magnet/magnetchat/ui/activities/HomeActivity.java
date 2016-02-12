@@ -28,6 +28,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
@@ -45,6 +46,7 @@ import java.util.Set;
 
 public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     private static final String TAG = HomeActivity.class.getSimpleName();
+    public static final String ASK_MAGNET = "askMagnet";
 
     @InjectView(R.id.listHomeDrawer)
     ListView listHomeDrawer;
@@ -79,7 +81,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
     private ChannelDetail secondaryChannel;
-    private static final String SECONDARY_CHANNEL_TAG = "global";
+    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
 
     @Override
     protected int getLayoutResource() {
@@ -94,7 +96,10 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         flSecondary.setVisibility(View.GONE);
 
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
-        loadHighlightedChannel(SECONDARY_CHANNEL_TAG);
+
+        if(!UserHelper.isMagnetEmployee()) {
+            loadMagnetSupportChannel();
+        }
 
         setSupportActionBar(toolbar);
 
@@ -168,7 +173,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                             primaryChannel = channelDetails.get(0);
                             ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(primaryChannel));
                             tvPrimarySubscribers.setText(primaryChannel.getTotalSubscribers() + " Subscribers");
-                        } else if(SECONDARY_CHANNEL_TAG.equals(tag)) {
+                        } else {
                             flSecondary.setVisibility(View.VISIBLE);
                             secondaryChannel = channelDetails.get(0);
                             ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(secondaryChannel));
@@ -183,6 +188,53 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                     Log.e(TAG, "Failed to load channel detail for channel " + channel);
                 }
             });
+    }
+
+    private void loadMagnetSupportChannel() {
+        MMXChannel.findPrivateChannelsByName(ASK_MAGNET, 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
+            @Override public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
+                if(null != mmxChannelListResult.items && mmxChannelListResult.items.size() > 0) {
+                    getChannelDetail(mmxChannelListResult.items.get(0), null);
+                } else {
+                    Log.w(TAG, "Couldn't find channel askMagnet, creating one");
+
+                    User.search("email:*@magnet.com", 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
+                        @Override public void success(List<User> users) {
+                            Set<String> userIds = new HashSet<String>();
+                            for(User u : users) {
+                                userIds.add(u.getUserIdentifier());
+                            }
+                            userIds.add(User.getCurrentUserId());
+                            if(null != users && !users.isEmpty()) {
+                                MMXChannel.create(ASK_MAGNET, "Magnet Support", false,
+                                    MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
+                                        @Override public void onSuccess(MMXChannel channel) {
+                                            getChannelDetail(channel, null);
+                                        }
+
+                                        @Override
+                                        public void onFailure(MMXChannel.FailureCode failureCode,
+                                            Throwable throwable) {
+                                            Log.e(TAG, "Failed to create askMagnet channel due to" + failureCode, throwable);
+                                        }
+                                    });
+                            } else {
+                                Log.e(TAG, "Couldn't find any magnetsupport users");
+                            }
+                        }
+
+                        @Override public void failure(ApiError apiError) {
+                            Log.e(TAG, "Failed to search magnetsupport users" + apiError);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+
+            }
+        });
     }
 
     private void subscribeChannel(final MMXChannel channel) {

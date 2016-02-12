@@ -215,4 +215,8 @@ public class UserHelper {
         return email.matches(EMAIL_TEMPLATE);
     }
 
+    public static boolean isMagnetEmployee() {
+        return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
+    }
+
 }
