@@ -36,6 +36,7 @@ import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
+import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
@@ -402,8 +403,8 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
     private void searchMessage(final String query) {
         final List<Conversation> searchResult = new ArrayList<>();
         for (Conversation conversation : ChannelCacheManager.getInstance().getConversations()) {
-            for (Message message : conversation.getMessages()) {
-                if (message.getText() != null && message.getText().toLowerCase().contains(query.toLowerCase())) {
+            for (UserProfile userProfile : conversation.getSuppliersList()) {
+                if (userProfile.getDisplayName() != null && userProfile.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
                     searchResult.add(conversation);
                     break;
                 }
