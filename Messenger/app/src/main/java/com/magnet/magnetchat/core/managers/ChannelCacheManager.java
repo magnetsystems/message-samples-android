@@ -6,8 +6,8 @@ package com.magnet.magnetchat.core.managers;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.ui.fragments.HomeFragment;
 
-import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -49,7 +49,7 @@ public class ChannelCacheManager {
         for(Conversation c : conversations.values()) {
             if(!c.getChannel().getName().startsWith("global_")
                 && (UserHelper.isMagnetEmployee() || !c.getChannel().getName().equals(
-                HomeActivity.ASK_MAGNET))) {
+                HomeFragment.ASK_MAGNET))) {
                 list.add(c);
             }
         }
