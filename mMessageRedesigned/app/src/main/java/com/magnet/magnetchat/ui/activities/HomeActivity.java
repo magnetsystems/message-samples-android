@@ -74,8 +74,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     @InjectView(R.id.ivUserAvatar) CircleImageView ivUserAvatar;
 
-    private User currentUser;
-
     private AppFragment currentFragment;
 
     private ChannelDetail primaryChannel;
@@ -98,12 +96,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
         loadHighlightedChannel(SECONDARY_CHANNEL_TAG);
 
-        if (User.getCurrentUser() != null) {
-            currentUser = User.getCurrentUser();
-            textUserFullName.setSafeText(currentUser.getDisplayName());
-            toolbar.setTitle(currentUser.getDisplayName());
-        }
-
         setSupportActionBar(toolbar);
 
         toggle = new ActionBarDrawerToggle(
@@ -113,6 +105,15 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         listHomeDrawer.setOnItemClickListener(menuClickListener);
 
         setFragment(AppFragment.HOME);
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+
+        if (User.getCurrentUser() != null) {
+            textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
+            toolbar.setTitle(User.getCurrentUser().getDisplayName());
+        }
 
         Glide.with(this).load(User.getCurrentUser().getAvatarUrl()).placeholder(R.mipmap.ic_user).centerCrop().into(ivUserAvatar);
     }
@@ -211,7 +212,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
