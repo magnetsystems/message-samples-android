@@ -33,6 +33,7 @@ import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
@@ -409,6 +410,9 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                     break;
                 }
             }
+        }
+        if(searchResult.isEmpty()) {
+            Utils.showMessage(getActivity(), "Nothing found");
         }
         showList(searchResult);
     }
