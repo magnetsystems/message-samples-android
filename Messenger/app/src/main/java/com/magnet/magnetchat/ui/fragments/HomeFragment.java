@@ -208,6 +208,8 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                     @Override
                     public void onSuccess() {
+                        mProgressBar.setVisibility(View.GONE);
+                        ChannelCacheManager.getInstance().removeConversation(conversation.getChannel().getName());
                         showAllConversations();
                     }
 
