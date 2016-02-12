@@ -43,7 +43,12 @@ public class ChannelCacheManager {
     }
 
     public List<Conversation> getConversations() {
-        ArrayList<Conversation> list = new ArrayList<>(conversations.values());
+        ArrayList<Conversation> list = new ArrayList<>();
+        for(Conversation c : conversations.values()) {
+            if(!c.getChannel().getName().startsWith("global")) {
+                list.add(c);
+            }
+        }
         Collections.sort(list, conversationComparator);
         return list;
     }

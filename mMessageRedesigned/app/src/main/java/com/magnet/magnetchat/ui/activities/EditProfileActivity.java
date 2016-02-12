@@ -16,7 +16,6 @@ import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
-import com.magnet.magnetchat.util.CircleTransform;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
