@@ -153,7 +153,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         dates = new ArrayList<>();
         for (int i = 0; i < messages.size(); i++) {
             if (messages.get(i).getCreateTime() != null) {
-                String msgDay = DateHelper.getMessageDay(messages.get(i).getCreateTime());
+                String msgDay = DateHelper.getMessageDay(DateHelper.utcToLocal(messages.get(i).getCreateTime()));
                 if (!dates.contains(msgDay)) {
                     firstMsgIdxs.add(i);
                     dates.add(msgDay);
@@ -211,9 +211,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     private void configureDate(ViewHolder viewHolder, Message message, int position) {
-        Date date = message.getCreateTime();
-        if (date == null) {
+        Date date = null;
+        if (message.getCreateTime() == null) {
             date = new Date();
+        } else {
+            date = DateHelper.utcToLocal(message.getCreateTime());
         }
         String msgDay = DateHelper.getMessageDay(date);
         if (!dates.contains(msgDay)) {

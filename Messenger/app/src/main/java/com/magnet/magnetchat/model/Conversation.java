@@ -2,6 +2,7 @@ package com.magnet.magnetchat.model;
 
 import android.location.Location;
 
+import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Attachment;
@@ -174,7 +175,7 @@ public class Conversation {
             builder.attachments(attachment);
         }
         final Message message = Message.createMessageFrom(builder.build());
-        message.setCreationDate(new Date());
+        message.setCreationDate(DateHelper.localToUtc(new Date()));
         channel.publish(message.getMmxMessage(), new MMXChannel.OnFinishedListener<String>() {
             @Override
             public void onSuccess(String s) {
