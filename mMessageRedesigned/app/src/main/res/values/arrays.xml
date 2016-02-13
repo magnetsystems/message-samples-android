@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="entries_home_drawer">
-        <item>Home</item>
-        <item>Events</item>
-        <item>Sign out</item>
-    </string-array>
-</resources>
