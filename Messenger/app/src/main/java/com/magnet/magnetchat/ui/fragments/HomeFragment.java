@@ -273,6 +273,11 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     private void loadMagnetSupportChannel() {
+        if(null != secondaryChannel) {
+            goToAskMagnet();
+            return;
+        }
+
         MMXChannel.findPrivateChannelsByName(ASK_MAGNET, 1, 0, new MMXChannel.OnFinishedListener<ListResult<MMXChannel>>() {
             @Override
             public void onSuccess(ListResult<MMXChannel> mmxChannelListResult) {
