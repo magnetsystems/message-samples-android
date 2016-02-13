@@ -50,7 +50,7 @@
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />
                                     <arg value="-y" />
-                                    <arg value="${basedir}/target/android-samples/howto-android.zip" />
+                                    <arg value="${basedir}/target/android-samples/messenger-android.zip" />
                                     <arg value="Messenger" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
