@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.SquaringDrawable;
+import com.bumptech.glide.signature.StringSignature;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
@@ -99,6 +104,7 @@ public class EditProfileActivity extends BaseActivity {
             Glide.with(this)
                     .load(User.getCurrentUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_user)
+                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .centerCrop()
                     .into(imageViewAvatar);
         }
@@ -193,11 +199,16 @@ public class EditProfileActivity extends BaseActivity {
             Uri selectedImage = data.getData();
             String picturePath = FileHelper.getPath(this, selectedImage);
             if(null != picturePath) {
-                setImageBySource(imageViewAvatar, picturePath);
-
-                runOnMainThread(0.5, new OnActionPerformer() {
-                    @Override public void onActionPerform() {
-                        updateServerAvatar();
+                //setImageBySource(imageViewAvatar, picturePath);
+                Glide.with(this).load(selectedImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(200, 200) {
+                    @Override
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                        imageViewAvatar.setImageBitmap(bitmap);
+                        runOnMainThread(0.5, new OnActionPerformer() {
+                            @Override public void onActionPerform() {
+                                updateServerAvatar();
+                            }
+                        });
                     }
                 });
             } else {
