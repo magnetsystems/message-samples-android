@@ -497,10 +497,15 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     };
 
     public static Intent getIntentWithChannel(Conversation conversation) {
-        String name = conversation.getChannel().getName();
-        Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
-        intent.putExtra(TAG_CHANNEL_NAME, name);
-        return intent;
+        if(null != conversation && null != conversation.getChannel()) {
+            String name = conversation.getChannel().getName();
+            Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
+            intent.putExtra(TAG_CHANNEL_NAME, name);
+            return intent;
+        } else {
+            Log.e(TAG, "getIntentWithChannel return null because conversation or channel is null");
+            return null;
+        }
     }
 
     public static Intent getIntentForNewChannel(String[] userId) {

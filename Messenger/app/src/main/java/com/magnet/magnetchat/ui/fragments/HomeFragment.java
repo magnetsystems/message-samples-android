@@ -131,7 +131,11 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
             case R.id.llPrimary:
             case R.id.ivPrimaryBackground:
                 if (null != primaryChannel) {
-                    startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(primaryChannel.getChannel().getName())));
+                    Conversation conversation = addConversation(primaryChannel);
+                    Intent i = ChatActivity.getIntentWithChannel(conversation);
+                    if(null != i) {
+                        startActivity(i);
+                    }
                 }
                 break;
             case R.id.llSecondary:
@@ -345,7 +349,22 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     private void goToAskMagnet() {
-        startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
+        Conversation conversation = addConversation(secondaryChannel);
+        Intent i = ChatActivity.getIntentWithChannel(conversation);
+        if(null != i) {
+            startActivity(i);
+        }
+    }
+
+    private Conversation addConversation(ChannelDetail channelDetail) {
+        Conversation conversation = ChannelCacheManager.getInstance().getConversation(channelDetail.getChannel().getName());
+        if(null == conversation) {
+            conversation = new Conversation(channelDetail);
+            ChannelCacheManager.getInstance()
+                .addConversation(channelDetail.getChannel().getName(), conversation);
+        }
+
+        return conversation;
     }
 
     private void getConversations(boolean showProgress) {

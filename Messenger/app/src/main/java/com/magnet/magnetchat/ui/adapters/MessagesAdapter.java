@@ -26,6 +26,7 @@ import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 
+import com.magnet.max.android.util.StringUtil;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -175,7 +176,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         Message message = getItem(position);
         holder.message = message;
         configureDate(holder, message, position);
-        if (message.getSender() == null || User.getCurrentUser().equals(message.getSender())) {
+        if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
             makeMessageFromMe(holder, message);
         } else {
             makeMessageToMe(holder, message);
