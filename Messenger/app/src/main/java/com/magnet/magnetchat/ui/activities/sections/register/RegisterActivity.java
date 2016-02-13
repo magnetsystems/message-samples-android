@@ -138,7 +138,7 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
         if (password.length() < 6) {
-            showMessage("Password is too short", "Password should be at least 5 characters");
+            showMessage("Password is too short", "Password should be at least 6 characters");
             return;
         }
         changeLoginMode(true);
