@@ -46,6 +46,8 @@ public class SplashActivity extends AppCompatActivity {
                     goToLoginActivity();
                 }
             });
+        } else {
+            goToLoginActivity();
         }
 
     }
