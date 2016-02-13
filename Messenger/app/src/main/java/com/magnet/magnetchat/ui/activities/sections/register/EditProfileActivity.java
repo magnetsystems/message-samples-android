@@ -104,7 +104,7 @@ public class EditProfileActivity extends BaseActivity {
             Glide.with(this)
                     .load(User.getCurrentUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_user)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .centerCrop()
                     .into(imageViewAvatar);
         }
@@ -153,8 +153,8 @@ public class EditProfileActivity extends BaseActivity {
     /**
      * Method which provide the updating of the server avatar
      */
-    private void updateServerAvatar() {
-        User.getCurrentUser().setAvatar(((BitmapDrawable) imageViewAvatar.getDrawable()).getBitmap(), null,
+    private void updateServerAvatar(Bitmap bitmap) {
+        User.getCurrentUser().setAvatar(bitmap, null,
                 new ApiCallback<String>() {
                     @Override
                     public void success(String s) {
@@ -203,17 +203,26 @@ public class EditProfileActivity extends BaseActivity {
                 Glide.with(this).load(selectedImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(200, 200) {
                     @Override
                     public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-                        imageViewAvatar.setImageBitmap(bitmap);
-                        runOnMainThread(0.5, new OnActionPerformer() {
-                            @Override public void onActionPerform() {
-                                updateServerAvatar();
-                            }
-                        });
+                        setImageFromBitmap(bitmap);
                     }
                 });
             } else {
-                Log.e(TAG, "Failed to load image from Uri " + selectedImage);
+                Log.e(TAG, "Failed to load image from Uri " + selectedImage + ", trying to use inputstream");
+
+                Bitmap bitmap = FileHelper.getImageBitmap(this, selectedImage);
+                if(null != bitmap) {
+                    setImageFromBitmap(bitmap);
+                }
             }
         }
+    }
+
+    private void setImageFromBitmap(final Bitmap bitmap) {
+        imageViewAvatar.setImageBitmap(bitmap);
+        runOnMainThread(0.5, new OnActionPerformer() {
+            @Override public void onActionPerform() {
+                updateServerAvatar(bitmap);
+            }
+        });
     }
 }

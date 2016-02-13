@@ -87,7 +87,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             Glide.with(this)
                     .load(User.getCurrentUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_user)
-                    .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .centerCrop()
                     .into(ivUserAvatar);
         }
