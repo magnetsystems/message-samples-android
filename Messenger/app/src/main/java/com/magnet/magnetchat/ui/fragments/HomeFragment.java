@@ -82,10 +82,6 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
 
     @Override
     protected void onCreateFragment(View containerView) {
-        if (!UserHelper.isMagnetSupportMember()) {
-            loadMagnetSupportChannel();
-        }
-
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
 
         mProgressBar = (ProgressBar) containerView.findViewById(R.id.homeProgress);
@@ -106,7 +102,9 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
         tvPrimarySubscribers = (FTextView) header.findViewById(R.id.tvPrimarySubscribers);
         flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
         flPrimary.setVisibility(View.GONE);
-        flSecondary.setVisibility(View.GONE);
+        if(UserHelper.isMagnetSupportMember()) {
+            flSecondary.setVisibility(View.GONE);
+        }
 
         LinearLayout llPrimary = (LinearLayout) header.findViewById(R.id.llPrimary);
         ImageView ivPrimaryBackground = (ImageView) header.findViewById(R.id.ivPrimaryBackground);
@@ -138,8 +136,11 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 break;
             case R.id.llSecondary:
             case R.id.ivSecondaryBackground:
-                if (null != primaryChannel) {
-                    startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
+                //if (null != primaryChannel) {
+                //    startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
+                //}
+                if (!UserHelper.isMagnetSupportMember()) {
+                    loadMagnetSupportChannel();
                 }
                 break;
         }
@@ -257,6 +258,7 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                                 flSecondary.setVisibility(View.VISIBLE);
                                 secondaryChannel = channelDetails.get(0);
                                 ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(secondaryChannel));
+                                goToAskMagnet();
                             }
                         } else {
                             Log.w(TAG, "Couldn't find channel detail for channel " + channel);
@@ -299,10 +301,12 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                                             public void onFailure(MMXChannel.FailureCode failureCode,
                                                                   Throwable throwable) {
                                                 Log.e(TAG, "Failed to create askMagnet channel due to" + failureCode, throwable);
+                                                Utils.showMessage(getActivity(), "Can't load the channel, please try later.");
                                             }
                                         });
                             } else {
                                 Log.e(TAG, "Couldn't find any magnetsupport users");
+                                Utils.showMessage(getActivity(), "Can't load the channel, please try later.");
                             }
                         }
 
@@ -333,6 +337,10 @@ public class HomeFragment extends BaseFragment implements AdapterView.OnItemClic
                 Log.e(TAG, "Failed to subscribe channel " + channel.getName());
             }
         });
+    }
+
+    private void goToAskMagnet() {
+        startActivity(ChatActivity.getIntentWithChannel(ChannelCacheManager.getInstance().getConversation(secondaryChannel.getChannel().getName())));
     }
 
     private void getConversations(boolean showProgress) {
