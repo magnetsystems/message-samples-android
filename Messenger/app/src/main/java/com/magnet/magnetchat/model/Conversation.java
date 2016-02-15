@@ -29,6 +29,7 @@ public class Conversation {
     private boolean hasUnreadMessage;
     private MMXChannel channel;
     private Date lastActiveTime;
+    private UserProfile owner;
 
     private Comparator<UserProfile> userProfileComparator = new Comparator<UserProfile>() {
         @Override public int compare(UserProfile lhs, UserProfile rhs) {
@@ -50,6 +51,9 @@ public class Conversation {
 
         Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
         for (UserProfile up : channelDetail.getSubscribers()) {
+            if (up.getUserIdentifier().equals(channel.getOwnerId())) {
+                owner = up;
+            }
             if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
                 this.addSupplier(up);
             }
@@ -107,6 +111,10 @@ public class Conversation {
 
     public void setChannel(MMXChannel channel) {
         this.channel = channel;
+    }
+
+    public UserProfile getOwner() {
+        return owner;
     }
 
     public List<Message> getMessages() {
@@ -192,10 +200,10 @@ public class Conversation {
     }
 
     public String ownerId() {
-        if (channel == null) {
+        if (owner == null) {
             return null;
         }
-        return channel.getOwnerId();
+        return owner.getUserIdentifier();
     }
 
 }

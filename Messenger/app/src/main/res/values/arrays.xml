@@ -4,4 +4,9 @@
         <item>Home</item>
         <item>Sign out</item>
     </string-array>
+    <string-array name="entries_support_home_drawer">
+        <item>Home</item>
+        <item>Support</item>
+        <item>Sign out</item>
+    </string-array>
 </resources>

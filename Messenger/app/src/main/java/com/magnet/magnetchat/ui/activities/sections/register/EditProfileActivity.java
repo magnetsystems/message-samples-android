@@ -1,20 +1,15 @@
 package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.target.SquaringDrawable;
-import com.bumptech.glide.signature.StringSignature;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;

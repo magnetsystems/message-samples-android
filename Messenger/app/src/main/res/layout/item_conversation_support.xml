@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#fff"
+    android:orientation="horizontal"
+    android:padding="7dp">
+
+    <ImageView
+        android:id="@+id/imAskNewMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_30"
+        android:contentDescription="New unread message"
+        android:src="@drawable/new_message"
+        android:visibility="invisible" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dimen_10"
+        android:orientation="horizontal">
+
+        <com.magnet.magnetchat.ui.views.CircleNameView
+            android:id="@+id/viewAskOwnerAvatar"
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_centerInParent="true" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageAskOwnerAvatar"
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_10"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:id="@+id/tvAskDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textColor="#7d7d7d" />
+
+            <com.magnet.magnetchat.ui.custom.FTextView
+                android:id="@+id/tvAskTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/tvAskDate"
+                android:layout_toStartOf="@+id/tvAskDate" />
+
+        </RelativeLayout>
+
+        <com.magnet.magnetchat.ui.custom.FTextView
+            android:id="@+id/tvAskLastMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:textColor="#7d7d7d" />
+
+    </LinearLayout>
+</LinearLayout>

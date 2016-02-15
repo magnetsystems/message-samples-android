@@ -5,5 +5,6 @@ package com.magnet.magnetchat.constants;
  */
 public enum AppFragment {
     HOME,
+    SUPPORT,
     EVENTS
 }
