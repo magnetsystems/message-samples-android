@@ -92,7 +92,7 @@ public class UsersAdapter extends ArrayAdapter<UserProfile> {
         } else {
             UserProfile user = getItem(position);
             final ViewHolder viewHolder;
-            if (convertView == null) {
+            if (convertView == null || null == convertView.getTag()) {
                 convertView = inflater.inflate(R.layout.item_user, parent, false);
                 viewHolder = new ViewHolder();
                 viewHolder.icon = (CircleImageView) convertView.findViewById(R.id.itemUserIcon);
