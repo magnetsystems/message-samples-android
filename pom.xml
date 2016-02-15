@@ -2,14 +2,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.magnet.mmx</groupId>
     <artifactId>android-samples</artifactId>
-    <version>2.3.2-SNAPSHOT</version>
+    <version>2.5.0-b-1</version>
     <packaging>jar</packaging>
     <name>android-samples</name>
     <url>http://maven.apache.org</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sample.version>2.3.2</sample.version>
+        <sample.version>2.5.0</sample.version>
     </properties>
 
     <dependencies>
@@ -46,6 +46,12 @@
                                     <arg value="-y" />
                                     <arg value="${basedir}/target/android-samples/howto-android.zip" />
                                     <arg value="HowTo" />
+                                </exec>
+                                <exec executable="zip" dir="${basedir}">
+                                    <arg value="-r" />
+                                    <arg value="-y" />
+                                    <arg value="${basedir}/target/android-samples/messenger-android.zip" />
+                                    <arg value="Messenger" />
                                 </exec>
                                 <exec executable="zip" dir="${basedir}">
                                     <arg value="-r" />

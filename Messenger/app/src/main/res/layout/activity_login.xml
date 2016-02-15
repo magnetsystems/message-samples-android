@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".ui.activities.sections.home.HomeActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#fff"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="vertical">
+
+                <ImageView
+                    style="@style/styleFitImageCenter"
+                    android:layout_width="@dimen/dimen_80"
+                    android:layout_height="@dimen/dimen_80"
+                    android:layout_marginTop="@dimen/dimen_40"
+                    android:src="@drawable/magnet_icon_red" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    style="@style/style_text_title"
+                    android:layout_marginTop="@dimen/dimen_40"
+                    android:text="Sign in to your account" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/loginEmail"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_64"
+                    android:layout_marginRight="@dimen/dimen_64"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:hint="Email Address"
+                    android:inputType="textEmailAddress" />
+
+                <com.magnet.magnetchat.ui.custom.FEditText
+                    android:id="@+id/loginPassword"
+                    style="@style/EditFieldStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_64"
+                    android:layout_marginRight="@dimen/dimen_64"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+
+                <com.magnet.magnetchat.ui.custom.CCheckBox
+                    android:id="@+id/loginRemember"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_15"
+                    android:text="Remember me"
+                    android:textSize="@dimen/text_15" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:id="@+id/loginSignInBtn"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25"
+                    android:text="Sign in" />
+
+                <com.magnet.magnetchat.ui.custom.FTextView
+                    android:id="@+id/loginCreateAccountBtn"
+                    style="@style/ButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25"
+                    android:text="Create account" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <include layout="@layout/layout_please_wait" />
+
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>

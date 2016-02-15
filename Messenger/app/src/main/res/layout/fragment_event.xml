@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/viewEvents"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    style="@style/styleCropImageCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_img_1" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimen_30">
+
+                    <ImageView
+                        style="@style/styleFitImageCenter"
+                        android:layout_width="@dimen/dimen_30"
+                        android:layout_height="@dimen/dimen_30"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_many" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="match_parent" />
+
+                    <com.magnet.magnetchat.ui.custom.FTextView
+                        style="@style/style_text_default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="Developer Week 2016 Forum"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="@dimen/dimen_10" />
+
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/styleFitImageCenter"
+                    android:layout_width="@dimen/dimen_11"
+                    android:layout_height="@dimen/dimen_11"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/dimen_10"
+                    android:src="@drawable/arrow_right" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    style="@style/styleCropImageCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_img_2" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimen_30">
+
+                    <ImageView
+                        style="@style/styleFitImageCenter"
+                        android:layout_width="@dimen/dimen_30"
+                        android:layout_height="@dimen/dimen_30"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_many" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="match_parent" />
+
+                    <com.magnet.magnetchat.ui.custom.FTextView
+                        style="@style/style_text_default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="TechCrunch Disrupt 2015 Forum"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="@dimen/dimen_10" />
+
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/styleFitImageCenter"
+                    android:layout_width="@dimen/dimen_11"
+                    android:layout_height="@dimen/dimen_11"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/dimen_10"
+                    android:src="@drawable/arrow_right" />
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    style="@style/styleCropImageCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_img_3" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimen_30">
+
+                    <ImageView
+                        style="@style/styleFitImageCenter"
+                        android:layout_width="@dimen/dimen_30"
+                        android:layout_height="@dimen/dimen_30"
+                        android:layout_gravity="center"
+                        android:src="@mipmap/ic_many" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="match_parent" />
+
+                    <com.magnet.magnetchat.ui.custom.FTextView
+                        style="@style/style_text_default"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="AndDevCon 2015 Forum"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_10"
+                        android:layout_height="@dimen/dimen_10" />
+
+                </LinearLayout>
+
+                <ImageView
+                    style="@style/styleFitImageCenter"
+                    android:layout_width="@dimen/dimen_11"
+                    android:layout_height="@dimen/dimen_11"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/dimen_10"
+                    android:src="@drawable/arrow_right" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
