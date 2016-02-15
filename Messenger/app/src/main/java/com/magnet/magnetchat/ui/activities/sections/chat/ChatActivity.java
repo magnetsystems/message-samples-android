@@ -380,12 +380,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void prepareConversation(Conversation conversation) {
-        String channelName = conversation.getChannel().getName();
+        channelName = conversation.getChannel().getName();
         if (channelName == null) {
             finish();
             return;
         }
-        if (ChannelCacheManager.getInstance().getConversation(channelName) == null) {
+        if (ChannelCacheManager.getInstance().getConversationByName(channelName) == null) {
             ChannelCacheManager.getInstance().addConversation(channelName, conversation);
         }
         currentConversation = conversation;
@@ -397,14 +397,15 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void updateUsers() {
         List<UserProfile> suppliersList = currentConversation.getSuppliersList();
-        if (suppliersList.size() == 1) {
+        if (channelName.startsWith(ChannelHelper.ASK_MAGNET)) {
+            if (currentConversation.getOwner() != null) {
+                setTitle(currentConversation.getOwner().getDisplayName());
+            }
+        } else if (suppliersList.size() == 1) {
             setTitle(UserHelper.getDisplayNames(suppliersList));
             findViewById(R.id.chatSuppliers).setVisibility(View.GONE);
         } else {
             setTitle("Group");
-            //findViewById(R.id.chatSuppliers).setVisibility(View.VISIBLE);
-            //String suppliers = UserHelper.getDisplayNames(suppliersList);
-            //textChatSuppliers.setText(String.format("To: %s", suppliers));
         }
     }
 
@@ -499,6 +500,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public static Intent getIntentWithChannel(Conversation conversation) {
         if(null != conversation && null != conversation.getChannel()) {
             String name = conversation.getChannel().getName();
+            if (name.equals(ChannelHelper.ASK_MAGNET)) {
+                name += "_" + conversation.ownerId();
+            }
             Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
             intent.putExtra(TAG_CHANNEL_NAME, name);
             return intent;

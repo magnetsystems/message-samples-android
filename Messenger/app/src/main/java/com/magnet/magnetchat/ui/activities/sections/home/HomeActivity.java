@@ -11,11 +11,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.StringSignature;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
@@ -71,6 +71,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         drawer.setDrawerListener(toggle);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
+        if (UserHelper.isMagnetSupportMember()) {
+            String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
+            listHomeDrawer.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, entries));
+            listHomeDrawer.setOnItemClickListener(menuForSupportClickListener);
+        }
 
         setFragment(AppFragment.HOME);
     }
@@ -81,7 +86,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
-            toolbar.setTitle(User.getCurrentUser().getDisplayName());
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
@@ -156,7 +160,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
+                toolbar.setTitle(User.getCurrentUser().getDisplayName());
 //                viewEvents.setVisibility(View.VISIBLE);
+                break;
+            case SUPPORT:
+                toolbar.setTitle("Support");
                 break;
             //case EVENTS:
             //    viewEvents.setVisibility(View.GONE);
@@ -181,10 +189,32 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                 case 0:
                     setFragment(AppFragment.HOME);
                     break;
-                //case 1:
-                //    setFragment(AppFragment.EVENTS);
-                //    break;
                 case 1:
+                    UserHelper.logout(logoutListener);
+                    break;
+                default:
+                    setFragment(AppFragment.HOME);
+                    break;
+            }
+
+        }
+    };
+
+    /**
+     * Listener which provide the menu item functional for support member
+     */
+    private final AdapterView.OnItemClickListener menuForSupportClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            drawer.closeDrawer(GravityCompat.START);
+            switch (position) {
+                case 0:
+                    setFragment(AppFragment.HOME);
+                    break;
+                case 1:
+                    setFragment(AppFragment.SUPPORT);
+                    break;
+                case 2:
                     UserHelper.logout(logoutListener);
                     break;
                 default:

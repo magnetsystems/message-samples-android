@@ -6,26 +6,29 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
-import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
-import com.magnet.max.android.User;
+import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
 import java.util.List;
 
-public class ConversationsAdapter extends BaseConversationsAdapter {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class SupportConversationsAdapter extends BaseConversationsAdapter {
 
     private class ConversationViewHolder {
         ImageView newMessage;
-        ImageView icon;
-        TextView users;
+        CircleImageView imageAvatar;
+        CircleNameView viewAvatar;
+        TextView title;
         TextView date;
         TextView lastMessage;
     }
 
-    public ConversationsAdapter(Context context, List<Conversation> conversations) {
+    public SupportConversationsAdapter(Context context, List<Conversation> conversations) {
         super(context, conversations);
     }
 
@@ -33,13 +36,14 @@ public class ConversationsAdapter extends BaseConversationsAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ConversationViewHolder viewHolder;
         if (convertView == null) {
-            convertView = getInflater().inflate(R.layout.item_conversation, parent, false);
+            convertView = getInflater().inflate(R.layout.item_conversation_support, parent, false);
             viewHolder = new ConversationViewHolder();
-            viewHolder.newMessage = (ImageView) convertView.findViewById(R.id.itemConversationNewMsg);
-            viewHolder.icon = (ImageView) convertView.findViewById(R.id.itemConversationIcon);
-            viewHolder.users = (TextView) convertView.findViewById(R.id.itemConversationUsers);
-            viewHolder.date = (TextView) convertView.findViewById(R.id.itemConversationDate);
-            viewHolder.lastMessage = (TextView) convertView.findViewById(R.id.itemConversationLastMsg);
+            viewHolder.newMessage = (ImageView) convertView.findViewById(R.id.imAskNewMsg);
+            viewHolder.imageAvatar = (CircleImageView) convertView.findViewById(R.id.imageAskOwnerAvatar);
+            viewHolder.viewAvatar = (CircleNameView) convertView.findViewById(R.id.viewAskOwnerAvatar);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.tvAskTitle);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.tvAskDate);
+            viewHolder.lastMessage = (TextView) convertView.findViewById(R.id.tvAskLastMsg);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ConversationViewHolder) convertView.getTag();
@@ -48,16 +52,12 @@ public class ConversationsAdapter extends BaseConversationsAdapter {
             return convertView;
         }
         Conversation conversation = getItem(position);
-        List<UserProfile> suppliers = conversation.getSuppliersList();
-        if (suppliers.size() == 0) {
-            User currentUser = User.getCurrentUser();
-            viewHolder.users.setText(String.format("%s %s", currentUser.getFirstName(), currentUser.getLastName()));
-        } else {
-            viewHolder.users.setText(UserHelper.getDisplayNames(conversation.getSuppliersList()));
-            if (suppliers.size() > 1) {
-                viewHolder.icon.setImageResource(R.mipmap.ic_many);
-            } else {
-                viewHolder.icon.setImageResource(R.mipmap.ic_one);
+        UserProfile owner = conversation.getOwner();
+        if (owner != null) {
+            viewHolder.title.setText(owner.getDisplayName());
+            viewHolder.viewAvatar.setUserName(owner.getDisplayName());
+            if (owner.getAvatarUrl() != null) {
+                Glide.with(getContext()).load(owner.getAvatarUrl()).fitCenter().into(viewHolder.imageAvatar);
             }
         }
         if (conversation.hasUnreadMessage()) {
@@ -69,5 +69,4 @@ public class ConversationsAdapter extends BaseConversationsAdapter {
         viewHolder.lastMessage.setText(getLastMessage(conversation));
         return convertView;
     }
-
 }
