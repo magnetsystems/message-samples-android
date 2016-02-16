@@ -27,5 +27,9 @@ public class SupportFragment extends BaseChannelsFragment {
         return new SupportConversationsAdapter(getActivity(), conversations);
     }
 
+    @Override
+    protected void onConversationListIsEmpty(boolean isEmpty) {
+
+    }
 
 }

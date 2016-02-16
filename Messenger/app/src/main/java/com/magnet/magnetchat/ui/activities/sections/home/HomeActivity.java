@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -23,6 +22,7 @@ import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
+import com.magnet.magnetchat.ui.adapters.MenuAdapter;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
@@ -71,9 +71,10 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         drawer.setDrawerListener(toggle);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
+        User user = User.getCurrentUser();
         if (UserHelper.isMagnetSupportMember()) {
             String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
-            listHomeDrawer.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, entries));
+            listHomeDrawer.setAdapter(new MenuAdapter(this, entries));
             listHomeDrawer.setOnItemClickListener(menuForSupportClickListener);
         }
 
@@ -86,6 +87,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
+            if (currentFragment == AppFragment.HOME) {
+                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+            }
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
@@ -160,7 +164,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+//                toolbar.setTitle(User.getCurrentUser().getDisplayName());
 //                viewEvents.setVisibility(View.VISIBLE);
                 break;
             case SUPPORT:

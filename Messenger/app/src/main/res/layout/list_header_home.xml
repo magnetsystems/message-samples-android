@@ -48,11 +48,11 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:gravity="center">
+
                     <com.magnet.magnetchat.ui.custom.FTextView
                         style="@style/style_text_default"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:text="Developer Week 2016 Forum"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
@@ -89,10 +89,9 @@
             <ImageView
                 style="@style/styleCropImageCenter"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_60"
-                android:src="@drawable/ask_magnet"
+                android:layout_height="@dimen/dimen_85"
+                android:src="@drawable/bg_askmagnet"
                 android:id="@+id/ivSecondaryBackground"/>
-
 
             <LinearLayout
                 android:id="@+id/llSecondary"
@@ -101,12 +100,11 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal">
 
-                <ImageView
-                    style="@style/styleFitImageCenter"
-                    android:layout_width="@dimen/dimen_30"
-                    android:layout_height="@dimen/dimen_30"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_width="@dimen/dimen_50"
+                    android:layout_height="@dimen/dimen_50"
                     android:layout_gravity="center"
-                    android:src="@mipmap/ic_many" />
+                    android:src="@drawable/icon_group_magnet"/>
 
                 <View
                     android:layout_width="@dimen/dimen_10"
@@ -132,7 +130,6 @@
                 android:src="@drawable/arrow_right" />
 
         </FrameLayout>
-
 
     </LinearLayout>
 
