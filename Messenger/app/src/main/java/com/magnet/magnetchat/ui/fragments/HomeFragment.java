@@ -53,6 +53,10 @@ public class HomeFragment extends BaseChannelsFragment {
     private FTextView tvPrimarySubscribers;
     private FrameLayout flSecondary;
 
+    private LinearLayout llCreateMessage;
+    private ImageView ivCreateMessage;
+    private FTextView tvCreateMessage;
+
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
     private ChannelDetail secondaryChannel;
@@ -71,6 +75,10 @@ public class HomeFragment extends BaseChannelsFragment {
             flSecondary.setVisibility(View.GONE);
         }
 
+        llCreateMessage = (LinearLayout) containerView.findViewById(R.id.llHomeCreateMsg);
+        ivCreateMessage = (ImageView) containerView.findViewById(R.id.ivHomeCreateMsg);
+        tvCreateMessage = (FTextView) containerView.findViewById(R.id.tvHomeCreateMsg);
+
         final ListView conversationsList = getConversationsListView();
         conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -85,6 +93,7 @@ public class HomeFragment extends BaseChannelsFragment {
         ImageView ivPrimaryBackground = (ImageView) header.findViewById(R.id.ivPrimaryBackground);
         LinearLayout llSecondary = (LinearLayout) header.findViewById(R.id.llSecondary);
         ImageView ivSecondaryBackground = (ImageView) header.findViewById(R.id.ivSecondaryBackground);
+        setOnClickListeners(llPrimary, ivPrimaryBackground, llSecondary, ivSecondaryBackground, ivCreateMessage, tvCreateMessage);
 
         setHasOptionsMenu(true);
     }
@@ -108,6 +117,10 @@ public class HomeFragment extends BaseChannelsFragment {
                 if (!UserHelper.isMagnetSupportMember()) {
                     loadMagnetSupportChannel();
                 }
+                break;
+            case R.id.ivHomeCreateMsg:
+            case R.id.tvHomeCreateMsg:
+                startActivity(ChooseUserActivity.getIntentToCreateChannel());
                 break;
         }
     }
@@ -165,6 +178,15 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     protected BaseConversationsAdapter createAdapter(List<Conversation> conversations) {
         return new ConversationsAdapter(getActivity(), conversations);
+    }
+
+    @Override
+    protected void onConversationListIsEmpty(boolean isEmpty) {
+        if (isEmpty) {
+            llCreateMessage.setVisibility(View.VISIBLE);
+        } else {
+            llCreateMessage.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -241,11 +263,12 @@ public class HomeFragment extends BaseChannelsFragment {
                     User.search("tags:" + UserHelper.MAGNET_SUPPORT_TAG, 100, 0, "firstName:asc", new ApiCallback<List<User>>() {
                         @Override
                         public void success(List<User> users) {
-                            Set<String> userIds = new HashSet<String>();
-                            for (User u : users) {
-                                userIds.add(u.getUserIdentifier());
-                            }
+                            Set<String> userIds = new HashSet<>();
                             userIds.add(User.getCurrentUserId());
+                            if (users != null && !users.isEmpty()) {
+                                for (User u : users) {
+                                    userIds.add(u.getUserIdentifier());
+                                }
                                 MMXChannel.create(ChannelHelper.ASK_MAGNET, "Magnet Support for " + User.getCurrentUser().getDisplayName(), false,
                                         MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
                                             @Override

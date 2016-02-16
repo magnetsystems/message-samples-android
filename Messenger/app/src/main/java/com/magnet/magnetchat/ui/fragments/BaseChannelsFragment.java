@@ -124,11 +124,6 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     }
 
     protected void showList(List<Conversation> conversationsToShow) {
-        if (conversationsToShow.size() == 0) {
-            onConversationListIsEmpty(true);
-        } else {
-            onConversationListIsEmpty(false);
-        }
         if (adapter == null) {
             conversations = new ArrayList<>(conversationsToShow);
             adapter = createAdapter(conversations);
@@ -150,7 +145,10 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
             finishGetChannels();
             showAllConversations();
             if (conversations == null || conversations.size() == 0) {
+                onConversationListIsEmpty(true);
                 Log.w("read channels", "No conversation is available");
+            } else {
+                onConversationListIsEmpty(false);
             }
         }
 

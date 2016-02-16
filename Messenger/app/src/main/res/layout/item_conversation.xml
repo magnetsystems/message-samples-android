@@ -10,7 +10,7 @@
         android:id="@+id/imConversationNewMsg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_30"
+        android:layout_marginTop="@dimen/dimen_15"
         android:contentDescription="New unread message"
         android:src="@drawable/new_message"
         android:visibility="invisible" />
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/dimen_10"
+        android:layout_margin="@dimen/dimen_5"
         android:orientation="horizontal">
 
         <com.magnet.magnetchat.ui.views.CircleNameView
@@ -39,7 +39,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_10"
+        android:layout_margin="@dimen/dimen_5"
         android:orientation="vertical">
 
         <RelativeLayout

@@ -13,7 +13,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChannelCacheManager {
@@ -33,7 +32,7 @@ public class ChannelCacheManager {
     };
 
     private ChannelCacheManager() {
-        conversations = new TreeMap<>();
+        conversations = new HashMap<>();
     }
 
     public static ChannelCacheManager getInstance() {
@@ -109,9 +108,18 @@ public class ChannelCacheManager {
         }
     }
 
-
     public Conversation getConversationByName(String name) {
         return conversations.get(name);
+    }
+
+    public int getSupportUnreadCount() {
+        int supportUnreadCount = 0;
+        for (Conversation conversation : getSupportConversations()) {
+            if (conversation.hasUnreadMessage()) {
+                supportUnreadCount++;
+            }
+        }
+        return supportUnreadCount;
     }
 
     public void resetConversations() {
