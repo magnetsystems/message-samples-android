@@ -85,7 +85,6 @@ public class HomeFragment extends BaseChannelsFragment {
         ImageView ivPrimaryBackground = (ImageView) header.findViewById(R.id.ivPrimaryBackground);
         LinearLayout llSecondary = (LinearLayout) header.findViewById(R.id.llSecondary);
         ImageView ivSecondaryBackground = (ImageView) header.findViewById(R.id.ivSecondaryBackground);
-        setOnClickListeners(llPrimary, ivPrimaryBackground, llSecondary, ivSecondaryBackground);
 
         setHasOptionsMenu(true);
     }
@@ -247,7 +246,6 @@ public class HomeFragment extends BaseChannelsFragment {
                                 userIds.add(u.getUserIdentifier());
                             }
                             userIds.add(User.getCurrentUserId());
-                            if (null != users && !users.isEmpty()) {
                                 MMXChannel.create(ChannelHelper.ASK_MAGNET, "Magnet Support for " + User.getCurrentUser().getDisplayName(), false,
                                         MMXChannel.PublishPermission.SUBSCRIBER, userIds, new MMXChannel.OnFinishedListener<MMXChannel>() {
                                             @Override

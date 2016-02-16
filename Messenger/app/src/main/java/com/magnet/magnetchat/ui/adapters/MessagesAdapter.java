@@ -231,7 +231,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     private void makeMessageToMe(ViewHolder viewHolder, Message message) {
-
         viewHolder.imageMyAvatar.setVisibility(View.GONE);
         viewHolder.viewMyAvatar.setVisibility(View.GONE);
         viewHolder.imageOtherAvatar.setVisibility(View.VISIBLE);

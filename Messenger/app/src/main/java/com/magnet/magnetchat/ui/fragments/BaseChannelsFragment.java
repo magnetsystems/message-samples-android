@@ -60,9 +60,9 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
 
-        getConversations(true);
-
         onFragmentCreated(containerView);
+
+        getConversations(true);
     }
 
     @Override
@@ -115,6 +115,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     protected abstract BaseConversationsAdapter createAdapter(List<Conversation> conversations);
 
+    protected abstract void onConversationListIsEmpty(boolean isEmpty);
+
     protected void updateList() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -122,7 +124,12 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     }
 
     protected void showList(List<Conversation> conversationsToShow) {
-        if (null == adapter) {
+        if (conversationsToShow.size() == 0) {
+            onConversationListIsEmpty(true);
+        } else {
+            onConversationListIsEmpty(false);
+        }
+        if (adapter == null) {
             conversations = new ArrayList<>(conversationsToShow);
             adapter = createAdapter(conversations);
             conversationsList.setAdapter(adapter);
@@ -141,10 +148,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
             finishGetChannels();
-
-            if (null != lastConversation) {
-                showAllConversations();
-            } else {
+            showAllConversations();
+            if (conversations == null || conversations.size() == 0) {
                 Log.w("read channels", "No conversation is available");
             }
         }

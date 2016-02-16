@@ -71,6 +71,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         drawer.setDrawerListener(toggle);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
+        User user = User.getCurrentUser();
         if (UserHelper.isMagnetSupportMember()) {
             String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
             listHomeDrawer.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, entries));
@@ -86,6 +87,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
+            if (currentFragment == AppFragment.HOME) {
+                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+            }
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
@@ -160,7 +164,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+//                toolbar.setTitle(User.getCurrentUser().getDisplayName());
 //                viewEvents.setVisibility(View.VISIBLE);
                 break;
             case SUPPORT:
