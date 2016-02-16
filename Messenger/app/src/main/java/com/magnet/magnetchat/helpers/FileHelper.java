@@ -122,6 +122,17 @@ public class FileHelper {
         return null;
     }
 
+    public static Bitmap getImageBitmap(Context context, Uri uri) {
+        try {
+            final InputStream ist = context.getContentResolver().openInputStream(uri);
+            return BitmapFactory.decodeStream(ist);
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read image from uri " + uri, e);
+        }
+
+        return null;
+    }
+
     public static String getMimeType(Context context, Uri uri, String fileName, String type) {
         String result = null;
         if(null != uri) {

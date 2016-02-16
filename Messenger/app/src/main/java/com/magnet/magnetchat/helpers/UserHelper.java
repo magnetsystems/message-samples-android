@@ -20,7 +20,9 @@ public class UserHelper {
 
     private static final String EMAIL_TEMPLATE = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\\.)*(?:aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$";
 
-    private static final int MAX_USER_NAMES_LENGTH = 42;
+    private static final int MAX_USER_NAMES_LENGTH = 36;
+
+    public static final String MAGNET_SUPPORT_TAG = "magnetsupport";
 
     /**
      * Login listener
@@ -218,8 +220,19 @@ public class UserHelper {
         return email.matches(EMAIL_TEMPLATE);
     }
 
-    public static boolean isMagnetEmployee() {
-        return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
+    public static boolean isMagnetSupportMember() {
+        //return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
+        if(null != User.getCurrentUser()) {
+            String[] tags = User.getCurrentUser().getTags();
+            if (null != tags) {
+                for (String t : tags) {
+                    if (MAGNET_SUPPORT_TAG.equalsIgnoreCase(t)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

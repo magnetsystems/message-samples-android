@@ -84,7 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
-     * Method which privde the getting of base view ID
+     * Method which provide the getting of base view ID
      *
      * @return
      */
@@ -97,7 +97,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     /**
      * Method which provide the show message in the snack bar
      *
-     * @param message curren message
+     * @param message current message
      */
     public void showMessage(String... message) {
         if (getBaseViewID() == -1) {
@@ -111,7 +111,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
-     * Method whihc provide the show message form the resource
+     * Method which provide the show message form the resource
      *
      * @param stringRes current resource ID
      */

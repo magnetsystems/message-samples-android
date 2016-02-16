@@ -149,8 +149,11 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             public void onUserSetExists(String channelSetName) {
                 findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
                 Conversation anotherConversation = ChannelCacheManager.getInstance().getConversationByName(channelSetName);
-                startActivity(ChatActivity.getIntentWithChannel(anotherConversation));
-                finish();
+                Intent i = ChatActivity.getIntentWithChannel(anotherConversation);
+                if(null != i) {
+                    startActivity(i);
+                    finish();
+                }
             }
 
             @Override

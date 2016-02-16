@@ -2,6 +2,7 @@ package com.magnet.magnetchat.model;
 
 import android.location.Location;
 
+import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Attachment;
@@ -28,6 +29,7 @@ public class Conversation {
     private boolean hasUnreadMessage;
     private MMXChannel channel;
     private Date lastActiveTime;
+    private UserProfile owner;
 
     private Comparator<UserProfile> userProfileComparator = new Comparator<UserProfile>() {
         @Override public int compare(UserProfile lhs, UserProfile rhs) {
@@ -49,6 +51,9 @@ public class Conversation {
 
         Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
         for (UserProfile up : channelDetail.getSubscribers()) {
+            if (up.getUserIdentifier().equals(channel.getOwnerId())) {
+                owner = up;
+            }
             if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
                 this.addSupplier(up);
             }
@@ -106,6 +111,10 @@ public class Conversation {
 
     public void setChannel(MMXChannel channel) {
         this.channel = channel;
+    }
+
+    public UserProfile getOwner() {
+        return owner;
     }
 
     public List<Message> getMessages() {
@@ -174,7 +183,7 @@ public class Conversation {
             builder.attachments(attachment);
         }
         final Message message = Message.createMessageFrom(builder.build());
-        message.setCreationDate(new Date());
+        message.setCreationDate(DateHelper.localToUtc(new Date()));
         channel.publish(message.getMmxMessage(), new MMXChannel.OnFinishedListener<String>() {
             @Override
             public void onSuccess(String s) {
@@ -191,10 +200,10 @@ public class Conversation {
     }
 
     public String ownerId() {
-        if (channel == null) {
+        if (owner == null) {
             return null;
         }
-        return channel.getOwnerId();
+        return owner.getUserIdentifier();
     }
 
 }

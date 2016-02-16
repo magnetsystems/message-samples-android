@@ -3,10 +3,9 @@
  */
 package com.magnet.magnetchat.core.managers;
 
-import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
-import com.magnet.magnetchat.ui.fragments.HomeFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,10 +13,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChannelCacheManager {
+
     private static ChannelCacheManager _instance;
 
     private Map<String, Conversation> conversations;
@@ -33,7 +32,7 @@ public class ChannelCacheManager {
     };
 
     private ChannelCacheManager() {
-        conversations = new TreeMap<>();
+        conversations = new HashMap<>();
     }
 
     public static ChannelCacheManager getInstance() {
@@ -46,10 +45,20 @@ public class ChannelCacheManager {
 
     public List<Conversation> getConversations() {
         ArrayList<Conversation> list = new ArrayList<>();
-        for(Conversation c : conversations.values()) {
-            if(!c.getChannel().getName().startsWith("global_")
-                && (UserHelper.isMagnetEmployee() || !c.getChannel().getName().equals(
-                HomeFragment.ASK_MAGNET))) {
+        for (Conversation c : conversations.values()) {
+            if (!c.getChannel().getName().startsWith("global_")
+                    && !c.getChannel().getName().startsWith(ChannelHelper.ASK_MAGNET)) {
+                list.add(c);
+            }
+        }
+        Collections.sort(list, conversationComparator);
+        return list;
+    }
+
+    public List<Conversation> getSupportConversations() {
+        ArrayList<Conversation> list = new ArrayList<>();
+        for (Conversation c : conversations.values()) {
+            if (c.getChannel().getName().startsWith(ChannelHelper.ASK_MAGNET)) {
                 list.add(c);
             }
         }
@@ -65,6 +74,9 @@ public class ChannelCacheManager {
     }
 
     public void addConversation(String channelName, Conversation conversation) {
+        if (channelName.equals(ChannelHelper.ASK_MAGNET)) {
+            channelName += "_" + conversation.ownerId();
+        }
         conversations.put(channelName, conversation);
         isConversationListUpdated.set(true);
     }
@@ -74,10 +86,6 @@ public class ChannelCacheManager {
             conversations.remove(channelName);
             isConversationListUpdated.set(true);
         }
-    }
-
-    public Conversation getConversation(String channelName) {
-        return conversations.get(channelName);
     }
 
     public boolean isConversationListUpdated() {
@@ -100,9 +108,18 @@ public class ChannelCacheManager {
         }
     }
 
-
     public Conversation getConversationByName(String name) {
         return conversations.get(name);
+    }
+
+    public int getSupportUnreadCount() {
+        int supportUnreadCount = 0;
+        for (Conversation conversation : getSupportConversations()) {
+            if (conversation.hasUnreadMessage()) {
+                supportUnreadCount++;
+            }
+        }
+        return supportUnreadCount;
     }
 
     public void resetConversations() {

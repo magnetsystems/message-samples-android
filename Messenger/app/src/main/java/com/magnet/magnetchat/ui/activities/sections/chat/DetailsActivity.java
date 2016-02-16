@@ -14,6 +14,7 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.max.android.User;
+import com.magnet.max.android.util.StringUtil;
 
 public class DetailsActivity extends BaseActivity {
 
@@ -40,16 +41,22 @@ public class DetailsActivity extends BaseActivity {
         channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
         if (channelName != null) {
             Conversation currentConversation = ChannelCacheManager.getInstance().getConversationByName(channelName);
-            UsersAdapter adapter;
-            if (currentConversation.getChannel().getOwnerId().equals(User.getCurrentUserId())) {
-                adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), addUserListener);
-            } else {
-                adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), null);
-            }
-            ListView listView = (ListView) findViewById(R.id.detailsSubscribersList);
-            listView.setAdapter(adapter);
+            if(null != currentConversation && null != currentConversation.getChannel()) {
+                UsersAdapter adapter;
+                if (StringUtil.isStringValueEqual(currentConversation.getChannel().getOwnerId(),User.getCurrentUserId())) {
+                    adapter = new UsersAdapter(this, currentConversation.getSuppliersList(),
+                        addUserListener);
+                } else {
+                    adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), null);
+                }
+                ListView listView = (ListView) findViewById(R.id.detailsSubscribersList);
+                listView.setAdapter(adapter);
 
-            setTitle("Details");
+                setTitle("Details");
+            } else {
+                showMessage("Couldn't load channel. Please try later");
+                finish();
+            }
         }
     }
 

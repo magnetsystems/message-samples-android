@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DateHelper {
 
@@ -41,6 +42,19 @@ public class DateHelper {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static String getLocalTime(Date date) {
+        DateFormat dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
+        return dateFormat.format(utcToLocal(date));
+    }
+
+    public static Date utcToLocal(Date date) {
+        return new Date(date.getTime() + TimeZone.getDefault().getOffset(System.currentTimeMillis()));
+    }
+
+    public static Date localToUtc(Date date) {
+        return new Date(date.getTime() - TimeZone.getDefault().getOffset(System.currentTimeMillis()));
     }
 
     public static String getTime(Date date) {

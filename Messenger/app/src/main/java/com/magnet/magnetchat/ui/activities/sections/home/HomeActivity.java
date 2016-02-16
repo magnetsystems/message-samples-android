@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,6 +22,7 @@ import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
+import com.magnet.magnetchat.ui.adapters.MenuAdapter;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
@@ -69,6 +71,12 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         drawer.setDrawerListener(toggle);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
+        User user = User.getCurrentUser();
+        if (UserHelper.isMagnetSupportMember()) {
+            String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
+            listHomeDrawer.setAdapter(new MenuAdapter(this, entries));
+            listHomeDrawer.setOnItemClickListener(menuForSupportClickListener);
+        }
 
         setFragment(AppFragment.HOME);
     }
@@ -79,13 +87,21 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
-            toolbar.setTitle(User.getCurrentUser().getDisplayName());
+            if (currentFragment == AppFragment.HOME) {
+                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+            }
+        } else {
+            Log.w(TAG, "CurrentUser is null, logout");
+            UserHelper.logout(logoutListener);
+
+            return;
         }
 
         if (null != User.getCurrentUser().getAvatarUrl()) {
             Glide.with(this)
                     .load(User.getCurrentUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_user)
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .centerCrop()
                     .into(ivUserAvatar);
         }
@@ -148,7 +164,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
+//                toolbar.setTitle(User.getCurrentUser().getDisplayName());
 //                viewEvents.setVisibility(View.VISIBLE);
+                break;
+            case SUPPORT:
+                toolbar.setTitle("Support");
                 break;
             //case EVENTS:
             //    viewEvents.setVisibility(View.GONE);
@@ -173,10 +193,32 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
                 case 0:
                     setFragment(AppFragment.HOME);
                     break;
-                //case 1:
-                //    setFragment(AppFragment.EVENTS);
-                //    break;
                 case 1:
+                    UserHelper.logout(logoutListener);
+                    break;
+                default:
+                    setFragment(AppFragment.HOME);
+                    break;
+            }
+
+        }
+    };
+
+    /**
+     * Listener which provide the menu item functional for support member
+     */
+    private final AdapterView.OnItemClickListener menuForSupportClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            drawer.closeDrawer(GravityCompat.START);
+            switch (position) {
+                case 0:
+                    setFragment(AppFragment.HOME);
+                    break;
+                case 1:
+                    setFragment(AppFragment.SUPPORT);
+                    break;
+                case 2:
                     UserHelper.logout(logoutListener);
                     break;
                 default:

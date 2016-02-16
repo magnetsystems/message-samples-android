@@ -46,31 +46,31 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setOnClickListeners(R.id.loginCreateAccountBtn, R.id.loginSignInBtn);
-        Logger.debug("SessionStatus", User.getSessionStatus());
-        if (User.SessionStatus.LoggedIn == User.getSessionStatus()) {
-            goToHomeActivity();
-        } else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
-            User.resumeSession(new ApiCallback<Boolean>() {
-                @Override
-                public void success(Boolean aBoolean) {
-                    if (aBoolean) {
-                        goToHomeActivity();
-                    } else {
-                        handleError("");
-                    }
-                }
-
-                @Override
-                public void failure(ApiError apiError) {
-                    handleError(apiError.getMessage());
-                }
-
-                private void handleError(String errorMessage) {
-                    Logger.debug(TAG, "Failed to resume session due to ", errorMessage);
-                    changeLoginMode(false);
-                }
-            });
-        }
+        //Logger.debug("SessionStatus", User.getSessionStatus());
+        //if (User.SessionStatus.LoggedIn == User.getSessionStatus()) {
+        //    goToHomeActivity();
+        //} else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
+        //    User.resumeSession(new ApiCallback<Boolean>() {
+        //        @Override
+        //        public void success(Boolean aBoolean) {
+        //            if (aBoolean) {
+        //                goToHomeActivity();
+        //            } else {
+        //                handleError("");
+        //            }
+        //        }
+        //
+        //        @Override
+        //        public void failure(ApiError apiError) {
+        //            handleError(apiError.getMessage());
+        //        }
+        //
+        //        private void handleError(String errorMessage) {
+        //            Logger.debug(TAG, "Failed to resume session due to ", errorMessage);
+        //            changeLoginMode(false);
+        //        }
+        //    });
+        //}
     }
 
     @Override

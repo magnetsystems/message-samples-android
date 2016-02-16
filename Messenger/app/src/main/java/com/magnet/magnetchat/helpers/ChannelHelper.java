@@ -2,8 +2,8 @@ package com.magnet.magnetchat.helpers;
 
 import android.content.Intent;
 
-import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.application.CurrentApplication;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.util.Logger;
@@ -28,6 +28,7 @@ import java.util.Set;
 public class ChannelHelper {
     private static final String TAG = ChannelHelper.class.getSimpleName();
     public static final String ACTION_ADDED_CONVERSATION = "com.magnet.magnetchat.ADDED_CONVERSATION";
+    public static final String ASK_MAGNET = "askMagnet";
 
     private static ChannelHelper instance;
 
@@ -84,7 +85,7 @@ public class ChannelHelper {
             public void onSuccess(final List<MMXChannel> channels) {
                 Logger.debug(TAG, "getAllSubscriptions success : " + channels);
                 ChannelCacheManager.getInstance().resetConversations();
-                if(null != channels && channels.size() > 0) {
+                if (null != channels && channels.size() > 0) {
                     fetchChannelDetails(channels, listener);
                 } else {
                     if (listener != null) {
@@ -186,7 +187,7 @@ public class ChannelHelper {
         findChannelByUsers(userIdList, new OnFindChannelByUsersListener() {
             @Override
             public void onSuccessFound(List<MMXChannel> mmxChannels) {
-                if (mmxChannels.size() == 1) { // Use existing one if only one found
+                if (mmxChannels.size() == 1 && !mmxChannels.get(0).getName().startsWith(ASK_MAGNET)) { // Use existing one if only one found
                     Logger.debug("channel with same subscribers exists, use it");
                     if (listener != null)
                         listener.onChannelExists(mmxChannels.get(0));
@@ -272,7 +273,7 @@ public class ChannelHelper {
                 readChannelInfo(mmxMessage.getChannel(), new OnReadChannelInfoListener() {
                     @Override
                     public void onSuccessFinish(Conversation conversation) {
-                        if(null != conversation) {
+                        if (null != conversation) {
                             conversation.setHasUnreadMessage(true);
                             conversation.setLastActiveTime(new Date());
                         } else {

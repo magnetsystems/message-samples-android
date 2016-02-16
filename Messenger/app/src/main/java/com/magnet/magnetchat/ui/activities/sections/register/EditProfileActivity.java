@@ -1,15 +1,17 @@
 package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
@@ -30,6 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditProfileActivity extends BaseActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
+    private static final String TAG = EditProfileActivity.class.getSimpleName();
 
     @InjectView(R.id.buttonClose)
     View buttonClose;
@@ -96,6 +99,7 @@ public class EditProfileActivity extends BaseActivity {
             Glide.with(this)
                     .load(User.getCurrentUser().getAvatarUrl())
                     .placeholder(R.mipmap.ic_user)
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
                     .centerCrop()
                     .into(imageViewAvatar);
         }
@@ -144,12 +148,12 @@ public class EditProfileActivity extends BaseActivity {
     /**
      * Method which provide the updating of the server avatar
      */
-    private void updateServerAvatar() {
-        User.getCurrentUser().setAvatar(((BitmapDrawable) imageViewAvatar.getDrawable()).getBitmap(), null,
+    private void updateServerAvatar(Bitmap bitmap) {
+        User.getCurrentUser().setAvatar(bitmap, null,
                 new ApiCallback<String>() {
                     @Override
                     public void success(String s) {
-                        AppLogger.error(this, "Set user avatar successfuly");
+                        AppLogger.info(this, "Set user avatar successfuly " + s);
                     }
 
                     @Override
@@ -188,24 +192,32 @@ public class EditProfileActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && null != data) {
             Uri selectedImage = data.getData();
-            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            String picturePath = FileHelper.getPath(this, selectedImage);
+            if(null != picturePath) {
+                //setImageBySource(imageViewAvatar, picturePath);
+                Glide.with(this).load(selectedImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(200, 200) {
+                    @Override
+                    public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
+                        setImageFromBitmap(bitmap);
+                    }
+                });
+            } else {
+                Log.e(TAG, "Failed to load image from Uri " + selectedImage + ", trying to use inputstream");
 
-            Cursor cursor = getContentResolver().query(selectedImage,
-                    filePathColumn, null, null, null);
-            cursor.moveToFirst();
-
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-            setImageBySource(imageViewAvatar, picturePath);
-
-            runOnMainThread(0.5, new OnActionPerformer() {
-                @Override
-                public void onActionPerform() {
-                    updateServerAvatar();
+                Bitmap bitmap = FileHelper.getImageBitmap(this, selectedImage);
+                if(null != bitmap) {
+                    setImageFromBitmap(bitmap);
                 }
-            });
-
+            }
         }
+    }
+
+    private void setImageFromBitmap(final Bitmap bitmap) {
+        imageViewAvatar.setImageBitmap(bitmap);
+        runOnMainThread(0.5, new OnActionPerformer() {
+            @Override public void onActionPerform() {
+                updateServerAvatar(bitmap);
+            }
+        });
     }
 }

@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
+import com.magnet.magnetchat.ui.activities.sections.splash.SplashActivity;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMXPushEvent;
 import com.magnet.mmx.protocol.PubSubNotification;
 
@@ -18,16 +20,17 @@ public class WakeupReceiver extends BroadcastReceiver {
         if (event == null) {
 
         } else if ("retrieve".equals(event.getType())) {
-            showNotification(context, "New message is available", null);
+            showNotification(context, "Magnet Messenger", "New message is available");
         } else if (PubSubNotification.getType().equals(event.getType())) {
             PubSubNotification pubsub = event.getCustomObject(PubSubNotification.class);
-            showNotification(context, pubsub.getText(), pubsub.getTitle());
+            showNotification(context, StringUtil.isNotEmpty(pubsub.getTitle()) ? pubsub.getTitle() : "Magnet Messenger",
+                StringUtil.isNotEmpty(pubsub.getText()) ? pubsub.getText() : "New message is available");
         }
     }
 
     private void showNotification(Context context, String title, String text) {
         PendingIntent pIntent = PendingIntent.getActivity(context, 0,
-                new Intent(context, LoginActivity.class),
+                new Intent(context, SplashActivity.class),
                 PendingIntent.FLAG_UPDATE_CURRENT);
         Notification note = new Notification.Builder(context)
                 .setAutoCancel(true)
