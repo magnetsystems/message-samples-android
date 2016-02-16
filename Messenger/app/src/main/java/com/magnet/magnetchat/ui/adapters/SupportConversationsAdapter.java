@@ -36,14 +36,14 @@ public class SupportConversationsAdapter extends BaseConversationsAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final ConversationViewHolder viewHolder;
         if (convertView == null) {
-            convertView = getInflater().inflate(R.layout.item_conversation_support, parent, false);
+            convertView = getInflater().inflate(R.layout.item_conversation, parent, false);
             viewHolder = new ConversationViewHolder();
-            viewHolder.newMessage = (ImageView) convertView.findViewById(R.id.imAskNewMsg);
-            viewHolder.imageAvatar = (CircleImageView) convertView.findViewById(R.id.imageAskOwnerAvatar);
-            viewHolder.viewAvatar = (CircleNameView) convertView.findViewById(R.id.viewAskOwnerAvatar);
-            viewHolder.title = (TextView) convertView.findViewById(R.id.tvAskTitle);
-            viewHolder.date = (TextView) convertView.findViewById(R.id.tvAskDate);
-            viewHolder.lastMessage = (TextView) convertView.findViewById(R.id.tvAskLastMsg);
+            viewHolder.newMessage = (ImageView) convertView.findViewById(R.id.imConversationNewMsg);
+            viewHolder.imageAvatar = (CircleImageView) convertView.findViewById(R.id.imageConversationOwnerAvatar);
+            viewHolder.viewAvatar = (CircleNameView) convertView.findViewById(R.id.viewConversationOwnerAvatar);
+            viewHolder.title = (TextView) convertView.findViewById(R.id.tvConversationTitle);
+            viewHolder.date = (TextView) convertView.findViewById(R.id.tvConversationDate);
+            viewHolder.lastMessage = (TextView) convertView.findViewById(R.id.tvConversationLastMsg);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ConversationViewHolder) convertView.getTag();
