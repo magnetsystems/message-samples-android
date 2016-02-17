@@ -19,6 +19,7 @@ import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.AppLogger;
 
 import butterknife.ButterKnife;
+import com.magnet.max.android.util.StringUtil;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -129,16 +130,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
-     * Method which provide the string checking
-     *
-     * @param str current string value
-     * @return checking value
-     */
-    protected boolean checkString(String str) {
-        return str != null && !str.isEmpty();
-    }
-
-    /**
      * Method which provide the checking of strings
      *
      * @param str current strings
@@ -146,7 +137,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      */
     protected boolean checkStrings(String... str) {
         for (String string : str) {
-            if (!checkString(string)) {
+            if (StringUtil.isEmpty(string)) {
                 return false;
             }
         }

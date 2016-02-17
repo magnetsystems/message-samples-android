@@ -24,6 +24,7 @@ import com.magnet.max.android.User;
 import com.magnet.max.android.auth.model.UpdateProfileRequest;
 
 import butterknife.InjectView;
+import com.magnet.max.android.util.StringUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -109,6 +110,16 @@ public class EditProfileActivity extends BaseActivity {
      * Method which provide the save changes with accordance to UI
      */
     private void onSaveChanges() {
+        if (StringUtil.isEmpty(editFirstName.getStringValue())) {
+            showMessage("First name is required");
+            editFirstName.requestFocus();
+            return;
+        }
+        if (StringUtil.isEmpty(editLastName.getStringValue())) {
+            showMessage("Last name is required");
+            editLastName.requestFocus();
+            return;
+        }
 
         showProgress(true);
 
