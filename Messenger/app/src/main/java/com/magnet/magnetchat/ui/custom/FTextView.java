@@ -6,6 +6,7 @@ package com.magnet.magnetchat.ui.custom;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -15,7 +16,7 @@ import com.magnet.magnetchat.core.managers.TypeFaceManager;
 /**
  * Created by dlernatovich on 12/1/15.
  */
-public class FTextView extends TextView {
+public class FTextView extends AppCompatTextView {
     public FTextView(Context context) {
         super(context);
         onSetTypeface();

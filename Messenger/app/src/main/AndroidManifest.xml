@@ -69,10 +69,6 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.activities.sections.home.HomeEditProfileActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="nl.changer.polypicker.ImagePickerActivity"
             android:theme="@style/AppTheme" />
 

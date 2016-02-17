@@ -125,9 +125,11 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     protected void showList(List<Conversation> conversationsToShow) {
         if (adapter == null) {
-            conversations = new ArrayList<>(conversationsToShow);
-            adapter = createAdapter(conversations);
-            conversationsList.setAdapter(adapter);
+            if(null != getActivity()) {
+                conversations = new ArrayList<>(conversationsToShow);
+                adapter = createAdapter(conversations);
+                conversationsList.setAdapter(adapter);
+            }
         } else {
             conversations.clear();
             conversations.addAll(conversationsToShow);

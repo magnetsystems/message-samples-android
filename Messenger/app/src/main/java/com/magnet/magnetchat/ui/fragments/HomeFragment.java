@@ -64,6 +64,8 @@ public class HomeFragment extends BaseChannelsFragment {
 
     @Override
     protected void onFragmentCreated(View containerView) {
+        Log.d(TAG, "\n---------------------------------\nHomeFragment created\n---------------------------------\n");
+
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
 
         View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);

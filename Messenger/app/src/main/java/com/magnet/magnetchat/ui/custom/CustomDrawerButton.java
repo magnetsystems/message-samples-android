@@ -12,7 +12,7 @@ import butterknife.InjectView;
 public class CustomDrawerButton extends BaseView {
 
     @InjectView(R.id.drawerWarning)
-    private LinearLayout drawerWarning;
+    LinearLayout drawerWarning;
 
     public CustomDrawerButton(Context context) {
         super(context);

@@ -19,6 +19,7 @@ import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
 
 import butterknife.InjectView;
+import java.net.SocketTimeoutException;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -167,7 +168,9 @@ public class LoginActivity extends BaseActivity {
             } else if (apiError.getMessage().contains(MMX.FailureCode.SERVER_ERROR.getDescription())) {
                 showLoginErrorCause("A server error.");
             } else if (apiError.getMessage().contains(MMX.FailureCode.SERVICE_UNAVAILABLE.getDescription())) {
-                showLoginErrorCause("The MMX service is not available due to network issue or server issue.");
+                showLoginErrorCause("Service is not available due to network or server issue.");
+            } else if(null != apiError.getCause() && apiError.getCause() instanceof SocketTimeoutException) {
+                showLoginErrorCause("Request timeout. Please check network.");
             } else {
                 showLoginFailed();
             }
