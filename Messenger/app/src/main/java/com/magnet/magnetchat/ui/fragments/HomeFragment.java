@@ -61,7 +61,6 @@ public class HomeFragment extends BaseChannelsFragment {
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
     private ChannelDetail secondaryChannel;
-    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
 
     @Override
     protected void onFragmentCreated(View containerView) {
