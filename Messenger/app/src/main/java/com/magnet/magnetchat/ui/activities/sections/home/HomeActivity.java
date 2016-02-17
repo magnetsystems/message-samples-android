@@ -1,18 +1,16 @@
 package com.magnet.magnetchat.ui.activities.sections.home;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
@@ -21,8 +19,8 @@ import com.magnet.magnetchat.constants.AppFragment;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
-import com.magnet.magnetchat.ui.activities.sections.register.EditProfileActivity;
 import com.magnet.magnetchat.ui.adapters.MenuAdapter;
+import com.magnet.magnetchat.ui.custom.CustomDrawerButton;
 import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.ui.fragments.BaseFragment;
 import com.magnet.magnetchat.ui.fragments.EventFragment;
@@ -33,7 +31,6 @@ import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity implements BaseActivityCallback {
@@ -46,10 +43,13 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.toolbarDrawerButton)
+    CustomDrawerButton drawerButton;
+    @InjectView(R.id.toolbarTitle)
+    TextView toolbarTitle;
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
 
     @InjectView(R.id.llUserProfile)
     LinearLayout llUserProfile;
@@ -67,14 +67,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d(TAG, "\n---------------------------------\nHomeActivity created\n---------------------------------\n");
 
         setSupportActionBar(toolbar);
 
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        setOnClickListeners(drawerButton, llUserProfile);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
 
@@ -84,52 +81,36 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             listHomeDrawer.setOnItemClickListener(menuForSupportClickListener);
         }
 
+        drawer.openDrawer(GravityCompat.START);
+
         setFragment(AppFragment.HOME);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        toolbar.setTitle("");
 
         closeDrawer();
 
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
             if (currentFragment == AppFragment.HOME) {
-                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
             }
 
             if (null != User.getCurrentUser().getAvatarUrl()) {
                 Glide.with(this)
-                    .load(User.getCurrentUser().getAvatarUrl())
-                    .placeholder(R.mipmap.ic_user)
-                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                    .centerCrop()
-                    .into(ivUserAvatar);
+                        .load(User.getCurrentUser().getAvatarUrl())
+                        .placeholder(R.mipmap.ic_user)
+                                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .centerCrop()
+                        .into(ivUserAvatar);
             }
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
-
-            return;
         }
-    }
-
-    @OnClick(R.id.llUserProfile)
-    public void onEditUserProfileClick(View v) {
-        startActivity(new Intent(this, EditProfileActivity.class));
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        toggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        toggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -142,18 +123,15 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (toggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.toolbarDrawerButton:
+                switchDrawer();
+                break;
+            case R.id.llUserProfile:
+                startActivity(HomeEditProfileActivity.class);
+                break;
+        }
     }
 
     /**
@@ -172,46 +150,61 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-//                toolbar.setTitle(User.getCurrentUser().getDisplayName());
-//                viewEvents.setVisibility(View.VISIBLE);
+                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
                 break;
             case SUPPORT:
-                toolbar.setTitle("Support");
+                drawerButton.hideWarning();
+                toolbarTitle.setText("Support");
                 break;
-            //case EVENTS:
-            //    viewEvents.setVisibility(View.GONE);
-            //    break;
         }
         replace(getFragment(fragment, this), R.id.container, fragment.name());
     }
 
+    /**
+     * Creates new fragment for selected menu item
+     *
+     * @param appFragment  type of fragment
+     * @param baseActivity activity for fragment
+     * @return
+     */
     public BaseFragment getFragment(AppFragment appFragment, BaseActivityCallback baseActivity) {
-        BaseFragment baseFragment =
-            (BaseFragment) getSupportFragmentManager().findFragmentByTag(appFragment.name());
-        if(null == baseFragment) {
-            switch (appFragment) {
-                case HOME:
-                    baseFragment = new HomeFragment();
-                    break;
-                case SUPPORT:
-                    baseFragment = new SupportFragment();
-                    break;
-                case EVENTS:
-                    baseFragment = new EventFragment();
-                    break;
+        BaseFragment baseFragment;
+//                (BaseFragment) getSupportFragmentManager().findFragmentByTag(appFragment.name());
+//        if (null == baseFragment) {
+        switch (appFragment) {
+            case HOME:
+                baseFragment = new HomeFragment();
+                break;
+            case SUPPORT:
+                baseFragment = new SupportFragment();
+                break;
+            case EVENTS:
+                baseFragment = new EventFragment();
+                break;
 
-                default:
-                    baseFragment = new HomeFragment();
-                    break;
-            }
-            baseFragment.setBaseActivityCallback(baseActivity);
+            default:
+                baseFragment = new HomeFragment();
+                break;
         }
+        baseFragment.setBaseActivityCallback(baseActivity);
+//        }
         return baseFragment;
     }
 
     @Override
     public void onReceiveFragmentEvent(Event event) {
 
+    }
+
+    /**
+     * If drawer is opened, closes it. If was already closed, opens
+     */
+    private void switchDrawer() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            drawer.openDrawer(GravityCompat.START);
+        }
     }
 
     private void closeDrawer() {

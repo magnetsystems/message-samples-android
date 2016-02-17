@@ -65,6 +65,10 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.activities.sections.home.HomeEditProfileActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.activities.sections.register.EditProfileActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait" />
