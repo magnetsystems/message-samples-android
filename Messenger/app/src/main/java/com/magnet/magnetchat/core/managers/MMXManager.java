@@ -101,7 +101,8 @@ public class MMXManager {
 
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            ChannelHelper.getInstance().receiveMessage(mmxMessage);
+            Logger.debug("onMessageReceived", mmxMessage);
+            ChannelHelper.receiveMessage(mmxMessage);
             if ((mmxMessage.getSender() != null)
                     && (!mmxMessage.getSender().getUserIdentifier().equals(User.getCurrentUserId()))) {
                 if (mmxMessage.getChannel() != null) {

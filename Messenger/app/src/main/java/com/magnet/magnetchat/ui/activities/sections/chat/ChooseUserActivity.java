@@ -138,7 +138,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     private void addUserToChannel(final List<UserProfile> userList) {
         findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
-        ChannelHelper.getInstance().addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
+        ChannelHelper.addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
             @Override
             public void onSuccessAdded() {
                 findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);

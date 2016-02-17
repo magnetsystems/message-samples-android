@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.model.Conversation;
+import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.adapters.SupportConversationsAdapter;
 
@@ -30,6 +31,11 @@ public class SupportFragment extends BaseChannelsFragment {
     @Override
     protected void onConversationListIsEmpty(boolean isEmpty) {
 
+    }
+
+    @Override
+    protected void onSelectConversation(Conversation conversation) {
+        startActivity(ChatActivity.getIntentWithChannelOwner(conversation));
     }
 
 }

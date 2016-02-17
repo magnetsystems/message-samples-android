@@ -22,9 +22,9 @@ import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.max.android.auth.model.UpdateProfileRequest;
+import com.magnet.max.android.util.StringUtil;
 
 import butterknife.InjectView;
-import com.magnet.max.android.util.StringUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -196,8 +196,8 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         showProgress(false);
-        super.onBackPressed();
-        //startActivity(HomeActivity.class, true);
+        startActivity(HomeActivity.class, true);
+
     }
 
     @Override
