@@ -185,7 +185,8 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         showProgress(false);
-        startActivity(HomeActivity.class, true);
+        super.onBackPressed();
+        //startActivity(HomeActivity.class, true);
     }
 
     @Override

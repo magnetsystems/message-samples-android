@@ -18,12 +18,16 @@ import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
-import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
+import com.magnet.magnetchat.ui.activities.sections.register.EditProfileActivity;
 import com.magnet.magnetchat.ui.adapters.MenuAdapter;
 import com.magnet.magnetchat.ui.custom.FTextView;
+import com.magnet.magnetchat.ui.fragments.BaseFragment;
+import com.magnet.magnetchat.ui.fragments.EventFragment;
+import com.magnet.magnetchat.ui.fragments.HomeFragment;
+import com.magnet.magnetchat.ui.fragments.SupportFragment;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
@@ -64,6 +68,8 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d(TAG, "\n---------------------------------\nHomeActivity created\n---------------------------------\n");
+
         setSupportActionBar(toolbar);
 
         toggle = new ActionBarDrawerToggle(
@@ -71,7 +77,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         drawer.setDrawerListener(toggle);
 
         listHomeDrawer.setOnItemClickListener(menuClickListener);
-        User user = User.getCurrentUser();
+
         if (UserHelper.isMagnetSupportMember()) {
             String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
             listHomeDrawer.setAdapter(new MenuAdapter(this, entries));
@@ -85,10 +91,21 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     protected void onResume() {
         super.onResume();
 
+        closeDrawer();
+
         if (User.getCurrentUser() != null) {
             textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
             if (currentFragment == AppFragment.HOME) {
                 toolbar.setTitle(User.getCurrentUser().getDisplayName());
+            }
+
+            if (null != User.getCurrentUser().getAvatarUrl()) {
+                Glide.with(this)
+                    .load(User.getCurrentUser().getAvatarUrl())
+                    .placeholder(R.mipmap.ic_user)
+                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                    .centerCrop()
+                    .into(ivUserAvatar);
             }
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
@@ -96,20 +113,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
             return;
         }
-
-        if (null != User.getCurrentUser().getAvatarUrl()) {
-            Glide.with(this)
-                    .load(User.getCurrentUser().getAvatarUrl())
-                    .placeholder(R.mipmap.ic_user)
-                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                    .centerCrop()
-                    .into(ivUserAvatar);
-        }
     }
 
     @OnClick(R.id.llUserProfile)
     public void onEditUserProfileClick(View v) {
-        startActivity(new Intent(this, HomeEditProfileActivity.class));
+        startActivity(new Intent(this, EditProfileActivity.class));
     }
 
     @Override
@@ -127,7 +135,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+            closeDrawer();
         } else {
             super.onBackPressed();
         }
@@ -174,12 +182,42 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             //    viewEvents.setVisibility(View.GONE);
             //    break;
         }
-        replace(FragmentFactory.getFragment(fragment, this), R.id.container);
+        replace(getFragment(fragment, this), R.id.container, fragment.name());
+    }
+
+    public BaseFragment getFragment(AppFragment appFragment, BaseActivityCallback baseActivity) {
+        BaseFragment baseFragment =
+            (BaseFragment) getSupportFragmentManager().findFragmentByTag(appFragment.name());
+        if(null == baseFragment) {
+            switch (appFragment) {
+                case HOME:
+                    baseFragment = new HomeFragment();
+                    break;
+                case SUPPORT:
+                    baseFragment = new SupportFragment();
+                    break;
+                case EVENTS:
+                    baseFragment = new EventFragment();
+                    break;
+
+                default:
+                    baseFragment = new HomeFragment();
+                    break;
+            }
+            baseFragment.setBaseActivityCallback(baseActivity);
+        }
+        return baseFragment;
     }
 
     @Override
     public void onReceiveFragmentEvent(Event event) {
 
+    }
+
+    private void closeDrawer() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
     }
 
     /**

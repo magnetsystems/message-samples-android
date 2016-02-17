@@ -168,9 +168,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param fragment     current fragment
      * @param container_id current container id
      */
-    public void replace(Fragment fragment, int container_id) {
-        getFragmentTransaction().replace(container_id, fragment,
-                getFragmentTag()).commit();
+    public void replace(Fragment fragment, int container_id, String tag) {
+        getFragmentTransaction().replace(container_id, fragment, tag).addToBackStack(null).commit();
     }
 
 
@@ -182,15 +181,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     private FragmentTransaction getFragmentTransaction() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         return ft;
-    }
-
-    /**
-     * Method which provide the getting of the fragment tag
-     *
-     * @return current fragment Tag
-     */
-    private String getFragmentTag() {
-        return getClass().getName();
     }
 
     /**
