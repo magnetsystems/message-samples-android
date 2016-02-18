@@ -17,7 +17,7 @@
         app:theme="@style/AppTheme.Toolbar"
         app:titleTextAppearance="@style/AppTheme.Toolbar.Title" />
 
-    <com.magnet.magnetchat.ui.custom.FTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/chatSuppliers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
         android:background="#f6f6f6"
         android:padding="@dimen/dimen_5">
 
-        <com.magnet.magnetchat.ui.custom.FTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/chatSendBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:layout_centerVertical="true"
             android:background="@mipmap/ic_attachment" />
 
-        <com.magnet.magnetchat.ui.custom.FEditText
+        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/chatMessageField"
             style="@style/EditFieldStyle"
             android:layout_width="match_parent"

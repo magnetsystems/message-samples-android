@@ -40,7 +40,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_add_message_tabbar" />
 
-        <com.magnet.magnetchat.ui.custom.FTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvHomeCreateMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

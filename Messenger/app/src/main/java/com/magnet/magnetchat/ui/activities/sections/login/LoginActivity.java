@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.activities.sections.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 import android.widget.CheckBox;
 
@@ -11,15 +12,14 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import com.magnet.magnetchat.ui.activities.sections.register.RegisterActivity;
-import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.Logger;
-import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
 
-import butterknife.InjectView;
 import java.net.SocketTimeoutException;
+
+import butterknife.InjectView;
 
 public class LoginActivity extends BaseActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -27,9 +27,9 @@ public class LoginActivity extends BaseActivity {
     @InjectView(R.id.loginRemember)
     CheckBox remember;
     @InjectView(R.id.loginEmail)
-    FEditText editEmail;
+    AppCompatEditText editEmail;
     @InjectView(R.id.loginPassword)
-    FEditText editPassword;
+    AppCompatEditText editPassword;
     @InjectView(R.id.viewProgress)
     View viewProgress;
 
@@ -101,8 +101,8 @@ public class LoginActivity extends BaseActivity {
 
     private void runLoginFromFields() {
         if (InternetConnectionManager.getInstance().isAnyConnectionAvailable()) {
-            final String email = editEmail.getStringValue();
-            final String password = editPassword.getStringValue();
+            final String email = getSimpleText(editEmail);
+            final String password = getSimpleText(editPassword);
             boolean shouldRemember = remember.isChecked();
             if (checkStrings(email, password)) {
                 changeLoginMode(true);

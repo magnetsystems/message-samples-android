@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 
@@ -15,8 +17,6 @@ import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
-import com.magnet.magnetchat.ui.custom.FEditText;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -43,11 +43,11 @@ public class EditProfileActivity extends BaseActivity {
     View buttonChoosePicture;
 
     @InjectView(R.id.textEmail)
-    FTextView textEmail;
+    AppCompatTextView textEmail;
     @InjectView(R.id.editFirstName)
-    FEditText editFirstName;
+    AppCompatEditText editFirstName;
     @InjectView(R.id.editLastName)
-    FEditText editLastName;
+    AppCompatEditText editLastName;
 
     @InjectView(R.id.viewProgress)
     View viewProgress;
@@ -110,12 +110,12 @@ public class EditProfileActivity extends BaseActivity {
      * Method which provide the save changes with accordance to UI
      */
     private void onSaveChanges() {
-        if (StringUtil.isEmpty(editFirstName.getStringValue())) {
+        if (StringUtil.isEmpty(getSimpleText(editFirstName))) {
             showMessage("First name is required");
             editFirstName.requestFocus();
             return;
         }
-        if (StringUtil.isEmpty(editLastName.getStringValue())) {
+        if (StringUtil.isEmpty(getSimpleText(editLastName))) {
             showMessage("Last name is required");
             editLastName.requestFocus();
             return;
@@ -124,8 +124,8 @@ public class EditProfileActivity extends BaseActivity {
         showProgress(true);
 
         UpdateProfileRequest request = new UpdateProfileRequest.Builder()
-                .firstName(editFirstName.getStringValue())
-                .lastName(editLastName.getStringValue())
+                .firstName(getSimpleText(editFirstName))
+                .lastName(getSimpleText(editLastName))
                 .build();
 
         User.updateProfile(request, new ApiCallback<User>() {

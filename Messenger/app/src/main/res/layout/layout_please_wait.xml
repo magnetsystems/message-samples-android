@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:layout_marginRight="5dp" />
 
-        <com.magnet.magnetchat.ui.custom.FTextView
+        <android.support.v7.widget.AppCompatTextView
             style="@style/style_text_default"
             android:text="Please wait..."
             android:textColor="@android:color/white" />

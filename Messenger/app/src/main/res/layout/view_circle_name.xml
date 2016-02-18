@@ -6,7 +6,7 @@
     android:background="@drawable/background_blue_circle"
     android:orientation="vertical">
 
-    <com.magnet.magnetchat.ui.custom.FTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textUserName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
