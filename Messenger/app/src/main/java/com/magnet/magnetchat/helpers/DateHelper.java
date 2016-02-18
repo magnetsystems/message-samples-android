@@ -13,7 +13,7 @@ public class DateHelper {
 
     private static final String DATE_TEMPLATE_WITHOUT_SPACE = "yyyyMMddHHmmss";
     private static final String DATE_FORMAT_LONG = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    private static final String DATE_FORMAT = "dd-MM-yyyy";
+    private static final String DATE_FORMAT = "MM-dd-yy";
     private static final String WEEK_FORMAT = "EEEE";
 
     private static final long DAY_MILLS = 1000 * 60 * 60 * 24;

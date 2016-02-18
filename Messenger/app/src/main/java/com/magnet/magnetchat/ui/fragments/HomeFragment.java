@@ -52,6 +52,7 @@ public class HomeFragment extends BaseChannelsFragment {
     private FrameLayout flPrimary;
     private FTextView tvPrimarySubscribers;
     private FrameLayout flSecondary;
+    private ImageView ivSecondaryNewMsg;
 
     private LinearLayout llCreateMessage;
     private ImageView ivCreateMessage;
@@ -60,16 +61,18 @@ public class HomeFragment extends BaseChannelsFragment {
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
     private ChannelDetail secondaryChannel;
-    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
 
     @Override
     protected void onFragmentCreated(View containerView) {
+        Log.d(TAG, "\n---------------------------------\nHomeFragment created\n---------------------------------\n");
+
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
 
         View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);
         flPrimary = (FrameLayout) header.findViewById(R.id.flPrimary);
         tvPrimarySubscribers = (FTextView) header.findViewById(R.id.tvPrimarySubscribers);
         flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
+        ivSecondaryNewMsg = (ImageView) header.findViewById(R.id.ivSecondaryNewMsg);
         flPrimary.setVisibility(View.GONE);
         if (UserHelper.isMagnetSupportMember()) {
             flSecondary.setVisibility(View.GONE);
@@ -115,6 +118,7 @@ public class HomeFragment extends BaseChannelsFragment {
             case R.id.llSecondary:
             case R.id.ivSecondaryBackground:
                 if (!UserHelper.isMagnetSupportMember()) {
+                    ivSecondaryNewMsg.setVisibility(View.INVISIBLE);
                     loadMagnetSupportChannel();
                 }
                 break;
@@ -173,6 +177,12 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     protected void showAllConversations() {
         showList(ChannelCacheManager.getInstance().getConversations());
+        if (!UserHelper.isMagnetSupportMember()) {
+            Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(ChannelHelper.ASK_MAGNET);
+            if (conversation != null && conversation.hasUnreadMessage()) {
+                ivSecondaryNewMsg.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -187,6 +197,11 @@ public class HomeFragment extends BaseChannelsFragment {
         } else {
             llCreateMessage.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onSelectConversation(Conversation conversation) {
+        startActivity(ChatActivity.getIntentWithChannel(conversation));
     }
 
     @Override
@@ -219,7 +234,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
     private void getChannelDetail(final MMXChannel channel, final String tag) {
         MMXChannel.getChannelDetail(Arrays.asList(channel),
-                new ChannelDetailOptions.Builder().numOfMessages(20).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+                new ChannelDetailOptions.Builder().numOfMessages(10).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
                         if (null != channelDetails && channelDetails.size() > 0) {
@@ -321,7 +336,7 @@ public class HomeFragment extends BaseChannelsFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 setProgressBarVisibility(View.VISIBLE);
-                ChannelHelper.getInstance().unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
+                ChannelHelper.unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                     @Override
                     public void onSuccess() {
                         setProgressBarVisibility(View.GONE);

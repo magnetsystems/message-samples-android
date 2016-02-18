@@ -19,7 +19,14 @@ public class ChannelCacheManager {
 
     private static ChannelCacheManager _instance;
 
+    /**
+     * Key is channel name
+     */
     private Map<String, Conversation> conversations;
+    /**
+     * Key is channel owner id
+     */
+    private Map<String, Conversation> askConversations;
     private Map<String, Message> messagesToApproveDeliver;
 
     private AtomicBoolean isConversationListUpdated = new AtomicBoolean(false);
@@ -33,6 +40,7 @@ public class ChannelCacheManager {
 
     private ChannelCacheManager() {
         conversations = new HashMap<>();
+        askConversations = new HashMap<>();
     }
 
     public static ChannelCacheManager getInstance() {
@@ -47,7 +55,7 @@ public class ChannelCacheManager {
         ArrayList<Conversation> list = new ArrayList<>();
         for (Conversation c : conversations.values()) {
             if (!c.getChannel().getName().startsWith("global_")
-                    && !c.getChannel().getName().startsWith(ChannelHelper.ASK_MAGNET)) {
+                    && !c.getChannel().getName().toLowerCase().startsWith(ChannelHelper.ASK_MAGNET.toLowerCase())) {
                 list.add(c);
             }
         }
@@ -57,8 +65,8 @@ public class ChannelCacheManager {
 
     public List<Conversation> getSupportConversations() {
         ArrayList<Conversation> list = new ArrayList<>();
-        for (Conversation c : conversations.values()) {
-            if (c.getChannel().getName().startsWith(ChannelHelper.ASK_MAGNET)) {
+        for (Conversation c : askConversations.values()) {
+            if(null != c.getMessages() && !c.getMessages().isEmpty()) {
                 list.add(c);
             }
         }
@@ -74,10 +82,12 @@ public class ChannelCacheManager {
     }
 
     public void addConversation(String channelName, Conversation conversation) {
-        if (channelName.equals(ChannelHelper.ASK_MAGNET)) {
-            channelName += "_" + conversation.ownerId();
-        }
-        conversations.put(channelName, conversation);
+        conversations.put(channelName.toLowerCase(), conversation);
+        isConversationListUpdated.set(true);
+    }
+
+    public void addAskConversation(String ownerId, Conversation conversation) {
+        askConversations.put(ownerId.toLowerCase(), conversation);
         isConversationListUpdated.set(true);
     }
 
@@ -109,7 +119,17 @@ public class ChannelCacheManager {
     }
 
     public Conversation getConversationByName(String name) {
-        return conversations.get(name);
+        if (name == null) {
+            return null;
+        }
+        return conversations.get(name.toLowerCase());
+    }
+
+    public Conversation getAskConversationByOwnerId(String ownerId) {
+        if (ownerId == null) {
+            return null;
+        }
+        return askConversations.get(ownerId.toLowerCase());
     }
 
     public int getSupportUnreadCount() {
@@ -124,6 +144,7 @@ public class ChannelCacheManager {
 
     public void resetConversations() {
         conversations.clear();
+        askConversations.clear();
         isConversationListUpdated.set(true);
     }
 

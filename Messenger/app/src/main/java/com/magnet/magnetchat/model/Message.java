@@ -155,4 +155,7 @@ public class Message {
         return content;
     }
 
+    @Override public String toString() {
+        return null != mmxMessage ? mmxMessage.toString() : "";
+    }
 }

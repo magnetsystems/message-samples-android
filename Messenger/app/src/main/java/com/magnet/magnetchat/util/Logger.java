@@ -20,11 +20,13 @@ public class Logger {
 
     private static String makeMessage(Object... args) {
         String msg = "---------";
-        for (int i = 0; i < args.length - 1; i++) {
-            msg += args[i] + " ";
-        }
-        if (args.length > 0) {
-            msg += args[args.length - 1];
+        if(null != args) {
+            for (int i = 0; i < args.length - 1; i++) {
+                msg += args[i] + " ";
+            }
+            if (args.length > 0) {
+                msg += args[args.length - 1];
+            }
         }
         return msg;
     }

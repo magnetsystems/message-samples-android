@@ -59,6 +59,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public static final String TAG = ChatActivity.class.getSimpleName();
 
     public static final String TAG_CHANNEL_NAME = "channelName";
+    public static final String TAG_CHANNEL_OWNER_ID = "channelOwnerId";
     public static final String TAG_CHANNEL_DETAIL = "channelDetail";
     public static final String TAG_CREATE_WITH_USER_ID = "createWithUserId";
     public static final String TAG_CREATE_NEW = "createNew";
@@ -76,6 +77,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private MessagesAdapter adapter;
     private RecyclerView messagesListView;
     private String channelName;
+    private String ownerId;
     private AlertDialog attachmentDialog;
     private GoogleApiClient googleApiClient;
 
@@ -123,19 +125,23 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         if (getIntent().getBooleanExtra(TAG_CREATE_NEW, false)) {
             String[] userIds = getIntent().getStringArrayExtra(TAG_CREATE_WITH_USER_ID);
             if (userIds != null) {
-                ChannelHelper.getInstance().createChannelForUsers(userIds, createListener);
+                ChannelHelper.createChannelForUsers(userIds, createListener);
             }
         } else {
             channelName = getIntent().getStringExtra(TAG_CHANNEL_NAME);
             if (channelName != null) {
                 currentConversation = ChannelCacheManager.getInstance().getConversationByName(channelName);
-                if (currentConversation == null) {
-                    showMessage("Can load the conversation");
-                    finish();
-                    return;
-                }
-                updateConversationUserList();
             }
+            ownerId = getIntent().getStringExtra(TAG_CHANNEL_OWNER_ID);
+            if (ownerId != null) {
+                currentConversation = ChannelCacheManager.getInstance().getAskConversationByOwnerId(ownerId);
+            }
+            if (currentConversation == null) {
+                showMessage("Can load the conversation");
+                finish();
+                return;
+            }
+            updateConversationUserList();
         }
 
         googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
@@ -380,12 +386,17 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void prepareConversation(Conversation conversation) {
-        channelName = conversation.getChannel().getName();
         if (channelName == null) {
             finish();
             return;
         }
-        if (ChannelCacheManager.getInstance().getConversationByName(channelName) == null) {
+        channelName = conversation.getChannel().getName();
+        ownerId = conversation.getChannel().getOwnerId();
+        if (channelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
+            if (ChannelCacheManager.getInstance().getAskConversationByOwnerId(ownerId) == null) {
+                ChannelCacheManager.getInstance().addAskConversation(ownerId, conversation);
+            }
+        } else if (ChannelCacheManager.getInstance().getConversationByName(channelName) == null) {
             ChannelCacheManager.getInstance().addConversation(channelName, conversation);
         }
         currentConversation = conversation;
@@ -397,7 +408,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void updateUsers() {
         List<UserProfile> suppliersList = currentConversation.getSuppliersList();
-        if (channelName.startsWith(ChannelHelper.ASK_MAGNET)) {
+        if (channelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
             if (currentConversation.getOwner() != null) {
                 setTitle(currentConversation.getOwner().getDisplayName());
             }
@@ -434,14 +445,14 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public void onSuccessCreated(MMXChannel channel) {
             channelName = channel.getName();
-            ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
+            ChannelHelper.readChannelInfo(channel, readChannelInfoListener);
         }
 
         @Override
         public void onChannelExists(MMXChannel channel) {
             currentConversation = ChannelCacheManager.getInstance().getConversationByName(channel.getName());
             if (currentConversation == null) {
-                ChannelHelper.getInstance().readChannelInfo(channel, readChannelInfoListener);
+                ChannelHelper.readChannelInfo(channel, readChannelInfoListener);
             } else {
                 prepareConversation(currentConversation);
             }
@@ -478,12 +489,21 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             Logger.debug(TAG, "Received message in : " + mmxMessage);
-            if (adapter != null && mmxMessage.getChannel() != null && StringUtil.isStringValueEqual(channelName, mmxMessage.getChannel().getName())) {
-                currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
-                updateList();
-                currentConversation.setHasUnreadMessage(false);
-
-                return true;
+            MMXChannel channel = mmxMessage.getChannel();
+            if (channel != null && adapter != null) {
+                String messageChannelName = channel.getName();
+                if (StringUtil.isStringValueEqual(messageChannelName, channelName)) {
+                    //If this message is from support section, but is not from channel of selected owner
+                    if (messageChannelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
+                        if (!StringUtil.isStringValueEqual(channel.getOwnerId(), ownerId)) {
+                            return false;
+                        }
+                    }
+                    currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
+                    updateList();
+                    currentConversation.setHasUnreadMessage(false);
+                    return true;
+                }
             }
             return false;
         }
@@ -498,13 +518,21 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     };
 
     public static Intent getIntentWithChannel(Conversation conversation) {
-        if(null != conversation && null != conversation.getChannel()) {
-            String name = conversation.getChannel().getName();
-            if (name.equals(ChannelHelper.ASK_MAGNET)) {
-                name += "_" + conversation.ownerId();
-            }
+        if (null != conversation && null != conversation.getChannel()) {
             Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
-            intent.putExtra(TAG_CHANNEL_NAME, name);
+            intent.putExtra(TAG_CHANNEL_NAME, conversation.getChannel().getName());
+            return intent;
+        } else {
+            Log.e(TAG, "getIntentWithChannel return null because conversation or channel is null");
+            return null;
+        }
+    }
+
+    public static Intent getIntentWithChannelOwner(Conversation conversation) {
+        if (null != conversation && null != conversation.getChannel()) {
+            Intent intent = new Intent(CurrentApplication.getInstance(), ChatActivity.class);
+            intent.putExtra(TAG_CHANNEL_OWNER_ID, conversation.getChannel().getOwnerId());
+            intent.putExtra(TAG_CHANNEL_NAME, conversation.getChannel().getName());
             return intent;
         } else {
             Log.e(TAG, "getIntentWithChannel return null because conversation or channel is null");
@@ -544,7 +572,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                             currentConversation.addSupplier(user);
                         }
                     }
-
                     updateUsers();
                 }
 

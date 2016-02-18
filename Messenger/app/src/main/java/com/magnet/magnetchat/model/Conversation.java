@@ -14,6 +14,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class Conversation {
     public Conversation(ChannelDetail channelDetail) {
         this.channel = channelDetail.getChannel();
 
-        Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
+        //Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
         for (UserProfile up : channelDetail.getSubscribers()) {
             if (up.getUserIdentifier().equals(channel.getOwnerId())) {
                 owner = up;
@@ -59,7 +60,7 @@ public class Conversation {
             }
         }
 
-        Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
+        //Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
         for (MMXMessage mmxMessage : channelDetail.getMessages()) {
             this.addMessage(Message.createMessageFrom(mmxMessage));
         }
@@ -206,4 +207,10 @@ public class Conversation {
         return owner.getUserIdentifier();
     }
 
+    @Override public String toString() {
+        return new StringBuilder("conversation : {\n").append("channel : ").append(channel).append("\n")
+            .append("messages : ").append(Arrays.toString(getMessages().toArray())).append("\n")
+            .append("suppliers : ").append(Arrays.toString(getSuppliers().values().toArray())).append("\n")
+            .append("}").toString();
+    }
 }

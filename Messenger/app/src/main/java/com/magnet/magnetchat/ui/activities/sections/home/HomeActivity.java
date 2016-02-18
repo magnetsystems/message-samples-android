@@ -1,56 +1,58 @@
 package com.magnet.magnetchat.ui.activities.sections.home;
 
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
-import com.magnet.magnetchat.factories.FragmentFactory;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
-import com.magnet.magnetchat.ui.adapters.MenuAdapter;
-import com.magnet.magnetchat.ui.custom.FTextView;
+import com.magnet.magnetchat.ui.custom.CustomDrawerButton;
+import com.magnet.magnetchat.ui.fragments.BaseFragment;
+import com.magnet.magnetchat.ui.fragments.EventFragment;
+import com.magnet.magnetchat.ui.fragments.HomeFragment;
+import com.magnet.magnetchat.ui.fragments.SupportFragment;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
 import butterknife.InjectView;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
-    @InjectView(R.id.listHomeDrawer)
-    ListView listHomeDrawer;
-    @InjectView(R.id.textUserName)
-    FTextView textUserFullName;
-
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
+    @InjectView(R.id.toolbarDrawerButton)
+    CustomDrawerButton drawerButton;
+    @InjectView(R.id.toolbarTitle)
+    TextView toolbarTitle;
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
-    private ActionBarDrawerToggle toggle;
 
-    @InjectView(R.id.llUserProfile)
+    @InjectView(R.id.nav_view)
+    NavigationView navView;
+
+    //@InjectView(R.id.llUserProfile)
     LinearLayout llUserProfile;
 
-    @InjectView(R.id.ivUserAvatar)
+    //@InjectView(R.id.ivUserAvatar)
     CircleImageView ivUserAvatar;
 
     private AppFragment currentFragment;
@@ -63,20 +65,48 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "\n---------------------------------\nHomeActivity created\n---------------------------------\n");
 
         setSupportActionBar(toolbar);
 
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        View headerView = navView.getHeaderView(0);
+        llUserProfile = (LinearLayout) headerView.findViewById(R.id.llUserProfile);
+        ivUserAvatar = (CircleImageView) headerView.findViewById(R.id.ivUserAvatar);
 
-        listHomeDrawer.setOnItemClickListener(menuClickListener);
-        User user = User.getCurrentUser();
-        if (UserHelper.isMagnetSupportMember()) {
-            String[] entries = getResources().getStringArray(R.array.entries_support_home_drawer);
-            listHomeDrawer.setAdapter(new MenuAdapter(this, entries));
-            listHomeDrawer.setOnItemClickListener(menuForSupportClickListener);
+        setOnClickListeners(drawerButton, llUserProfile);
+
+        Menu menu = navView.getMenu();
+        menu.getItem(menu.size() - 1).setTitle("Version " + getVersionName());
+        if (!UserHelper.isMagnetSupportMember()) {
+            menu.getItem(1).setVisible(false);
         }
+
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override public boolean onNavigationItemSelected(MenuItem item) {
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.nav_home:
+                        setFragment(AppFragment.HOME);
+                        break;
+                    case R.id.nav_support:
+                        setFragment(AppFragment.SUPPORT);
+                        break;
+                    case R.id.nav_signout:
+                        UserHelper.logout(logoutListener);
+                        break;
+                    case R.id.nav_about:
+
+                        break;
+                    default:
+                        setFragment(AppFragment.HOME);
+                        break;
+                }
+                closeDrawer();
+                return true;
+            }
+        });
+
+        drawer.openDrawer(GravityCompat.START);
 
         setFragment(AppFragment.HOME);
     }
@@ -84,68 +114,61 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @Override
     protected void onResume() {
         super.onResume();
+        toolbar.setTitle("");
+
+        closeDrawer();
 
         if (User.getCurrentUser() != null) {
-            textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
+            //textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
             if (currentFragment == AppFragment.HOME) {
-                toolbar.setTitle(User.getCurrentUser().getDisplayName());
+                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+            }
+
+            if (null != User.getCurrentUser().getAvatarUrl()) {
+                Glide.with(this)
+                        .load(User.getCurrentUser().getAvatarUrl())
+                        .placeholder(R.mipmap.ic_user)
+                                //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                        .centerCrop()
+                        .into(ivUserAvatar);
             }
         } else {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
-
-            return;
         }
-
-        if (null != User.getCurrentUser().getAvatarUrl()) {
-            Glide.with(this)
-                    .load(User.getCurrentUser().getAvatarUrl())
-                    .placeholder(R.mipmap.ic_user)
-                    //.signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
-                    .centerCrop()
-                    .into(ivUserAvatar);
-        }
-    }
-
-    @OnClick(R.id.llUserProfile)
-    public void onEditUserProfileClick(View v) {
-        startActivity(new Intent(this, HomeEditProfileActivity.class));
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        toggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        toggle.onConfigurationChanged(newConfig);
     }
 
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+            closeDrawer();
         } else {
             super.onBackPressed();
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        if (toggle.onOptionsItemSelected(item)) {
-            return true;
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.toolbarDrawerButton:
+                switchDrawer();
+                break;
+            case R.id.llUserProfile:
+                startActivity(HomeEditProfileActivity.class);
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onClick(View v) {
+    private String getVersionName() {
+        String versionName = "1.0";
+        try {
+            versionName = this.getPackageManager()
+                .getPackageInfo(this.getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.d(TAG, "Error when getting version", e);
+        }
 
+        return versionName;
     }
 
     /**
@@ -164,17 +187,45 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-//                toolbar.setTitle(User.getCurrentUser().getDisplayName());
-//                viewEvents.setVisibility(View.VISIBLE);
+                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
                 break;
             case SUPPORT:
-                toolbar.setTitle("Support");
+                drawerButton.hideWarning();
+                toolbarTitle.setText("Support");
                 break;
-            //case EVENTS:
-            //    viewEvents.setVisibility(View.GONE);
-            //    break;
         }
-        replace(FragmentFactory.getFragment(fragment, this), R.id.container);
+        replace(getFragment(fragment, this), R.id.container, fragment.name());
+    }
+
+    /**
+     * Creates new fragment for selected menu item
+     *
+     * @param appFragment  type of fragment
+     * @param baseActivity activity for fragment
+     * @return
+     */
+    private BaseFragment getFragment(AppFragment appFragment, BaseActivityCallback baseActivity) {
+        BaseFragment baseFragment;
+//                (BaseFragment) getSupportFragmentManager().findFragmentByTag(appFragment.name());
+//        if (null == baseFragment) {
+        switch (appFragment) {
+            case HOME:
+                baseFragment = new HomeFragment();
+                break;
+            case SUPPORT:
+                baseFragment = new SupportFragment();
+                break;
+            case EVENTS:
+                baseFragment = new EventFragment();
+                break;
+
+            default:
+                baseFragment = new HomeFragment();
+                break;
+        }
+        baseFragment.setBaseActivityCallback(baseActivity);
+//        }
+        return baseFragment;
     }
 
     @Override
@@ -183,51 +234,21 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     }
 
     /**
-     * Listener which provide the menu item functional
+     * If drawer is opened, closes it. If was already closed, opens
      */
-    private final AdapterView.OnItemClickListener menuClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    private void switchDrawer() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-            switch (position) {
-                case 0:
-                    setFragment(AppFragment.HOME);
-                    break;
-                case 1:
-                    UserHelper.logout(logoutListener);
-                    break;
-                default:
-                    setFragment(AppFragment.HOME);
-                    break;
-            }
-
+        } else {
+            drawer.openDrawer(GravityCompat.START);
         }
-    };
+    }
 
-    /**
-     * Listener which provide the menu item functional for support member
-     */
-    private final AdapterView.OnItemClickListener menuForSupportClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    private void closeDrawer() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-            switch (position) {
-                case 0:
-                    setFragment(AppFragment.HOME);
-                    break;
-                case 1:
-                    setFragment(AppFragment.SUPPORT);
-                    break;
-                case 2:
-                    UserHelper.logout(logoutListener);
-                    break;
-                default:
-                    setFragment(AppFragment.HOME);
-                    break;
-            }
-
         }
-    };
+    }
 
     /**
      * Listener which provide the logout functional

@@ -15,7 +15,6 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
-import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.User;
@@ -26,13 +25,18 @@ import com.magnet.mmx.client.api.MMXMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.InjectView;
+
 public abstract class BaseChannelsFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 
     private static String TAG = BaseChannelsFragment.class.getSimpleName();
 
-    private ListView conversationsList;
-    private ProgressBar mProgressBar;
-    private SwipeRefreshLayout swipeContainer;
+    @InjectView(R.id.homeConversationsList)
+    ListView conversationsList;
+    @InjectView(R.id.homeProgress)
+    ProgressBar mProgressBar;
+    @InjectView(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
 
     private List<Conversation> conversations;
     private BaseConversationsAdapter adapter;
@@ -44,13 +48,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     @Override
     protected void onCreateFragment(View containerView) {
-        TAG = getClass().getSimpleName();
-
-        mProgressBar = (ProgressBar) containerView.findViewById(R.id.homeProgress);
-        conversationsList = (ListView) containerView.findViewById(R.id.homeConversationsList);
         conversationsList.setOnItemClickListener(this);
 
-        swipeContainer = (SwipeRefreshLayout) containerView.findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -71,7 +70,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
             Conversation conversation = adapter.getItem(position - conversationsList.getHeaderViewsCount());
             if (conversation != null) {
                 Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
-                startActivity(ChatActivity.getIntentWithChannel(conversation));
+                onSelectConversation(conversation);
             }
         }
     }
@@ -98,7 +97,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         if (showProgress) {
             setProgressBarVisibility(View.VISIBLE);
         }
-        ChannelHelper.getInstance().readConversations(readChannelInfoListener);
+        ChannelHelper.readConversations(readChannelInfoListener);
     }
 
     protected ListView getConversationsListView() {
@@ -116,6 +115,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     protected abstract BaseConversationsAdapter createAdapter(List<Conversation> conversations);
 
     protected abstract void onConversationListIsEmpty(boolean isEmpty);
+
+    protected abstract void onSelectConversation(Conversation conversation);
 
     protected void updateList() {
         if (adapter != null) {

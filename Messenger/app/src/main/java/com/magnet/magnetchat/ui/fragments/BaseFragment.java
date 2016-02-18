@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,11 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void setOnClickListeners(View... views) {
         for (View view : views) {
-            view.setOnClickListener(this);
+            if(null != view) {
+                view.setOnClickListener(this);
+            } else {
+                Log.e("BaseFragment", "setOnClickListeners : View is null", new Exception());
+            }
         }
     }
 
@@ -85,5 +90,17 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
 
     public void setBaseActivityCallback(BaseActivityCallback baseActivityCallback) {
         this.baseActivityCallback = baseActivityCallback;
+    }
+
+    @Override public void onAttach(Context context) {
+        super.onAttach(context);
+
+        Log.d("BaseFragment", "\n--------------------------------\nonAttach\n--------------------------------\n");
+    }
+
+    @Override public void onDetach() {
+        super.onDetach();
+
+        Log.d("BaseFragment", "\n--------------------------------\nonDetach\n--------------------------------\n");
     }
 }

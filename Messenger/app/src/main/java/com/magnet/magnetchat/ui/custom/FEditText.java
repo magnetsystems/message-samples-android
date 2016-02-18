@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.custom;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatEditText;
 import android.text.Html;
 import android.util.AttributeSet;
 import android.widget.EditText;
@@ -11,7 +12,7 @@ import com.magnet.magnetchat.core.managers.TypeFaceManager;
 /**
  * Created by dlernatovich on 2/9/16.
  */
-public class FEditText extends EditText {
+public class FEditText extends AppCompatEditText {
     public FEditText(Context context) {
         super(context);
         onSetTypeface();

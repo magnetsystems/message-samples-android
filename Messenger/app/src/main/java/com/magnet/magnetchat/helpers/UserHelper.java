@@ -221,7 +221,6 @@ public class UserHelper {
     }
 
     public static boolean isMagnetSupportMember() {
-        //return null != User.getCurrentUser().getEmail() && User.getCurrentUser().getEmail().toLowerCase().endsWith("@magnet.com");
         if(null != User.getCurrentUser()) {
             String[] tags = User.getCurrentUser().getTags();
             if (null != tags) {
