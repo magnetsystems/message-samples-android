@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
 import com.magnet.magnetchat.ui.adapters.MenuAdapter;
 import com.magnet.magnetchat.ui.custom.CustomDrawerButton;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.ui.fragments.BaseFragment;
 import com.magnet.magnetchat.ui.fragments.EventFragment;
 import com.magnet.magnetchat.ui.fragments.HomeFragment;
@@ -39,7 +39,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @InjectView(R.id.listHomeDrawer)
     ListView listHomeDrawer;
     @InjectView(R.id.textUserName)
-    FTextView textUserFullName;
+    AppCompatTextView textUserFullName;
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -94,7 +94,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         closeDrawer();
 
         if (User.getCurrentUser() != null) {
-            textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
+            textUserFullName.setText(User.getCurrentUser().getDisplayName());
             if (currentFragment == AppFragment.HOME) {
                 toolbarTitle.setText(User.getCurrentUser().getDisplayName());
             }
@@ -150,7 +150,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                if (User.getCurrentUser() != null) {
+                    toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                }
                 break;
             case SUPPORT:
                 drawerButton.hideWarning();

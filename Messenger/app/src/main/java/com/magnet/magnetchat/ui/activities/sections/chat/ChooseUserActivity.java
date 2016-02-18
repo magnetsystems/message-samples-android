@@ -3,9 +3,10 @@ package com.magnet.magnetchat.ui.activities.sections.chat;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
@@ -23,7 +24,9 @@ import com.magnet.max.android.UserProfile;
 
 import java.util.List;
 
-public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener, AdapterView.OnItemClickListener {
+import butterknife.InjectView;
+
+public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
 
     public static final String TAG_ADD_USER_TO_CHANNEL = "addUserToChannel";
 
@@ -31,8 +34,12 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     private enum ActivityMode {MODE_TO_CREATE, MODE_TO_ADD_USER}
 
+    @InjectView(R.id.chooseUserList)
+    RecyclerView userList;
+    @InjectView(R.id.chooseUserProgress)
+    ProgressBar userSearchProgress;
+
     private UsersAdapter adapter;
-    private ListView userList;
     private ActivityMode currentMode;
     private Conversation conversation;
 
@@ -47,8 +54,11 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
         setOnClickListeners(R.id.registerSaveBtn);
 
-        userList = (ListView) findViewById(R.id.chooseUserList);
-        userList.setOnItemClickListener(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setReverseLayout(false);
+        userList.setLayoutManager(layoutManager);
+
         SearchView search = (SearchView) findViewById(R.id.chooseUserSearch);
         search.setOnQueryTextListener(this);
         search.setOnCloseListener(this);
@@ -81,12 +91,6 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        hideKeyboard();
-        adapter.setSelectUser(view, position);
     }
 
     @Override
@@ -137,20 +141,20 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     }
 
     private void addUserToChannel(final List<UserProfile> userList) {
-        findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
+        userSearchProgress.setVisibility(View.VISIBLE);
         ChannelHelper.addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
             @Override
             public void onSuccessAdded() {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 finish();
             }
 
             @Override
             public void onUserSetExists(String channelSetName) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 Conversation anotherConversation = ChannelCacheManager.getInstance().getConversationByName(channelSetName);
                 Intent i = ChatActivity.getIntentWithChannel(anotherConversation);
-                if(null != i) {
+                if (null != i) {
                     startActivity(i);
                     finish();
                 }
@@ -158,7 +162,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onWasAlreadyAdded() {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 showMessage("User was already added");
                 finish();
 
@@ -166,14 +170,14 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onFailure(Throwable throwable) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 showMessage("Can't add user to channel");
             }
         });
     }
 
     private void searchUsers(@NonNull String query) {
-        findViewById(R.id.chooseUserProgress).setVisibility(View.VISIBLE);
+        userSearchProgress.setVisibility(View.VISIBLE);
         User.search(String.format(SEARCH_QUERY, query, query), 100, 0, "lastName:asc", new ApiCallback<List<User>>() {
             @Override
             public void success(List<User> users) {
@@ -183,14 +187,14 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
                         users.remove(user);
                     }
                 }
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 Logger.debug("find users", "success");
                 updateList(users);
             }
 
             @Override
             public void failure(ApiError apiError) {
-                findViewById(R.id.chooseUserProgress).setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.INVISIBLE);
                 showMessage("Can't find users");
                 Logger.error("find users", apiError);
             }
@@ -200,6 +204,13 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     private void updateList(List<? extends UserProfile> users) {
         adapter = new UsersAdapter(this, users);
         userList.setAdapter(adapter);
+        adapter.setOnUserClickListener(new UsersAdapter.OnUserClickListener() {
+            @Override
+            public void onUserClick(View view, int position) {
+                hideKeyboard();
+                adapter.setSelectUser(view, position);
+            }
+        });
     }
 
     public static Intent getIntentToCreateChannel() {

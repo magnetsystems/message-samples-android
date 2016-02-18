@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flSecondary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/ivSecondaryBackground"
+        style="@style/styleCropImageCenter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_85"
+        android:src="@drawable/bg_askmagnet" />
+
+    <LinearLayout
+        android:id="@+id/llSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivSecondaryNewMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="New unread message"
+            android:src="@drawable/new_message"
+            android:visibility="invisible" />
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="match_parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_group_magnet" />
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/style_text_default"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Ask Magnet"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ImageView
+        style="@style/styleFitImageCenter"
+        android:layout_width="@dimen/dimen_11"
+        android:layout_height="@dimen/dimen_11"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:src="@drawable/arrow_right" />
+
+</FrameLayout>

@@ -1,10 +1,10 @@
 package com.magnet.magnetchat.ui.views;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.ui.views.abs.BaseView;
 
 import butterknife.InjectView;
@@ -15,7 +15,7 @@ import butterknife.InjectView;
 public class CircleNameView extends BaseView {
 
     @InjectView(R.id.textUserName)
-    FTextView labelUserName;
+    AppCompatTextView labelUserName;
 
     public CircleNameView(Context context) {
         super(context);

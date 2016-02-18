@@ -6,7 +6,7 @@
     android:padding="@dimen/dimen_5"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.magnet.magnetchat.ui.custom.FTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/homeUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

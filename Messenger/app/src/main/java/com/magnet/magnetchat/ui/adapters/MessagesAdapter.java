@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
@@ -25,8 +25,8 @@ import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
-
 import com.magnet.max.android.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,10 +43,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         LinearLayout messageArea;
-        TextView date;
-        TextView sender;
-        TextView text;
-        TextView delivered;
+        AppCompatTextView date;
+        AppCompatTextView sender;
+        AppCompatTextView text;
+        AppCompatTextView delivered;
         ImageView image;
         Message message;
         ImageView imageMyAvatar;
@@ -57,11 +57,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             this.messageArea = (LinearLayout) itemView.findViewById(R.id.itemMessageArea);
-            this.date = (TextView) itemView.findViewById(R.id.itemMessageDate);
-            this.sender = (TextView) itemView.findViewById(R.id.itemMessageSender);
+            this.date = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDate);
+            this.sender = (AppCompatTextView) itemView.findViewById(R.id.itemMessageSender);
             this.image = (ImageView) itemView.findViewById(R.id.itemMessageImage);
-            this.text = (TextView) itemView.findViewById(R.id.itemMessageText);
-            this.delivered = (TextView) itemView.findViewById(R.id.itemMessageDelivered);
+            this.text = (AppCompatTextView) itemView.findViewById(R.id.itemMessageText);
+            this.delivered = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDelivered);
             this.imageMyAvatar = (ImageView) itemView.findViewById(R.id.imageMyAvatar);
             this.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
             this.imageMyAvatar.setImageResource(android.R.color.transparent);
