@@ -6,10 +6,47 @@
     android:padding="@dimen/dimen_5"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/homeUserName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+    <LinearLayout
+        android:id="@+id/llUserProfile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:layout_marginRight="@dimen/dimen_20"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="match_parent" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivUserAvatar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/ic_user" />
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="match_parent" />
+
+        <com.magnet.magnetchat.ui.custom.FTextView
+            android:id="@+id/textUserName"
+            style="@style/style_text_default"
+            android:layout_width="@dimen/dimen_0"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:gravity="center_vertical|clip_horizontal"
+            android:text="User Name" />
+
+        <ImageView
+            style="@style/styleFitImageCenter"
+            android:layout_width="@dimen/dimen_0"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:src="@mipmap/ic_info" />
+
+    </LinearLayout>
 
 </LinearLayout>

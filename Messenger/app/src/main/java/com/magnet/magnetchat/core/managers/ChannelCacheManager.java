@@ -66,7 +66,9 @@ public class ChannelCacheManager {
     public List<Conversation> getSupportConversations() {
         ArrayList<Conversation> list = new ArrayList<>();
         for (Conversation c : askConversations.values()) {
-            list.add(c);
+            if(null != c.getMessages() && !c.getMessages().isEmpty()) {
+                list.add(c);
+            }
         }
         Collections.sort(list, conversationComparator);
         return list;

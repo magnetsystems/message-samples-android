@@ -24,7 +24,7 @@ public class ConversationsAdapter extends BaseConversationsAdapter {
         if (suppliers.size() == 0) {
             User currentUser = User.getCurrentUser();
             if (currentUser != null) {
-                viewHolder.title.setText(String.format("%s %s", currentUser.getFirstName(), currentUser.getLastName()));
+                viewHolder.title.setText(currentUser.getDisplayName());
                 setUserAvatar(currentUser, viewHolder);
             }
         } else {

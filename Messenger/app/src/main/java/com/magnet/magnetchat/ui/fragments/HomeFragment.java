@@ -61,7 +61,6 @@ public class HomeFragment extends BaseChannelsFragment {
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
     private ChannelDetail secondaryChannel;
-    private static final String SECONDARY_CHANNEL_NAME = "askMagnet";
 
     @Override
     protected void onFragmentCreated(View containerView) {
@@ -235,7 +234,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
     private void getChannelDetail(final MMXChannel channel, final String tag) {
         MMXChannel.getChannelDetail(Arrays.asList(channel),
-                new ChannelDetailOptions.Builder().numOfMessages(20).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+                new ChannelDetailOptions.Builder().numOfMessages(10).numOfSubcribers(10).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
                         if (null != channelDetails && channelDetails.size() > 0) {

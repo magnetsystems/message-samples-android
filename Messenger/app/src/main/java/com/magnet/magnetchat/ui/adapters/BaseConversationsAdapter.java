@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.views.CircleNameView;
+import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.UserProfile;
 
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public abstract class BaseConversationsAdapter extends BaseAdapter {
+    private static final String TAG = BaseConversationsAdapter.class.getSimpleName();
 
     private LayoutInflater inflater;
     private List<Conversation> conversations;
@@ -101,9 +104,6 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
         if (messages != null && messages.size() > 0) {
             Message message = messages.get(messages.size() - 1);
             String msgType = message.getType();
-            if (msgType == null) {
-                msgType = Message.TYPE_TEXT;
-            }
             switch (msgType) {
                 case Message.TYPE_MAP:
                     return "User's location";
@@ -111,13 +111,15 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
                     return "User's video";
                 case Message.TYPE_PHOTO:
                     return "User's photo";
-                case Message.TYPE_TEXT:
+                default: //case Message.TYPE_TEXT:
                     String text = message.getText().replace(System.getProperty("line.separator"), " ");
                     if (text.length() > 23) {
                         text = text.substring(0, 20) + "...";
                     }
                     return text;
             }
+        } else {
+            Logger.debug(TAG, "\n----------------------No message in conversation : \n " + conversation);
         }
         return "";
     }

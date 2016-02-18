@@ -48,8 +48,6 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     @Override
     protected void onCreateFragment(View containerView) {
-        TAG = getClass().getSimpleName();
-
         conversationsList.setOnItemClickListener(this);
 
         // Setup refresh listener which triggers new data loading
