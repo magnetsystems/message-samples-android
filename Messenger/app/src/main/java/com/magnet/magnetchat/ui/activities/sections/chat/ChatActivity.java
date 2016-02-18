@@ -394,7 +394,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         ownerId = conversation.getChannel().getOwnerId();
         if (channelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
             if (ChannelCacheManager.getInstance().getAskConversationByOwnerId(ownerId) == null) {
-                ChannelCacheManager.getInstance().addAskConversation(ownerId, conversation);
+                ChannelCacheManager.getInstance().addConversation(ownerId, conversation);
             }
         } else if (ChannelCacheManager.getInstance().getConversationByName(channelName) == null) {
             ChannelCacheManager.getInstance().addConversation(channelName, conversation);

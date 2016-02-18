@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 
+import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -26,7 +27,6 @@ import com.magnet.magnetchat.ui.activities.sections.chat.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -50,13 +50,13 @@ public class HomeFragment extends BaseChannelsFragment {
     private AlertDialog leaveDialog;
 
     private FrameLayout flPrimary;
-    private FTextView tvPrimarySubscribers;
+    private TextView tvPrimarySubscribers;
     private FrameLayout flSecondary;
     private ImageView ivSecondaryNewMsg;
 
     private LinearLayout llCreateMessage;
     private ImageView ivCreateMessage;
-    private FTextView tvCreateMessage;
+    private TextView tvCreateMessage;
 
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
@@ -70,7 +70,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
         View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);
         flPrimary = (FrameLayout) header.findViewById(R.id.flPrimary);
-        tvPrimarySubscribers = (FTextView) header.findViewById(R.id.tvPrimarySubscribers);
+        tvPrimarySubscribers = (TextView) header.findViewById(R.id.tvPrimarySubscribers);
         flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
         ivSecondaryNewMsg = (ImageView) header.findViewById(R.id.ivSecondaryNewMsg);
         flPrimary.setVisibility(View.GONE);
@@ -80,7 +80,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
         llCreateMessage = (LinearLayout) containerView.findViewById(R.id.llHomeCreateMsg);
         ivCreateMessage = (ImageView) containerView.findViewById(R.id.ivHomeCreateMsg);
-        tvCreateMessage = (FTextView) containerView.findViewById(R.id.tvHomeCreateMsg);
+        tvCreateMessage = (TextView) containerView.findViewById(R.id.tvHomeCreateMsg);
 
         final ListView conversationsList = getConversationsListView();
         conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

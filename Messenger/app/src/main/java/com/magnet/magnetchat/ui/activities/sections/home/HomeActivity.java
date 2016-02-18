@@ -1,11 +1,15 @@
 package com.magnet.magnetchat.ui.activities.sections.home;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -19,9 +23,7 @@ import com.magnet.magnetchat.constants.AppFragment;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
-import com.magnet.magnetchat.ui.adapters.MenuAdapter;
 import com.magnet.magnetchat.ui.custom.CustomDrawerButton;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.ui.fragments.BaseFragment;
 import com.magnet.magnetchat.ui.fragments.EventFragment;
 import com.magnet.magnetchat.ui.fragments.HomeFragment;
@@ -46,8 +48,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
 
-    @InjectView(R.id.nav_view)
-    NavigationView navView;
+    @InjectView(R.id.nav_view) NavigationView navView;
 
     //@InjectView(R.id.llUserProfile)
     LinearLayout llUserProfile;

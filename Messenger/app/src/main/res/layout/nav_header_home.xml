@@ -31,7 +31,7 @@
             android:layout_width="@dimen/dimen_10"
             android:layout_height="match_parent" />
 
-        <com.magnet.magnetchat.ui.custom.FTextView
+        <TextView
             android:id="@+id/textUserName"
             style="@style/style_text_default"
             android:layout_width="@dimen/dimen_0"

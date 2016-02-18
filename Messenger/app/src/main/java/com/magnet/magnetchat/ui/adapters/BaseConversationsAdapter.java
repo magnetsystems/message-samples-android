@@ -137,6 +137,8 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
             if (user.getAvatarUrl() != null) {
                 Glide.with(context).load(user.getAvatarUrl()).fitCenter().into(viewHolder.imageAvatar);
             }
+        } else {
+            Log.e(TAG, "UserProfile is null");
         }
     }
 
