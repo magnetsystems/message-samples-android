@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,7 +47,8 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
 
-    @InjectView(R.id.nav_view) NavigationView navView;
+    @InjectView(R.id.nav_view)
+    NavigationView navView;
 
     //@InjectView(R.id.llUserProfile)
     LinearLayout llUserProfile;
@@ -252,53 +252,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             drawer.closeDrawer(GravityCompat.START);
         }
     }
-
-    /**
-     * Listener which provide the menu item functional
-     */
-    private final AdapterView.OnItemClickListener menuClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            drawer.closeDrawer(GravityCompat.START);
-            switch (position) {
-                case 0:
-                    setFragment(AppFragment.HOME);
-                    break;
-                case 1:
-                    UserHelper.logout(logoutListener);
-                    break;
-                default:
-                    setFragment(AppFragment.HOME);
-                    break;
-            }
-
-        }
-    };
-
-    /**
-     * Listener which provide the menu item functional for support member
-     */
-    private final AdapterView.OnItemClickListener menuForSupportClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            drawer.closeDrawer(GravityCompat.START);
-            switch (position) {
-                case 0:
-                    setFragment(AppFragment.HOME);
-                    break;
-                case 1:
-                    setFragment(AppFragment.SUPPORT);
-                    break;
-                case 2:
-                    UserHelper.logout(logoutListener);
-                    break;
-                default:
-                    setFragment(AppFragment.HOME);
-                    break;
-            }
-
-        }
-    };
 
     /**
      * Listener which provide the logout functional

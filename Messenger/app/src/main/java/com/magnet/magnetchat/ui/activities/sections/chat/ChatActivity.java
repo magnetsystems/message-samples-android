@@ -492,7 +492,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             MMXChannel channel = mmxMessage.getChannel();
             if (channel != null && adapter != null) {
                 String messageChannelName = channel.getName();
-                if (messageChannelName.equalsIgnoreCase(channelName)) {
+                if (StringUtil.isStringValueEqual(messageChannelName, channelName)) {
                     //If this message is from support section, but is not from channel of selected owner
                     if (messageChannelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
                         if (!StringUtil.isStringValueEqual(channel.getOwnerId(), ownerId)) {

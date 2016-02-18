@@ -121,6 +121,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     protected abstract void onSelectConversation(Conversation conversation);
 
+    protected abstract void onReceivedMessage(MMXMessage mmxMessage);
+
     protected void updateList() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
@@ -177,6 +179,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             Logger.debug(TAG, "onMessageReceived");
             showAllConversations();
+            onReceivedMessage(mmxMessage);
             return false;
         }
 

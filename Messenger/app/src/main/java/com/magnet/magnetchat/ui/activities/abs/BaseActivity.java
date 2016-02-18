@@ -151,6 +151,18 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
+     * Returns string value from EditText. If editText object is null, returns empty line
+     * @param editText
+     * @return
+     */
+    protected String getSimpleText(EditText editText) {
+        if (editText == null) {
+            return "";
+        }
+        return editText.getText().toString().trim();
+    }
+
+    /**
      * Interface which provide the doing some action inside the Handler thread
      */
     protected interface OnActionPerformer {
