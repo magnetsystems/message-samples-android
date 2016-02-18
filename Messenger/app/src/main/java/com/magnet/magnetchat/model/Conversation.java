@@ -14,6 +14,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -206,4 +207,10 @@ public class Conversation {
         return owner.getUserIdentifier();
     }
 
+    @Override public String toString() {
+        return new StringBuilder("conversation : {\n").append("channel : ").append(channel).append("\n")
+            .append("messages : ").append(Arrays.toString(getMessages().toArray())).append("\n")
+            .append("suppliers : ").append(Arrays.toString(getSuppliers().values().toArray())).append("\n")
+            .append("}").toString();
+    }
 }

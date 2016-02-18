@@ -107,7 +107,7 @@ public class ChannelHelper {
 
     public static void fetchChannelDetails(final List<MMXChannel> channels, final OnReadChannelInfoListener listener) {
         MMXChannel.getChannelDetail(channels,
-                new ChannelDetailOptions.Builder().numOfMessages(100).numOfSubcribers(10).build(),
+                new ChannelDetailOptions.Builder().numOfMessages(50).numOfSubcribers(10).build(),
                 new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
