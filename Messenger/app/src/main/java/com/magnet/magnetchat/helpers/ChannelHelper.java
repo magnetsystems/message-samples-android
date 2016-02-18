@@ -111,7 +111,7 @@ public class ChannelHelper {
                 new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                     @Override
                     public void onSuccess(List<ChannelDetail> channelDetails) {
-                        Logger.debug(TAG, "getChannelDetail successfully : " + channelDetails);
+                        Logger.debug(TAG, "getChannelDetail successfully ");
                         Conversation lastConversation = null;
                         for (int i = 0; i < channelDetails.size(); i++) {
                             final ChannelDetail channelDetail = channelDetails.get(i);

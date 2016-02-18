@@ -49,7 +49,7 @@ public class Conversation {
     public Conversation(ChannelDetail channelDetail) {
         this.channel = channelDetail.getChannel();
 
-        Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
+        //Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
         for (UserProfile up : channelDetail.getSubscribers()) {
             if (up.getUserIdentifier().equals(channel.getOwnerId())) {
                 owner = up;
@@ -59,7 +59,7 @@ public class Conversation {
             }
         }
 
-        Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
+        //Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
         for (MMXMessage mmxMessage : channelDetail.getMessages()) {
             this.addMessage(Message.createMessageFrom(mmxMessage));
         }
