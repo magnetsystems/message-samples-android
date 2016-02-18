@@ -94,13 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         return -1;
     }
 
-    protected String getSimpleText(EditText editText) {
-        if (editText == null) {
-            return "";
-        }
-        return editText.getText().toString().trim();
-    }
-
     /**
      * Method which provide the show message in the snack bar
      *

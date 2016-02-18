@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
 
+import android.util.Log;
 import com.magnet.magnetchat.model.Conversation;
 
 import java.util.List;
@@ -14,6 +15,10 @@ public class SupportConversationsAdapter extends BaseConversationsAdapter {
 
     @Override
     protected void prepareTitleAndAvatar(Conversation conversation, ConversationViewHolder viewHolder) {
-        setUserAvatar(conversation.getOwner(), viewHolder);
+        if(null != conversation.getOwner()) {
+            setUserAvatar(conversation.getOwner(), viewHolder);
+        } else {
+            Log.e("SupportConversations", "Owner is null for channel " + conversation.getChannel());
+        }
     }
 }

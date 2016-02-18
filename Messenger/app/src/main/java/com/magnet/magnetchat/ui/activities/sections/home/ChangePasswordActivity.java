@@ -6,7 +6,6 @@ import android.view.View;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
-import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
