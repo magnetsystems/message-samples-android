@@ -38,7 +38,7 @@
                     android:background="@drawable/back_arrow_circled"
                     android:visibility="gone" />
 
-                <com.magnet.magnetchat.ui.custom.FTextView
+                <android.support.v7.widget.AppCompatTextView
                     style="@style/style_textview_h1"
                     android:text="Register a new account" />
 
@@ -62,14 +62,14 @@
                     android:orientation="vertical"
                     android:padding="25dp">
 
-                    <com.magnet.magnetchat.ui.custom.FTextView
+                    <android.support.v7.widget.AppCompatTextView
                         style="@style/style_text_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dimen_10"
                         android:text="Enter your name" />
 
-                    <com.magnet.magnetchat.ui.custom.FEditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/registerFirstName"
                         style="@style/EditFieldStyle"
                         android:layout_width="match_parent"
@@ -77,7 +77,7 @@
                         android:hint="First name"
                         android:inputType="textCapWords" />
 
-                    <com.magnet.magnetchat.ui.custom.FEditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/registerLastName"
                         style="@style/EditFieldStyle"
                         android:layout_width="match_parent"
@@ -86,7 +86,7 @@
                         android:hint="Last name"
                         android:inputType="textCapWords" />
 
-                    <com.magnet.magnetchat.ui.custom.FTextView
+                    <android.support.v7.widget.AppCompatTextView
                         style="@style/style_text_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
                         android:layout_marginTop="@dimen/dimen_15"
                         android:text="Enter your email address" />
 
-                    <com.magnet.magnetchat.ui.custom.FEditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/registerEmail"
                         style="@style/EditFieldStyle"
                         android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                         android:hint="Email Address"
                         android:inputType="textEmailAddress" />
 
-                    <com.magnet.magnetchat.ui.custom.FTextView
+                    <android.support.v7.widget.AppCompatTextView
                         style="@style/style_text_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                         android:layout_marginTop="@dimen/dimen_15"
                         android:text="Enter your password" />
 
-                    <com.magnet.magnetchat.ui.custom.FEditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/registerPassword"
                         style="@style/EditFieldStyle"
                         android:layout_width="match_parent"
@@ -120,7 +120,7 @@
                         android:hint="Password"
                         android:inputType="textPassword" />
 
-                    <com.magnet.magnetchat.ui.custom.FEditText
+                    <android.support.v7.widget.AppCompatEditText
                         android:id="@+id/registerRepeatPassword"
                         style="@style/EditFieldStyle"
                         android:layout_width="match_parent"

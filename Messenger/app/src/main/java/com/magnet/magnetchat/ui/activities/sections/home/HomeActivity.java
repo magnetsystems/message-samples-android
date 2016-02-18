@@ -36,6 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.toolbarDrawerButton)
@@ -119,7 +120,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         closeDrawer();
 
         if (User.getCurrentUser() != null) {
-            //textUserFullName.setSafeText(User.getCurrentUser().getDisplayName());
             if (currentFragment == AppFragment.HOME) {
                 toolbarTitle.setText(User.getCurrentUser().getDisplayName());
             }
@@ -187,7 +187,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                if (User.getCurrentUser() != null) {
+                    toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                }
                 break;
             case SUPPORT:
                 drawerButton.hideWarning();

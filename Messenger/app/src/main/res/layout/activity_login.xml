@@ -32,12 +32,12 @@
                     android:layout_marginTop="@dimen/dimen_40"
                     android:src="@drawable/magnet_icon_red" />
 
-                <com.magnet.magnetchat.ui.custom.FTextView
+                <android.support.v7.widget.AppCompatTextView
                     style="@style/style_text_title"
                     android:layout_marginTop="@dimen/dimen_40"
                     android:text="Sign in to your account" />
 
-                <com.magnet.magnetchat.ui.custom.FEditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/loginEmail"
                     style="@style/EditFieldStyle"
                     android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                     android:hint="Email Address"
                     android:inputType="textEmailAddress" />
 
-                <com.magnet.magnetchat.ui.custom.FEditText
+                <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/loginPassword"
                     style="@style/EditFieldStyle"
                     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                     android:hint="Password"
                     android:inputType="textPassword" />
 
-                <com.magnet.magnetchat.ui.custom.CCheckBox
+                <android.support.v7.widget.AppCompatCheckBox
                     android:id="@+id/loginRemember"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                     android:text="Remember me"
                     android:textSize="@dimen/text_15" />
 
-                <com.magnet.magnetchat.ui.custom.FTextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/loginSignInBtn"
                     style="@style/ButtonStyle"
                     android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                     android:layout_marginTop="@dimen/dimen_25"
                     android:text="Sign in" />
 
-                <com.magnet.magnetchat.ui.custom.FTextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/loginCreateAccountBtn"
                     style="@style/ButtonStyle"
                     android:layout_width="wrap_content"

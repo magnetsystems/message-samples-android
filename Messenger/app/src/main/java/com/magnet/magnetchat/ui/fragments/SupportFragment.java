@@ -7,6 +7,7 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.adapters.SupportConversationsAdapter;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class SupportFragment extends BaseChannelsFragment {
     @Override
     protected void onSelectConversation(Conversation conversation) {
         startActivity(ChatActivity.getIntentWithChannelOwner(conversation));
+    }
+
+    @Override
+    protected void onReceiveMessage(MMXMessage mmxMessage) {
+        
     }
 
 }

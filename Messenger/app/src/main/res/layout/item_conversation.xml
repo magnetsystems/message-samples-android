@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.magnet.magnetchat.ui.custom.FTextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tvConversationDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                 android:layout_alignParentRight="true"
                 android:textColor="#7d7d7d" />
 
-            <com.magnet.magnetchat.ui.custom.FTextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tvConversationTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
 
         </RelativeLayout>
 
-        <com.magnet.magnetchat.ui.custom.FTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tvConversationLastMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -13,13 +13,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.max.android.util.StringUtil;
 
 import butterknife.ButterKnife;
-import com.magnet.max.android.util.StringUtil;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -93,7 +94,12 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         return -1;
     }
 
-    ;
+    protected String getSimpleText(EditText editText) {
+        if (editText == null) {
+            return "";
+        }
+        return editText.getText().toString().trim();
+    }
 
     /**
      * Method which provide the show message in the snack bar
