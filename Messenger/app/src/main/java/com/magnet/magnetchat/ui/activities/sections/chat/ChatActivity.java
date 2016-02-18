@@ -13,6 +13,8 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -36,8 +38,6 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
-import com.magnet.magnetchat.ui.custom.FEditText;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
@@ -84,11 +84,11 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private ProgressBar chatMessageProgress;
 
     @InjectView(R.id.chatMessageField)
-    FEditText editMessage;
+    AppCompatEditText editMessage;
     @InjectView(R.id.chatSuppliers)
-    FTextView textChatSuppliers;
+    AppCompatTextView textChatSuppliers;
     @InjectView(R.id.chatSendBtn)
-    FTextView sendMessageButton;
+    AppCompatTextView sendMessageButton;
 
     @Override
     protected int getLayoutResource() {
@@ -152,7 +152,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.chatSendBtn:
-                String text = editMessage.getStringValue();
+                String text = getSimpleText(editMessage);
                 if (text != null && !text.isEmpty()) {
                     sendMessageButton.setEnabled(false);
                     sendText(text);
@@ -427,7 +427,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             chatMessageProgress.setVisibility(View.GONE);
             ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
-                editMessage.clear();
+                editMessage.setText("");
             }
             updateList();
         }
@@ -492,7 +492,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             MMXChannel channel = mmxMessage.getChannel();
             if (channel != null && adapter != null) {
                 String messageChannelName = channel.getName();
-                if (StringUtil.isStringValueEqual(messageChannelName, channelName)) {
+                if (messageChannelName.equalsIgnoreCase(channelName)) {
                     //If this message is from support section, but is not from channel of selected owner
                     if (messageChannelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
                         if (!StringUtil.isStringValueEqual(channel.getOwnerId(), ownerId)) {

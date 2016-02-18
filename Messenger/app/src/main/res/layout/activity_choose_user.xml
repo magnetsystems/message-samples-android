@@ -23,7 +23,7 @@
             android:orientation="vertical"
             app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
-            <com.magnet.magnetchat.ui.custom.FTextView
+            <android.support.v7.widget.AppCompatTextView
                 style="@style/style_textview_h1"
                 android:layout_height="?attr/actionBarSize"
                 android:text="Add a contact" />
@@ -55,11 +55,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/chooseUserList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:nestedScrollingEnabled="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton

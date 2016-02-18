@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.ui.activities.sections.register;
 
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatEditText;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -8,7 +9,6 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
-import com.magnet.magnetchat.ui.custom.FEditText;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 
@@ -17,15 +17,15 @@ import butterknife.InjectView;
 public class RegisterActivity extends BaseActivity {
 
     @InjectView(R.id.registerFirstName)
-    FEditText editFirstName;
+    AppCompatEditText editFirstName;
     @InjectView(R.id.registerLastName)
-    FEditText editLastName;
+    AppCompatEditText editLastName;
     @InjectView(R.id.registerEmail)
-    FEditText editEmail;
+    AppCompatEditText editEmail;
     @InjectView(R.id.registerPassword)
-    FEditText editPassword;
+    AppCompatEditText editPassword;
     @InjectView(R.id.registerRepeatPassword)
-    FEditText editRepeatPassword;
+    AppCompatEditText editRepeatPassword;
     @InjectView(R.id.viewProgress)
     View viewProgress;
 
@@ -119,11 +119,11 @@ public class RegisterActivity extends BaseActivity {
      * Method which provide the user registration
      */
     private void onRegister() {
-        String firstName = editFirstName.getStringValue();
-        String lastName = editLastName.getStringValue();
-        String email = editEmail.getStringValue();
-        String password = editPassword.getStringValue();
-        String passwordRepeat = editRepeatPassword.getStringValue();
+        String firstName = getSimpleText(editFirstName);
+        String lastName = getSimpleText(editLastName);
+        String email = getSimpleText(editEmail);
+        String password = getSimpleText(editPassword);
+        String passwordRepeat = getSimpleText(editRepeatPassword);
 
         if (!checkStrings(firstName, lastName, email, password, passwordRepeat)) {
             showMessage("Input all fields");

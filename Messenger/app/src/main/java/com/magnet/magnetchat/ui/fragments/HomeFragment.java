@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,7 +27,6 @@ import com.magnet.magnetchat.ui.activities.sections.chat.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
-import com.magnet.magnetchat.ui.custom.FTextView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -36,6 +36,7 @@ import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,13 +51,13 @@ public class HomeFragment extends BaseChannelsFragment {
     private AlertDialog leaveDialog;
 
     private FrameLayout flPrimary;
-    private FTextView tvPrimarySubscribers;
+    private AppCompatTextView tvPrimarySubscribers;
     private FrameLayout flSecondary;
     private ImageView ivSecondaryNewMsg;
 
     private LinearLayout llCreateMessage;
     private ImageView ivCreateMessage;
-    private FTextView tvCreateMessage;
+    private AppCompatTextView tvCreateMessage;
 
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
@@ -70,7 +71,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
         View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);
         flPrimary = (FrameLayout) header.findViewById(R.id.flPrimary);
-        tvPrimarySubscribers = (FTextView) header.findViewById(R.id.tvPrimarySubscribers);
+        tvPrimarySubscribers = (AppCompatTextView) header.findViewById(R.id.tvPrimarySubscribers);
         flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
         ivSecondaryNewMsg = (ImageView) header.findViewById(R.id.ivSecondaryNewMsg);
         flPrimary.setVisibility(View.GONE);
@@ -80,7 +81,7 @@ public class HomeFragment extends BaseChannelsFragment {
 
         llCreateMessage = (LinearLayout) containerView.findViewById(R.id.llHomeCreateMsg);
         ivCreateMessage = (ImageView) containerView.findViewById(R.id.ivHomeCreateMsg);
-        tvCreateMessage = (FTextView) containerView.findViewById(R.id.tvHomeCreateMsg);
+        tvCreateMessage = (AppCompatTextView) containerView.findViewById(R.id.tvHomeCreateMsg);
 
         final ListView conversationsList = getConversationsListView();
         conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -202,6 +203,16 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     protected void onSelectConversation(Conversation conversation) {
         startActivity(ChatActivity.getIntentWithChannel(conversation));
+    }
+
+    @Override
+    protected void onReceivedMessage(MMXMessage mmxMessage) {
+        if (mmxMessage != null && mmxMessage.getChannel() != null) {
+            MMXChannel channel = mmxMessage.getChannel();
+            if (!UserHelper.isMagnetSupportMember() && channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
+                ivSecondaryNewMsg.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
