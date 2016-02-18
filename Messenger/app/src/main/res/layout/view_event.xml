@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flPrimary"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/ivPrimaryBackground"
+        style="@style/styleCropImageCenter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bg_img_1" />
+
+    <LinearLayout
+        android:id="@+id/llPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_30">
+
+        <ImageView
+            style="@style/styleFitImageCenter"
+            android:layout_width="@dimen/dimen_30"
+            android:layout_height="@dimen/dimen_30"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_many" />
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/style_text_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Developer Week 2016 Forum"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tvPrimarySubscribers"
+                style="@style/style_text_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="@dimen/dimen_10" />
+
+    </LinearLayout>
+
+    <ImageView
+        style="@style/styleFitImageCenter"
+        android:layout_width="@dimen/dimen_11"
+        android:layout_height="@dimen/dimen_11"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/dimen_10"
+        android:src="@drawable/arrow_right" />
+
+</FrameLayout>

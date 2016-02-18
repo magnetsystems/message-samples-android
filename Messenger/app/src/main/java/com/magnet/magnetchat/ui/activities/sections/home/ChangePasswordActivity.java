@@ -41,9 +41,9 @@ public class ChangePasswordActivity extends BaseActivity {
         switch (v.getId()) {
             case R.id.changePasswordSubmitBtn:
                 setUpdateMode(true);
-                String oldPassword = getSimpleText(editOldPassword);
-                final String newPassword = getSimpleText(editNewPassword);
-                String newRepeat = getSimpleText(editNewPasswordRepeat);
+                String oldPassword = editOldPassword.getText().toString();
+                final String newPassword = editNewPassword.getText().toString();
+                String newRepeat = editNewPasswordRepeat.getText().toString();
                 final String[] credence = SharedPreferenceManager.getInstance().readCredence();
                 if (checkStrings(oldPassword, newPassword, newRepeat)) {
                     if (!oldPassword.equals(credence[1])) {

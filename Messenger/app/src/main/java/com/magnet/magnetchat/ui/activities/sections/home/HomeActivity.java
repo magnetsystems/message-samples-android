@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
@@ -41,7 +42,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
     @InjectView(R.id.toolbarDrawerButton)
     CustomDrawerButton drawerButton;
     @InjectView(R.id.toolbarTitle)
-    AppCompatTextView toolbarTitle;
+    TextView toolbarTitle;
 
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -187,7 +188,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
         switch (fragment) {
             case HOME:
-                toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                if (User.getCurrentUser() != null) {
+                    toolbarTitle.setText(User.getCurrentUser().getDisplayName());
+                }
                 break;
             case SUPPORT:
                 drawerButton.hideWarning();

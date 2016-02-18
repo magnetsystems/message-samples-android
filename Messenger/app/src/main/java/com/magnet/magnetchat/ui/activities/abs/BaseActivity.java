@@ -94,8 +94,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         return -1;
     }
 
-    ;
-
     /**
      * Method which provide the show message in the snack bar
      *

@@ -13,8 +13,6 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -22,7 +20,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -84,11 +84,11 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private ProgressBar chatMessageProgress;
 
     @InjectView(R.id.chatMessageField)
-    AppCompatEditText editMessage;
+    EditText editMessage;
     @InjectView(R.id.chatSuppliers)
-    AppCompatTextView textChatSuppliers;
+    TextView textChatSuppliers;
     @InjectView(R.id.chatSendBtn)
-    AppCompatTextView sendMessageButton;
+    TextView sendMessageButton;
 
     @Override
     protected int getLayoutResource() {
@@ -394,7 +394,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         ownerId = conversation.getChannel().getOwnerId();
         if (channelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
             if (ChannelCacheManager.getInstance().getAskConversationByOwnerId(ownerId) == null) {
-                ChannelCacheManager.getInstance().addAskConversation(ownerId, conversation);
+                ChannelCacheManager.getInstance().addConversation(ownerId, conversation);
             }
         } else if (ChannelCacheManager.getInstance().getConversationByName(channelName) == null) {
             ChannelCacheManager.getInstance().addConversation(channelName, conversation);
@@ -492,7 +492,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             MMXChannel channel = mmxMessage.getChannel();
             if (channel != null && adapter != null) {
                 String messageChannelName = channel.getName();
-                if (messageChannelName.equalsIgnoreCase(channelName)) {
+                if (StringUtil.isStringValueEqual(messageChannelName, channelName)) {
                     //If this message is from support section, but is not from channel of selected owner
                     if (messageChannelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
                         if (!StringUtil.isStringValueEqual(channel.getOwnerId(), ownerId)) {

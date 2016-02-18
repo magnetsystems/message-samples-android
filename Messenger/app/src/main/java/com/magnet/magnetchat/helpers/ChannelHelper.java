@@ -118,18 +118,13 @@ public class ChannelHelper {
                             final MMXChannel channel = channelDetail.getChannel();
                             final Conversation conversation = new Conversation(channelDetail);
                             lastConversation = conversation;
-                            String channelName = channel.getName();
-                            if (channelName.equalsIgnoreCase(ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
-                                ChannelCacheManager.getInstance().addAskConversation(channel.getOwnerId(), conversation);
-                            } else {
-                                ChannelCacheManager.getInstance().addConversation(channelName, conversation);
-                            }
+                            ChannelCacheManager.getInstance().addConversation(channel.getName(), conversation);
                         }
 
                         if (listener != null) {
                             listener.onSuccessFinish(lastConversation);
                         }
-                        CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
+                        //CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
                     }
 
                     @Override

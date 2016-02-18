@@ -41,6 +41,8 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     private List<Conversation> conversations;
     private BaseConversationsAdapter adapter;
 
+    private boolean isLoadingWhenCreating = false;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_home;
@@ -61,6 +63,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
         onFragmentCreated(containerView);
 
+        isLoadingWhenCreating = true;
         getConversations(true);
     }
 
@@ -78,7 +81,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     @Override
     public void onResume() {
         super.onResume();
-        if (ChannelCacheManager.getInstance().isConversationListUpdated()) {
+        if (!isLoadingWhenCreating && ChannelCacheManager.getInstance().isConversationListUpdated()) {
             showAllConversations();
             ChannelCacheManager.getInstance().resetConversationListUpdated();
         }
@@ -127,16 +130,18 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     }
 
     protected void showList(List<Conversation> conversationsToShow) {
-        if (adapter == null) {
-            if(null != getActivity()) {
+        if(null != getActivity()) {
+            if (adapter == null) {
                 conversations = new ArrayList<>(conversationsToShow);
                 adapter = createAdapter(conversations);
                 conversationsList.setAdapter(adapter);
+            } else {
+                conversations.clear();
+                conversations.addAll(conversationsToShow);
+                adapter.notifyDataSetChanged();
             }
         } else {
-            conversations.clear();
-            conversations.addAll(conversationsToShow);
-            adapter.notifyDataSetChanged();
+            Log.w(TAG, "Fragment is detached, won't update list");
         }
     }
 
@@ -163,6 +168,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         }
 
         private void finishGetChannels() {
+            isLoadingWhenCreating = false;
             swipeContainer.setRefreshing(false);
             setProgressBarVisibility(View.GONE);
         }

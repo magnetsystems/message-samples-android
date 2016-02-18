@@ -55,8 +55,7 @@ public class DetailsActivity extends BaseActivity {
             if(null != currentConversation && null != currentConversation.getChannel()) {
                 UsersAdapter adapter;
                 if (StringUtil.isStringValueEqual(currentConversation.ownerId(), User.getCurrentUserId())) {
-                    adapter = new UsersAdapter(this, currentConversation.getSuppliersList(),
-                        addUserListener);
+                    adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), addUserListener);
                 } else {
                     adapter = new UsersAdapter(this, currentConversation.getSuppliersList(), null);
                 }
