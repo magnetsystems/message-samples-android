@@ -205,8 +205,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         switch (item.getItemId()) {
             case R.id.menuChatOpenDetails:
                 if (currentConversation != null) {
-                    String name = currentConversation.getChannel().getName();
-                    startActivity(DetailsActivity.createIntentForChannel(name));
+                    startActivity(DetailsActivity.createIntentForChannel(currentConversation));
                 }
                 break;
             case android.R.id.home:
