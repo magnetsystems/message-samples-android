@@ -1,7 +1,10 @@
 package com.magnet.magnetchat.ui.fragments;
 
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
+import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
@@ -20,8 +23,13 @@ public class SupportFragment extends BaseChannelsFragment {
     }
 
     @Override
-    protected void showAllConversations() {
-        showList(ChannelCacheManager.getInstance().getSupportConversations());
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_support, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override protected List<Conversation> getAllConversations() {
+        return ChannelCacheManager.getInstance().getSupportConversations();
     }
 
     @Override

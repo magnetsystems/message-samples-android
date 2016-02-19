@@ -98,8 +98,6 @@ public class HomeFragment extends BaseChannelsFragment {
         LinearLayout llSecondary = (LinearLayout) header.findViewById(R.id.llSecondary);
         ImageView ivSecondaryBackground = (ImageView) header.findViewById(R.id.ivSecondaryBackground);
         setOnClickListeners(llPrimary, ivPrimaryBackground, llSecondary, ivSecondaryBackground, ivCreateMessage, tvCreateMessage);
-
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -133,35 +131,7 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_home, menu);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-
-            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menu_search).getActionView();
-            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    searchMessage(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    if (newText.isEmpty()) {
-                        hideKeyboard();
-                        showAllConversations();
-                    }
-                    return false;
-                }
-            });
-
-            search.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    search.onActionViewCollapsed();
-                    showAllConversations();
-                    return true;
-                }
-            });
-        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -175,9 +145,14 @@ public class HomeFragment extends BaseChannelsFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override protected List<Conversation> getAllConversations() {
+        return ChannelCacheManager.getInstance().getConversations();
+    }
+
     @Override
     protected void showAllConversations() {
-        showList(ChannelCacheManager.getInstance().getConversations());
+        super.showAllConversations();
+
         if (!UserHelper.isMagnetSupportMember()) {
             Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(ChannelHelper.ASK_MAGNET);
             if (conversation != null && conversation.hasUnreadMessage()) {
@@ -398,21 +373,4 @@ public class HomeFragment extends BaseChannelsFragment {
 
         return conversation;
     }
-
-    private void searchMessage(final String query) {
-        final List<Conversation> searchResult = new ArrayList<>();
-        for (Conversation conversation : ChannelCacheManager.getInstance().getConversations()) {
-            for (UserProfile userProfile : conversation.getSuppliersList()) {
-                if (userProfile.getDisplayName() != null && userProfile.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
-                    searchResult.add(conversation);
-                    break;
-                }
-            }
-        }
-        if (searchResult.isEmpty()) {
-            Utils.showMessage(getActivity(), "Nothing found");
-        }
-        showList(searchResult);
-    }
-
 }
