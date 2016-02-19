@@ -1,12 +1,12 @@
 package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -15,27 +15,81 @@ import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.views.CircleNameView;
-import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.UserProfile;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public abstract class BaseConversationsAdapter extends BaseAdapter {
-    private static final String TAG = BaseConversationsAdapter.class.getSimpleName();
+public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<BaseConversationsAdapter.ConversationViewHolder> {
 
     private LayoutInflater inflater;
     private List<Conversation> conversations;
     private Context context;
+    protected OnConversationClick onConversationClick;
+    protected OnConversationLongClick onConversationLongClick;
 
-    protected class ConversationViewHolder {
+    public interface OnConversationClick {
+        void onClick(Conversation conversation);
+    }
+
+    public interface OnConversationLongClick {
+        void onLongClick(Conversation conversation);
+    }
+
+    protected class ConversationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        Conversation conversation;
+
+        public ConversationViewHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            itemView.setLayoutParams(params);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (onConversationClick != null) {
+                onConversationClick.onClick(conversation);
+            }
+        }
+
+        public void setDefaultOnClickListener() {
+            setOnCLickListener(this);
+        }
+
+        public void setOnCLickListener(View.OnClickListener listener) {
+            itemView.setOnClickListener(listener);
+        }
+    }
+
+    protected class AvatarConversationViewHolder extends ConversationViewHolder implements View.OnLongClickListener {
         ImageView newMessage;
         CircleImageView imageAvatar;
         CircleNameView viewAvatar;
         TextView title;
         TextView date;
         TextView lastMessage;
+
+        public AvatarConversationViewHolder(View itemView) {
+            super(itemView);
+            newMessage = (ImageView) itemView.findViewById(R.id.imConversationNewMsg);
+            imageAvatar = (CircleImageView) itemView.findViewById(R.id.imageConversationOwnerAvatar);
+            viewAvatar = (CircleNameView) itemView.findViewById(R.id.viewConversationOwnerAvatar);
+            title = (TextView) itemView.findViewById(R.id.tvConversationTitle);
+            date = (TextView) itemView.findViewById(R.id.tvConversationDate);
+            lastMessage = (TextView) itemView.findViewById(R.id.tvConversationLastMsg);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (onConversationLongClick != null) {
+                onConversationLongClick.onLongClick(conversation);
+                return true;
+            }
+            return false;
+        }
     }
 
     public BaseConversationsAdapter(Context context, List<Conversation> conversations) {
@@ -44,14 +98,31 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
         this.conversations = conversations;
     }
 
-    @Override
-    public int getCount() {
-        return conversations.size();
+    public Conversation getItem(int position) {
+        return conversations.get(position);
     }
 
     @Override
-    public Conversation getItem(int position) {
-        return conversations.get(position);
+    public ConversationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.item_conversation, parent, false);
+        return new AvatarConversationViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ConversationViewHolder holder, int position) {
+        AvatarConversationViewHolder viewHolder = (AvatarConversationViewHolder) holder;
+        Conversation conversation = getItem(position);
+        if (viewHolder != null && conversation != null) {
+            viewHolder.conversation = conversation;
+            prepareTitleAndAvatar(conversation, viewHolder);
+            if (conversation.hasUnreadMessage()) {
+                viewHolder.newMessage.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.newMessage.setVisibility(View.INVISIBLE);
+            }
+            viewHolder.date.setText(DateHelper.getConversationLastDate(conversation.getLastActiveTime()));
+            viewHolder.lastMessage.setText(getLastMessage(conversation));
+        }
     }
 
     @Override
@@ -60,34 +131,16 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ConversationViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = inflater.inflate(R.layout.item_conversation, parent, false);
-            viewHolder = new ConversationViewHolder();
-            viewHolder.newMessage = (ImageView) convertView.findViewById(R.id.imConversationNewMsg);
-            viewHolder.imageAvatar = (CircleImageView) convertView.findViewById(R.id.imageConversationOwnerAvatar);
-            viewHolder.viewAvatar = (CircleNameView) convertView.findViewById(R.id.viewConversationOwnerAvatar);
-            viewHolder.title = (TextView) convertView.findViewById(R.id.tvConversationTitle);
-            viewHolder.date = (TextView) convertView.findViewById(R.id.tvConversationDate);
-            viewHolder.lastMessage = (TextView) convertView.findViewById(R.id.tvConversationLastMsg);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ConversationViewHolder) convertView.getTag();
-        }
-        if (position >= getCount()) {
-            return convertView;
-        }
-        Conversation conversation = getItem(position);
-        prepareTitleAndAvatar(conversation, viewHolder);
-        if (conversation.hasUnreadMessage()) {
-            viewHolder.newMessage.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.newMessage.setVisibility(View.INVISIBLE);
-        }
-        viewHolder.date.setText(DateHelper.getConversationLastDate(conversation.getLastActiveTime()));
-        viewHolder.lastMessage.setText(getLastMessage(conversation));
-        return convertView;
+    public int getItemCount() {
+        return conversations.size();
+    }
+
+    public void setOnConversationLongClick(OnConversationLongClick onConversationLongClick) {
+        this.onConversationLongClick = onConversationLongClick;
+    }
+
+    public void setOnConversationClick(OnConversationClick onConversationClick) {
+        this.onConversationClick = onConversationClick;
     }
 
     protected Context getContext() {
@@ -96,6 +149,7 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
 
     /**
      * Searches last message for conversation
+     *
      * @param conversation
      * @return empty line, if conversation has not any massage
      */
@@ -104,6 +158,9 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
         if (messages != null && messages.size() > 0) {
             Message message = messages.get(messages.size() - 1);
             String msgType = message.getType();
+            if (msgType == null) {
+                msgType = Message.TYPE_TEXT;
+            }
             switch (msgType) {
                 case Message.TYPE_MAP:
                     return "User's location";
@@ -111,15 +168,13 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
                     return "User's video";
                 case Message.TYPE_PHOTO:
                     return "User's photo";
-                default: //case Message.TYPE_TEXT:
+                case Message.TYPE_TEXT:
                     String text = message.getText().replace(System.getProperty("line.separator"), " ");
                     if (text.length() > 23) {
                         text = text.substring(0, 20) + "...";
                     }
                     return text;
             }
-        } else {
-            Logger.debug(TAG, "\n----------------------No message in conversation : \n " + conversation);
         }
         return "";
     }
@@ -127,26 +182,26 @@ public abstract class BaseConversationsAdapter extends BaseAdapter {
     /**
      * If user is not null, configures avatar for current conversation.
      * If user has no avatar, sets his initials
+     *
      * @param user
      * @param viewHolder
      */
-    protected void setUserAvatar(UserProfile user, ConversationViewHolder viewHolder) {
+    protected void setUserAvatar(UserProfile user, AvatarConversationViewHolder viewHolder) {
         if (user != null) {
             viewHolder.title.setText(user.getDisplayName());
             viewHolder.viewAvatar.setUserName(user.getDisplayName());
             if (user.getAvatarUrl() != null) {
                 Glide.with(context).load(user.getAvatarUrl()).fitCenter().into(viewHolder.imageAvatar);
             }
-        } else {
-            Log.e(TAG, "UserProfile is null");
         }
     }
 
     /**
      * Sets title to conversation item(supplier name) and avatar image.
+     *
      * @param conversation object for current item
      * @param viewHolder
      */
-    protected abstract void prepareTitleAndAvatar(Conversation conversation, ConversationViewHolder viewHolder);
+    protected abstract void prepareTitleAndAvatar(Conversation conversation, AvatarConversationViewHolder viewHolder);
 
 }

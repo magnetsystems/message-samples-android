@@ -14,7 +14,7 @@ public class SupportConversationsAdapter extends BaseConversationsAdapter {
     }
 
     @Override
-    protected void prepareTitleAndAvatar(Conversation conversation, ConversationViewHolder viewHolder) {
+    protected void prepareTitleAndAvatar(Conversation conversation, AvatarConversationViewHolder viewHolder) {
         if(null != conversation.getOwner()) {
             setUserAvatar(conversation.getOwner(), viewHolder);
         } else {
