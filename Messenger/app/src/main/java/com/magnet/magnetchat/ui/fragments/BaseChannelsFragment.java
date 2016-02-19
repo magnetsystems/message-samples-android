@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import android.widget.SearchView;
@@ -39,7 +39,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
     private static String TAG = BaseChannelsFragment.class.getSimpleName();
 
     @InjectView(R.id.homeConversationsList)
-    ListView conversationsList;
+    RecyclerView conversationsList;
     @InjectView(R.id.homeProgress)
     ProgressBar mProgressBar;
     @InjectView(R.id.swipeContainer)
@@ -57,7 +57,11 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     @Override
     protected void onCreateFragment(View containerView) {
-        conversationsList.setOnItemClickListener(this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.setSmoothScrollbarEnabled(true);
+        conversationsList.setLayoutManager(layoutManager);
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -71,20 +75,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         setHasOptionsMenu(true);
 
         onFragmentCreated(containerView);
-
-        isLoadingWhenCreating = true;
         getConversations(true);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (adapter != null) {
-            Conversation conversation = adapter.getItem(position - conversationsList.getHeaderViewsCount());
-            if (conversation != null) {
-                Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
-                onSelectConversation(conversation);
-            }
-        }
     }
 
     @Override
@@ -144,7 +135,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         ChannelHelper.readConversations(readChannelInfoListener);
     }
 
-    protected ListView getConversationsListView() {
+    protected RecyclerView getConversationsListView() {
         return conversationsList;
     }
 
@@ -162,7 +153,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
 
     protected abstract void onSelectConversation(Conversation conversation);
 
-    protected abstract void onReceivedMessage(MMXMessage mmxMessage);
+    protected abstract void onReceiveMessage(MMXMessage mmxMessage);
 
     protected void showAllConversations() {
         showList(getAllConversations());
@@ -179,6 +170,15 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
             if (adapter == null) {
                 conversations = new ArrayList<>(conversationsToShow);
                 adapter = createAdapter(conversations);
+                adapter.setOnConversationClick(new BaseConversationsAdapter.OnConversationClick() {
+                    @Override
+                    public void onClick(Conversation conversation) {
+                        if (conversation != null) {
+                            Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
+                            onSelectConversation(conversation);
+                        }
+                    }
+                });
                 conversationsList.setAdapter(adapter);
             } else {
                 conversations.clear();

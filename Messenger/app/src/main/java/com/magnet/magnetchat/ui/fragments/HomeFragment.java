@@ -4,19 +4,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 
-import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -25,8 +22,10 @@ import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
-import com.magnet.magnetchat.ui.adapters.ConversationsAdapter;
+import com.magnet.magnetchat.ui.adapters.HomeConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
+import com.magnet.magnetchat.ui.views.AskMagnetView;
+import com.magnet.magnetchat.ui.views.EventView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -44,20 +43,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.InjectView;
+
 public class HomeFragment extends BaseChannelsFragment {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
 
     private AlertDialog leaveDialog;
 
-    private FrameLayout flPrimary;
-    private TextView tvPrimarySubscribers;
-    private FrameLayout flSecondary;
-    private ImageView ivSecondaryNewMsg;
+    @InjectView(R.id.llHomeCreateMsg)
+    LinearLayout llCreateMessage;
+    @InjectView(R.id.ivHomeCreateMsg)
+    ImageView ivCreateMessage;
+    @InjectView(R.id.tvHomeCreateMsg)
+    AppCompatTextView tvCreateMessage;
 
-    private LinearLayout llCreateMessage;
-    private ImageView ivCreateMessage;
-    private TextView tvCreateMessage;
+    private EventView eventView;
+    private AskMagnetView askMagnetView;
 
     private ChannelDetail primaryChannel;
     private static final String PRIMARY_CHANNEL_TAG = "active";
@@ -69,35 +71,12 @@ public class HomeFragment extends BaseChannelsFragment {
 
         loadHighlightedChannel(PRIMARY_CHANNEL_TAG);
 
-        View header = getLayoutInflater(getArguments()).inflate(R.layout.list_header_home, null);
-        flPrimary = (FrameLayout) header.findViewById(R.id.flPrimary);
-        tvPrimarySubscribers = (TextView) header.findViewById(R.id.tvPrimarySubscribers);
-        flSecondary = (FrameLayout) header.findViewById(R.id.flSecondary);
-        ivSecondaryNewMsg = (ImageView) header.findViewById(R.id.ivSecondaryNewMsg);
-        flPrimary.setVisibility(View.GONE);
-        if (UserHelper.isMagnetSupportMember()) {
-            flSecondary.setVisibility(View.GONE);
-        }
+        eventView = new EventView(getContext());
+        askMagnetView = new AskMagnetView(getContext());
 
-        llCreateMessage = (LinearLayout) containerView.findViewById(R.id.llHomeCreateMsg);
-        ivCreateMessage = (ImageView) containerView.findViewById(R.id.ivHomeCreateMsg);
-        tvCreateMessage = (TextView) containerView.findViewById(R.id.tvHomeCreateMsg);
+        setOnClickListeners(ivCreateMessage, tvCreateMessage);
 
-        final ListView conversationsList = getConversationsListView();
-        conversationsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showLeaveDialog(getConversationsAdapter().getItem(position - conversationsList.getHeaderViewsCount()));
-                return true;
-            }
-        });
-        conversationsList.addHeaderView(header);
-
-        LinearLayout llPrimary = (LinearLayout) header.findViewById(R.id.llPrimary);
-        ImageView ivPrimaryBackground = (ImageView) header.findViewById(R.id.ivPrimaryBackground);
-        LinearLayout llSecondary = (LinearLayout) header.findViewById(R.id.llSecondary);
-        ImageView ivSecondaryBackground = (ImageView) header.findViewById(R.id.ivSecondaryBackground);
-        setOnClickListeners(llPrimary, ivPrimaryBackground, llSecondary, ivSecondaryBackground, ivCreateMessage, tvCreateMessage);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -117,7 +96,7 @@ public class HomeFragment extends BaseChannelsFragment {
             case R.id.llSecondary:
             case R.id.ivSecondaryBackground:
                 if (!UserHelper.isMagnetSupportMember()) {
-                    ivSecondaryNewMsg.setVisibility(View.INVISIBLE);
+                    askMagnetView.setUnreadMessage(false);
                     loadMagnetSupportChannel();
                 }
                 break;
@@ -156,14 +135,39 @@ public class HomeFragment extends BaseChannelsFragment {
         if (!UserHelper.isMagnetSupportMember()) {
             Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(ChannelHelper.ASK_MAGNET);
             if (conversation != null && conversation.hasUnreadMessage()) {
-                ivSecondaryNewMsg.setVisibility(View.VISIBLE);
+                askMagnetView.setUnreadMessage(true);
             }
         }
     }
 
     @Override
     protected BaseConversationsAdapter createAdapter(List<Conversation> conversations) {
-        return new ConversationsAdapter(getActivity(), conversations);
+        HomeConversationsAdapter adapter = new HomeConversationsAdapter(getActivity(), conversations, eventView, askMagnetView, new HomeConversationsAdapter.onClickHeaderListener() {
+            @Override
+            public void onClickEvent() {
+                Conversation conversation = addConversation(primaryChannel);
+                Intent i = ChatActivity.getIntentWithChannel(conversation);
+                if (null != i) {
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onClickAskMagnet() {
+                askMagnetView.setUnreadMessage(false);
+                loadMagnetSupportChannel();
+            }
+        });
+        adapter.setOnConversationLongClick(new BaseConversationsAdapter.OnConversationLongClick() {
+            @Override
+            public void onLongClick(Conversation conversation) {
+                showLeaveDialog(conversation);
+            }
+        });
+        if (primaryChannel != null) {
+            adapter.setEventConversationEnabled(true);
+        }
+        return adapter;
     }
 
     @Override
@@ -181,12 +185,15 @@ public class HomeFragment extends BaseChannelsFragment {
     }
 
     @Override
-    protected void onReceivedMessage(MMXMessage mmxMessage) {
+    protected void onReceiveMessage(MMXMessage mmxMessage) {
         if (mmxMessage != null && mmxMessage.getChannel() != null) {
             MMXChannel channel = mmxMessage.getChannel();
             if (!UserHelper.isMagnetSupportMember() && channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
-                ivSecondaryNewMsg.setVisibility(View.VISIBLE);
+                askMagnetView.setUnreadMessage(true);
             }
+        }
+        if (llCreateMessage.getVisibility() == View.VISIBLE) {
+            onConversationListIsEmpty(false);
         }
     }
 
@@ -225,12 +232,14 @@ public class HomeFragment extends BaseChannelsFragment {
                     public void onSuccess(List<ChannelDetail> channelDetails) {
                         if (null != channelDetails && channelDetails.size() > 0) {
                             if (PRIMARY_CHANNEL_TAG.equals(tag)) {
-                                flPrimary.setVisibility(View.VISIBLE);
                                 primaryChannel = channelDetails.get(0);
+                                HomeConversationsAdapter adapter = (HomeConversationsAdapter) getConversationsAdapter();
+                                if (adapter != null) {
+                                    adapter.setEventConversationEnabled(true);
+                                }
                                 ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(primaryChannel));
-                                tvPrimarySubscribers.setText(primaryChannel.getTotalSubscribers() + " Subscribers");
+                                eventView.setSubscribersAmount(primaryChannel.getTotalSubscribers());
                             } else {
-                                flSecondary.setVisibility(View.VISIBLE);
                                 secondaryChannel = channelDetails.get(0);
                                 ChannelCacheManager.getInstance().addConversation(channel.getName(), new Conversation(secondaryChannel));
                                 goToAskMagnet();

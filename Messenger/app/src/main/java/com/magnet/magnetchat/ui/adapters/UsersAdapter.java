@@ -189,6 +189,11 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    /**
+     * Colors the item view, if item is selected or returns to default color
+     * @param view
+     * @param position
+     */
     private void colorSelected(View view, int position) {
         UserProfile selectedUser = getItem(position);
         if (selectedUsers.contains(selectedUser)) {
