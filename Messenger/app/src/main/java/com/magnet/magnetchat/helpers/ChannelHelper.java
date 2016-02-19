@@ -278,6 +278,8 @@ public class ChannelHelper {
                     if (null != conversation) {
                         conversation.setHasUnreadMessage(true);
                         conversation.setLastActiveTime(new Date());
+                        //Without this new conversation isn't shown at once
+                        CurrentApplication.getInstance().sendBroadcast(new Intent(ACTION_ADDED_CONVERSATION));
                     } else {
                         Logger.error(TAG, "Can't load conversation for new message : " + mmxMessage);
                     }

@@ -213,6 +213,9 @@ public class HomeFragment extends BaseChannelsFragment {
                 ivSecondaryNewMsg.setVisibility(View.VISIBLE);
             }
         }
+        if (llCreateMessage.getVisibility() == View.VISIBLE) {
+            onConversationListIsEmpty(false);
+        }
     }
 
     @Override

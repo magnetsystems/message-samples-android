@@ -51,7 +51,7 @@ public class Conversation {
         this.channel = channelDetail.getChannel();
 
         //Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
-        owner = channelDetail.getOwner();
+//        owner = channelDetail.getOwner();
         for (UserProfile up : channelDetail.getSubscribers()) {
             if (null == owner && up.getUserIdentifier().equals(channel.getOwnerId())) {
                 owner = up;
