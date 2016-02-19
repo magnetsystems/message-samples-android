@@ -160,18 +160,19 @@ public class EditProfileActivity extends BaseActivity {
      * Method which provide the updating of the server avatar
      */
     private void updateServerAvatar(Bitmap bitmap) {
-        User.getCurrentUser().setAvatar(bitmap, null,
-                new ApiCallback<String>() {
-                    @Override
-                    public void success(String s) {
-                        AppLogger.info(this, "Set user avatar successfuly " + s);
-                    }
+        if(null != User.getCurrentUser()) {
+            User.getCurrentUser().setAvatar(bitmap, null, new ApiCallback<String>() {
+                @Override public void success(String s) {
+                    AppLogger.info(this, "Set user avatar successfuly " + s);
+                }
 
-                    @Override
-                    public void failure(ApiError apiError) {
-                        AppLogger.error(this, String.format("Failed to set user avatar %s", apiError.toString()));
-                    }
-                });
+                @Override public void failure(ApiError apiError) {
+                    AppLogger.error(this, String.format("Failed to set user avatar %s", apiError.toString()));
+                }
+            });
+        } else {
+            showMessage("Current user session timeout, please logout and login");
+        }
     }
 
     @Override

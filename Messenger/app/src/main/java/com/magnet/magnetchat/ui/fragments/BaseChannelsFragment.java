@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
 import android.widget.SearchView;
@@ -34,7 +35,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-public abstract class BaseChannelsFragment extends BaseFragment implements AdapterView.OnItemClickListener {
+public abstract class BaseChannelsFragment extends BaseFragment {
 
     private static String TAG = BaseChannelsFragment.class.getSimpleName();
 
@@ -240,7 +241,7 @@ public abstract class BaseChannelsFragment extends BaseFragment implements Adapt
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             Logger.debug(TAG, "onMessageReceived");
             showAllConversations();
-            onReceivedMessage(mmxMessage);
+            onReceiveMessage(mmxMessage);
             return false;
         }
 
