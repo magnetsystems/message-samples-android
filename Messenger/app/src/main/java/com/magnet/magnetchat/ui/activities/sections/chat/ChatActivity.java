@@ -351,7 +351,9 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void sendText(String text) {
-        currentConversation.sendTextMessage(text, sendMessageListener);
+        if (currentConversation != null) {
+            currentConversation.sendTextMessage(text, sendMessageListener);
+        }
     }
 
     private void sendLocation() {

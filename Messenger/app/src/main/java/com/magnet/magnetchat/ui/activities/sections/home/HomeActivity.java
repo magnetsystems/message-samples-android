@@ -12,13 +12,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
+import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
@@ -30,11 +30,14 @@ import com.magnet.magnetchat.ui.fragments.SupportFragment;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeActivity extends BaseActivity implements BaseActivityCallback {
+public class HomeActivity extends BaseActivity implements BaseActivityCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
 
@@ -59,6 +62,11 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
 
     private AppFragment currentFragment;
 
+    private TextView tvMenuItemCountNew;
+    private LinearLayout llMenuItemNew;
+
+    private int unreadSupport = 0;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_home;
@@ -81,36 +89,48 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         menu.getItem(menu.size() - 1).setTitle("Version " + getVersionName());
         if (!UserHelper.isMagnetSupportMember()) {
             menu.getItem(1).setVisible(false);
+        } else {
+            View menuSupportView = menu.findItem(R.id.nav_support).getActionView();
+            if (menuSupportView != null) {
+                llMenuItemNew = (LinearLayout) menuSupportView.findViewById(R.id.llMenuItemNew);
+                tvMenuItemCountNew = (TextView) menuSupportView.findViewById(R.id.tvMenuItemCountNew);
+            }
         }
 
-        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override public boolean onNavigationItemSelected(MenuItem item) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.nav_home:
-                        setFragment(AppFragment.HOME);
-                        break;
-                    case R.id.nav_support:
-                        setFragment(AppFragment.SUPPORT);
-                        break;
-                    case R.id.nav_signout:
-                        UserHelper.logout(logoutListener);
-                        break;
-                    case R.id.nav_about:
-
-                        break;
-                    default:
-                        setFragment(AppFragment.HOME);
-                        break;
-                }
-                closeDrawer();
-                return true;
-            }
-        });
+        navView.setNavigationItemSelectedListener(this);
 
         drawer.openDrawer(GravityCompat.START);
 
         setFragment(AppFragment.HOME);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.nav_home:
+                setFragment(AppFragment.HOME);
+                break;
+            case R.id.nav_support:
+                drawerButton.hideWarning();
+                unreadSupport = 0;
+                if (llMenuItemNew != null) {
+                    llMenuItemNew.setVisibility(View.INVISIBLE);
+                }
+                setFragment(AppFragment.SUPPORT);
+                break;
+            case R.id.nav_signout:
+                UserHelper.logout(logoutListener);
+                break;
+            case R.id.nav_about:
+
+                break;
+            default:
+                setFragment(AppFragment.HOME);
+                break;
+        }
+        closeDrawer();
+        return true;
     }
 
     @Override
@@ -121,6 +141,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
         closeDrawer();
 
         if (User.getCurrentUser() != null) {
+            if (UserHelper.isMagnetSupportMember()) {
+                MMX.registerListener(homeMessageReceiver);
+            }
             if (currentFragment == AppFragment.HOME) {
                 toolbarTitle.setText(User.getCurrentUser().getDisplayName());
             }
@@ -137,6 +160,12 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             Log.w(TAG, "CurrentUser is null, logout");
             UserHelper.logout(logoutListener);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        MMX.unregisterListener(homeMessageReceiver);
+        super.onPause();
     }
 
     @Override
@@ -272,4 +301,23 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback {
             finish();
         }
     };
+
+    private MMX.EventListener homeMessageReceiver = new MMX.EventListener() {
+        @Override
+        public boolean onMessageReceived(MMXMessage mmxMessage) {
+            if (mmxMessage != null && mmxMessage.getChannel() != null) {
+                MMXChannel channel = mmxMessage.getChannel();
+                if (currentFragment == AppFragment.HOME && channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
+                    unreadSupport++;
+                    drawerButton.showWarning();
+                    if (tvMenuItemCountNew != null) {
+                        llMenuItemNew.setVisibility(View.VISIBLE);
+                        tvMenuItemCountNew.setText(String.valueOf(unreadSupport));
+                    }
+                }
+            }
+            return false;
+        }
+    };
+
 }
