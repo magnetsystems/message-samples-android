@@ -302,6 +302,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
         }
     };
 
+    /**
+     * Receiver which check if drawer button should show indicator, that support section has unread message
+     */
     private MMX.EventListener homeMessageReceiver = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
