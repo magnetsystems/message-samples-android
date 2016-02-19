@@ -4,6 +4,7 @@
 package com.magnet.magnetchat.core.managers;
 
 import com.magnet.magnetchat.helpers.ChannelHelper;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 
@@ -66,7 +67,9 @@ public class ChannelCacheManager {
     public List<Conversation> getSupportConversations() {
         ArrayList<Conversation> list = new ArrayList<>();
         for (Conversation c : askConversations.values()) {
-            list.add(c);
+            if(null != c.getMessages() && !c.getMessages().isEmpty()) {
+                list.add(c);
+            }
         }
         Collections.sort(list, conversationComparator);
         return list;
@@ -80,12 +83,11 @@ public class ChannelCacheManager {
     }
 
     public void addConversation(String channelName, Conversation conversation) {
-        conversations.put(channelName.toLowerCase(), conversation);
-        isConversationListUpdated.set(true);
-    }
-
-    public void addAskConversation(String ownerId, Conversation conversation) {
-        askConversations.put(ownerId.toLowerCase(), conversation);
+        if (channelName.equalsIgnoreCase(ChannelHelper.ASK_MAGNET) && UserHelper.isMagnetSupportMember()) {
+            askConversations.put(conversation.getChannel().getOwnerId().toLowerCase(), conversation);
+        } else {
+            conversations.put(channelName.toLowerCase(), conversation);
+        }
         isConversationListUpdated.set(true);
     }
 

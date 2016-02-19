@@ -39,9 +39,8 @@ public class SupportFragment extends BaseChannelsFragment {
         startActivity(ChatActivity.getIntentWithChannelOwner(conversation));
     }
 
-    @Override
     protected void onReceiveMessage(MMXMessage mmxMessage) {
-        
+
     }
 
 }

@@ -36,6 +36,7 @@ import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -202,6 +203,16 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     protected void onSelectConversation(Conversation conversation) {
         startActivity(ChatActivity.getIntentWithChannel(conversation));
+    }
+
+    @Override
+    protected void onReceiveMessage(MMXMessage mmxMessage) {
+        if (mmxMessage != null && mmxMessage.getChannel() != null) {
+            MMXChannel channel = mmxMessage.getChannel();
+            if (!UserHelper.isMagnetSupportMember() && channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
+                ivSecondaryNewMsg.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
