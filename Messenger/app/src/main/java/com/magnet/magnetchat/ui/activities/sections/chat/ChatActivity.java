@@ -122,6 +122,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(false);
         messagesListView.setLayoutManager(layoutManager);
+
         if (getIntent().getBooleanExtra(TAG_CREATE_NEW, false)) {
             String[] userIds = getIntent().getStringArrayExtra(TAG_CREATE_WITH_USER_ID);
             if (userIds != null) {
@@ -205,8 +206,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         switch (item.getItemId()) {
             case R.id.menuChatOpenDetails:
                 if (currentConversation != null) {
-                    String name = currentConversation.getChannel().getName();
-                    startActivity(DetailsActivity.createIntentForChannel(name));
+                    startActivity(DetailsActivity.createIntentForChannel(currentConversation));
                 }
                 break;
             case android.R.id.home:
