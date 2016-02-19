@@ -54,11 +54,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
     @InjectView(R.id.nav_view)
     NavigationView navView;
 
-    //@InjectView(R.id.llUserProfile)
-    LinearLayout llUserProfile;
-
-    //@InjectView(R.id.ivUserAvatar)
-    CircleImageView ivUserAvatar;
+    private LinearLayout llUserProfile;
+    private CircleImageView ivUserAvatar;
+    private TextView tvUserName;
 
     private AppFragment currentFragment;
 
@@ -82,6 +80,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
         View headerView = navView.getHeaderView(0);
         llUserProfile = (LinearLayout) headerView.findViewById(R.id.llUserProfile);
         ivUserAvatar = (CircleImageView) headerView.findViewById(R.id.ivUserAvatar);
+        tvUserName = (TextView) headerView.findViewById(R.id.textUserName);
 
         setOnClickListeners(drawerButton, llUserProfile);
 
@@ -141,6 +140,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
         closeDrawer();
 
         if (User.getCurrentUser() != null) {
+            tvUserName.setText(User.getCurrentUser().getDisplayName());
             if (UserHelper.isMagnetSupportMember()) {
                 MMX.registerListener(homeMessageReceiver);
             }
