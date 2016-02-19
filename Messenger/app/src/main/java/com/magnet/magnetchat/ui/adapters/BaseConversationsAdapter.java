@@ -29,10 +29,16 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
     protected OnConversationClick onConversationClick;
     protected OnConversationLongClick onConversationLongClick;
 
+    /**
+     * Listener which provides actions when user click on item
+     */
     public interface OnConversationClick {
         void onClick(Conversation conversation);
     }
 
+    /**
+     * Listener which provides actions when user click long on item
+     */
     public interface OnConversationLongClick {
         void onLongClick(Conversation conversation);
     }

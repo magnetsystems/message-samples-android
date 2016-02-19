@@ -134,6 +134,10 @@ public class HomeConversationsAdapter extends BaseConversationsAdapter {
         }
     }
 
+    /**
+     * If gets true, shows event header to the conversation list. THen can't be changed.
+     * @param enabled
+     */
     public void setEventConversationEnabled(boolean enabled) {
         if (!showEvent) {
             showEvent = enabled;
