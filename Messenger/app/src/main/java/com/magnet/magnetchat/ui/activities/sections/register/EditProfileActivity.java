@@ -20,6 +20,7 @@ import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
+import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.auth.model.UpdateProfileRequest;
 import com.magnet.max.android.util.StringUtil;
@@ -159,9 +160,9 @@ public class EditProfileActivity extends BaseActivity {
     /**
      * Method which provide the updating of the server avatar
      */
-    private void updateServerAvatar(Bitmap bitmap) {
+    private void updateServerAvatar(Bitmap bitmap, final String mimeType) {
         if(null != User.getCurrentUser()) {
-            User.getCurrentUser().setAvatar(bitmap, null, new ApiCallback<String>() {
+            User.getCurrentUser().setAvatar(bitmap, mimeType, new ApiCallback<String>() {
                 @Override public void success(String s) {
                     AppLogger.info(this, "Set user avatar successfuly " + s);
                 }
@@ -205,31 +206,31 @@ public class EditProfileActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, Intent data) {
         if (requestCode == RESULT_LOAD_IMAGE && null != data) {
             Uri selectedImage = data.getData();
-            String picturePath = FileHelper.getPath(this, selectedImage);
+            final String picturePath = FileHelper.getPath(this, selectedImage);
             if(null != picturePath) {
                 //setImageBySource(imageViewAvatar, picturePath);
                 Glide.with(this).load(selectedImage).asBitmap().centerCrop().into(new SimpleTarget<Bitmap>(200, 200) {
                     @Override
                     public void onResourceReady(Bitmap bitmap, GlideAnimation anim) {
-                        setImageFromBitmap(bitmap);
+                        setImageFromBitmap(bitmap, Attachment.getMimeType(picturePath, Attachment.MIME_TYPE_IMAGE));
                     }
                 });
             } else {
-                Log.e(TAG, "Failed to load image from Uri " + selectedImage + ", trying to use inputstream");
+                Log.w(TAG, "Failed to load image from Uri " + selectedImage + ", trying to use inputstream");
 
                 Bitmap bitmap = FileHelper.getImageBitmap(this, selectedImage);
                 if(null != bitmap) {
-                    setImageFromBitmap(bitmap);
+                    setImageFromBitmap(bitmap, FileHelper.getMimeType(this, selectedImage));
                 }
             }
         }
     }
 
-    private void setImageFromBitmap(final Bitmap bitmap) {
+    private void setImageFromBitmap(final Bitmap bitmap, final String mimeType) {
         imageViewAvatar.setImageBitmap(bitmap);
         runOnMainThread(0.5, new OnActionPerformer() {
             @Override public void onActionPerform() {
-                updateServerAvatar(bitmap);
+                updateServerAvatar(bitmap, mimeType);
             }
         });
     }
