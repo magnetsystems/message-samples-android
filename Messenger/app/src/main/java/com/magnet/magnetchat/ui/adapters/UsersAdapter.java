@@ -29,7 +29,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private OnUserClickListener onUserClickListener;
 
     /**
-     * Listener for click on the user item
+     * Listener which provides actions when user click on item
      */
     public interface OnUserClickListener {
         void onUserClick(View view, int position);

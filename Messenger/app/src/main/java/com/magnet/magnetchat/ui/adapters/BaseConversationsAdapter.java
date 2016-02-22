@@ -69,6 +69,9 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
         }
     }
 
+    /**
+     * View holder to show conversations with user's avatars and messages
+     */
     protected class AvatarConversationViewHolder extends ConversationViewHolder implements View.OnLongClickListener {
         ImageView newMessage;
         CircleImageView imageAvatar;
@@ -104,6 +107,10 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
         this.conversations = conversations;
     }
 
+    /**
+     * @param position
+     * @return an item by position in list
+     */
     public Conversation getItem(int position) {
         return conversations.get(position);
     }
