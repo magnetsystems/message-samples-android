@@ -10,10 +10,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
+import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -110,46 +112,7 @@ public class HomeFragment extends BaseChannelsFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_home, menu);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-
-            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menu_search).getActionView();
-            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    searchMessage(query);
-                    return true;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    if (newText.isEmpty()) {
-                        hideKeyboard();
-                        showAllConversations();
-                    }
-                    return false;
-                }
-            });
-
-            search.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    search.onActionViewCollapsed();
-                    showAllConversations();
-                    return true;
-                }
-            });
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (primaryChannel != null) {
-            Conversation eventConversation = addConversation(primaryChannel);
-            if (eventConversation != null){
-                eventView.setSubscribersAmount(eventConversation.getSuppliersList().size());
-            }
-        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -163,9 +126,14 @@ public class HomeFragment extends BaseChannelsFragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override protected List<Conversation> getAllConversations() {
+        return ChannelCacheManager.getInstance().getConversations();
+    }
+
     @Override
     protected void showAllConversations() {
-        showList(ChannelCacheManager.getInstance().getConversations());
+        super.showAllConversations();
+
         if (!UserHelper.isMagnetSupportMember()) {
             Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(ChannelHelper.ASK_MAGNET);
             if (conversation != null && conversation.hasUnreadMessage()) {
@@ -321,7 +289,8 @@ public class HomeFragment extends BaseChannelsFragment {
                                             }
 
                                             @Override
-                                            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                                            public void onFailure(MMXChannel.FailureCode failureCode,
+                                                                  Throwable throwable) {
                                                 Log.e(TAG, "Failed to create askMagnet channel due to" + failureCode, throwable);
                                                 Utils.showMessage(getActivity(), "Can't load the channel, please try later.");
                                             }
@@ -409,26 +378,10 @@ public class HomeFragment extends BaseChannelsFragment {
         Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(channelDetail.getChannel().getName());
         if (null == conversation) {
             conversation = new Conversation(channelDetail);
-            ChannelCacheManager.getInstance().addConversation(channelDetail.getChannel().getName(), conversation);
+            ChannelCacheManager.getInstance()
+                    .addConversation(channelDetail.getChannel().getName(), conversation);
         }
 
         return conversation;
     }
-
-    private void searchMessage(final String query) {
-        final List<Conversation> searchResult = new ArrayList<>();
-        for (Conversation conversation : ChannelCacheManager.getInstance().getConversations()) {
-            for (UserProfile userProfile : conversation.getSuppliersList()) {
-                if (userProfile.getDisplayName() != null && userProfile.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
-                    searchResult.add(conversation);
-                    break;
-                }
-            }
-        }
-        if (searchResult.isEmpty()) {
-            Utils.showMessage(getActivity(), "Nothing found");
-        }
-        showList(searchResult);
-    }
-
 }

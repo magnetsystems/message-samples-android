@@ -171,7 +171,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param container_id current container id
      */
     public void replace(Fragment fragment, int container_id, String tag) {
-        getFragmentTransaction().replace(container_id, fragment, tag).addToBackStack(null).commit();
+        getFragmentTransaction().replace(container_id, fragment, tag).commit();
     }
 
 

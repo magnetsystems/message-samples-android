@@ -4,20 +4,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 
+import android.widget.SearchView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
+import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
+import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -64,6 +72,9 @@ public abstract class BaseChannelsFragment extends BaseFragment {
             }
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
+
+        setHasOptionsMenu(true);
+
         onFragmentCreated(containerView);
         getConversations(true);
     }
@@ -86,6 +97,38 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         super.onPause();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menu_search).getActionView();
+            search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    searchMessage(query);
+                    return true;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    if (newText.isEmpty()) {
+                        hideKeyboard();
+                        showAllConversations();
+                    }
+                    return false;
+                }
+            });
+
+            search.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    search.onActionViewCollapsed();
+                    showAllConversations();
+                    return true;
+                }
+            });
+        }
+    }
+
     protected void getConversations(boolean showProgress) {
         if (showProgress) {
             setProgressBarVisibility(View.VISIBLE);
@@ -103,7 +146,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
 
     protected abstract void onFragmentCreated(View containerView);
 
-    protected abstract void showAllConversations();
+    protected abstract List<Conversation> getAllConversations();
 
     protected abstract BaseConversationsAdapter createAdapter(List<Conversation> conversations);
 
@@ -112,6 +155,10 @@ public abstract class BaseChannelsFragment extends BaseFragment {
     protected abstract void onSelectConversation(Conversation conversation);
 
     protected abstract void onReceiveMessage(MMXMessage mmxMessage);
+
+    protected void showAllConversations() {
+        showList(getAllConversations());
+    }
 
     protected void updateList() {
         if (adapter != null) {
@@ -142,6 +189,22 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         } else {
             Log.w(TAG, "Fragment is detached, won't update list");
         }
+    }
+
+    protected void searchMessage(final String query) {
+        final List<Conversation> searchResult = new ArrayList<>();
+        for (Conversation conversation : getAllConversations()) {
+            for (UserProfile userProfile : conversation.getSuppliersList()) {
+                if (userProfile.getDisplayName() != null && userProfile.getDisplayName().toLowerCase().contains(query.toLowerCase())) {
+                    searchResult.add(conversation);
+                    break;
+                }
+            }
+        }
+        if (searchResult.isEmpty()) {
+            Utils.showMessage(getActivity(), "Nothing found");
+        }
+        showList(searchResult);
     }
 
     protected void setProgressBarVisibility(int visibility) {

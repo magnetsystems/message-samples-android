@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.model.Conversation;
@@ -199,12 +203,28 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
      * @param user
      * @param viewHolder
      */
-    protected void setUserAvatar(UserProfile user, AvatarConversationViewHolder viewHolder) {
+    protected void setUserAvatar(UserProfile user, final AvatarConversationViewHolder viewHolder) {
         if (user != null) {
             viewHolder.title.setText(user.getDisplayName());
             viewHolder.viewAvatar.setUserName(user.getDisplayName());
             if (user.getAvatarUrl() != null) {
-                Glide.with(context).load(user.getAvatarUrl()).fitCenter().into(viewHolder.imageAvatar);
+                viewHolder.imageAvatar.setVisibility(View.VISIBLE);
+                Glide.with(context).load(user.getAvatarUrl()).fitCenter().listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String s, Target<GlideDrawable> target,
+                        boolean b) {
+                        //Log.e("BaseConversation", "failed to load image ", e);
+                        viewHolder.imageAvatar.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override public boolean onResourceReady(GlideDrawable glideDrawable, String s,
+                        Target<GlideDrawable> target, boolean b, boolean b1) {
+                        return false;
+                    }
+                }).into(viewHolder.imageAvatar);
+            } else {
+                viewHolder.imageAvatar.setVisibility(View.GONE);
             }
         }
     }
