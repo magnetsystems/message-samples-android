@@ -11,6 +11,7 @@ import com.magnet.max.android.auth.model.UserRegistrationInfo;
 import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -228,6 +229,37 @@ public class UserHelper {
             }
         }
         return false;
+    }
+
+    public static Comparator<UserProfile> getUserProfileComparator() {
+        return new Comparator<UserProfile>() {
+            @Override
+            public int compare(UserProfile lhs, UserProfile rhs) {
+                if (lhs == null || rhs == null) {
+                    return 0;
+                }
+                String lName = getUserNameToCompare(lhs);
+                String rName = getUserNameToCompare(rhs);
+                return lName.compareToIgnoreCase(rName);
+            }
+        };
+    }
+
+    public static String getUserNameToCompare(UserProfile userProfile) {
+        String str = " ";
+        if (userProfile != null) {
+            if (userProfile.getLastName() != null) {
+                str = userProfile.getLastName();
+            } else if (userProfile.getFirstName() != null) {
+                str = userProfile.getFirstName();
+            } else {
+                str = userProfile.getDisplayName();
+            }
+        }
+        if (str.trim().contains(" ")) {
+            str = str.substring(str.indexOf(" ")).trim();
+        }
+        return str;
     }
 
 }
