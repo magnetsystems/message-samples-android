@@ -83,6 +83,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private ProgressBar chatMessageProgress;
 
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
     @InjectView(R.id.chatMessageField)
     EditText editMessage;
     @InjectView(R.id.chatSuppliers)
@@ -103,8 +105,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {

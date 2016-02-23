@@ -96,6 +96,10 @@ public class DateHelper {
         }
     }
 
+    public static String getMessageDateTime(Date date) {
+        return String.format("%s %s", DateHelper.getMessageDay(date), DateHelper.getTime(date));
+    }
+
     private static class SimpleDate implements Comparable<SimpleDate> {
         private int day;
         private int month;
