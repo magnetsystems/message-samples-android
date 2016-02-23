@@ -7,18 +7,17 @@ import android.util.TypedValue;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.TypeFaceManager;
 
-import java.lang.reflect.Field;
-
 /**
  * Created by dlernatovich on 2/10/16.
  */
 public class CustomSearchView extends SearchView {
+
+    private EditText searchPlate;
 
     public CustomSearchView(Context context) {
         super(context);
@@ -38,7 +37,7 @@ public class CustomSearchView extends SearchView {
             int searchIconID = getContext().getResources().getIdentifier("android:id/search_button", null, null);
             int searchEditFrameID = getContext().getResources().getIdentifier("android:id/search_edit_frame", null, null);
 
-            EditText searchPlate = (EditText) findViewById(searchPlateId);
+            searchPlate = (EditText) findViewById(searchPlateId);
 
             searchPlate.setTextColor(getResources().getColor(android.R.color.black));
             searchPlate.setHintTextColor(getResources().getColor(R.color.colorLightGray));
@@ -67,4 +66,9 @@ public class CustomSearchView extends SearchView {
             Log.e("SearchView", e.getMessage(), e);
         }
     }
+
+    public void setHint(String hint){
+        searchPlate.setHint(hint);
+    }
+
 }

@@ -32,10 +32,10 @@
                 android:gravity="center"
                 app:titleTextAppearance="@style/AppTheme.Toolbar.Title">
 
-                <android.support.v7.widget.AppCompatTextView
-                    style="@style/style_textview_h1"
-                    android:layout_height="?attr/actionBarSize"
-                    android:text="All contacts" />
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                    <!--style="@style/style_textview_h1"-->
+                    <!--android:layout_height="?attr/actionBarSize"-->
+                    <!--android:text="All contacts" />-->
 
             </android.support.v7.widget.Toolbar>
 

@@ -30,7 +30,7 @@ import java.util.List;
 
 import butterknife.InjectView;
 
-public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener, SearchView.OnCloseListener {
+public class ChooseUserActivity extends BaseActivity implements SearchView.OnQueryTextListener {
 
     public static final String TAG_ADD_USER_TO_CHANNEL = "addUserToChannel";
 
@@ -77,6 +77,12 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        toolbar.setTitle("All contacts");
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.registerSaveBtn:
@@ -92,8 +98,17 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         getMenuInflater().inflate(R.menu.menu_choose_user, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menuUserSearch).getActionView();
+            search.setHint("Search users");
             search.setOnQueryTextListener(this);
-            search.setOnCloseListener(this);
+            search.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    search.onActionViewCollapsed();
+                    hideKeyboard();
+                    searchUsers("");
+                    return true;
+                }
+            });
             search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -103,13 +118,6 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
                 }
             });
         }
-        return true;
-    }
-
-    @Override
-    public boolean onClose() {
-        hideKeyboard();
-        searchUsers("");
         return true;
     }
 
