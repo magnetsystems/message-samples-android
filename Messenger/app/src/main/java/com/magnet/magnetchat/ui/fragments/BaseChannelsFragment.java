@@ -22,6 +22,7 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
+import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
@@ -41,8 +42,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
 
     @InjectView(R.id.homeConversationsList)
     RecyclerView conversationsList;
-    @InjectView(R.id.homeProgress)
-    ProgressBar mProgressBar;
     @InjectView(R.id.swipeContainer)
     SwipeRefreshLayout swipeContainer;
 
@@ -62,13 +61,15 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.setSmoothScrollbarEnabled(true);
+        conversationsList.setHasFixedSize(true);
         conversationsList.setLayoutManager(layoutManager);
+        conversationsList.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getConversations(false);
+                getConversations();
             }
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
@@ -76,7 +77,13 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         setHasOptionsMenu(true);
 
         onFragmentCreated(containerView);
-        getConversations(true);
+
+        swipeContainer.post(new Runnable() {
+            @Override public void run() {
+                swipeContainer.setRefreshing(true);
+                getConversations();
+            }
+        });
     }
 
     @Override
@@ -129,10 +136,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         }
     }
 
-    protected void getConversations(boolean showProgress) {
-        if (showProgress) {
-            setProgressBarVisibility(View.VISIBLE);
-        }
+    protected void getConversations() {
         ChannelHelper.readConversations(readChannelInfoListener);
     }
 
@@ -207,10 +211,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         showList(searchResult);
     }
 
-    protected void setProgressBarVisibility(int visibility) {
-        mProgressBar.setVisibility(visibility);
-    }
-
     private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
@@ -232,7 +232,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         private void finishGetChannels() {
             isLoadingWhenCreating = false;
             swipeContainer.setRefreshing(false);
-            setProgressBarVisibility(View.GONE);
         }
     };
 

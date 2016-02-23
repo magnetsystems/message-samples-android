@@ -1,5 +1,6 @@
 package com.magnet.magnetchat.helpers;
 
+import android.util.Log;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.util.Logger;
@@ -20,7 +21,7 @@ public class UserHelper {
 
     private static final String EMAIL_TEMPLATE = "^[-a-z0-9!#$%&'*+/=?^_`{|}~]+(?:\\.[-a-z0-9!#$%&'*+/=?^_`{|}~]+)*@(?:[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?\\.)*(?:aero|arpa|asia|biz|cat|com|coop|edu|gov|info|int|jobs|mil|mobi|museum|name|net|org|pro|tel|travel|[a-z][a-z])$";
 
-    private static final int MAX_USER_NAMES_LENGTH = 36;
+    private static final int MAX_USER_NAMES_LENGTH = 22;
 
     public static final String MAGNET_SUPPORT_TAG = "magnetsupport";
 
@@ -196,14 +197,12 @@ public class UserHelper {
         StringBuilder users = new StringBuilder();
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {
-                users.append(userList.get(i).getDisplayName());
-                if (users.length() < MAX_USER_NAMES_LENGTH && i != userList.size() - 1) {
-                    users.append(", ");
+                String userName = userList.get(i).getDisplayName();
+                if(users.length() + userName.length() < MAX_USER_NAMES_LENGTH) {
+                    users.append(userName).append(", ");
                 } else {
-                    if (users.length() >= MAX_USER_NAMES_LENGTH) {
-                        users.append(" ...");
-                        break;
-                    }
+                    users.append(userName.substring(0, MAX_USER_NAMES_LENGTH - users.length())).append("...");
+                    break;
                 }
             }
         }
