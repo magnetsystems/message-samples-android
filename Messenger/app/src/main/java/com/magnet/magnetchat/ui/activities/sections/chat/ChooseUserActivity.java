@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.application.CurrentApplication;
@@ -18,6 +20,7 @@ import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
+import com.magnet.magnetchat.ui.adapters.SelectedUsersAdapter;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;
@@ -26,6 +29,7 @@ import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -40,14 +44,22 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
     @InjectView(R.id.chooseUserList)
     RecyclerView userList;
+    @InjectView(R.id.selectedUserList)
+    RecyclerView selectedUserList;
+    @InjectView(R.id.tvSelectedUsersAmount)
+    TextView tvSelectedAmount;
+    @InjectView(R.id.llSelectedUsers)
+    LinearLayout llSelectedUsers;
     @InjectView(R.id.chooseUserProgress)
     ProgressBar userSearchProgress;
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
     private UsersAdapter adapter;
+    private SelectedUsersAdapter selectedAdapter;
     private ActivityMode currentMode;
     private Conversation conversation;
+    private List<UserProfile> selectedUsers;
 
     @Override
     protected int getLayoutResource() {
@@ -62,10 +74,12 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
         setOnClickListeners(R.id.registerSaveBtn);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        layoutManager.setReverseLayout(false);
-        userList.setLayoutManager(layoutManager);
+        userList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        selectedUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        selectedUsers = new ArrayList<>();
+        selectedAdapter = new SelectedUsersAdapter(this, selectedUsers);
+        selectedUserList.setAdapter(selectedAdapter);
 
         searchUsers("");
         currentMode = ActivityMode.MODE_TO_CREATE;
@@ -141,16 +155,15 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
      * Method which provide to create channel or add user
      */
     private void onAddUserPressed() {
-        if (adapter != null && adapter.getSelectedUsers().size() > 0) {
+        if (selectedUsers.size() > 0) {
             switch (currentMode) {
                 case MODE_TO_ADD_USER:
-                    addUserToChannel(adapter.getSelectedUsers());
+                    addUserToChannel(selectedUsers);
                     break;
                 case MODE_TO_CREATE:
-                    List<UserProfile> profileList = adapter.getSelectedUsers();
-                    String[] userIds = new String[profileList.size()];
+                    String[] userIds = new String[selectedUsers.size()];
                     for (int i = 0; i < userIds.length; i++) {
-                        userIds[i] = profileList.get(i).getUserIdentifier();
+                        userIds[i] = selectedUsers.get(i).getUserIdentifier();
                     }
                     startActivity(ChatActivity.getIntentForNewChannel(userIds));
                     finish();
@@ -223,13 +236,27 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     }
 
     private void updateList(List<? extends UserProfile> users) {
-        adapter = new UsersAdapter(this, users);
+        adapter = new UsersAdapter(this, users, selectedUsers);
         userList.setAdapter(adapter);
         adapter.setOnUserClickListener(new UsersAdapter.OnUserClickListener() {
             @Override
-            public void onUserClick(View view, int position) {
+            public void onUserClick(UserProfile user, int position) {
                 hideKeyboard();
-                adapter.setSelectUser(view, position);
+                if (user != null) {
+                    if (selectedUsers.contains(user)) {
+                        selectedUsers.remove(user);
+                    } else {
+                        selectedUsers.add(user);
+                    }
+                    if (selectedUsers.size() > 0){
+                        tvSelectedAmount.setText(String.format("%d selected", selectedUsers.size()));
+                        llSelectedUsers.setVisibility(View.VISIBLE);
+                    } else {
+                        llSelectedUsers.setVisibility(View.GONE);
+                    }
+                    adapter.notifyDataSetChanged();
+                    selectedAdapter.notifyDataSetChanged();
+                }
             }
         });
     }

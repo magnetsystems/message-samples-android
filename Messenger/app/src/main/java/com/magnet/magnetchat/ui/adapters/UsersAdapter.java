@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -15,7 +16,6 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -36,7 +36,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * Listener which provides actions when user click on item
      */
     public interface OnUserClickListener {
-        void onUserClick(View view, int position);
+        void onUserClick(UserProfile user, int position);
     }
 
     /**
@@ -48,6 +48,8 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         CircleNameView viewAvatar;
         AppCompatTextView firstName;
         AppCompatTextView lastName;
+        TextView firstLetter;
+        UserProfile user;
         int position;
 
         public UserViewHolder(View itemView) {
@@ -57,6 +59,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewAvatar = (CircleNameView) itemView.findViewById(R.id.viewUserAvatar);
             firstName = (AppCompatTextView) itemView.findViewById(R.id.itemUserFirstName);
             lastName = (AppCompatTextView) itemView.findViewById(R.id.itemUserLastName);
+            firstLetter = (TextView) itemView.findViewById(R.id.itemUserFirstLetter);
             itemView.setOnClickListener(this);
         }
 
@@ -67,7 +70,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @Override
         public void onClick(View v) {
             if (onUserClickListener != null) {
-                onUserClickListener.onUserClick(currentView, position);
+                onUserClickListener.onUserClick(user, position);
             }
         }
     }
@@ -94,14 +97,18 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void addUser();
     }
 
-    public UsersAdapter(Context context, List<? extends UserProfile> users) {
-        this(context, users, null);
+    public UsersAdapter(Context context, List<? extends UserProfile> users, AddUserListener addUser) {
+        this(context, users, null, addUser);
     }
 
-    public UsersAdapter(Context context, List<? extends UserProfile> users, AddUserListener addUser) {
+    public UsersAdapter(Context context, List<? extends UserProfile> users, List<? extends UserProfile> selectedUsers) {
+        this(context, users, selectedUsers, null);
+    }
+
+    public UsersAdapter(Context context, List<? extends UserProfile> users, List<? extends UserProfile> selectedUsers, AddUserListener addUser) {
         this.context = context;
         this.userList = (List<UserProfile>) users;
-        selectedUsers = new ArrayList<>();
+        this.selectedUsers = (List<UserProfile>) selectedUsers;
         inflater = LayoutInflater.from(context);
         if (addUser != null) {
             this.addUser = addUser;
@@ -126,22 +133,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private UserProfile getItem(int position) {
         return userList.get(position);
-    }
-
-    public void setSelectUser(View view, int position) {
-        if (view != null) {
-            UserProfile selectedUser = getItem(position);
-            if (selectedUsers.contains(selectedUser)) {
-                selectedUsers.remove(selectedUser);
-            } else {
-                selectedUsers.add(selectedUser);
-            }
-            colorSelected(view, position);
-        }
-    }
-
-    public List<UserProfile> getSelectedUsers() {
-        return selectedUsers;
     }
 
     public void setOnUserClickListener(OnUserClickListener onUserClickListener) {
@@ -173,6 +164,11 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     final UserViewHolder viewHolder = (UserViewHolder) holder;
                     viewHolder.setPosition(position);
                     UserProfile user = getItem(position);
+                    UserProfile previous = null;
+                    viewHolder.user = user;
+                    if (position > 0) {
+                        previous = getItem(position - 1);
+                    }
                     if (user.getFirstName() != null) {
                         viewHolder.firstName.setText(user.getFirstName());
                     }
@@ -181,6 +177,15 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     if (user.getFirstName() == null && user.getLastName() == null) {
                         viewHolder.firstName.setText(user.getDisplayName());
+                    }
+
+                    char currentFirstLetter = getCharToGroup(user);
+                    char previousFirstLetter = getCharToGroup(previous);
+                    if (previous == null || currentFirstLetter != previousFirstLetter) {
+                        viewHolder.firstLetter.setVisibility(View.VISIBLE);
+                        viewHolder.firstLetter.setText(String.valueOf(currentFirstLetter).toUpperCase());
+                    } else {
+                        viewHolder.firstLetter.setVisibility(View.GONE);
                     }
 
                     viewHolder.viewAvatar.setUserName(user.getDisplayName());
@@ -202,7 +207,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         viewHolder.imageAvatar.setVisibility(View.GONE);
                     }
 
-                    colorSelected(viewHolder.currentView, position);
+                    colorSelected(viewHolder.currentView, user);
                     break;
                 case VIEW_TYPE_ADD_BTN:
                     break;
@@ -210,15 +215,35 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
     }
 
+    private char getCharToGroup(UserProfile userProfile) {
+        char letter = ' ';
+        String str = " ";
+        if (userProfile != null) {
+            if (userProfile.getLastName() != null) {
+                str = userProfile.getLastName();
+            } else if (userProfile.getFirstName() != null) {
+                str = userProfile.getFirstName();
+            } else {
+                str = userProfile.getDisplayName();
+            }
+        }
+        if (str.trim().contains(" ")) {
+            str = str.substring(str.indexOf(" ")).trim();
+        }
+        if (str.length() > 0) {
+            letter = str.charAt(0);
+        }
+        return letter;
+    }
+
     /**
      * Colors the item view, if item is selected or returns to default color
      *
      * @param view
-     * @param position
+     * @param user
      */
-    private void colorSelected(View view, int position) {
-        UserProfile selectedUser = getItem(position);
-        if (selectedUsers.contains(selectedUser)) {
+    private void colorSelected(View view, UserProfile user) {
+        if (selectedUsers != null && selectedUsers.contains(user)) {
             view.setBackgroundResource(R.color.itemSelected);
         } else {
             view.setBackgroundResource(R.color.itemNotSelected);
