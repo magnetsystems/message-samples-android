@@ -40,7 +40,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class HomeActivity extends BaseActivity implements BaseActivityCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
 
-
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.toolbarDrawerButton)

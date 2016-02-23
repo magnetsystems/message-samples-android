@@ -1,10 +1,13 @@
 package com.magnet.magnetchat.ui.activities.sections.chat;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
@@ -16,6 +19,7 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
+import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -38,6 +42,8 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     RecyclerView userList;
     @InjectView(R.id.chooseUserProgress)
     ProgressBar userSearchProgress;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
 
     private UsersAdapter adapter;
     private ActivityMode currentMode;
@@ -52,6 +58,8 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setSupportActionBar(toolbar);
+
         setOnClickListeners(R.id.registerSaveBtn);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -59,17 +67,6 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         layoutManager.setReverseLayout(false);
         userList.setLayoutManager(layoutManager);
 
-        SearchView search = (SearchView) findViewById(R.id.chooseUserSearch);
-        search.setOnQueryTextListener(this);
-        search.setOnCloseListener(this);
-        search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    hideKeyboard();
-                }
-            }
-        });
         searchUsers("");
         currentMode = ActivityMode.MODE_TO_CREATE;
         String channelName = getIntent().getStringExtra(TAG_ADD_USER_TO_CHANNEL);
@@ -88,6 +85,25 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_choose_user, menu);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menuUserSearch).getActionView();
+            search.setOnQueryTextListener(this);
+            search.setOnCloseListener(this);
+            search.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (!hasFocus) {
+                        hideKeyboard();
+                    }
+                }
+            });
+        }
+        return true;
     }
 
     @Override

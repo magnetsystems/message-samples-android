@@ -20,26 +20,29 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
+            android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
-                style="@style/style_textview_h1"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:text="All contacts" />
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:theme="@style/AppTheme.Toolbar"
+                android:gravity="center"
+                app:titleTextAppearance="@style/AppTheme.Toolbar.Title">
+
+                <android.support.v7.widget.AppCompatTextView
+                    style="@style/style_textview_h1"
+                    android:layout_height="?attr/actionBarSize"
+                    android:text="All contacts" />
+
+            </android.support.v7.widget.Toolbar>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <SearchView
-                    android:id="@+id/chooseUserSearch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="Search Contacts" />
 
                 <ProgressBar
                     android:id="@+id/chooseUserProgress"

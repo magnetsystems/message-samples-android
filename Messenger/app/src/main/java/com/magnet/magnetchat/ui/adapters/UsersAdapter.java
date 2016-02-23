@@ -8,7 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
 import java.util.ArrayList;
@@ -40,7 +44,8 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      */
     public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         View currentView;
-        CircleImageView icon;
+        CircleImageView imageAvatar;
+        CircleNameView viewAvatar;
         AppCompatTextView firstName;
         AppCompatTextView lastName;
         int position;
@@ -48,7 +53,8 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public UserViewHolder(View itemView) {
             super(itemView);
             this.currentView = itemView;
-            icon = (CircleImageView) itemView.findViewById(R.id.itemUserIcon);
+            imageAvatar = (CircleImageView) itemView.findViewById(R.id.imageUserAvatar);
+            viewAvatar = (CircleNameView) itemView.findViewById(R.id.viewUserAvatar);
             firstName = (AppCompatTextView) itemView.findViewById(R.id.itemUserFirstName);
             lastName = (AppCompatTextView) itemView.findViewById(R.id.itemUserLastName);
             itemView.setOnClickListener(this);
@@ -164,7 +170,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (holder != null) {
             switch (getItemViewType(position)) {
                 case VIEW_TYPE_USER:
-                    UserViewHolder viewHolder = (UserViewHolder) holder;
+                    final UserViewHolder viewHolder = (UserViewHolder) holder;
                     viewHolder.setPosition(position);
                     UserProfile user = getItem(position);
                     if (user.getFirstName() != null) {
@@ -176,11 +182,26 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     if (user.getFirstName() == null && user.getLastName() == null) {
                         viewHolder.firstName.setText(user.getDisplayName());
                     }
+
+                    viewHolder.viewAvatar.setUserName(user.getDisplayName());
                     if (user.getAvatarUrl() != null) {
-                        Glide.with(context).load(user.getAvatarUrl()).placeholder(R.mipmap.ic_user).fitCenter().into(viewHolder.icon);
+                        viewHolder.imageAvatar.setVisibility(View.VISIBLE);
+                        Glide.with(context).load(user.getAvatarUrl()).fitCenter().listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onException(Exception e, String s, Target<GlideDrawable> target, boolean b) {
+                                viewHolder.imageAvatar.setVisibility(View.GONE);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(GlideDrawable glideDrawable, String s, Target<GlideDrawable> target, boolean b, boolean b1) {
+                                return false;
+                            }
+                        }).into(viewHolder.imageAvatar);
                     } else {
-                        Glide.with(context).load(R.mipmap.ic_user).fitCenter().into(viewHolder.icon);
+                        viewHolder.imageAvatar.setVisibility(View.GONE);
                     }
+
                     colorSelected(viewHolder.currentView, position);
                     break;
                 case VIEW_TYPE_ADD_BTN:
@@ -191,6 +212,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     /**
      * Colors the item view, if item is selected or returns to default color
+     *
      * @param view
      * @param position
      */

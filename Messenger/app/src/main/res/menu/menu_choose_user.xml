@@ -3,16 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuHomeCreateConversation"
-        android:icon="@drawable/ic_add_message_tabbar"
-        android:orderInCategory="1"
-        android:title="New message"
-        app:showAsAction="ifRoom" />
-
-    <item
-        android:id="@+id/menu_search"
+        android:id="@+id/menuUserSearch"
         android:icon="@drawable/ic_search_tabbar"
-        android:title="Search messages"
+        android:title="Search user"
         app:actionViewClass="com.magnet.magnetchat.ui.custom.CustomSearchView"
         app:showAsAction="ifRoom" />
 
