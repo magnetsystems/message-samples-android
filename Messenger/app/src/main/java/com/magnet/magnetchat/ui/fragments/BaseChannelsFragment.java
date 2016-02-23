@@ -42,8 +42,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
 
     @InjectView(R.id.homeConversationsList)
     RecyclerView conversationsList;
-    @InjectView(R.id.homeProgress)
-    ProgressBar mProgressBar;
     @InjectView(R.id.swipeContainer)
     SwipeRefreshLayout swipeContainer;
 
@@ -71,7 +69,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getConversations(false);
+                getConversations();
             }
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
@@ -79,7 +77,13 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         setHasOptionsMenu(true);
 
         onFragmentCreated(containerView);
-        getConversations(true);
+
+        swipeContainer.post(new Runnable() {
+            @Override public void run() {
+                swipeContainer.setRefreshing(true);
+                getConversations();
+            }
+        });
     }
 
     @Override
@@ -132,10 +136,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         }
     }
 
-    protected void getConversations(boolean showProgress) {
-        if (showProgress) {
-            setProgressBarVisibility(View.VISIBLE);
-        }
+    protected void getConversations() {
         ChannelHelper.readConversations(readChannelInfoListener);
     }
 
@@ -210,10 +211,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         showList(searchResult);
     }
 
-    protected void setProgressBarVisibility(int visibility) {
-        mProgressBar.setVisibility(visibility);
-    }
-
     private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
         public void onSuccessFinish(Conversation lastConversation) {
@@ -235,7 +232,6 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         private void finishGetChannels() {
             isLoadingWhenCreating = false;
             swipeContainer.setRefreshing(false);
-            setProgressBarVisibility(View.GONE);
         }
     };
 
