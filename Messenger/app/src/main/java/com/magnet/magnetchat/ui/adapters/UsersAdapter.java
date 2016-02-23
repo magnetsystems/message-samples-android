@@ -13,6 +13,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
@@ -217,19 +218,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private char getCharToGroup(UserProfile userProfile) {
         char letter = ' ';
-        String str = " ";
-        if (userProfile != null) {
-            if (userProfile.getLastName() != null) {
-                str = userProfile.getLastName();
-            } else if (userProfile.getFirstName() != null) {
-                str = userProfile.getFirstName();
-            } else {
-                str = userProfile.getDisplayName();
-            }
-        }
-        if (str.trim().contains(" ")) {
-            str = str.substring(str.indexOf(" ")).trim();
-        }
+        String str = UserHelper.getUserNameToCompare(userProfile);
         if (str.length() > 0) {
             letter = str.charAt(0);
         }
