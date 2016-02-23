@@ -332,18 +332,18 @@ public class HomeFragment extends BaseChannelsFragment {
         leaveDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Leave", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                setProgressBarVisibility(View.VISIBLE);
+                //setProgressBarVisibility(View.VISIBLE);
                 ChannelHelper.unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                     @Override
                     public void onSuccess() {
-                        setProgressBarVisibility(View.GONE);
+                        //setProgressBarVisibility(View.GONE);
                         ChannelCacheManager.getInstance().removeConversation(conversation.getChannel().getName());
                         showAllConversations();
                     }
 
                     @Override
                     public void onFailure(Throwable throwable) {
-                        setProgressBarVisibility(View.GONE);
+                        //setProgressBarVisibility(View.GONE);
                     }
                 });
                 leaveDialog.dismiss();
