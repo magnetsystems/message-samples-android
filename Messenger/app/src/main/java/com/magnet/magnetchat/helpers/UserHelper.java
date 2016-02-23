@@ -1,6 +1,5 @@
 package com.magnet.magnetchat.helpers;
 
-import android.util.Log;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.util.Logger;
@@ -198,11 +197,9 @@ public class UserHelper {
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {
                 String userName = userList.get(i).getDisplayName();
-                if(users.length() + userName.length() < MAX_USER_NAMES_LENGTH) {
-                    users.append(userName).append(", ");
-                } else {
-                    users.append(userName.substring(0, MAX_USER_NAMES_LENGTH - users.length())).append("...");
-                    break;
+                users.append(userName);
+                if (i < userList.size() - 1) {
+                    users.append(", ");
                 }
             }
         }

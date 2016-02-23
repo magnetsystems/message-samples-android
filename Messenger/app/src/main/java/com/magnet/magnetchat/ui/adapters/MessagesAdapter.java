@@ -27,7 +27,6 @@ import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -37,8 +36,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
 
     private LayoutInflater inflater;
     private List<Message> messageList;
-    private List<Integer> firstMsgIdxs;
-    private List<String> dates;
     private Context context;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -149,17 +146,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         inflater = LayoutInflater.from(context);
         this.messageList = messages;
         this.context = context;
-        firstMsgIdxs = new ArrayList<>();
-        dates = new ArrayList<>();
-        for (int i = 0; i < messages.size(); i++) {
-            if (messages.get(i).getCreateTime() != null) {
-                String msgDay = DateHelper.getMessageDay(DateHelper.utcToLocal(messages.get(i).getCreateTime()));
-                if (!dates.contains(msgDay)) {
-                    firstMsgIdxs.add(i);
-                    dates.add(msgDay);
-                }
-            }
-        }
     }
 
     @Override
@@ -174,12 +160,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             return;
         }
         Message message = getItem(position);
+        Message previous = null;
+        if (position > 0) {
+            previous = getItem(position - 1);
+        }
         holder.message = message;
-        configureDate(holder, message, position);
+        configureDate(holder, message, previous, position);
         if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
             makeMessageFromMe(holder, message);
         } else {
-            makeMessageToMe(holder, message);
+            makeMessageToMe(holder, message, previous);
         }
         if (message.getType() != null) {
             switch (message.getType()) {
@@ -210,27 +200,31 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         return messageList.get(position);
     }
 
-    private void configureDate(ViewHolder viewHolder, Message message, int position) {
-        Date date = null;
+    private void configureDate(ViewHolder viewHolder, Message message, Message previous, int position) {
+        Date date;
+        Date previousDate = null;
         if (message.getCreateTime() == null) {
             date = new Date();
         } else {
             date = DateHelper.utcToLocal(message.getCreateTime());
         }
-        String msgDay = DateHelper.getMessageDay(date);
-        if (!dates.contains(msgDay)) {
-            firstMsgIdxs.add(position);
-            dates.add(msgDay);
+        if (previous != null) {
+            previousDate = DateHelper.utcToLocal(previous.getCreateTime());
         }
-        if (firstMsgIdxs.contains(position)) {
+        String msgDate = DateHelper.getMessageDateTime(date);
+        String previousMsgDate = null;
+        if (previousDate != null) {
+            previousMsgDate = DateHelper.getMessageDateTime(previousDate);
+        }
+        if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
             viewHolder.date.setVisibility(View.VISIBLE);
-            viewHolder.date.setText(String.format("%s %s", msgDay, DateHelper.getTime(date)));
+            viewHolder.date.setText(msgDate);
         } else {
             viewHolder.date.setVisibility(View.GONE);
         }
     }
 
-    private void makeMessageToMe(ViewHolder viewHolder, Message message) {
+    private void makeMessageToMe(ViewHolder viewHolder, Message message, Message previous) {
         viewHolder.imageMyAvatar.setVisibility(View.GONE);
         viewHolder.viewMyAvatar.setVisibility(View.GONE);
         viewHolder.imageOtherAvatar.setVisibility(View.VISIBLE);
@@ -244,8 +238,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         viewHolder.delivered.setVisibility(View.GONE);
         if (message.getSender() != null) {
             String userName = UserHelper.getDisplayName(message.getSender());
+            String previousUser = "";
+            if (previous != null) {
+                previousUser = UserHelper.getDisplayName(previous.getSender());
+            }
             viewHolder.viewOtherAvatar.setUserName(userName);
             viewHolder.sender.setText(userName);
+            if (userName.equalsIgnoreCase(previousUser)) {
+                viewHolder.sender.setVisibility(View.GONE);
+            } else {
+                viewHolder.sender.setVisibility(View.VISIBLE);
+            }
             if (null != message.getSender().getAvatarUrl()) {
                 Glide.with(context)
                         .load(message.getSender().getAvatarUrl())
@@ -253,7 +256,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                         .into(viewHolder.imageOtherAvatar);
             }
         }
-        viewHolder.sender.setVisibility(View.VISIBLE);
     }
 
     private void makeMessageFromMe(ViewHolder viewHolder, Message message) {
