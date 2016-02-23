@@ -22,6 +22,7 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
+import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
@@ -62,7 +63,9 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.setSmoothScrollbarEnabled(true);
+        conversationsList.setHasFixedSize(true);
         conversationsList.setLayoutManager(layoutManager);
+        conversationsList.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
