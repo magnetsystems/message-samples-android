@@ -29,16 +29,6 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/chatSuppliers"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#f6f6f6"
-            android:padding="@dimen/dimen_15"
-            android:text="To:"
-            android:textColor="#7d7d7d"
-            android:visibility="gone" />
-
         <RelativeLayout
             android:id="@+id/chatBottom"
             android:layout_width="match_parent"
@@ -83,10 +73,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/chatMessageList"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/chatBottom"
-            android:layout_below="@+id/chatSuppliers"
             android:background="@drawable/bordered_bg"
             android:divider="@null"
             android:dividerHeight="@dimen/dimen_0" />

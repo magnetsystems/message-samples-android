@@ -52,19 +52,7 @@ public class Conversation {
 
         //Logger.debug(TAG, "channel subscribers ", channelDetail.getSubscribers(), " channel ", channel.getName());
         owner = channelDetail.getOwner();
-        for (UserProfile up : channelDetail.getSubscribers()) {
-            if (null == owner && up.getUserIdentifier().equals(channel.getOwnerId())) {
-                owner = up;
-            }
-            if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
-                this.addSupplier(up);
-            }
-        }
-
-        //Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
-        for (MMXMessage mmxMessage : channelDetail.getMessages()) {
-            this.addMessage(Message.createMessageFrom(mmxMessage));
-        }
+        addChannelDetailData(channelDetail);
     }
 
     private Map<String, UserProfile> getSuppliers() {
@@ -85,7 +73,9 @@ public class Conversation {
     }
 
     public void addSupplier(UserProfile user) {
-        getSuppliers().put(user.getUserIdentifier(), user);
+        if (getSuppliers().get(user.getUserIdentifier()) == null) {
+            getSuppliers().put(user.getUserIdentifier(), user);
+        }
     }
 
     public boolean hasUnreadMessage() {
@@ -129,6 +119,26 @@ public class Conversation {
     public void addMessage(Message message) {
         if (!getMessages().contains(message)) {
             messages.add(message);
+        }
+    }
+
+    /**
+     * Adds from channelDetail messages and users which is missing in conversation object
+     * @param channelDetail
+     */
+    public void addChannelDetailData(ChannelDetail channelDetail) {
+        for (UserProfile up : channelDetail.getSubscribers()) {
+            if (owner == null && up.getUserIdentifier().equals(channel.getOwnerId())) {
+                owner = up;
+            }
+            if (!up.getUserIdentifier().equals(User.getCurrentUserId())) {
+                this.addSupplier(up);
+            }
+        }
+
+        //Logger.debug(TAG, "channel messages ", channelDetail.getMessages(), " channel ", channel.getName());
+        for (MMXMessage mmxMessage : channelDetail.getMessages()) {
+            this.addMessage(Message.createMessageFrom(mmxMessage));
         }
     }
 
@@ -214,4 +224,5 @@ public class Conversation {
             .append("suppliers : ").append(Arrays.toString(getSuppliers().values().toArray())).append("\n")
             .append("}").toString();
     }
+
 }
