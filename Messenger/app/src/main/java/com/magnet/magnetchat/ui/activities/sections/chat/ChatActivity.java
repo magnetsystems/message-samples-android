@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +21,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -86,9 +87,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.chatMessageField)
-    EditText editMessage;
-    @InjectView(R.id.chatSuppliers)
-    TextView textChatSuppliers;
+    AppCompatEditText editMessage;
     @InjectView(R.id.chatSendBtn)
     TextView sendMessageButton;
 
@@ -104,6 +103,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //For keeping toolbar when user input message
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setSupportActionBar(toolbar);
 
@@ -416,7 +417,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             }
         } else if (suppliersList.size() == 1) {
             setTitle(UserHelper.getDisplayNames(suppliersList));
-            findViewById(R.id.chatSuppliers).setVisibility(View.GONE);
         } else {
             setTitle("Group");
         }
