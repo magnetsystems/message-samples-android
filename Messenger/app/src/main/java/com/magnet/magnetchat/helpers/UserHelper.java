@@ -198,9 +198,11 @@ public class UserHelper {
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {
                 String userName = userList.get(i).getDisplayName();
-                users.append(userName);
-                if (i < userList.size() - 1) {
-                    users.append(", ");
+                if(users.length() + userName.length() < MAX_USER_NAMES_LENGTH) {
+                    users.append(userName).append(", ");
+                } else {
+                    users.append(userName.substring(0, MAX_USER_NAMES_LENGTH - users.length())).append("...");
+                    break;
                 }
             }
         }
