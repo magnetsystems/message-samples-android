@@ -75,7 +75,7 @@ public class ChannelHelper {
             @Override
             public void onSuccess(final List<MMXChannel> channels) {
                 Logger.debug(TAG, "getAllSubscriptions success : " + channels);
-                ChannelCacheManager.getInstance().resetConversations();
+//                ChannelCacheManager.getInstance().resetConversations();
                 if (null != channels && channels.size() > 0) {
                     fetchChannelDetails(channels, listener);
                 } else {
@@ -116,9 +116,14 @@ public class ChannelHelper {
                         for (int i = 0; i < channelDetails.size(); i++) {
                             final ChannelDetail channelDetail = channelDetails.get(i);
                             final MMXChannel channel = channelDetail.getChannel();
-                            final Conversation conversation = new Conversation(channelDetail);
+                            Conversation conversation = ChannelCacheManager.getInstance().getConversationByChannel(channel);
+                            if (conversation == null) {
+                                conversation = new Conversation(channelDetail);
+                                ChannelCacheManager.getInstance().addConversation(channel.getName(), conversation);
+                            } else {
+                                conversation.addChannelDetailData(channelDetail);
+                            }
                             lastConversation = conversation;
-                            ChannelCacheManager.getInstance().addConversation(channel.getName(), conversation);
                         }
 
                         if (listener != null) {

@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/homeConversationsList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/homeConversationsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -22,11 +22,11 @@
         android:id="@+id/llHomeCreateMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/swipeContainer"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:layout_alignBottom="@+id/swipeContainer">
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/ivHomeCreateMsg"
@@ -39,8 +39,21 @@
             android:id="@+id/tvHomeCreateMsg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a new massage"
-            android:layout_marginBottom="@dimen/dimen_50"/>
+            android:layout_marginBottom="@dimen/dimen_50"
+            android:text="Create a new massage" />
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabHomeCreateMessage"
+        android:layout_width="@dimen/dimen_60"
+        android:layout_height="@dimen/dimen_60"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dimen_10"
+        android:foregroundGravity="bottom"
+        android:src="@drawable/ic_add_message_floater"
+        android:visibility="gone"
+        app:backgroundTint="@color/floaterBackground" />
+
 </RelativeLayout>

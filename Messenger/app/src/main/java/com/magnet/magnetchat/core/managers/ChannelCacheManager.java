@@ -7,6 +7,7 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -116,6 +117,17 @@ public class ChannelCacheManager {
             message.setIsDelivered(true);
             messagesToApproveDeliver.remove(messageId);
         }
+    }
+
+    public Conversation getConversationByChannel(MMXChannel channel) {
+        if (channel != null && channel.getName() != null) {
+            if (channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
+                return getAskConversationByOwnerId(channel.getOwnerId());
+            } else {
+                return getConversationByName(channel.getName());
+            }
+        }
+        return null;
     }
 
     public Conversation getConversationByName(String name) {

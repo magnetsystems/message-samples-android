@@ -12,10 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ProgressBar;
-
 import android.widget.SearchView;
+
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -106,6 +104,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_home, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menu_search).getActionView();
             search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -134,6 +133,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
                 }
             });
         }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     protected void getConversations() {
