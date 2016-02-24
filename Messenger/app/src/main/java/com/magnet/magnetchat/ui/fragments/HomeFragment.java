@@ -2,20 +2,15 @@ package com.magnet.magnetchat.ui.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SearchView;
 
-import android.widget.TextView;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -25,21 +20,18 @@ import com.magnet.magnetchat.ui.activities.sections.chat.ChatActivity;
 import com.magnet.magnetchat.ui.activities.sections.chat.ChooseUserActivity;
 import com.magnet.magnetchat.ui.adapters.BaseConversationsAdapter;
 import com.magnet.magnetchat.ui.adapters.HomeConversationsAdapter;
-import com.magnet.magnetchat.ui.custom.CustomSearchView;
 import com.magnet.magnetchat.ui.views.AskMagnetView;
 import com.magnet.magnetchat.ui.views.EventView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
-import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +51,8 @@ public class HomeFragment extends BaseChannelsFragment {
     ImageView ivCreateMessage;
     @InjectView(R.id.tvHomeCreateMsg)
     AppCompatTextView tvCreateMessage;
+    @InjectView(R.id.fabHomeCreateMessage)
+    FloatingActionButton fabCreateMessage;
 
     private EventView eventView;
     private AskMagnetView askMagnetView;
@@ -76,6 +70,9 @@ public class HomeFragment extends BaseChannelsFragment {
         eventView = new EventView(getContext());
         askMagnetView = new AskMagnetView(getContext());
 
+        fabCreateMessage.setVisibility(View.VISIBLE);
+        fabCreateMessage.setOnClickListener(this);
+
         setOnClickListeners(ivCreateMessage, tvCreateMessage);
 
         setHasOptionsMenu(true);
@@ -85,23 +82,7 @@ public class HomeFragment extends BaseChannelsFragment {
     public void onClick(View v) {
         super.onClick(v);
         switch (v.getId()) {
-            case R.id.llPrimary:
-            case R.id.ivPrimaryBackground:
-                if (null != primaryChannel) {
-                    Conversation conversation = addConversation(primaryChannel);
-                    Intent i = ChatActivity.getIntentWithChannel(conversation);
-                    if (null != i) {
-                        startActivity(i);
-                    }
-                }
-                break;
-            case R.id.llSecondary:
-            case R.id.ivSecondaryBackground:
-                if (!UserHelper.isMagnetSupportMember()) {
-                    askMagnetView.setUnreadMessage(false);
-                    loadMagnetSupportChannel();
-                }
-                break;
+            case R.id.fabHomeCreateMessage:
             case R.id.ivHomeCreateMsg:
             case R.id.tvHomeCreateMsg:
                 startActivity(ChooseUserActivity.getIntentToCreateChannel());
@@ -110,18 +91,12 @@ public class HomeFragment extends BaseChannelsFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_home, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menuHomeCreateConversation:
-                startActivity(ChooseUserActivity.getIntentToCreateChannel());
-                break;
-        }
+//        switch (item.getItemId()) {
+//            case R.id.menuHomeCreateConversation:
+//                startActivity(ChooseUserActivity.getIntentToCreateChannel());
+//                break;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
