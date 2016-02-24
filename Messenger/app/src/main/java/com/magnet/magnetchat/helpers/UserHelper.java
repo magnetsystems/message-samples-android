@@ -195,14 +195,19 @@ public class UserHelper {
      */
     public static String getDisplayNames(List<UserProfile> userList) {
         StringBuilder users = new StringBuilder();
+        if (userList.size() == 1) {
+            return userList.get(0).getDisplayName();
+        }
         for (int i = 0; i < userList.size(); i++) {
             if (userList.get(i) != null) {
-                String userName = userList.get(i).getDisplayName();
-                if(users.length() + userName.length() < MAX_USER_NAMES_LENGTH) {
-                    users.append(userName).append(", ");
+                users.append(userList.get(i).getDisplayName());
+                if (users.length() < MAX_USER_NAMES_LENGTH && i != userList.size() - 1) {
+                    users.append(", ");
                 } else {
-                    users.append(userName.substring(0, MAX_USER_NAMES_LENGTH - users.length())).append("...");
-                    break;
+                    if (users.length() >= MAX_USER_NAMES_LENGTH) {
+                        users.append(" ...");
+                        break;
+                    }
                 }
             }
         }
