@@ -64,21 +64,17 @@ public class MMXManager {
     }
 
     public void messageNotification(String channelName, String fromUserName) {
-        if (notification == null) {
-            PendingIntent intent = PendingIntent.getActivity(applicationReference.get(), 0, new Intent(Intent.ACTION_MAIN)
-                            .addCategory(Intent.CATEGORY_DEFAULT)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .setPackage(applicationReference.get().getPackageName()),
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            notification = new Notification.Builder(getApplicationContext())
-                    .setAutoCancel(true)
-                    .setSmallIcon(getApplicationContext()
-                            .getApplicationInfo().icon)
-                    .setContentTitle("New message is available")
-                    .setContentInfo(fromUserName)
-                    .setContentIntent(intent).build();
-        }
+        PendingIntent intent = PendingIntent.getActivity(applicationReference.get(), 0, new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_DEFAULT)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .setPackage(applicationReference.get().getPackageName()),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        notification = new Notification.Builder(getApplicationContext())
+                .setAutoCancel(true)
+                .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
+                .setContentTitle("New message is available")
+                .setContentInfo(fromUserName)
+                .setContentIntent(intent).build();
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(channelName, 12345, notification);
         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
