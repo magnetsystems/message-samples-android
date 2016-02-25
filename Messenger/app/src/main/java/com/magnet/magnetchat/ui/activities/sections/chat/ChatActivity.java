@@ -322,7 +322,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                     attachmentDialog.dismiss();
                 }
             });
-            builder.setCancelable(false);
+            builder.setCancelable(true);
             attachmentDialog = builder.create();
         }
         attachmentDialog.show();
