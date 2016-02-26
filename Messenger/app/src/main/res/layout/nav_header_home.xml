@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/dimen_5"
+    android:layout_marginTop="@dimen/dimen_24"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <LinearLayout

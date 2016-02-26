@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -71,6 +72,9 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         setOnClickListeners(R.id.registerSaveBtn);
 
@@ -94,6 +98,16 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     protected void onResume() {
         super.onResume();
         toolbar.setTitle("All contacts");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

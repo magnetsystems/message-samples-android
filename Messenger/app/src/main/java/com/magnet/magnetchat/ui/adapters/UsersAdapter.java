@@ -218,7 +218,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     private char getCharToGroup(UserProfile userProfile) {
         char letter = ' ';
-        String str = UserHelper.getUserNameToCompare(userProfile);
+        String str = UserHelper.getUserNameToCompare(userProfile).toUpperCase();
         if (str.length() > 0) {
             letter = str.charAt(0);
         }
