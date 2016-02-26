@@ -13,6 +13,8 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_support"
+            app:showAsAction="ifRoom|collapseActionView"
+            app:actionViewClass="com.magnet.magnetchat.ui.custom.SupportItemView"
             android:title="@string/nav_support"/>
     </group>
     <group
