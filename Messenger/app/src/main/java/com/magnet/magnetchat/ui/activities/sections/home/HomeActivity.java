@@ -18,11 +18,14 @@ import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 import com.magnet.magnetchat.constants.AppFragment;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
 import com.magnet.magnetchat.ui.custom.CustomDrawerButton;
+import com.magnet.magnetchat.ui.custom.SupportItemView;
 import com.magnet.magnetchat.ui.fragments.BaseFragment;
 import com.magnet.magnetchat.ui.fragments.EventFragment;
 import com.magnet.magnetchat.ui.fragments.HomeFragment;
@@ -59,10 +62,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
 
     private AppFragment currentFragment;
 
-    private TextView tvMenuItemCountNew;
-    private LinearLayout llMenuItemNew;
-
-    private int unreadSupport = 0;
+    private SupportItemView menuSupportView;
 
     @Override
     protected int getLayoutResource() {
@@ -88,10 +88,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
         if (!UserHelper.isMagnetSupportMember()) {
             menu.getItem(1).setVisible(false);
         } else {
-            View menuSupportView = menu.findItem(R.id.nav_support).getActionView();
-            if (menuSupportView != null) {
-                llMenuItemNew = (LinearLayout) menuSupportView.findViewById(R.id.llMenuItemNew);
-                tvMenuItemCountNew = (TextView) menuSupportView.findViewById(R.id.tvMenuItemCountNew);
+            MenuItem supportItem = menu.findItem(R.id.nav_support);
+            if (supportItem != null) {
+                menuSupportView = (SupportItemView) supportItem.getActionView();
             }
         }
 
@@ -111,10 +110,6 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
                 break;
             case R.id.nav_support:
                 drawerButton.hideWarning();
-                unreadSupport = 0;
-                if (llMenuItemNew != null) {
-                    llMenuItemNew.setVisibility(View.INVISIBLE);
-                }
                 setFragment(AppFragment.SUPPORT);
                 break;
             case R.id.nav_signout:
@@ -142,6 +137,9 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
             tvUserName.setText(User.getCurrentUser().getDisplayName());
             if (UserHelper.isMagnetSupportMember()) {
                 MMX.registerListener(homeMessageReceiver);
+                if (menuSupportView != null) {
+                    menuSupportView.setNumber(ChannelCacheManager.getInstance().getSupportUnreadCount());
+                }
             }
             if (currentFragment == AppFragment.HOME) {
                 toolbarTitle.setText(User.getCurrentUser().getDisplayName());
@@ -192,7 +190,7 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
         String versionName = "1.0";
         try {
             versionName = this.getPackageManager()
-                .getPackageInfo(this.getPackageName(), 0).versionName;
+                    .getPackageInfo(this.getPackageName(), 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             Log.d(TAG, "Error when getting version", e);
         }
@@ -310,11 +308,13 @@ public class HomeActivity extends BaseActivity implements BaseActivityCallback, 
             if (mmxMessage != null && mmxMessage.getChannel() != null) {
                 MMXChannel channel = mmxMessage.getChannel();
                 if (currentFragment == AppFragment.HOME && channel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
-                    unreadSupport++;
                     drawerButton.showWarning();
-                    if (tvMenuItemCountNew != null) {
-                        llMenuItemNew.setVisibility(View.VISIBLE);
-                        tvMenuItemCountNew.setText(String.valueOf(unreadSupport));
+                    Conversation conversation = ChannelCacheManager.getInstance().getAskConversationByOwnerId(channel.getOwnerId());
+                    if (conversation != null) {
+                        conversation.setHasUnreadMessage(true);
+                    }
+                    if (menuSupportView != null) {
+                        menuSupportView.setNumber(ChannelCacheManager.getInstance().getSupportUnreadCount());
                     }
                 }
             }
