@@ -104,7 +104,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //For keeping toolbar when user input message
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setSupportActionBar(toolbar);
 
