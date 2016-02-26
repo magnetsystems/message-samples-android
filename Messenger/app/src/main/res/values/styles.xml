@@ -19,7 +19,7 @@
         <!-- Set proper title size -->
         <item name="android:textSize">@dimen/abc_text_size_title_material_toolbar</item>
         <!-- Set title color -->
-        <item name="android:textColor">@color/colorBGMain</item>
+        <item name="android:textColor">@color/colorActionBarTitle</item>
     </style>
 
     <style name="Titles">

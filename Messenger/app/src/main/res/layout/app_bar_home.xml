@@ -21,12 +21,13 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:theme="@style/AppTheme.Toolbar"
-            app:titleTextAppearance="@style/AppTheme.Toolbar.Title" >
+            app:titleTextAppearance="@style/AppTheme.Toolbar.Title">
 
             <com.magnet.magnetchat.ui.custom.CustomDrawerButton
                 android:id="@+id/toolbarDrawerButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+            />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/toolbarTitle"
