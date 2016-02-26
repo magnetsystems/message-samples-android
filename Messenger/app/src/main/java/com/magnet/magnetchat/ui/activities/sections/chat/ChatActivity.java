@@ -389,7 +389,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void prepareConversation(Conversation conversation) {
-        if (channelName == null) {
+        if (channelName == null && null == currentConversation) {
+            Log.e(TAG, "no channel is set");
             finish();
             return;
         }
