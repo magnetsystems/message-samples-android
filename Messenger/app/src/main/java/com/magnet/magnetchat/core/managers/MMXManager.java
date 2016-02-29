@@ -96,7 +96,7 @@ public class MMXManager {
                 .setAutoCancel(true)
                 .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
                 .setContentTitle(StringUtil.isNotEmpty(fromUserName) ? "Message from " + fromUserName : "New message is available")
-                .setContentInfo(StringUtil.isNotEmpty(content) ? content : "New message")
+                .setContentText(StringUtil.isNotEmpty(content) ? content : "New message")
                 .setContentIntent(intent).build();
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(channelName, 12345, notification);
