@@ -174,24 +174,7 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
         List<Message> messages = conversation.getMessages();
         if (messages != null && messages.size() > 0) {
             Message message = messages.get(messages.size() - 1);
-            String msgType = message.getType();
-            if (msgType == null) {
-                msgType = Message.TYPE_TEXT;
-            }
-            switch (msgType) {
-                case Message.TYPE_MAP:
-                    return "User's location";
-                case Message.TYPE_VIDEO:
-                    return "User's video";
-                case Message.TYPE_PHOTO:
-                    return "User's photo";
-                case Message.TYPE_TEXT:
-                    String text = message.getText().replace(System.getProperty("line.separator"), " ");
-                    if (text.length() > 23) {
-                        text = text.substring(0, 20) + "...";
-                    }
-                    return text;
-            }
+            return message.getMessageSummary();
         }
         return "";
     }

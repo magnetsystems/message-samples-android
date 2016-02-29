@@ -224,7 +224,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == INTENT_REQUEST_GET_IMAGES) {
                 Parcelable[] parcelableUris = intent.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
-                if (parcelableUris == null) {
+                if (parcelableUris == null || parcelableUris.length == 0) {
+                    Log.d(TAG, "No image selected");
                     return;
                 }
                 Uri[] uris = new Uri[parcelableUris.length];
