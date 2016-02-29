@@ -9,6 +9,7 @@ import android.content.Intent;
 
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.ui.activities.sections.login.LoginActivity;
 import com.magnet.magnetchat.ui.activities.sections.splash.SplashActivity;
 import com.magnet.max.android.util.StringUtil;
@@ -31,21 +32,22 @@ public class WakeupReceiver extends BroadcastReceiver {
     }
 
     private void showNotification(Context context, String title, String text) {
-        PendingIntent pIntent = PendingIntent.getActivity(context, 999,
-                new Intent(context, SplashActivity.class),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        Notification notificationCompat = new NotificationCompat.Builder(context)
-            .setAutoCancel(true)
-            .setSmallIcon(context.getApplicationInfo().icon)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setContentIntent(pIntent)
-            .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
-            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .build();
-        NotificationManagerCompat notificationManager =
-            NotificationManagerCompat.from(context);
-        notificationManager.notify(9999, notificationCompat);
+        SnackNotificationHelper.showNotification(context, title, text, "wakeup");
+        //PendingIntent pIntent = PendingIntent.getActivity(context, 999,
+        //        new Intent(context, SplashActivity.class),
+        //        PendingIntent.FLAG_UPDATE_CURRENT);
+        //Notification notificationCompat = new NotificationCompat.Builder(context)
+        //    .setAutoCancel(true)
+        //    .setSmallIcon(context.getApplicationInfo().icon)
+        //    .setContentTitle(title)
+        //    .setContentText(text)
+        //    .setContentIntent(pIntent)
+        //    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE)
+        //    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+        //    .build();
+        //NotificationManagerCompat notificationManager =
+        //    NotificationManagerCompat.from(context);
+        //notificationManager.notify(9999, notificationCompat);
         //Notification note = new Notification.Builder(context)
         //        .setAutoCancel(true)
         //        .setSmallIcon(context.getApplicationInfo().icon)

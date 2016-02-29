@@ -5,14 +5,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Vibrator;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
+import com.magnet.max.android.MaxCore;
 import com.magnet.max.android.User;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 import com.magnet.max.android.util.StringUtil;
@@ -81,6 +85,11 @@ public class MMXManager {
         manager.notify(channelName, 12345, notification);
         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
+
+        //SnackNotificationHelper.showNotification(MaxCore.getApplicationContext(),
+        //    StringUtil.isNotEmpty(fromUserName) ? "Message from " + fromUserName : "New message is available",
+        //    StringUtil.isNotEmpty(content) ? content : "",
+        //    channelName) ;
     }
 
     private MMX.EventListener eventListener = new MMX.EventListener() {
