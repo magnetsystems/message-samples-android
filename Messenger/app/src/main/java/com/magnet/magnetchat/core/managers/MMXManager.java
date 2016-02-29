@@ -5,15 +5,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Vibrator;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.helpers.ChannelHelper;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.Max;
+import com.magnet.max.android.MaxCore;
 import com.magnet.max.android.User;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -63,26 +69,27 @@ public class MMXManager {
         return instance;
     }
 
-    public void messageNotification(String channelName, String fromUserName) {
-        if (notification == null) {
-            PendingIntent intent = PendingIntent.getActivity(applicationReference.get(), 0, new Intent(Intent.ACTION_MAIN)
-                            .addCategory(Intent.CATEGORY_DEFAULT)
-                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            .setPackage(applicationReference.get().getPackageName()),
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            notification = new Notification.Builder(getApplicationContext())
-                    .setAutoCancel(true)
-                    .setSmallIcon(getApplicationContext()
-                            .getApplicationInfo().icon)
-                    .setContentTitle("New message is available")
-                    .setContentInfo(fromUserName)
-                    .setContentIntent(intent).build();
-        }
+    public void messageNotification(String channelName, String fromUserName, String content) {
+        PendingIntent intent = PendingIntent.getActivity(applicationReference.get(), 12345, new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_DEFAULT)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        .setPackage(applicationReference.get().getPackageName()),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        notification = new Notification.Builder(getApplicationContext())
+                .setAutoCancel(true)
+                .setSmallIcon(getApplicationContext().getApplicationInfo().icon)
+                .setContentTitle(StringUtil.isNotEmpty(fromUserName) ? "Message from " + fromUserName : "New message is available")
+                .setContentInfo(StringUtil.isNotEmpty(content) ? content : "New message")
+                .setContentIntent(intent).build();
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(channelName, 12345, notification);
         Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
+
+        //SnackNotificationHelper.showNotification(MaxCore.getApplicationContext(),
+        //    StringUtil.isNotEmpty(fromUserName) ? "Message from " + fromUserName : "New message is available",
+        //    StringUtil.isNotEmpty(content) ? content : "",
+        //    channelName) ;
     }
 
     private MMX.EventListener eventListener = new MMX.EventListener() {
@@ -105,10 +112,11 @@ public class MMXManager {
             ChannelHelper.receiveMessage(mmxMessage);
             if ((mmxMessage.getSender() != null)
                     && (!mmxMessage.getSender().getUserIdentifier().equals(User.getCurrentUserId()))) {
+                String content = Message.createMessageFrom(mmxMessage).getMessageSummary();
                 if (mmxMessage.getChannel() != null) {
-                    messageNotification(mmxMessage.getChannel().getName(), mmxMessage.getSender().getDisplayName());
+                    messageNotification(mmxMessage.getChannel().getName(), mmxMessage.getSender().getDisplayName(), content);
                 } else {
-                    messageNotification("", mmxMessage.getSender().getDisplayName());
+                    messageNotification("", mmxMessage.getSender().getDisplayName(), content);
                 }
             }
             return false;

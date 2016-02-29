@@ -94,6 +94,29 @@ public class Message {
         return mmxMessage.getContent().get(TAG_TYPE);
     }
 
+    public String getMessageSummary() {
+        String msgType = getType();
+        if (msgType == null) {
+            msgType = Message.TYPE_TEXT;
+        }
+        switch (msgType) {
+            case Message.TYPE_MAP:
+                return "User's location";
+            case Message.TYPE_VIDEO:
+                return "User's video";
+            case Message.TYPE_PHOTO:
+                return "User's photo";
+            case Message.TYPE_TEXT:
+                String text = getText().replace(System.getProperty("line.separator"), " ");
+                if (text.length() > 23) {
+                    text = text.substring(0, 20) + "...";
+                }
+                return text;
+        }
+
+        return null;
+    }
+
     public boolean isDelivered() {
         return isDelivered;
     }

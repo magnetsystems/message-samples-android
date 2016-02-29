@@ -104,7 +104,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //For keeping toolbar when user input message
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setSupportActionBar(toolbar);
 
@@ -224,7 +224,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == INTENT_REQUEST_GET_IMAGES) {
                 Parcelable[] parcelableUris = intent.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
-                if (parcelableUris == null) {
+                if (parcelableUris == null || parcelableUris.length == 0) {
+                    Log.d(TAG, "No image selected");
                     return;
                 }
                 Uri[] uris = new Uri[parcelableUris.length];
@@ -322,7 +323,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                     attachmentDialog.dismiss();
                 }
             });
-            builder.setCancelable(false);
+            builder.setCancelable(true);
             attachmentDialog = builder.create();
         }
         attachmentDialog.show();
@@ -389,7 +390,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void prepareConversation(Conversation conversation) {
-        if (channelName == null) {
+        if (channelName == null && null == currentConversation) {
+            Log.e(TAG, "no channel is set");
             finish();
             return;
         }

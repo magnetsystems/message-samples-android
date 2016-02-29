@@ -10,6 +10,7 @@
     <color name="itemNotSelected">#fff</color>
 
     <!--BLUE GRAY-->
+    <color name="colorActionBarTitle">#000000</color>
     <color name="colorBGMain">#517daa</color>
     <color name="colorBGMainPrimaryText">#517daa</color>
     <color name="colorBGMainSecondaryText">#8e517daa</color>

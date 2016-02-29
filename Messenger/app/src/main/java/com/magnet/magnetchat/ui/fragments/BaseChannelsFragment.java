@@ -82,6 +82,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
                 getConversations();
             }
         });
+        showAllConversations();
     }
 
     @Override

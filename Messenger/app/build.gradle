@@ -46,6 +46,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro', 'proguard.pro'
+        }
     }
     lintOptions {
         abortOnError false
@@ -72,7 +76,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
-    compile 'com.jakewharton:butterknife:5.1.1'
+    compile 'com.jakewharton:butterknife:6.1.0'
 
     compile 'de.hdodenhof:circleimageview:2.0.0'
 }
