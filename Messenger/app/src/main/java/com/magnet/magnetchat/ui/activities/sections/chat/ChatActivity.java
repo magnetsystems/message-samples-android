@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -277,6 +276,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         } else {
             showMessage("Can't do it without permission");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        hideKeyboard();
+        super.onBackPressed();
     }
 
     @Override
