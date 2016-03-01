@@ -5,16 +5,20 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.application.CurrentApplication;
+import com.magnet.magnetchat.core.managers.ChannelCacheManager;
+import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
+import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.max.android.util.StringUtil;
@@ -57,10 +61,7 @@ public class DetailsActivity extends BaseActivity {
 
         setTitle("Details");
 
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        layoutManager.setReverseLayout(false);
-        listView.setLayoutManager(layoutManager);
+        listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         currentChannel = getIntent().getParcelableExtra(TAG_CHANNEL);
         if (currentChannel != null) {
@@ -101,12 +102,37 @@ public class DetailsActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (currentChannel != null && !currentChannel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
+            getMenuInflater().inflate(R.menu.menu_detail, menu);
+        }
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 //NavUtils.navigateUpFromSameTask(this);
                 finish();
+                return true;
+            // Respond to the action bar's Up/Home button
+            case R.id.menuDetailLeave:
+                if (currentChannel != null) {
+                    Conversation conversation = ChannelCacheManager.getInstance().getConversationByName(currentChannel.getName());
+                    ChannelHelper.unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
+                        @Override
+                        public void onSuccess() {
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailure(Throwable throwable) {
+
+                        }
+                    });
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
