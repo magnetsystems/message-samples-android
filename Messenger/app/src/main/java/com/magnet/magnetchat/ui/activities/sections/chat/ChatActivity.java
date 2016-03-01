@@ -102,8 +102,6 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //For keeping toolbar when user input message
-        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setSupportActionBar(toolbar);
 
@@ -447,6 +445,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
             chatMessageProgress.setVisibility(View.GONE);
             Logger.error(TAG, "send message error", throwable);
             showMessage("Can't send message");
+            updateList();
         }
     };
 

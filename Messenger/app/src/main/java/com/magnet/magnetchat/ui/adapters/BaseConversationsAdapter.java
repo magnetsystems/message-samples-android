@@ -2,7 +2,6 @@ package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +52,7 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
         public ConversationViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-            itemView.setLayoutParams(params);
+            itemView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         }
 
         @Override

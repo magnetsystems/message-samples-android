@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dimen_72"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:layout_centerVertical="true"
@@ -22,21 +22,23 @@
 
     <RelativeLayout
         android:id="@+id/rlAvatar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dimen_50"
+        android:layout_height="@dimen/dimen_50"
+        android:layout_marginTop="@dimen/dimen_12"
+        android:layout_marginBottom="@dimen/dimen_12"
         android:layout_centerVertical="true"
         android:orientation="horizontal"
         android:layout_toRightOf="@+id/imConversationNewMsg">
 
         <com.magnet.magnetchat.ui.views.CircleNameView
             android:id="@+id/viewConversationOwnerAvatar"
-            android:layout_width="@dimen/dimen_40"
-            android:layout_height="@dimen/dimen_40"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageConversationOwnerAvatar"
-            android:layout_width="@dimen/dimen_40"
-            android:layout_height="@dimen/dimen_40"/>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </RelativeLayout>
 
@@ -48,6 +50,7 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_toRightOf="@+id/rlAvatar"
         android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:orientation="vertical">
 

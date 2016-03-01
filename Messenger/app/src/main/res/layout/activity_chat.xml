@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:theme="@style/AppTheme.Toolbar"
+            app:theme="@style/AppTheme.Toolbar.WithNavigation"
             app:titleTextAppearance="@style/AppTheme.Toolbar.Title" />
 
     </android.support.design.widget.AppBarLayout>

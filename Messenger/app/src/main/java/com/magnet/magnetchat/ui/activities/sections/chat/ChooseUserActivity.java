@@ -25,6 +25,7 @@ import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.SelectedUsersAdapter;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.magnetchat.ui.custom.CustomSearchView;
+import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -81,6 +82,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         setOnClickListeners(R.id.registerSaveBtn);
 
         userList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        userList.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
 
         selectedUserList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         selectedUsers = new ArrayList<>();
@@ -167,6 +169,12 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        hideKeyboard();
+        super.onBackPressed();
+    }
+
     /**
      * Method which provide to create channel or add user
      */
@@ -195,13 +203,13 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
         ChannelHelper.addUserToConversation(conversation, userList, new ChannelHelper.OnAddUserListener() {
             @Override
             public void onSuccessAdded() {
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 finish();
             }
 
             @Override
             public void onUserSetExists(String channelSetName) {
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 Conversation anotherConversation = ChannelCacheManager.getInstance().getConversationByName(channelSetName);
                 Intent i = ChatActivity.getIntentWithChannel(anotherConversation);
                 if (null != i) {
@@ -212,7 +220,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onWasAlreadyAdded() {
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 showMessage("User was already added");
                 finish();
 
@@ -220,7 +228,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
 
             @Override
             public void onFailure(Throwable throwable) {
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 showMessage("Can't add user to channel");
             }
         });
@@ -238,14 +246,14 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
                     }
                 }
                 Collections.sort(users, UserHelper.getUserProfileComparator());
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 Logger.debug("find users", "success");
                 updateList(users);
             }
 
             @Override
             public void failure(ApiError apiError) {
-                userSearchProgress.setVisibility(View.INVISIBLE);
+                userSearchProgress.setVisibility(View.GONE);
                 showMessage("Can't find users");
                 Logger.error("find users", apiError);
             }

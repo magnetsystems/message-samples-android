@@ -19,4 +19,6 @@
     <color name="colorDarkTransparent">#88000000</color>
 
     <color name="floaterBackground">#00c0ff</color>
+    <color name="actionMenuText">#007aff</color>
+
 </resources>
