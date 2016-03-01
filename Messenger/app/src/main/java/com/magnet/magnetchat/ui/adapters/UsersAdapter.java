@@ -6,14 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
@@ -49,7 +47,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         CircleNameView viewAvatar;
         AppCompatTextView firstName;
         AppCompatTextView lastName;
-        TextView firstLetter;
         UserProfile user;
         int position;
 
@@ -60,7 +57,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             viewAvatar = (CircleNameView) itemView.findViewById(R.id.viewUserAvatar);
             firstName = (AppCompatTextView) itemView.findViewById(R.id.itemUserFirstName);
             lastName = (AppCompatTextView) itemView.findViewById(R.id.itemUserLastName);
-            firstLetter = (TextView) itemView.findViewById(R.id.itemUserFirstLetter);
             itemView.setOnClickListener(this);
         }
 
@@ -118,7 +114,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (addUser != null && position == getItemCount() - 1) {
+        if (addUser != null && position == 0) {
             return VIEW_TYPE_ADD_BTN;
         }
         return VIEW_TYPE_USER;
@@ -133,6 +129,9 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     private UserProfile getItem(int position) {
+        if (addUser != null) {
+            return userList.get(position - 1);
+        }
         return userList.get(position);
     }
 
@@ -165,11 +164,7 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     final UserViewHolder viewHolder = (UserViewHolder) holder;
                     viewHolder.setPosition(position);
                     UserProfile user = getItem(position);
-                    UserProfile previous = null;
                     viewHolder.user = user;
-                    if (position > 0) {
-                        previous = getItem(position - 1);
-                    }
                     if (user.getFirstName() != null) {
                         viewHolder.firstName.setText(user.getFirstName());
                     }
@@ -178,15 +173,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                     if (user.getFirstName() == null && user.getLastName() == null) {
                         viewHolder.firstName.setText(user.getDisplayName());
-                    }
-
-                    char currentFirstLetter = getCharToGroup(user);
-                    char previousFirstLetter = getCharToGroup(previous);
-                    if (previous == null || currentFirstLetter != previousFirstLetter) {
-                        viewHolder.firstLetter.setVisibility(View.VISIBLE);
-                        viewHolder.firstLetter.setText(String.valueOf(currentFirstLetter).toUpperCase());
-                    } else {
-                        viewHolder.firstLetter.setVisibility(View.GONE);
                     }
 
                     viewHolder.viewAvatar.setUserName(user.getDisplayName());
@@ -214,15 +200,6 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     break;
             }
         }
-    }
-
-    private char getCharToGroup(UserProfile userProfile) {
-        char letter = ' ';
-        String str = UserHelper.getUserNameToCompare(userProfile).toUpperCase();
-        if (str.length() > 0) {
-            letter = str.charAt(0);
-        }
-        return letter;
     }
 
     /**
