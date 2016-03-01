@@ -19,6 +19,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 import com.magnet.magnetchat.ui.adapters.SelectedUsersAdapter;
@@ -31,6 +32,7 @@ import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -235,6 +237,7 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
                         users.remove(user);
                     }
                 }
+                Collections.sort(users, UserHelper.getUserProfileComparator());
                 userSearchProgress.setVisibility(View.INVISIBLE);
                 Logger.debug("find users", "success");
                 updateList(users);

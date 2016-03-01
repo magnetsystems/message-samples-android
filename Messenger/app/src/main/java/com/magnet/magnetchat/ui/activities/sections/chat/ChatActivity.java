@@ -21,7 +21,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -224,7 +223,8 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == INTENT_REQUEST_GET_IMAGES) {
                 Parcelable[] parcelableUris = intent.getParcelableArrayExtra(ImagePickerActivity.EXTRA_IMAGE_URIS);
-                if (parcelableUris == null) {
+                if (parcelableUris == null || parcelableUris.length == 0) {
+                    Log.d(TAG, "No image selected");
                     return;
                 }
                 Uri[] uris = new Uri[parcelableUris.length];
@@ -276,6 +276,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         } else {
             showMessage("Can't do it without permission");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        hideKeyboard();
+        super.onBackPressed();
     }
 
     @Override
