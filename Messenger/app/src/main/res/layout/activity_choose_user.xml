@@ -95,6 +95,6 @@
         android:layout_margin="@dimen/dimen_16"
         app:backgroundTint="@color/floaterBackground"
         android:foregroundGravity="bottom"
-        android:src="@drawable/ic_add_message_floater" />
+        android:src="@drawable/ic_add_new_chat" />
 
 </android.support.design.widget.CoordinatorLayout>

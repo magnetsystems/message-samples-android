@@ -17,6 +17,7 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
+import com.magnet.magnetchat.ui.activities.sections.home.HomeActivity;
 import com.magnet.magnetchat.ui.adapters.UsersAdapter;
 import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 import com.magnet.max.android.User;
@@ -62,6 +63,7 @@ public class DetailsActivity extends BaseActivity {
         setTitle("Details");
 
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        listView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
 
         currentChannel = getIntent().getParcelableExtra(TAG_CHANNEL);
         if (currentChannel != null) {
@@ -124,6 +126,7 @@ public class DetailsActivity extends BaseActivity {
                     ChannelHelper.unsubscribeFromChannel(conversation, new ChannelHelper.OnLeaveChannelListener() {
                         @Override
                         public void onSuccess() {
+                            startActivity(HomeActivity.class, true);
                             finish();
                         }
 
