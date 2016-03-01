@@ -114,7 +114,7 @@ public class ChannelCacheManager {
     public void approveMessage(String messageId) {
         Message message = getMessagesToApproveDeliver().get(messageId);
         if (message != null) {
-            message.setIsDelivered(true);
+            message.setMessageStatus(Message.MessageStatus.DELIVERED);
             messagesToApproveDeliver.remove(messageId);
         }
     }

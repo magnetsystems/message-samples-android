@@ -165,9 +165,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             previous = getItem(position - 1);
         }
         holder.message = message;
-        configureDate(holder, message, previous, position);
+        boolean sameDate = configureDate(holder, message, previous);
         if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
-            makeMessageFromMe(holder, message);
+            Message next = null;
+            if (position < getItemCount() - 1) {
+                next = getItem(position + 1);
+            }
+            makeMessageFromMe(holder, message, next, sameDate);
         } else {
             makeMessageToMe(holder, message, previous);
         }
@@ -200,7 +204,14 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         return messageList.get(position);
     }
 
-    private void configureDate(ViewHolder viewHolder, Message message, Message previous, int position) {
+    /**
+     * Returns true if current message and previous have the same date
+     * @param viewHolder
+     * @param message
+     * @param previous
+     * @return
+     */
+    private boolean configureDate(ViewHolder viewHolder, Message message, Message previous) {
         Date date;
         Date previousDate = null;
         if (message.getCreateTime() == null) {
@@ -219,9 +230,29 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
             viewHolder.date.setVisibility(View.VISIBLE);
             viewHolder.date.setText(msgDate);
+            return true;
         } else {
             viewHolder.date.setVisibility(View.GONE);
         }
+        return false;
+    }
+
+    /**
+     * Returns true, if previous message is from the same user as current
+     * @param message
+     * @param previous
+     * @return
+     */
+    private boolean isPreviousFromSameUser(Message message, Message previous) {
+        String userName = UserHelper.getDisplayName(message.getSender());
+        String previousUser = "";
+        if (previous != null) {
+            previousUser = UserHelper.getDisplayName(previous.getSender());
+        }
+        if (userName.equalsIgnoreCase(previousUser)) {
+            return true;
+        }
+        return false;
     }
 
     private void makeMessageToMe(ViewHolder viewHolder, Message message, Message previous) {
@@ -258,8 +289,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         }
     }
 
-    private void makeMessageFromMe(ViewHolder viewHolder, Message message) {
-
+    private void makeMessageFromMe(ViewHolder viewHolder, Message message, Message next, boolean previousSameDate) {
         User user = User.getCurrentUser();
 
         viewHolder.imageMyAvatar.setVisibility(View.VISIBLE);
@@ -270,11 +300,31 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         viewHolder.viewOtherAvatar.setVisibility(View.GONE);
 
         viewHolder.messageArea.setGravity(Gravity.RIGHT | Gravity.END);
-        viewHolder.text.setBackgroundResource(R.drawable.bubble);
+        viewHolder.text.setBackgroundResource(R.drawable.bubble2);
         viewHolder.text.setTextColor(Color.WHITE);
         viewHolder.sender.setVisibility(View.GONE);
-        if (message.isDelivered()) {
+
+        String previousUserId = "";
+        if (next != null) {
+            if (next.getSender() != null) {
+                previousUserId = next.getSender().getUserIdentifier();
+            } else {
+                previousUserId = User.getCurrentUserId();
+            }
+        }
+        if (next == null || !User.getCurrentUserId().equals(previousUserId)) {
             viewHolder.delivered.setVisibility(View.VISIBLE);
+            switch (message.getMessageStatus()) {
+                case DELIVERED:
+                    viewHolder.delivered.setText("Delivered");
+                    break;
+                case ERROR:
+                    viewHolder.delivered.setText("Error");
+                    break;
+                case PENDING:
+                    viewHolder.delivered.setText("Pending");
+                    break;
+            }
         } else {
             viewHolder.delivered.setVisibility(View.GONE);
         }

@@ -1,7 +1,6 @@
 package com.magnet.magnetchat.model;
 
 import android.location.Location;
-import android.webkit.MimeTypeMap;
 
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
@@ -13,6 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Message {
+
+    public enum MessageStatus {DELIVERED, PENDING, ERROR}
 
     public static final String FILE_TYPE_VIDEO = "video";
     public static final String FILE_TYPE_PHOTO = "image";
@@ -28,7 +29,7 @@ public class Message {
     private static final String TAG_LATITUDE = "latitude";
 
     private MMXMessage mmxMessage;
-    private boolean isDelivered;
+    private MessageStatus messageStatus;
     private Date creationDate;
 
     public MMXMessage getMmxMessage() {
@@ -117,12 +118,12 @@ public class Message {
         return null;
     }
 
-    public boolean isDelivered() {
-        return isDelivered;
+    public MessageStatus getMessageStatus() {
+        return messageStatus;
     }
 
-    public void setIsDelivered(boolean isDelivered) {
-        this.isDelivered = isDelivered;
+    public void setMessageStatus(MessageStatus messageStatus) {
+        this.messageStatus = messageStatus;
     }
 
     public void setCreationDate(Date creationDate) {
@@ -148,6 +149,7 @@ public class Message {
     public static Message createMessageFrom(MMXMessage mmxMessage) {
         Message message = new Message();
         message.setMmxMessage(mmxMessage);
+        message.setMessageStatus(MessageStatus.DELIVERED);
         return message;
     }
 

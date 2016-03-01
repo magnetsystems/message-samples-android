@@ -196,9 +196,11 @@ public class Conversation {
         }
         final Message message = Message.createMessageFrom(builder.build());
         message.setCreationDate(DateHelper.localToUtc(new Date()));
+        message.setMessageStatus(Message.MessageStatus.PENDING);
         channel.publish(message.getMmxMessage(), new MMXChannel.OnFinishedListener<String>() {
             @Override
             public void onSuccess(String s) {
+                message.setMessageStatus(Message.MessageStatus.PENDING);
                 Logger.debug("send message", "success");
                 addMessage(message);
                 listener.onSuccessSend(message);
@@ -206,6 +208,7 @@ public class Conversation {
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                message.setMessageStatus(Message.MessageStatus.ERROR);
                 listener.onFailure(throwable);
             }
         });
