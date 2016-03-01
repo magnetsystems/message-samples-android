@@ -29,13 +29,8 @@
                 android:background="?attr/colorPrimary"
                 android:gravity="center"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:theme="@style/AppTheme.Toolbar"
+                app:theme="@style/AppTheme.Toolbar.WithNavigation"
                 app:titleTextAppearance="@style/AppTheme.Toolbar.Title">
-
-                <!--<android.support.v7.widget.AppCompatTextView-->
-                <!--style="@style/style_textview_h1"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:text="All contacts" />-->
 
             </android.support.v7.widget.Toolbar>
 
@@ -94,10 +89,10 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/registerSaveBtn"
-        android:layout_width="@dimen/dimen_60"
-        android:layout_height="@dimen/dimen_60"
+        android:layout_width="@dimen/dimen_56"
+        android:layout_height="@dimen/dimen_56"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/dimen_10"
+        android:layout_margin="@dimen/dimen_16"
         app:backgroundTint="@color/floaterBackground"
         android:foregroundGravity="bottom"
         android:src="@drawable/ic_add_message_floater" />
