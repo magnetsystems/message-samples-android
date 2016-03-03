@@ -100,7 +100,7 @@ public class UserHelper {
             @Override
             public void success(Boolean aBoolean) {
                 if (remember) {
-                    SharedPreferenceManager.getInstance().saveCredence(email, password);
+                    //SharedPreferenceManager.getInstance().saveCredence(email, password);
                 }
                 MMX.start();
                 Logger.debug("login", "success");
@@ -138,11 +138,6 @@ public class UserHelper {
                         Logger.error("resume session", apiError);
                     }
                 });
-            } else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
-                String[] credence = SharedPreferenceManager.getInstance().readCredence();
-                if (credence != null) {
-                    login(credence[0], credence[1], true, onLoginListener);
-                }
             }
         }
     }

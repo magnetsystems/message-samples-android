@@ -44,12 +44,12 @@ public class ChangePasswordActivity extends BaseActivity {
                 String oldPassword = editOldPassword.getText().toString();
                 final String newPassword = editNewPassword.getText().toString();
                 String newRepeat = editNewPasswordRepeat.getText().toString();
-                final String[] credence = SharedPreferenceManager.getInstance().readCredence();
+                //final String[] credence = SharedPreferenceManager.getInstance().readCredence();
                 if (checkStrings(oldPassword, newPassword, newRepeat)) {
-                    if (!oldPassword.equals(credence[1])) {
-                        showDialog("Wrong password", "You input wrong password. Please, try again");
-                        return;
-                    }
+                    //if (!oldPassword.equals(credence[1])) {
+                    //    showDialog("Wrong password", "You input wrong password. Please, try again");
+                    //    return;
+                    //}
                     if (!newPassword.equals(newRepeat)) {
                         showDialog("Wrong password", "Passwords do not match. Please, try again");
                         return;
@@ -60,7 +60,7 @@ public class ChangePasswordActivity extends BaseActivity {
                         @Override
                         public void success(User user) {
                             setUpdateMode(false);
-                            SharedPreferenceManager.getInstance().saveCredence(credence[0], newPassword);
+                            //SharedPreferenceManager.getInstance().saveCredence(credence[0], newPassword);
                             showMessage("Password was successfully changed");
                             Logger.debug("change password", "success");
                             finish();
