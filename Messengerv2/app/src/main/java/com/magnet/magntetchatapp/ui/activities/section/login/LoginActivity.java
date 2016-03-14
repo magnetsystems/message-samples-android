@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.api.LoginContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
+import com.magnet.magntetchatapp.ui.activities.section.register.RegisterActivity;
 import com.magnet.magntetchatapp.ui.views.section.LoginView;
 
 import butterknife.InjectView;
@@ -51,20 +52,19 @@ public class LoginActivity extends BaseActivity {
     /**
      * Callback which provide the action when some actions happened i the login view
      */
-    private static final LoginContract.OnLoginActionCallback loginActionCallback = new LoginContract.OnLoginActionCallback() {
+    private final LoginContract.OnLoginActionCallback loginActionCallback = new LoginContract.OnLoginActionCallback() {
         @Override
         public void onLoginSuccess() {
-
         }
 
         @Override
         public void onLoginError(@NonNull String errorMessage) {
-
+            showMessage(errorMessage);
         }
 
         @Override
         public void onRegisterPressed() {
-
+            startActivity(RegisterActivity.class, false);
         }
     };
 }

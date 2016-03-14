@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -94,13 +96,26 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     /**
      * Method which provide starting the Activity
      *
-     * @param activtyClass activity which should be starting
+     * @param activtyClass        activity class
+     * @param isNeedFinishCurrent is need clear current
      */
     protected void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
-        startActivity(new Intent(this, activtyClass));
-        if (isNeedFinishCurrent == true) {
+        Intent intent = new Intent(this, activtyClass);
+        startActivity(intent);
+        if (isNeedFinishCurrent) {
             finish();
         }
+    }
+
+    /**
+     * Method which provide the start activity with top clearing
+     *
+     * @param activtyClass activity class
+     */
+    protected void startActivityWithClearTop(Class activtyClass) {
+        Intent intent = new Intent(this, activtyClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
     //====================ACTIVITY FOR RESULT METHODS====================
@@ -200,6 +215,15 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 actionPerformer.onActionPerform();
             }
         }, (int) (delayTime * 1000));
+    }
+
+    /**
+     * Method which provide to message showing as Snackbar
+     *
+     * @param message message to show
+     */
+    protected void showMessage(@NonNull String message) {
+        Snackbar.make(this.getCurrentFocus(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     //==========================ABSTRACT METHODS==============================

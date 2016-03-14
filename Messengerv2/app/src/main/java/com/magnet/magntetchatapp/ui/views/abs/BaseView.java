@@ -116,8 +116,19 @@ public abstract class BaseView extends FrameLayout implements View.OnClickListen
      *
      * @param activtyClass activity which should be starting
      */
-    protected void startActivity(@NonNull Class activtyClass) {
+    public void startActivity(@NonNull Class activtyClass) {
         getContext().startActivity(new Intent(getContext(), activtyClass));
+    }
+
+    /**
+     * Method which provide the start activity with top clearing
+     *
+     * @param activtyClass activity class
+     */
+    protected void startActivityWithClearTop(Class activtyClass) {
+        Intent intent = new Intent(getContext(), activtyClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        getContext().startActivity(intent);
     }
 
     /**
