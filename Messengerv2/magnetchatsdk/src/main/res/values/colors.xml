@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="primary">#f5f5f5</color>-->
+    <!--<color name="primary_dark">#979797</color>-->
+    <!--<color name="accent">#517daa</color>-->
+    <!--<color name="primary_text">#517daa</color>-->
+    <!--<color name="secondary_text">#8e517daa</color>-->
+
+    <color name="primary">#2196F3</color>
+    <color name="primary_dark">#1976D2</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="accent">#517daa</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+
+    <color name="buttonsTextColor">#517daa</color>
+    <color name="itemSelected">#c3c3c3</color>
+    <color name="itemNotSelected">#fff</color>
+
+
+    <color name="colorHintText">#51517daa</color>
+    <color name="colorLightGray">#cccccc</color>
+    <color name="colorDarkTransparent">#88000000</color>
+
+    <color name="messageBackgroundFromMe">#517daa</color>
+    <color name="messageBackgroundToMe">#e6e6e6</color>
+
+    <color name="FABBackground">#00c0ff</color>
+</resources>

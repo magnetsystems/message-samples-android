@@ -1,0 +1,61 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--===================| ACTIVITY THEMES |s===================-->
+
+    <style name="AppTheme.SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorMagnetRed</item>
+        <item name="colorPrimaryDark">@color/colorMagnetRedDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorWhite</item>
+        <item name="colorPrimaryDark">@color/colorBlue</item>
+        <item name="colorAccent">@color/colorBlue</item>
+    </style>
+
+    <!--===================| ACTIVITY THEMES |s===================-->
+
+
+    <style name="AppTheme.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <!-- Customize color of navigation drawer icon and back arrow -->
+        <item name="colorControlNormal">@color/colorAccent</item>
+        <item name="actionMenuTextColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <!-- Set proper title size -->
+        <item name="android:textSize">@dimen/abc_text_size_title_material_toolbar</item>
+        <!-- Set title color -->
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!--Set image to android:src instead of android:background-->
+    <style name="styleCropImageCenter">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+
+</resources>

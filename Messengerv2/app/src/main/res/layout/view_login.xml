@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:hint="Enter email here"
+            android:inputType="textEmailAddress"
+            android:typeface="normal" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:hint="Enter password here"
+            android:inputType="textPassword"
+            android:typeface="normal" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/checkBoxRememberMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:text="Remember me" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:background="@android:color/transparent"
+            android:text="Login" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:text="Register" />
+
+    </LinearLayout>
+
+    <!--PROGRESS-->
+    <FrameLayout
+        android:id="@+id/viewProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:foregroundGravity="bottom"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/background_white_square"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_5">
+
+            <ProgressBar
+                style="@android:style/Widget.Holo.ProgressBar.Large"
+                android:layout_width="@dimen/dimen_60"
+                android:layout_height="@dimen/dimen_60"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/dimen_5" />
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/style_text_default"
+                android:gravity="center"
+                android:text="Please wait..."
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/text_15" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="LoginView">
+        <attr name="backgroundsEdit" format="reference" />
+        <attr name="textColorEdits" format="color" />
+        <attr name="textHintColorEdits" format="color" />
+        <attr name="hintEmail" format="string" />
+        <attr name="hintPassword" format="string" />
+
+        <attr name="isNeedRemember" format="boolean" />
+        <attr name="textRemember" format="string" />
+        <attr name="colorButtonRemember" format="color" />
+        <attr name="colorTextRemember" format="color" />
+
+        <attr name="backgroundsButtons" format="reference" />
+        <attr name="colorTextButtons" format="color" />
+
+        <attr name="textButtonLogin" format="string" />
+        <attr name="textButtonRegister" format="string" />
+
+        <attr name="dimenEditsText" format="dimension" />
+        <attr name="dimenRememberText" format="dimension" />
+        <attr name="dimenButtonsText" format="dimension" />
+
+
+        <!--<attr name="showText" format="boolean" />-->
+        <!--<attr name="labelPosition" format="enum">-->
+        <!--<enum name="left" value="0" />-->
+        <!--<enum name="right" value="1" />-->
+        <!--</attr>-->
+    </declare-styleable>
+</resources>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dimen_10">
+
+    <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
+        android:id="@+id/viewUserName"
+        android:layout_width="@dimen/dimen_50"
+        android:layout_height="@dimen/dimen_50" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imageUserAvatar"
+        android:layout_width="@dimen/dimen_50"
+        android:layout_height="@dimen/dimen_50" />
+
+</FrameLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_search_tabbar"
+        android:title="Search messages"
+        app:actionViewClass="com.magnet.magnetchat.ui.custom.CustomSearchView"
+        app:colorHintText="@android:color/darker_gray"
+        app:colorText="@android:color/white"
+        app:iconSearch="@drawable/ic_search_blue"
+        app:showAsAction="ifRoom"
+        app:sizeText="@dimen/text_14"
+        app:textHint="Search message" />
+</menu>

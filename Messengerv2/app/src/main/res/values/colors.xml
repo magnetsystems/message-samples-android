@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#e0e0e0</color>
+    <color name="colorPrimaryDark">#bdbdbd</color>
+    <color name="colorAccent">#64b5f6</color>
+    <color name="colorMagnetRed">#d32f2f</color>
+    <color name="colorMagnetRedDark">#b71c1c</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhiteDark">#fafafa</color>
+    <color name="colorBlue">#64b5f6</color>
+    <color name="colorBlueDark">#1e88e5</color>
+</resources>
