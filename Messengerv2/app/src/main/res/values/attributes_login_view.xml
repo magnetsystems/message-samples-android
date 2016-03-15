@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="LoginView">
+    <declare-styleable name="AbstractLoginView">
         <attr name="backgroundsEdit" format="reference" />
         <attr name="textColorEdits" format="color" />
         <attr name="textHintColorEdits" format="color" />

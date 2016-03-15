@@ -31,8 +31,15 @@
         <activity
             android:name=".ui.activities.section.register.RegisterActivity"
             android:configChanges="keyboard|orientation"
+            android:label="@string/text_create_new_user"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.RegisterTheme" />
+        <activity
+            android:name=".ui.activities.section.home.HomeActivity"
+            android:configChanges="keyboard|orientation"
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.HomeTheme" />
     </application>
 
 </manifest>

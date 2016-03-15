@@ -8,40 +8,56 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/editEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_5"
             android:hint="Enter email here"
             android:inputType="textEmailAddress"
             android:typeface="normal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_5"
             android:hint="Enter password here"
             android:inputType="textPassword"
             android:typeface="normal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
 
         <android.support.v7.widget.AppCompatCheckBox
             android:id="@+id/checkBoxRememberMe"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dimen_5"
             android:text="Remember me" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/buttonLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dimen_5"
             android:background="@android:color/transparent"
             android:text="Login" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/buttonRegister"
@@ -61,7 +77,7 @@
         android:background="@android:color/transparent"
         android:clickable="true"
         android:foregroundGravity="bottom"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"

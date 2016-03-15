@@ -11,17 +11,17 @@ import com.magnet.magntetchatapp.mvp.views.AbstractLoginView;
 /**
  * Created by dlernatovich on 3/11/16.
  */
-public class LoginView extends AbstractLoginView {
+public class DefaultLoginView extends AbstractLoginView {
 
-    public LoginView(Context context) {
+    public DefaultLoginView(Context context) {
         super(context);
     }
 
-    public LoginView(Context context, AttributeSet attrs) {
+    public DefaultLoginView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LoginView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public DefaultLoginView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

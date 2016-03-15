@@ -15,8 +15,8 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.magnet.magntetchatapp.R;
-import com.magnet.magntetchatapp.mvp.api.LoginContract;
 import com.magnet.magntetchatapp.mvp.abs.BasePresenterView;
+import com.magnet.magntetchatapp.mvp.api.LoginContract;
 
 import butterknife.InjectView;
 
@@ -110,26 +110,26 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
      */
     @Override
     protected void onAttributeInitialize(@NonNull AttributeSet attrs) {
-        TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.LoginView,
+        TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.AbstractLoginView,
                 0, 0);
         try {
-            isNeedRemember = attributes.getBoolean(R.styleable.LoginView_isNeedRemember, true);
-            textColorEdits = attributes.getColorStateList(R.styleable.LoginView_textColorEdits);
-            textHintColorEdits = attributes.getColorStateList(R.styleable.LoginView_textHintColorEdits);
-            colorButtonRemember = attributes.getColorStateList(R.styleable.LoginView_colorButtonRemember);
-            colorTextRemember = attributes.getColorStateList(R.styleable.LoginView_colorTextRemember);
-            backgroundsEdit = attributes.getDrawable(R.styleable.LoginView_backgroundsEdit);
-            hintEmail = attributes.getString(R.styleable.LoginView_hintEmail);
-            hintPassword = attributes.getString(R.styleable.LoginView_hintPassword);
-            textRememberCheckBox = attributes.getString(R.styleable.LoginView_textRemember);
-            backgroundButtonLogin = attributes.getDrawable(R.styleable.LoginView_backgroundsButtons);
-            backgroundButtonEdit = attributes.getDrawable(R.styleable.LoginView_backgroundsButtons);
-            colorTextButtons = attributes.getColorStateList(R.styleable.LoginView_colorTextButtons);
-            textButtonLogin = attributes.getString(R.styleable.LoginView_textButtonLogin);
-            textButtonRegister = attributes.getString(R.styleable.LoginView_textButtonRegister);
-            dimenEditsText = attributes.getDimensionPixelSize(R.styleable.LoginView_dimenEditsText, R.dimen.text_16);
-            dimenRememberText = attributes.getDimensionPixelSize(R.styleable.LoginView_dimenRememberText, R.dimen.text_16);
-            dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.LoginView_dimenButtonsText, R.dimen.text_16);
+            isNeedRemember = attributes.getBoolean(R.styleable.AbstractLoginView_isNeedRemember, true);
+            textColorEdits = attributes.getColorStateList(R.styleable.AbstractLoginView_textColorEdits);
+            textHintColorEdits = attributes.getColorStateList(R.styleable.AbstractLoginView_textHintColorEdits);
+            colorButtonRemember = attributes.getColorStateList(R.styleable.AbstractLoginView_colorButtonRemember);
+            colorTextRemember = attributes.getColorStateList(R.styleable.AbstractLoginView_colorTextRemember);
+            backgroundsEdit = attributes.getDrawable(R.styleable.AbstractLoginView_backgroundsEdit);
+            hintEmail = attributes.getString(R.styleable.AbstractLoginView_hintEmail);
+            hintPassword = attributes.getString(R.styleable.AbstractLoginView_hintPassword);
+            textRememberCheckBox = attributes.getString(R.styleable.AbstractLoginView_textRemember);
+            backgroundButtonLogin = attributes.getDrawable(R.styleable.AbstractLoginView_backgroundsButtons);
+            backgroundButtonEdit = attributes.getDrawable(R.styleable.AbstractLoginView_backgroundsButtons);
+            colorTextButtons = attributes.getColorStateList(R.styleable.AbstractLoginView_colorTextButtons);
+            textButtonLogin = attributes.getString(R.styleable.AbstractLoginView_textButtonLogin);
+            textButtonRegister = attributes.getString(R.styleable.AbstractLoginView_textButtonRegister);
+            dimenEditsText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenEditsText, R.dimen.text_18);
+            dimenRememberText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenRememberText, R.dimen.text_18);
+            dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenButtonsText, R.dimen.text_18);
         } finally {
             attributes.recycle();
             onApplyAttributes();

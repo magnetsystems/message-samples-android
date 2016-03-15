@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AbstractRegisterView">
+
+        <attr name="backgroundRegEdits" format="reference" />
+        <attr name="backgroundRegButton" format="reference" />
+
+        <attr name="colorRegEdits" format="color" />
+        <attr name="colorRegHintEdits" format="color" />
+        <attr name="colorRegLabels" format="color" />
+        <attr name="colorRegTextButton" format="color" />
+
+        <attr name="dimenRegLabels" format="dimension" />
+        <attr name="dimenRegEdits" format="dimension" />
+        <attr name="dimenRegButton" format="dimension" />
+
+        <attr name="minimumRegPassLength" format="integer" />
+
+    </declare-styleable>
+</resources>

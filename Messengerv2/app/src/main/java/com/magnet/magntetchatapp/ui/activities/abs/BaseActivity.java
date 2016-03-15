@@ -1,5 +1,6 @@
 package com.magnet.magntetchatapp.ui.activities.abs;
 
+import android.app.ActionBar;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -224,6 +225,21 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      */
     protected void showMessage(@NonNull String message) {
         Snackbar.make(this.getCurrentFocus(), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Method which provide to enabling of the back button
+     */
+    protected void enableBackButton() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        } else {
+            android.support.v7.app.ActionBar actionBarv7 = getSupportActionBar();
+            if (actionBarv7 != null) {
+                actionBarv7.setDisplayHomeAsUpEnabled(true);
+            }
+        }
     }
 
     //==========================ABSTRACT METHODS==============================

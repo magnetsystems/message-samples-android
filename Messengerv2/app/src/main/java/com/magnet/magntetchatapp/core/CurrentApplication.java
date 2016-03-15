@@ -1,6 +1,6 @@
 package com.magnet.magntetchatapp.core;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magntetchatapp.R;
@@ -10,7 +10,7 @@ import com.magnet.max.android.config.MaxAndroidPropertiesConfig;
 /**
  * Created by dlernatovich on 3/11/16.
  */
-public class CurrentApplication extends Application {
+public class CurrentApplication extends MultiDexApplication {
 
     private static CurrentApplication instance;
 

@@ -31,6 +31,13 @@
         <item name="colorAccent">@color/colorBlue</item>
     </style>
 
+    <style name="AppTheme.HomeTheme" parent="AppTheme.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/colorBlueDark</item>
+        <item name="colorAccent">@color/colorBlue</item>
+    </style>
+
     <!--===================| ACTIVITY THEMES |s===================-->
 
 
