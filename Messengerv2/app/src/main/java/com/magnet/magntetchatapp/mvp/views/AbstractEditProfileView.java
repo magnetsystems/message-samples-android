@@ -273,19 +273,7 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
             Log.d(TAG, url);
             Glide.with(getContext()).load(url)
                     .placeholder(R.drawable.image_no_avatar)
-                    /*Only listeners working for the Galaxy Note 3-5 and S4-S4, this is the Glide issue*/
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            circleImageView.setImageDrawable(resource);
-                            return false;
-                        }
-                    })
+                    .listener(glideRequestListener)
                     .centerCrop().into(circleImageView);
         }
     }
@@ -371,4 +359,22 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
     public void setEditUserCallback(EditProfileContract.OnEditUserCallback editUserCallback) {
         this.editUserCallback = editUserCallback;
     }
+
+    //LISTENERS
+    /**
+     * Listener which provide the loaing the image on the Samsung devices
+     */
+    private final RequestListener<String, GlideDrawable> glideRequestListener = new RequestListener<String, GlideDrawable>() {
+        //TODO: Only listener working for the Galaxy Note 3-5 and S4-S4, this is the Glide issue
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            circleImageView.setImageDrawable(resource);
+            return false;
+        }
+    };
 }
