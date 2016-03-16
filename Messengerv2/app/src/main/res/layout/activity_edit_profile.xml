@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context="com.magnet.magntetchatapp.ui.activities.section.edit.EditProfileActivity">
 
-    <com.magnet.magntetchatapp.mvp.views.AbstractEditProfileView
+    <com.magnet.magntetchatapp.ui.views.section.edit.DefaultEditProfileView
         android:id="@+id/viewEditProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

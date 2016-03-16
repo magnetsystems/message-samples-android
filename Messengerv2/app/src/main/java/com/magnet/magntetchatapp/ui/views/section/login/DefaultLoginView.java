@@ -1,4 +1,4 @@
-package com.magnet.magntetchatapp.ui.views.section;
+package com.magnet.magntetchatapp.ui.views.section.login;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

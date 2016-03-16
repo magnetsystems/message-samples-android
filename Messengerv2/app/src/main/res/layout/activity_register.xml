@@ -7,7 +7,7 @@
     android:background="@android:color/white"
     tools:context="com.magnet.magntetchatapp.ui.activities.section.register.RegisterActivity">
 
-    <com.magnet.magntetchatapp.ui.views.register.DefaultRegisterView
+    <com.magnet.magntetchatapp.ui.views.section.register.DefaultRegisterView
         android:id="@+id/viewRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -18,13 +18,15 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.abs.BasePresenterView;
 import com.magnet.magntetchatapp.mvp.api.EditProfileContract;
-import com.magnet.magntetchatapp.mvp.presenters.DefaultEditProfilePresenter;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 
@@ -34,7 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by dlernatovich on 3/16/16.
  */
-public class AbstractEditProfileView extends BasePresenterView<EditProfileContract.Presenter> implements EditProfileContract.View {
+public abstract class AbstractEditProfileView extends BasePresenterView<EditProfileContract.Presenter> implements EditProfileContract.View {
 
     public static final int K_IMAGE_PICK_INTENT_CODE = 0x64;
     private static final String TAG = "AbstractEditProfileView";
@@ -163,17 +165,6 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
     }
 
     /**
-     * Method which provide the getting of the current presenter
-     *
-     * @return current view presenter
-     */
-    @NonNull
-    @Override
-    public EditProfileContract.Presenter getPresenter() {
-        return new DefaultEditProfilePresenter(this);
-    }
-
-    /**
      * Method which provide to getting of the layout ID
      *
      * @return layout ID
@@ -282,6 +273,19 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
             Log.d(TAG, url);
             Glide.with(getContext()).load(url)
                     .placeholder(R.drawable.image_no_avatar)
+                    /*Only listeners working for the Galaxy Note 3-5 and S4-S4, this is the Glide issue*/
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            circleImageView.setImageDrawable(resource);
+                            return false;
+                        }
+                    })
                     .centerCrop().into(circleImageView);
         }
     }
