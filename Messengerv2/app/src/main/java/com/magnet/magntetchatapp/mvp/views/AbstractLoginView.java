@@ -200,38 +200,6 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
     }
 
     /**
-     * Method which provide the action when Activity/fragment call onCreate method
-     */
-    @Override
-    public void onCreateActivity() {
-        presenter.onActivityCreate();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onResume method
-     */
-    @Override
-    public void onResumeActivity() {
-        presenter.onActivityResume();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onPause method
-     */
-    @Override
-    public void onPauseActivity() {
-        presenter.onActivityPause();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onDestroy method
-     */
-    @Override
-    public void onDestroyActivity() {
-        presenter.onActivityDestroy();
-    }
-
-    /**
      * Method which provide the getting of the current presenter
      *
      * @return current view presenter

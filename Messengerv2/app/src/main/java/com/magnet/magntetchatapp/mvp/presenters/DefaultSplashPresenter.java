@@ -6,11 +6,11 @@ import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;
 /**
  * Created by dlernatovich on 3/11/16.
  */
-public class SplashPresenter implements SplashContract.Presenter {
+public class DefaultSplashPresenter implements SplashContract.Presenter {
 
     private final SplashContract.View view;
 
-    public SplashPresenter(SplashContract.View view) {
+    public DefaultSplashPresenter(SplashContract.View view) {
         this.view = view;
     }
 

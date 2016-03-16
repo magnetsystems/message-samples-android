@@ -201,34 +201,6 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
     }
 
     /**
-     * Method which provide the action when Activity/fragment call onCreate method
-     */
-    public void onCreateActivity() {
-        presenter.onActivityCreate();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onResume method
-     */
-    public void onResumeActivity() {
-        presenter.onActivityResume();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onPause method
-     */
-    public void onPauseActivity() {
-        presenter.onActivityPause();
-    }
-
-    /**
-     * Method which provide the action when Activity/fragment call onDestroy method
-     */
-    public void onDestroyActivity() {
-        presenter.onActivityDestroy();
-    }
-
-    /**
      * Method which provide to getting of the context inside the View/Activity/Fragment
      *
      * @return current view

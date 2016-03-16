@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 
+import com.magnet.magntetchatapp.R;
+
 import butterknife.ButterKnife;
 
 /**
@@ -103,6 +105,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     protected void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
         Intent intent = new Intent(this, activtyClass);
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
         if (isNeedFinishCurrent) {
             finish();
         }
@@ -117,6 +120,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         Intent intent = new Intent(this, activtyClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
     }
 
     //====================ACTIVITY FOR RESULT METHODS====================
@@ -240,6 +244,17 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
                 actionBarv7.setDisplayHomeAsUpEnabled(true);
             }
         }
+    }
+
+    /**
+     * Take care of popping the fragment back stack or finishing the activity
+     * as appropriate.
+     */
+    @Override
+    public void onBackPressed() {
+        // finish() is called in super: we only override this method to be able to override the transition
+        super.onBackPressed();
+        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
     }
 
     //==========================ABSTRACT METHODS==============================

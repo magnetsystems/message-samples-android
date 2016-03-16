@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
+import com.magnet.magntetchatapp.R;
+
 import butterknife.ButterKnife;
 
 /**
@@ -118,6 +120,9 @@ public abstract class BaseView extends FrameLayout implements View.OnClickListen
      */
     public void startActivity(@NonNull Class activtyClass) {
         getContext().startActivity(new Intent(getContext(), activtyClass));
+        if (getActivity() != null) {
+            getActivity().overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        }
     }
 
     /**
@@ -129,6 +134,33 @@ public abstract class BaseView extends FrameLayout implements View.OnClickListen
         Intent intent = new Intent(getContext(), activtyClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         getContext().startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        }
+    }
+
+    /**
+     * Method which provide starting the Activity for results
+     *
+     * @param activtyClass activity which should be starting
+     * @param resultCode   result code
+     */
+    protected void startActivityForResults(@NonNull Class activtyClass, final int resultCode) {
+        if (getActivity() != null) {
+            getActivity().startActivityForResult(new Intent(getContext(), activtyClass), resultCode);
+        }
+    }
+
+    /**
+     * Method which provide starting the Activity for results
+     *
+     * @param activtyClass activity which should be starting
+     * @param resultCode   result code
+     */
+    protected void startActivityForResults(@NonNull Intent activtyClass, final int resultCode) {
+        if (getActivity() != null) {
+            getActivity().startActivityForResult(activtyClass, resultCode);
+        }
     }
 
     /**

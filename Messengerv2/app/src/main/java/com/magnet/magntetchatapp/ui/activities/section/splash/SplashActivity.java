@@ -2,7 +2,7 @@ package com.magnet.magntetchatapp.ui.activities.section.splash;
 
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.api.SplashContract;
-import com.magnet.magntetchatapp.mvp.presenters.SplashPresenter;
+import com.magnet.magntetchatapp.mvp.presenters.DefaultSplashPresenter;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 
 public class SplashActivity extends BaseActivity implements SplashContract.View {
@@ -21,7 +21,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
 
     @Override
     protected void onCreateActivity() {
-        presenter = new SplashPresenter(this);
+        presenter = new DefaultSplashPresenter(this);
         runOnMainThread(2, splashAction);
     }
 

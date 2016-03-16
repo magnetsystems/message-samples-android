@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.magntetchatapp.mvp.abs.BaseContract;
 import com.magnet.magntetchatapp.ui.views.abs.BaseView;
 
 /**
@@ -33,24 +32,28 @@ public abstract class BasePresenterView<T extends BaseContract.BasePresenter> ex
      * Method which provide the action when Activity/fragment call onCreate method
      */
     public void onCreateActivity() {
+        presenter.onActivityCreate();
     }
 
     /**
      * Method which provide the action when Activity/fragment call onResume method
      */
     public void onResumeActivity() {
+        presenter.onActivityResume();
     }
 
     /**
      * Method which provide the action when Activity/fragment call onPause method
      */
     public void onPauseActivity() {
+        presenter.onActivityPause();
     }
 
     /**
      * Method which provide the action when Activity/fragment call onDestroy method
      */
     public void onDestroyActivity() {
+        presenter.onActivityDestroy();
     }
 
     /**

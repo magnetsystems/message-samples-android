@@ -10,21 +10,21 @@
 
     <!--===================| ACTIVITY THEMES |s===================-->
 
-    <style name="AppTheme.SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.SplashTheme" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here -->
         <item name="colorPrimary">@color/colorMagnetRed</item>
         <item name="colorPrimaryDark">@color/colorMagnetRedDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.LoginTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.LoginTheme" parent="AppTheme.NoActionBar">
         <!-- Customize your theme here -->
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/colorBlueDark</item>
         <item name="colorAccent">@color/colorBlue</item>
     </style>
 
-    <style name="AppTheme.RegisterTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme.RegisterTheme" parent="AppTheme">
         <!-- Customize your theme here -->
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/colorBlueDark</item>
@@ -32,6 +32,13 @@
     </style>
 
     <style name="AppTheme.HomeTheme" parent="AppTheme.NoActionBar">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/colorBlueDark</item>
+        <item name="colorAccent">@color/colorBlue</item>
+    </style>
+
+    <style name="AppTheme.EditProfileTheme" parent="AppTheme">
         <!-- Customize your theme here -->
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/colorBlueDark</item>
@@ -54,7 +61,7 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
