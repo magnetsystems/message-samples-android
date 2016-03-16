@@ -51,6 +51,36 @@ public interface EditProfileContract {
         @Nullable
         OnEditUserCallback getCallback();
 
+        /**
+         * Method which provide the fields verifying
+         *
+         * @return checking result
+         */
+        boolean verifyFields();
+
+        /**
+         * Method which provide to getting of the first name
+         *
+         * @return first name
+         */
+        @NonNull
+        String getFirstName();
+
+        /**
+         * Method which provide to getting of the last name
+         *
+         * @return last name
+         */
+        @NonNull
+        String getLastName();
+
+        /**
+         * Method which provide to show/hide pregress view
+         *
+         * @param visible
+         */
+        void switchProgress(boolean visible);
+
     }
 
     interface Presenter extends BaseContract.BasePresenter {
@@ -68,6 +98,11 @@ public interface EditProfileContract {
          */
         void updateServerAvatar(@NonNull Bitmap bitmap, @NonNull final String mimeType);
 
+        /**
+         * Method which provide the updating of the user profile
+         */
+        void updateUserProfile();
+
     }
 
     interface OnEditUserCallback {
@@ -76,7 +111,7 @@ public interface EditProfileContract {
          *
          * @param message message
          */
-        void onSavedSucess(@Nullable String message);
+        void onSavedSuccess(@Nullable String message);
 
         /**
          * method which provide the action when saving changes is error

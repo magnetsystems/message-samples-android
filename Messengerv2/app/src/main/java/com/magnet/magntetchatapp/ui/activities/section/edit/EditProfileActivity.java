@@ -1,8 +1,11 @@
 package com.magnet.magntetchatapp.ui.activities.section.edit;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.magnet.magntetchatapp.R;
+import com.magnet.magntetchatapp.mvp.api.EditProfileContract;
 import com.magnet.magntetchatapp.mvp.views.AbstractEditProfileView;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 
@@ -31,6 +34,7 @@ public class EditProfileActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        editProfileView.setEditUserCallback(editUserCallback);
         editProfileView.onResumeActivity();
     }
 
@@ -50,4 +54,19 @@ public class EditProfileActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, Intent data) {
         editProfileView.onActivityResult(requestCode, data);
     }
+
+    /**
+     * Callback which provide the monitoring inside the AbstractEditProfileView
+     */
+    private final EditProfileContract.OnEditUserCallback editUserCallback = new EditProfileContract.OnEditUserCallback() {
+        @Override
+        public void onSavedSuccess(@Nullable String message) {
+            showMessage(message);
+        }
+
+        @Override
+        public void onSavedError(@NonNull String message) {
+            showMessage(message);
+        }
+    };
 }

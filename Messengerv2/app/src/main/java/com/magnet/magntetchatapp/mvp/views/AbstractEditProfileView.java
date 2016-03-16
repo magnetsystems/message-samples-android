@@ -2,16 +2,20 @@ package com.magnet.magntetchatapp.mvp.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -25,6 +29,7 @@ import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by dlernatovich on 3/16/16.
@@ -38,14 +43,31 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
     @InjectView(R.id.viewEditImage)
     View viewEditImage;
     @InjectView(R.id.imageUser)
-    ImageView circleImageView;
+    CircleImageView circleImageView;
     @InjectView(R.id.labelEmail)
-    TextView labelEmail;
+    AppCompatTextView labelEmail;
     @InjectView(R.id.editFirstName)
     AppCompatEditText editFirstName;
     @InjectView(R.id.editLastName)
     AppCompatEditText editLastName;
+    @InjectView(R.id.viewProgress)
+    View viewProgress;
+    @InjectView(R.id.buttonSaveChanges)
+    AppCompatButton buttonSaveChanges;
 
+    //ATTRIBUTES
+    private Drawable backgroundEditFirstName;
+    private Drawable backgroundEditLastName;
+    private Drawable backgroundButton;
+
+    private ColorStateList colorTextEdits;
+    private ColorStateList colorHintEdits;
+    private ColorStateList colorTextLabels;
+    private ColorStateList colorTextButtons;
+
+    private int dimenLabelsText;
+    private int dimenEditsText;
+    private int dimenButtonsText;
 
     public AbstractEditProfileView(Context context) {
         super(context);
@@ -57,6 +79,76 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
 
     public AbstractEditProfileView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    /**
+     * Method which provide the attribute initializing
+     *
+     * @param attrs attributes
+     */
+    @Override
+    protected void onAttributeInitialize(@NonNull AttributeSet attrs) {
+        TypedArray attributes = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.AbstractEditProfileView,
+                0, 0);
+        try {
+            backgroundEditFirstName = attributes.getDrawable(R.styleable.AbstractEditProfileView_backgroundEditUserEdits);
+            backgroundEditLastName = attributes.getDrawable(R.styleable.AbstractEditProfileView_backgroundEditUserEdits);
+            backgroundButton = attributes.getDrawable(R.styleable.AbstractEditProfileView_backgroundEditUserButton);
+
+            colorTextEdits = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserEdits);
+            colorHintEdits = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserHintEdits);
+            colorTextLabels = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserLabels);
+            colorTextButtons = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserTextButton);
+
+            dimenLabelsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserLabels, R.dimen.text_18);
+            dimenEditsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserEdits, R.dimen.text_18);
+            dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserButton, R.dimen.text_18);
+        } finally {
+            attributes.recycle();
+            onApplyAttributes();
+        }
+    }
+
+    /**
+     * Method which provide the UI customizing with accordance to the custom attributes
+     */
+    protected void onApplyAttributes() {
+
+        if (backgroundEditFirstName != null) {
+            editFirstName.setBackgroundDrawable(backgroundEditFirstName);
+        }
+
+        if (backgroundEditLastName != null) {
+            editLastName.setBackgroundDrawable(backgroundEditLastName);
+        }
+
+
+        if (backgroundButton != null) {
+            buttonSaveChanges.setBackgroundDrawable(backgroundButton);
+        }
+
+        if (colorTextEdits != null) {
+            editFirstName.setTextColor(colorTextEdits);
+            editLastName.setTextColor(colorTextEdits);
+        }
+
+        if (colorHintEdits != null) {
+            editFirstName.setHintTextColor(colorHintEdits);
+            editLastName.setHintTextColor(colorHintEdits);
+        }
+
+        if (colorTextLabels != null) {
+            labelEmail.setTextColor(colorTextLabels);
+        }
+
+        if (colorTextButtons != null) {
+            buttonSaveChanges.setTextColor(colorTextButtons);
+        }
+
+        editFirstName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
+        editLastName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
+        labelEmail.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenLabelsText);
+        buttonSaveChanges.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenButtonsText);
     }
 
     /**
@@ -96,7 +188,7 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
      */
     @Override
     protected void onCreateView() {
-        setOnClickListeners(viewEditImage);
+        setOnClickListeners(viewEditImage, buttonSaveChanges);
     }
 
     /**
@@ -108,6 +200,8 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
     public void onClick(View v) {
         if (v.getId() == R.id.viewEditImage) {
             onChooseImage();
+        } else if (v.getId() == R.id.buttonSaveChanges) {
+            presenter.updateUserProfile();
         }
     }
 
@@ -184,11 +278,11 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
     @Override
     public void onUpdateUserAvatar(@Nullable User currentUser) {
         if ((currentUser != null) && (currentUser.getAvatarUrl() != null)) {
-            Glide.with(getContext())
-                    .load(User.getCurrentUser().getAvatarUrl())
+            String url = currentUser.getAvatarUrl();
+            Log.d(TAG, url);
+            Glide.with(getContext()).load(url)
                     .placeholder(R.drawable.image_no_avatar)
-                    .centerCrop()
-                    .into(circleImageView);
+                    .centerCrop().into(circleImageView);
         }
     }
 
@@ -201,6 +295,66 @@ public class AbstractEditProfileView extends BasePresenterView<EditProfileContra
     @Override
     public EditProfileContract.OnEditUserCallback getCallback() {
         return editUserCallback;
+    }
+
+    /**
+     * Method which provide the fields verifying
+     *
+     * @return checking result
+     */
+    @Override
+    public boolean verifyFields() {
+        String firstName = editFirstName.getText().toString().trim();
+        String lastName = editLastName.getText().toString().trim();
+
+        if (firstName == null || firstName.isEmpty() == true) {
+            editFirstName.requestFocus();
+            editFirstName.setError("First name shouldn't be empty");
+            return false;
+        }
+        if (lastName == null || lastName.isEmpty() == true) {
+            editLastName.requestFocus();
+            editLastName.setError("First name shouldn't be empty");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Method which provide to getting of the first name
+     *
+     * @return first name
+     */
+    @NonNull
+    @Override
+    public String getFirstName() {
+        return editFirstName.getText().toString().trim();
+    }
+
+    /**
+     * Method which provide to getting of the last name
+     *
+     * @return last name
+     */
+    @NonNull
+    @Override
+    public String getLastName() {
+        return editLastName.getText().toString().trim();
+    }
+
+    /**
+     * Method which provide to show/hide pregress view
+     *
+     * @param visible
+     */
+    @Override
+    public void switchProgress(boolean visible) {
+        if (visible == true) {
+            viewProgress.setVisibility(VISIBLE);
+        } else {
+            viewProgress.setVisibility(GONE);
+        }
     }
 
     //SETTERS

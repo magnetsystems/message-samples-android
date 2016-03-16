@@ -1,17 +1,23 @@
 package com.magnet.magntetchatapp.mvp.presenters;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.bumptech.glide.signature.StringSignature;
 import com.magnet.magntetchatapp.mvp.api.EditProfileContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
+import com.magnet.max.android.auth.model.UpdateProfileRequest;
 
 /**
  * Created by dlernatovich on 3/16/16.
  */
 public class DefaultEditProfilePresenter implements EditProfileContract.Presenter {
+
+    private static final String TAG = "DefaultEditProfilePresenter";
 
     private final EditProfileContract.View view;
     private User currentUser;
@@ -26,6 +32,7 @@ public class DefaultEditProfilePresenter implements EditProfileContract.Presente
     @Override
     public void onActivityCreate() {
         onReceiveCurrentUser();
+        view.switchProgress(false);
     }
 
     /**
@@ -79,8 +86,24 @@ public class DefaultEditProfilePresenter implements EditProfileContract.Presente
             currentUser.setAvatar(bitmap, mimeType, updateServerCallback);
         } else {
             if (view != null && view.getCallback() != null) {
-                view.getCallback().onSavedError("No user found");
+                view.getCallback().onSavedError("User not found");
             }
+        }
+    }
+
+    /**
+     * Method which provide the updating of the user profile
+     */
+    @Override
+    public void updateUserProfile() {
+        if (view.verifyFields() == true) {
+            view.switchProgress(true);
+            UpdateProfileRequest request = new UpdateProfileRequest.Builder()
+                    .firstName(view.getFirstName())
+                    .lastName(view.getLastName())
+                    .build();
+
+            User.updateProfile(request, userCallback);
         }
     }
 
@@ -89,18 +112,53 @@ public class DefaultEditProfilePresenter implements EditProfileContract.Presente
     /**
      * Callback which provide to listening the server image updating
      */
-    private ApiCallback<String> updateServerCallback = new ApiCallback<String>() {
+    private final ApiCallback<String> updateServerCallback = new ApiCallback<String>() {
         @Override
         public void success(String s) {
-            if (view != null && view.getCallback() != null) {
-                view.getCallback().onSavedSucess("Image saved");
+            if (view != null) {
+                view.switchProgress(false);
+                if (view.getCallback() != null) {
+                    view.getCallback().onSavedSuccess("Avatar updated");
+                }
             }
         }
 
+        @SuppressLint("LongLogTag")
         @Override
         public void failure(ApiError apiError) {
-            if (view != null && view.getCallback() != null) {
-                view.getCallback().onSavedError("Image not saved");
+            Log.e(TAG, apiError.toString());
+            if (view != null) {
+                view.switchProgress(false);
+                if (view.getCallback() != null) {
+                    view.getCallback().onSavedError("Avatar not updated. Please try again.");
+                }
+            }
+        }
+    };
+
+    /**
+     * Callback which provide to the user updating listening
+     */
+    private final ApiCallback<User> userCallback = new ApiCallback<User>() {
+        @Override
+        public void success(User user) {
+            if (view != null) {
+                view.switchProgress(false);
+                if (view.getCallback() != null) {
+                    view.getCallback().onSavedSuccess("Profile updated successfully");
+                }
+            }
+        }
+
+        @SuppressLint("LongLogTag")
+        @Override
+        public void failure(ApiError apiError) {
+            Log.e(TAG, apiError.toString());
+            if (view != null) {
+                view.switchProgress(false);
+                if (view.getCallback() != null) {
+                    view.getCallback().onSavedSuccess("Profile didn't update");
+                }
             }
         }
     };

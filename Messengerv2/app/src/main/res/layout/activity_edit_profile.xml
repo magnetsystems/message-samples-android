@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,6 +9,16 @@
     <com.magnet.magntetchatapp.mvp.views.AbstractEditProfileView
         android:id="@+id/viewEditProfile"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_14"
+        android:layout_marginRight="@dimen/dimen_14"
+        app:backgroundEditUserEdits="@drawable/background_edit_login"
+        app:colorEditUserEdits="@android:color/black"
+        app:colorEditUserHintEdits="@android:color/darker_gray"
+        app:colorEditUserLabels="@color/colorBlueDark"
+        app:colorEditUserTextButton="@color/colorBlueDark"
+        app:dimenEditUserButton="@dimen/text_14"
+        app:dimenEditUserEdits="@dimen/text_14"
+        app:dimenEditUserLabels="@dimen/text_16" />
 
 </FrameLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AbstractEditProfileView">
+        <attr name="backgroundEditUserEdits" format="reference" />
+        <attr name="backgroundEditUserButton" format="reference" />
+
+        <attr name="colorEditUserEdits" format="color" />
+        <attr name="colorEditUserHintEdits" format="color" />
+        <attr name="colorEditUserLabels" format="color" />
+        <attr name="colorEditUserTextButton" format="color" />
+
+        <attr name="dimenEditUserLabels" format="dimension" />
+        <attr name="dimenEditUserEdits" format="dimension" />
+        <attr name="dimenEditUserButton" format="dimension" />
+
+    </declare-styleable>
+</resources>

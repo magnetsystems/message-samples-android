@@ -21,6 +21,6 @@
         app:dimenRegButton="@dimen/text_14"
         app:dimenRegEdits="@dimen/text_14"
         app:dimenRegLabels="@dimen/text_14"
-        app:minimumRegPassLength="10" />
+        app:minimumRegPassLength="6" />
 
 </RelativeLayout>
