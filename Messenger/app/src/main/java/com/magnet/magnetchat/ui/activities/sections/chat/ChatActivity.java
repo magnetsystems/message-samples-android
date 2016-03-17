@@ -475,14 +475,14 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
-        public void onSuccessFinish(Conversation lastConversation) {
-            if (lastConversation == null) {
+        public void onSuccessFinish(List<Conversation> conversations) {
+            if (conversations == null || conversations.isEmpty()) {
                 String message = "Can't load conversation";
                 Logger.debug(TAG, message);
                 showMessage(message);
                 finish();
             } else {
-                prepareConversation(lastConversation);
+                prepareConversation(conversations.get(0));
             }
         }
 

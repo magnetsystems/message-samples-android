@@ -106,6 +106,11 @@ public class HomeFragment extends BaseChannelsFragment {
     }
 
     @Override
+    protected void getConversations(int offset, int limit) {
+        ChannelHelper.readPersonalConversations(offset, limit, readChannelInfoListener);
+    }
+
+    @Override
     protected void showAllConversations() {
         super.showAllConversations();
 
