@@ -15,6 +15,8 @@ import android.view.View;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.callbacks.EndlessLinearRecyclerViewScrollListener;
+import com.magnet.magnetchat.constants.Constants;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Conversation;
@@ -62,12 +64,18 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         conversationsList.setHasFixedSize(true);
         conversationsList.setLayoutManager(layoutManager);
         conversationsList.addItemDecoration(new DividerItemDecoration(getActivity(), R.drawable.divider));
+        conversationsList.addOnScrollListener(new EndlessLinearRecyclerViewScrollListener(layoutManager) {
+            @Override public void onLoadMore(int page, int totalItemsCount) {
+                Log.d(TAG, "------------onLoadMore Conversation : " + page + "/" + totalItemsCount);
+                getConversations(page * Constants.DEFAULT_PAGE_SIZE, Constants.DEFAULT_PAGE_SIZE);
+            }
+        });
 
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getConversations();
+                getConversations(0, Constants.DEFAULT_PAGE_SIZE);
             }
         });
         swipeContainer.setColorSchemeResources(R.color.colorPrimaryDark, R.color.colorPrimary, R.color.colorAccent);
@@ -79,10 +87,10 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         swipeContainer.post(new Runnable() {
             @Override public void run() {
                 swipeContainer.setRefreshing(true);
-                getConversations();
+                getConversations(0, Constants.DEFAULT_PAGE_SIZE);
             }
         });
-        showAllConversations();
+        //showAllConversations();
     }
 
     @Override
@@ -137,9 +145,7 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    protected void getConversations() {
-        ChannelHelper.readConversations(readChannelInfoListener);
-    }
+    abstract protected void getConversations(int offset, int limit);
 
     protected RecyclerView getConversationsListView() {
         return conversationsList;
@@ -174,19 +180,21 @@ public abstract class BaseChannelsFragment extends BaseFragment {
     protected void showList(List<Conversation> conversationsToShow) {
         if(null != getActivity()) {
             if (adapter == null) {
-                conversations = new ArrayList<>(conversationsToShow);
-                adapter = createAdapter(conversations);
-                adapter.setOnConversationClick(new BaseConversationsAdapter.OnConversationClick() {
-                    @Override
-                    public void onClick(Conversation conversation) {
-                        if (conversation != null) {
-                            Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
-                            onSelectConversation(conversation);
+                if(!conversationsToShow.isEmpty()) {
+                    conversations = new ArrayList<>(conversationsToShow);
+                    adapter = createAdapter(conversations);
+                    adapter.setOnConversationClick(new BaseConversationsAdapter.OnConversationClick() {
+                        @Override public void onClick(Conversation conversation) {
+                            if (conversation != null) {
+                                Log.d(TAG, "Channel " + conversation.getChannel().getName() + " is selected");
+                                onSelectConversation(conversation);
+                            }
                         }
-                    }
-                });
-                conversationsList.setAdapter(adapter);
+                    });
+                    conversationsList.setAdapter(adapter);
+                }
             } else {
+                Log.d(TAG, "----------current conversations " + adapter.getItemCount() + ", loading conversations " + conversationsToShow.size());
                 conversations.clear();
                 conversations.addAll(conversationsToShow);
                 adapter.notifyDataSetChanged();
@@ -212,12 +220,12 @@ public abstract class BaseChannelsFragment extends BaseFragment {
         showList(searchResult);
     }
 
-    private ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
+    protected ChannelHelper.OnReadChannelInfoListener readChannelInfoListener = new ChannelHelper.OnReadChannelInfoListener() {
         @Override
-        public void onSuccessFinish(Conversation lastConversation) {
+        public void onSuccessFinish(List<Conversation> conversations) {
             finishGetChannels();
             showAllConversations();
-            if (conversations == null || conversations.size() == 0) {
+            if ((conversations == null || conversations.size() == 0) && ChannelCacheManager.getInstance().getConversations().isEmpty()) {
                 onConversationListIsEmpty(true);
                 Log.w("read channels", "No conversation is available");
             } else {
