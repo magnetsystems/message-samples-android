@@ -7,7 +7,7 @@ import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.api.RegisterContract;
 import com.magnet.magntetchatapp.mvp.views.AbstractRegisterView;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
-import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
+import com.magnet.magntetchatapp.ui.activities.section.edit.FirstSetupActivity;
 
 import butterknife.InjectView;
 
@@ -67,7 +67,7 @@ public class RegisterActivity extends BaseActivity {
     private final RegisterContract.OnRegisterActionCallback registerActionCallback = new RegisterContract.OnRegisterActionCallback() {
         @Override
         public void onRegisterSuccess() {
-            startActivityWithClearTop(HomeActivity.class);
+            startActivityWithClearTop(FirstSetupActivity.class);
         }
 
         @Override

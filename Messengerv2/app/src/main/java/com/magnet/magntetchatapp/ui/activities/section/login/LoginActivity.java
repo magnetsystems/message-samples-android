@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.api.LoginContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
-import com.magnet.magntetchatapp.ui.activities.section.edit.EditProfileActivity;
+import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
 import com.magnet.magntetchatapp.ui.activities.section.register.RegisterActivity;
 import com.magnet.magntetchatapp.ui.views.section.login.DefaultLoginView;
 
@@ -56,7 +56,7 @@ public class LoginActivity extends BaseActivity {
     private final LoginContract.OnLoginActionCallback loginActionCallback = new LoginContract.OnLoginActionCallback() {
         @Override
         public void onLoginSuccess() {
-            startActivityWithClearTop(EditProfileActivity.class);
+            startActivityWithClearTop(HomeActivity.class);
         }
 
         @Override

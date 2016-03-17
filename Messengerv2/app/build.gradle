@@ -26,7 +26,4 @@ dependencies {
     compile 'com.jakewharton:butterknife:5.1.1'
     compile 'com.android.support:multidex:1.0.0'
     compile project(':magnetchatsdk')
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
-    compile 'com.squareup.picasso:picasso:2.4.0'
 }
