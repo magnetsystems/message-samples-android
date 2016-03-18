@@ -35,6 +35,7 @@ public interface SplashContract {
         /**
          * Method which provide the creating of the template data
          */
+        //TODO Should be removed after create channel implementation
         void onCreateTemplateData();
 
     }

@@ -70,6 +70,7 @@ public class DefaultSplashPresenter implements SplashContract.Presenter {
     /**
      * Method which provide the creating of the template data
      */
+    //TODO Should be removed after create channel implementation
     @Override
     public void onCreateTemplateData() {
         List<String> userIDs = new ArrayList<String>(Arrays.asList(User.getCurrentUserId()));
