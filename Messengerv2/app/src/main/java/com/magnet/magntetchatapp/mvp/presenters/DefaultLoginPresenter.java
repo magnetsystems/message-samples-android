@@ -73,6 +73,10 @@ public class DefaultLoginPresenter implements LoginContract.Presenter {
                 view.switchProgress(true);
                 UserHelper.login(userName, password, isShouldRemember, loginListener);
             }
+        } else {
+            if (view.getActionCallback() != null) {
+                view.getActionCallback().onLoginError("No internet connection");
+            }
         }
 
     }

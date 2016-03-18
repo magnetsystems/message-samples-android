@@ -15,8 +15,11 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magntetchatapp.R;
+import com.magnet.magntetchatapp.callbacks.OnActivityEventCallback;
+import com.magnet.magntetchatapp.factories.FragmentFactory;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.edit.EditProfileActivity;
+import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;
 import com.magnet.max.android.User;
 
 import butterknife.InjectView;
@@ -33,6 +36,8 @@ public class HomeActivity extends BaseActivity {
     @InjectView(R.id.nav_view)
     NavigationView navigationView;
 
+    private FragmentFactory.FragmentType fragmentType;
+
     private ActionBarDrawerToggle toggle;
 
     //DRAWER HEADER
@@ -47,7 +52,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected int getMenuId() {
-        return R.menu.home;
+        return NONE_MENU;
     }
 
     @Override
@@ -59,27 +64,42 @@ public class HomeActivity extends BaseActivity {
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(navigationListener);
         onHeaderInitialization();
+        setFragment(FragmentFactory.FragmentType.HOME);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         onHeaderCustomize();
+        onCustomizeActionBar();
     }
 
     /**
-     * Method which provide the actions for onption item selecting
-     *
-     * @param item item
-     * @return selected value
+     * Method which provide the customization of the Action Bar
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    private void onCustomizeActionBar() {
+        User user = User.getCurrentUser();
+        if (user != null) {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(String.format("%s %s", user.getFirstName(), user.getLastName()).toUpperCase());
+            }
+        } else {
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setTitle(String.format("Conversation list").toUpperCase());
+            }
         }
-        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Method which provide to set of the fragment by type
+     *
+     * @param fragmentType fragment type
+     */
+    private void setFragment(FragmentFactory.FragmentType fragmentType) {
+        if (this.fragmentType == null || this.fragmentType != fragmentType) {
+            this.fragmentType = fragmentType;
+            replace(FragmentFactory.getFragment(fragmentType, eventCallback), R.id.fragment_content);
+        }
     }
 
     /**
@@ -112,7 +132,7 @@ public class HomeActivity extends BaseActivity {
      */
     private void navigateToEditProfile() {
         drawer.closeDrawer(GravityCompat.START);
-        runOnMainThread(0.5, new OnActionPerformer() {
+        runOnMainThread(0.4, new OnActionPerformer() {
             @Override
             public void onActionPerform() {
                 startActivity(EditProfileActivity.class, false);
@@ -183,25 +203,30 @@ public class HomeActivity extends BaseActivity {
         @Override
         public boolean onNavigationItemSelected(MenuItem item) {
             int id = item.getItemId();
-
-            if (id == R.id.nav_camera) {
-
-            } else if (id == R.id.nav_gallery) {
-
-            } else if (id == R.id.nav_slideshow) {
-
-            } else if (id == R.id.nav_manage) {
-
-            } else if (id == R.id.nav_share) {
-
-            } else if (id == R.id.nav_send) {
-
+            if (id == R.id.home_screen) {
+                setFragment(FragmentFactory.FragmentType.HOME);
+            } else if (id == R.id.sign_out) {
+                User.logout();
+                runOnMainThread(0.3, new OnActionPerformer() {
+                    @Override
+                    public void onActionPerform() {
+                        startActivityWithClearTop(LoginActivity.class);
+                    }
+                });
             }
-
             drawer.closeDrawer(GravityCompat.START);
             return true;
         }
     };
 
+    /**
+     * Callback which provide to send action from Fragment to activity
+     */
+    private final OnActivityEventCallback eventCallback = new OnActivityEventCallback() {
+        @Override
+        public void onEventReceived(Event event, Object... objects) {
+
+        }
+    };
 
 }

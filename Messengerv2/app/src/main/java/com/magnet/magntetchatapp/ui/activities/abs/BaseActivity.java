@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     public boolean onCreateOptionsMenu(Menu menu) {
         int menuId = getMenuId();
         if (menuId == NONE_MENU) {
-            return false;
+            return super.onCreateOptionsMenu(menu);
         }
         getMenuInflater().inflate(menuId, menu);
         return true;
@@ -102,7 +102,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param activtyClass        activity class
      * @param isNeedFinishCurrent is need clear current
      */
-    protected void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
+    public void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
         Intent intent = new Intent(this, activtyClass);
         startActivity(intent);
         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -116,7 +116,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      *
      * @param activtyClass activity class
      */
-    protected void startActivityWithClearTop(Class activtyClass) {
+    public void startActivityWithClearTop(Class activtyClass) {
         Intent intent = new Intent(this, activtyClass);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);

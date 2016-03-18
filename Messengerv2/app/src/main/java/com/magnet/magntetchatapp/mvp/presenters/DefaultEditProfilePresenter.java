@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.bumptech.glide.signature.StringSignature;
 import com.magnet.magntetchatapp.mvp.api.EditProfileContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -162,4 +161,15 @@ public class DefaultEditProfilePresenter implements EditProfileContract.Presente
             }
         }
     };
+
+//    /**
+//     * Async task which provide to clear of the Glide cache
+//     */
+//    private final AsyncTask<Context, Void, Void> removeCacheAssyncTask = new AsyncTask<Context, Void, Void>() {
+//        @Override
+//        protected Void doInBackground(Context... params) {
+//
+//            return null;
+//        }
+//    };
 }

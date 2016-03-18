@@ -22,5 +22,20 @@ public interface SplashContract {
          */
         void onSplashAction();
 
+        /**
+         * Method which provide the navigation to the login screen
+         */
+        void navigateToLogin();
+
+        /**
+         * Method which provide the navigation to the home screen
+         */
+        void navigateToHome();
+
+        /**
+         * Method which provide the creating of the template data
+         */
+        void onCreateTemplateData();
+
     }
 }

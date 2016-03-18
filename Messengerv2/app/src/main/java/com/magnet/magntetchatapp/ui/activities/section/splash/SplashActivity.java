@@ -22,7 +22,12 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     @Override
     protected void onCreateActivity() {
         presenter = new DefaultSplashPresenter(this);
-        runOnMainThread(2, splashAction);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        runOnMainThread(0, splashAction);
     }
 
     /**
@@ -46,4 +51,5 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
             }
         }
     };
+
 }
