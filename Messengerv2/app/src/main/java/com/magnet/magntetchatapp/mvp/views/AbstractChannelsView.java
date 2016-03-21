@@ -90,4 +90,5 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
     public void clearChannels() {
         recyclerView.clearList();
     }
+
 }

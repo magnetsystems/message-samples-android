@@ -170,7 +170,12 @@ public class HomeActivity extends BaseActivity {
                 labelUserFullName.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
             }
             if (imageAvatar != null && user.getAvatarUrl() != null) {
-                Glide.with(this).load(user.getAvatarUrl()).listener(glideDownloadListener).centerCrop().into(imageAvatar);
+                Glide.with(this)
+                        .load(user.getAvatarUrl())
+                        .listener(glideDownloadListener)
+                        .placeholder(R.drawable.image_no_avatar)
+                        .centerCrop()
+                        .into(imageAvatar);
             }
         }
     }

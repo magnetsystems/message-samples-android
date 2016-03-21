@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,11 @@ import butterknife.ButterKnife;
  */
 public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> extends RecyclerView {
 
+    private static final String TAG = "AdapteredRecyclerView";
+
     private BaseApplicationRecyclerAdapter adapter;
     private List<BaseObject> objectList;
+    private BaseRecyclerCallback itemActionListener;
 
     public AdapteredRecyclerView(Context context) {
         super(context);
@@ -51,7 +55,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      *
      * @param context current context
      */
-    private void onCreate(Context context) {
+    private void onCreate(@NonNull Context context) {
         if (isInEditMode() == true) {
             return;
         }
@@ -67,7 +71,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      *
      * @param baseObjects current object list
      */
-    public void updateList(List<T> baseObjects) {
+    public void updateList(@NonNull List<T> baseObjects) {
         objectList.clear();
         objectList.addAll(baseObjects);
         adapter.notifyDataSetChanged();
@@ -78,7 +82,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      *
      * @param baseObjects current object list
      */
-    public void addList(List<T> baseObjects) {
+    public void addList(@NonNull List<T> baseObjects) {
         objectList.addAll(baseObjects);
         adapter.notifyDataSetChanged();
     }
@@ -91,6 +95,31 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Method which provide the getting of the item by index
+     *
+     * @param index
+     * @return current object
+     */
+    @Nullable
+    public T getItemByIndex(int index) {
+        try {
+            T object = (T) objectList.get(index);
+            return object;
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+        return null;
+    }
+
+    /**
+     * Method which provide the setting of the item action listener
+     *
+     * @param itemActionListener
+     */
+    public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
+        this.itemActionListener = itemActionListener;
+    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////HELP OBJECTS/////////////////////////////////////////////
@@ -109,6 +138,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         }
 
         private Priority priority;
+        protected int index;
 
         /**
          * Method which provide the getting of the current recycler item
@@ -116,7 +146,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          * @param context current context
          * @return current instance for the Recycler item
          */
-        public abstract BaseRecyclerItem getRecyclerItem(Context context);
+        public abstract BaseRecyclerItem getRecyclerItem(@NonNull Context context);
 
         public Priority getPriority() {
             return priority;
@@ -126,6 +156,9 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
             this.priority = priority;
         }
 
+        public void setIndex(int index) {
+            this.index = index;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +185,9 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.recycleItem.setUp(listItems.get(position));
+            T recyclerItem = listItems.get(position);
+            recyclerItem.setIndex(position);
+            holder.recycleItem.setUp(recyclerItem);
         }
 
         @Override
@@ -175,6 +210,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public static abstract class BaseRecyclerItem<T extends BaseObject> extends BaseRecyclerView {
+
         public BaseRecyclerItem(Context context) {
             super(context);
         }
@@ -184,7 +220,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          *
          * @param baseObject current object
          */
-        public abstract void setUp(T baseObject);
+        public abstract void setUp(@NonNull T baseObject);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +241,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
         protected View baseView;
 
-        public BaseRecyclerView(Context context) {
+        public BaseRecyclerView(@NonNull Context context) {
             super(context);
             onInitializeView(context, null);
         }
@@ -287,7 +323,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          *
          * @param activtyClass activity class
          */
-        protected void startActivityWithClearTop(Class activtyClass) {
+        protected void startActivityWithClearTop(@NonNull Class activtyClass) {
             Intent intent = new Intent(getContext(), activtyClass);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             getContext().startActivity(intent);
@@ -367,6 +403,22 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         }
 
         /**
+         * Method which provide the running action on the background thread
+         *
+         * @param delay             delay
+         * @param onActionPerformer action performer
+         */
+        protected void runOnBackground(int delay, final OnActionPerformer onActionPerformer) {
+            Runnable runnable = new Runnable() {
+                @Override
+                public void run() {
+                    onActionPerformer.onActionPerform();
+                }
+            };
+            new Thread(runnable).start();
+        }
+
+        /**
          * Method which provide the keyboard hiding
          */
         protected void hideKeyboard() {
@@ -392,6 +444,27 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
             }
             return null;
         }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////CALLBACKS///////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    interface BaseRecyclerCallback<T extends BaseObject> {
+        /**
+         * Method which provide the action when user press on the channel object
+         *
+         * @param index  current index
+         * @param object current object
+         */
+        void onItemClick(int index, @NonNull T object);
+
+        /**
+         * Method which provide the object deleted
+         *
+         * @param index  index
+         * @param object current object
+         */
+        void onItemLongClick(int index, @NonNull T object);
     }
 
 }

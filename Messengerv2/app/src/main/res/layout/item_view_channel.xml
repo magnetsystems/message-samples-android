@@ -10,80 +10,117 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="@dimen/dimen_60"
-            android:layout_height="@dimen/dimen_60"
-            android:src="@drawable/image_no_avatar" />
-
-        <View
-            android:layout_width="@dimen/dimen_5"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="@dimen/dimen_0"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:orientation="vertical">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/labelChannelName"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_30"
-                android:ellipsize="end"
-                android:gravity="center_vertical"
-                android:singleLine="true"
-                android:text="Channel name"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/text_18"
-                android:textStyle="bold" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_5" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="8"
-                android:text="В браузер Chrome для Android было внесено одно небольшое, но значительное изменение, связанное с отдельными вкладками в приложении. Теперь по умолчанию разные вкладки не будут отображаться как отдельные приложения в списке открытых программ — они все будут собраны в приложении Chrome, как это было до выхода Lollipop в 2014 году. Изменение это применяется к установленному браузеру после перезагрузки устройства."
-                android:textColor="@android:color/darker_gray"
-                android:textSize="@dimen/text_16" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_5" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="@dimen/dimen_5"
-            android:layout_height="match_parent" />
-
-        <LinearLayout
-            android:layout_width="@dimen/dimen_0"
-            android:layout_height="@dimen/dimen_30"
-            android:layout_weight="1.5"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:layout_width="@dimen/dimen_0"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:gravity="center"
-                android:singleLine="true"
-                android:text="2:02PM"
-                android:textSize="@dimen/text_13" />
+        <FrameLayout
+            android:id="@+id/viewNewMessage"
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="@dimen/dimen_50"
+            android:visibility="gone">
 
             <ImageView
                 style="@style/styleCropImageCenter"
-                android:layout_width="@dimen/dimen_0"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="@dimen/dimen_5"
-                android:src="@drawable/ic_arrow_right" />
+                android:layout_width="@dimen/dimen_10"
+                android:layout_height="@dimen/dimen_10"
+                android:layout_gravity="center"
+                android:src="@drawable/new_message"
+                android:tint="#57a7ff"
+                android:tintMode="src_in" />
 
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_5"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50">
+
+            <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
+                android:id="@+id/viewCircleName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageChannel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_5"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelChannelName"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="Please wait..."
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_18"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelDate"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_13" />
+
+                <ImageView
+                    style="@style/styleCropImageCenter"
+                    android:layout_width="@dimen/dimen_20"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dimen_5"
+                    android:src="@drawable/ic_arrow_right" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_5" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelLatestMessage"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="8"
+                    android:text="No messages"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/text_16" />
+
+                <View
+                    android:layout_width="@dimen/dimen_20"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_5" />
         </LinearLayout>
-
     </LinearLayout>
 
     <View
