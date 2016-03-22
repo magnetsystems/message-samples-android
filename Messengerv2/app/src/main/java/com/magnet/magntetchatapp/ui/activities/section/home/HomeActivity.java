@@ -1,5 +1,6 @@
 package com.magnet.magntetchatapp.ui.activities.section.home;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.target.Target;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.callbacks.OnActivityEventCallback;
 import com.magnet.magntetchatapp.factories.FragmentFactory;
+import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.edit.EditProfileActivity;
 import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;

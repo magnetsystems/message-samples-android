@@ -91,4 +91,14 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
         recyclerView.clearList();
     }
 
+    /**
+     * Method which provide the setting of the channel list callback
+     *
+     * @param channelListCallback channel list callback
+     */
+    public void setChannelListCallback(ChannelsListContract.OnChannelListCallback channelListCallback) {
+        if (recyclerView != null) {
+            recyclerView.setItemActionListener(channelListCallback);
+        }
+    }
 }

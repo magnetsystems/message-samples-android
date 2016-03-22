@@ -94,6 +94,11 @@ public interface ChannelsListContract {
             super(context);
         }
 
+        /**
+         * Method which provide the setting up for the current recycler item
+         *
+         * @param baseObject current object
+         */
         @Override
         public void setUp(ChannelObject baseObject) {
             if (baseObject == null) {
@@ -114,11 +119,29 @@ public interface ChannelsListContract {
             }
         }
 
+        /**
+         * Method which provide to getting of the layout ID
+         *
+         * @return layout ID
+         */
         @Override
         protected int getLayoutId() {
             return R.layout.item_view_channel;
         }
 
+        /**
+         * Method which provide the getting of the clicked view ID
+         *
+         * @return clicked view ID
+         */
+        @Override
+        protected int getClickedID() {
+            return R.id.itemContent;
+        }
+
+        /**
+         * Method which provide the action when view will create
+         */
         @Override
         protected void onCreateView() {
             dateFormat = K_DEFAULT_DATE_FORMAT;
@@ -326,21 +349,10 @@ public interface ChannelsListContract {
     //=====================================CALLBACK==========================================
     //=======================================================================================
 
-    interface OnChannelListCallback {
-        /**
-         * Method which provide the action when user press on the channel object
-         *
-         * @param index         current index
-         * @param channelObject current object
-         */
-        void onItemSelected(int index, @NonNull ChannelObject channelObject);
 
-        /**
-         * Method which provide the action when user want ot delete the channel object
-         *
-         * @param index         current index
-         * @param channelObject current object
-         */
-        void onItemDeleted(int index, @NonNull ChannelObject channelObject);
+    /**
+     * Callback which provide the listening the action which happening inside the RecyclerView
+     */
+    interface OnChannelListCallback extends AdapteredRecyclerView.BaseRecyclerCallback<ChannelObject> {
     }
 }

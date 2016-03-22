@@ -3,6 +3,7 @@ package com.magnet.magntetchatapp.ui.fragments.abs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -116,6 +117,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (baseActivity.getClass().isInstance(BaseActivity.class)) {
             ((BaseActivity) baseActivity).startActivityWithClearTop(activtyClass);
         }
+    }
+
+    /**
+     * Method which provide to message showing as Snackbar
+     *
+     * @param message message to show
+     */
+    protected void showMessage(@NonNull String message) {
+        Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     //SETTERS

@@ -1,9 +1,11 @@
 package com.magnet.magntetchatapp.ui.fragments.section;
 
+import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.magnet.magntetchatapp.R;
+import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
 import com.magnet.magntetchatapp.mvp.views.AbstractChannelsView;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
 
@@ -29,6 +31,7 @@ public class HomeFragment extends BaseFragment {
 
     @Override
     protected void onCreateFragment(View containerView) {
+        viewChannels.setChannelListCallback(channelListCallback);
         viewChannels.onCreateActivity();
     }
 
@@ -54,4 +57,21 @@ public class HomeFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * Method which provide the listening actions inside the channel list view
+     *
+     * @see com.magnet.magntetchatapp.mvp.views.AbstractChannelsView
+     */
+    private final ChannelsListContract.OnChannelListCallback channelListCallback = new ChannelsListContract.OnChannelListCallback() {
+        @Override
+        public void onItemClick(int index, @NonNull ChannelsListContract.ChannelObject object) {
+            showMessage(String.format("Pressed item by index: %d", index));
+        }
+
+        @Override
+        public void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull ChannelsListContract.ChannelObject object) {
+
+        }
+    };
 }

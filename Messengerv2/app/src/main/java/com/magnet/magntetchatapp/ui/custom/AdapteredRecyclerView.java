@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 
 import com.magnet.magntetchatapp.R;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,6 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
     private BaseApplicationRecyclerAdapter adapter;
     private List<BaseObject> objectList;
-    private BaseRecyclerCallback itemActionListener;
 
     public AdapteredRecyclerView(Context context) {
         super(context);
@@ -59,7 +59,6 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         if (isInEditMode() == true) {
             return;
         }
-
         objectList = new ArrayList<>();
         adapter = new BaseApplicationRecyclerAdapter(objectList);
         setAdapter(adapter);
@@ -113,12 +112,24 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     }
 
     /**
+     * Method which provide the notifying of the data set changed
+     */
+    public void notifyDataSetChanged() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
      * Method which provide the setting of the item action listener
      *
      * @param itemActionListener
      */
     public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
-        this.itemActionListener = itemActionListener;
+        if (adapter != null) {
+            adapter.setItemActionListener(itemActionListener);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +179,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     public static class BaseApplicationRecyclerAdapter<T extends BaseObject> extends Adapter<BaseApplicationRecyclerAdapter.ViewHolder> {
 
         private List<T> listItems;
+        private BaseRecyclerCallback itemActionListener;
 
         public BaseApplicationRecyclerAdapter(List<T> listItems) {
             this.listItems = listItems;
@@ -185,9 +197,16 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
+            //Get object
             T recyclerItem = listItems.get(position);
+            //Set index
             recyclerItem.setIndex(position);
+            //Set up the view
             holder.recycleItem.setUp(recyclerItem);
+            //Set object inside the view as WeakReference
+            holder.recycleItem.setObject(recyclerItem);
+            //Set item listener
+            holder.recycleItem.setItemActionListener(itemActionListener);
         }
 
         @Override
@@ -203,6 +222,15 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
                 recycleItem = (BaseRecyclerItem) itemView;
             }
         }
+
+        /**
+         * Method which provide the setting of the item action listener
+         *
+         * @param itemActionListener
+         */
+        public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
+            this.itemActionListener = itemActionListener;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -210,6 +238,10 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     public static abstract class BaseRecyclerItem<T extends BaseObject> extends BaseRecyclerView {
+
+        protected WeakReference<BaseRecyclerCallback> callbackReference;
+        protected WeakReference<T> objectReference;
+        protected int index;
 
         public BaseRecyclerItem(Context context) {
             super(context);
@@ -221,6 +253,61 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          * @param baseObject current object
          */
         public abstract void setUp(@NonNull T baseObject);
+
+        /**
+         * Method which provide the listener initializing
+         */
+        @Override
+        protected void onListenerInitialize() {
+            ViewGroup view = (ViewGroup) findViewById(getClickedID());
+            if (view != null) {
+                view.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (callbackReference != null
+                                && objectReference != null
+                                && objectReference.get() != null
+                                && callbackReference.get() != null) {
+                            T object = objectReference.get();
+                            callbackReference.get().onItemClick(index, object);
+                        }
+                    }
+                });
+            }
+        }
+
+        /**
+         * Method which provide the setting of the object inside the view
+         *
+         * @param object current object
+         */
+        public void setObject(@NonNull T object) {
+            index = object.index;
+            objectReference = new WeakReference<T>(object);
+        }
+
+        /**
+         * Method which provide the setting of the item action listener
+         *
+         * @param itemActionListener
+         */
+        public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
+            this.callbackReference = new WeakReference<BaseRecyclerCallback>(itemActionListener);
+        }
+
+        /**
+         * Method which provide the event sending
+         *
+         * @param recycleEvent recycler event
+         */
+        protected void sendEvent(@NonNull BaseRecyclerCallback.RecycleEvent recycleEvent) {
+            if (callbackReference != null
+                    && callbackReference.get() != null
+                    && objectReference != null
+                    && objectReference.get() != null) {
+                callbackReference.get().onActionPerformed(recycleEvent, index, objectReference.get());
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +328,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
         protected View baseView;
 
-        public BaseRecyclerView(@NonNull Context context) {
+        public BaseRecyclerView(@NonNull final Context context) {
             super(context);
             onInitializeView(context, null);
         }
@@ -265,6 +352,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
                     onAttributeInitialize(attrs);
                 }
             }
+            onListenerInitialize();
             onCreateView();
         }
 
@@ -295,11 +383,24 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         }
 
         /**
+         * Method which provide the listener initializing
+         */
+        protected abstract void onListenerInitialize();
+
+
+        /**
          * Method which provide to getting of the layout ID
          *
          * @return layout ID
          */
         protected abstract int getLayoutId();
+
+        /**
+         * Method which provide the getting of the clicked view ID
+         *
+         * @return clicked view ID
+         */
+        protected abstract int getClickedID();
 
         /**
          * Method which provide the action when view will create
@@ -449,7 +550,16 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////CALLBACKS///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    interface BaseRecyclerCallback<T extends BaseObject> {
+    public interface BaseRecyclerCallback<T extends BaseObject> {
+
+        class RecycleEvent {
+            private final int eventCode;
+
+            public RecycleEvent(int eventCode) {
+                this.eventCode = eventCode;
+            }
+        }
+
         /**
          * Method which provide the action when user press on the channel object
          *
@@ -459,12 +569,13 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         void onItemClick(int index, @NonNull T object);
 
         /**
-         * Method which provide the object deleted
+         * Method which provide the action listening
          *
-         * @param index  index
-         * @param object current object
+         * @param recycleEvent event
+         * @param index        index
+         * @param object       object
          */
-        void onItemLongClick(int index, @NonNull T object);
+        void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull T object);
     }
 
 }
