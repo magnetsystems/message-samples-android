@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
@@ -15,6 +16,7 @@ import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.abs.BaseContract;
+import com.magnet.magntetchatapp.mvp.views.AbstractChannelsView;
 import com.magnet.magntetchatapp.ui.custom.AdapteredRecyclerView;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
@@ -71,8 +73,12 @@ public interface ChannelsListContract {
     class ChannelRecyclerItem extends AdapteredRecyclerView.BaseRecyclerItem<ChannelObject> {
 
         private static final String K_DEFAULT_DATE_FORMAT = "MMM, dd";
-        private static final String K_DEFAULT_LATEST_MESSAGE = "No messages";
+        private static final String K_DEFAULT_NO_MESSAGES = "No messages";
+        private static final String K_DEFAULT_PHOTO_MESSAGE = "Photo message";
+        private static final String K_DEFAULT_LOCATION_MESSAGE = "Location message";
         private static final String TAG = "ChannelRecyclerItem";
+
+        //Attributes
 
         @InjectView(R.id.labelChannelName)
         AppCompatTextView labelChannelName;
@@ -86,9 +92,18 @@ public interface ChannelsListContract {
         CircleNameView viewCircleName;
         @InjectView(R.id.viewNewMessage)
         FrameLayout viewNewMessage;
+        @InjectView(R.id.viewImages)
+        ViewGroup viewImages;
+        @InjectView(R.id.itemContent)
+        ViewGroup viewContent;
+        @InjectView(R.id.viewDivider)
+        ViewGroup viewDivider;
 
         private String dateFormat;
-        private String latestMessageValue;
+        private String textNoMessages;
+        private String textPhotoMessage;
+        private String textLocationMessage;
+        private String textDateFormat;
 
         public ChannelRecyclerItem(Context context) {
             super(context);
@@ -101,6 +116,12 @@ public interface ChannelsListContract {
          */
         @Override
         public void setUp(ChannelObject baseObject) {
+
+            textNoMessages = K_DEFAULT_NO_MESSAGES;
+            textLocationMessage = K_DEFAULT_LOCATION_MESSAGE;
+            textPhotoMessage = K_DEFAULT_PHOTO_MESSAGE;
+            textDateFormat = K_DEFAULT_DATE_FORMAT;
+
             if (baseObject == null) {
                 return;
             }
@@ -109,14 +130,70 @@ public interface ChannelsListContract {
                 runOnBackground(0, new OnActionPerformer() {
                     @Override
                     public void onActionPerform() {
+                        setUpUi();
                         setUpName(channelDetail);
                         setUpImage(channelDetail);
-                        setUpDate(channelDetail, dateFormat);
+                        setUpDate(channelDetail, textDateFormat);
                         setUpLastMessage(channelDetail);
                         setUpNewMessage(channelDetail);
                     }
                 });
             }
+        }
+
+        /**
+         * Method which provide the setting up of the UI
+         */
+        private void setUpUi() {
+            runOnMainThread(0, new OnActionPerformer() {
+                @Override
+                public void onActionPerform() {
+                    AbstractChannelsView.Attributes attr = AbstractChannelsView.Attributes.getInstance();
+                    if (attr != null) {
+
+                        if (attr.attrIsNeedImage == true) {
+                            viewImages.setVisibility(VISIBLE);
+                        } else {
+                            viewImages.setVisibility(GONE);
+                        }
+
+                        if (attr.getColorHeader() != null) {
+                            labelChannelName.setTextColor(attr.getColorHeader());
+                        }
+
+                        if (attr.getColorMessage() != null) {
+                            labelLatestMessage.setTextColor(attr.getColorMessage());
+                        }
+
+                        if (attr.getColorTime() != null) {
+                            labelDate.setTextColor(attr.getColorTime());
+                        }
+
+                        if (attr.getColorDivider() != null) {
+                            viewDivider.setBackgroundColor(attr
+                                    .getColorDivider()
+                                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
+                        }
+
+                        //String getting
+                        if (attr.getTextLocationMessage() != null) {
+                            textLocationMessage = attr.getTextLocationMessage();
+                        }
+
+                        if (attr.getTextNoMessages() != null) {
+                            textNoMessages = attr.getTextNoMessages();
+                        }
+
+                        if (attr.getTextPhotoMessage() != null) {
+                            textPhotoMessage = attr.getTextPhotoMessage();
+                        }
+
+                        if (attr.getTextDateFormat() != null) {
+                            textDateFormat = attr.getTextDateFormat();
+                        }
+                    }
+                }
+            });
         }
 
         /**
@@ -144,8 +221,6 @@ public interface ChannelsListContract {
          */
         @Override
         protected void onCreateView() {
-            dateFormat = K_DEFAULT_DATE_FORMAT;
-            latestMessageValue = K_DEFAULT_LATEST_MESSAGE;
         }
 
         /**
@@ -239,7 +314,7 @@ public interface ChannelsListContract {
          * @param channelDetail latest message
          */
         private void setUpLastMessage(@NonNull ChannelDetail channelDetail) {
-            String messageText = K_DEFAULT_LATEST_MESSAGE;
+            String messageText = textNoMessages;
             int messageCount = channelDetail.getTotalMessages();
             if (messageCount > 0) {
                 List<MMXMessage> messages = channelDetail.getMessages();
@@ -247,8 +322,16 @@ public interface ChannelsListContract {
                     MMXMessage mmxMessage = messages.get(0);
                     if (mmxMessage != null) {
                         Message message = Message.createMessageFrom(mmxMessage);
-                        if (message != null) {
+                        if (message != null
+                                && message.getText() != null
+                                && message.getText().isEmpty() != true) {
                             messageText = message.getText();
+                        } else if (message != null
+                                && message.getType() == Message.TYPE_PHOTO) {
+                            messageText = textPhotoMessage;
+                        } else if (message != null
+                                && message.getType() == Message.TYPE_MAP) {
+                            messageText = textLocationMessage;
                         }
                     }
                 }
@@ -325,6 +408,7 @@ public interface ChannelsListContract {
             }
         };
 
+
     }
 
     /**
@@ -345,9 +429,9 @@ public interface ChannelsListContract {
 
     }
 
-    //=======================================================================================
-    //=====================================CALLBACK==========================================
-    //=======================================================================================
+//=======================================================================================
+//=====================================CALLBACK==========================================
+//=======================================================================================
 
 
     /**

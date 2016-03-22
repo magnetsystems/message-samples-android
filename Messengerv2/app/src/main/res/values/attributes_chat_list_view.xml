@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AbstractChannelsView">
+
+        <attr name="isNeedChatsImage" format="boolean" />
+
+        <attr name="colorChatsBackground" format="color" />
+        <attr name="colorChatsUnreadTint" format="color" />
+        <attr name="colorChatsHeaderText" format="color" />
+        <attr name="colorChatsMessageText" format="color" />
+        <attr name="colorChatsTimeText" format="color" />
+        <attr name="colorChatsDivider" format="color" />
+
+        <attr name="textChatsNoMessage" format="string" />
+        <attr name="textChatsPhotoMessage" format="string" />
+        <attr name="textChatsLocationMessage" format="string" />
+        <attr name="textChatsDateFormat" format="string" />
+
+    </declare-styleable>
+
+</resources>

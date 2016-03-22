@@ -128,7 +128,6 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
         if (adapter != null) {
             adapter.setItemActionListener(itemActionListener);
-            adapter.notifyDataSetChanged();
         }
     }
 
@@ -230,7 +229,9 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          */
         public void setItemActionListener(BaseRecyclerCallback itemActionListener) {
             this.itemActionListener = itemActionListener;
+            notifyDataSetChanged();
         }
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////

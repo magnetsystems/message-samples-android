@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemContent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/itemContent"
     android:layout_margin="@dimen/dimen_5"
     android:orientation="vertical">
 
@@ -14,7 +14,7 @@
         <FrameLayout
             android:id="@+id/viewNewMessage"
             android:layout_width="@dimen/dimen_10"
-            android:layout_height="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_45"
             android:visibility="gone">
 
             <ImageView
@@ -33,8 +33,9 @@
             android:layout_height="match_parent" />
 
         <FrameLayout
-            android:layout_width="@dimen/dimen_50"
-            android:layout_height="@dimen/dimen_50">
+            android:id="@+id/viewImages"
+            android:layout_width="@dimen/dimen_45"
+            android:layout_height="@dimen/dimen_45">
 
             <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
                 android:id="@+id/viewCircleName"
@@ -124,7 +125,8 @@
         </LinearLayout>
     </LinearLayout>
 
-    <View
+    <FrameLayout
+        android:id="@+id/viewDivider"
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_gravity="bottom"
