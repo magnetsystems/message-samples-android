@@ -3,8 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_search"
+        android:orderInCategory="1"
         android:title="Search messages"
         app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_create_channel"
+        android:icon="@drawable/ic_playlist_add_white_24dp"
+        android:orderInCategory="2"
+        android:title="Create channel"
         app:showAsAction="ifRoom" />
 
 </menu>

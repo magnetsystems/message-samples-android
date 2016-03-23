@@ -480,6 +480,14 @@ public interface ChannelsListContract {
             return new ChannelRecyclerItem(context);
         }
 
+        /**
+         * Method which provide getting of the channel details
+         *
+         * @return channel details
+         */
+        public ChannelDetail getChannelDetail() {
+            return channelDetail;
+        }
     }
 
 //=======================================================================================

@@ -625,7 +625,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          * @param index  current index
          * @param object current object
          */
-        void onItemClick(int index, @NonNull T object);
+        void onItemClick(int index, @NonNull final T object);
 
         /**
          * Method which provide the action listening
@@ -634,7 +634,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          * @param index        index
          * @param object       object
          */
-        void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull T object);
+        void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull final T object);
     }
 
     /**

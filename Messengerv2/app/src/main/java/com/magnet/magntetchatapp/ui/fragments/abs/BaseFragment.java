@@ -1,6 +1,7 @@
 package com.magnet.magntetchatapp.ui.fragments.abs;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -101,6 +102,19 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param isNeedFinishCurrent is need clear current
      */
     protected void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
+        Activity baseActivity = getActivity();
+        if (baseActivity.getClass().isInstance(BaseActivity.class)) {
+            ((BaseActivity) baseActivity).startActivity(activtyClass, isNeedFinishCurrent);
+        }
+    }
+
+    /**
+     * Method which provide starting the Activity
+     *
+     * @param activtyClass        activity class
+     * @param isNeedFinishCurrent is need clear current
+     */
+    protected void startActivity(Intent activtyClass, boolean isNeedFinishCurrent) {
         Activity baseActivity = getActivity();
         if (baseActivity.getClass().isInstance(BaseActivity.class)) {
             ((BaseActivity) baseActivity).startActivity(activtyClass, isNeedFinishCurrent);

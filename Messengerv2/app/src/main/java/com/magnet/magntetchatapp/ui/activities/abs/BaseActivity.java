@@ -112,6 +112,20 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
     /**
+     * Method which provide starting the Activity
+     *
+     * @param activtyClass        activity class
+     * @param isNeedFinishCurrent is need clear current
+     */
+    public void startActivity(Intent activtyClass, boolean isNeedFinishCurrent) {
+        startActivity(activtyClass);
+        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+        if (isNeedFinishCurrent) {
+            finish();
+        }
+    }
+
+    /**
      * Method which provide the start activity with top clearing
      *
      * @param activtyClass activity class

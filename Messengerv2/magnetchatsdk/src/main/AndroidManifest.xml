@@ -27,12 +27,14 @@
             android:name=".ui.activities.ChooseUserActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:screenOrientation="portrait"
+            android:theme="@style/MagnetChatSDKTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.activities.ChatActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
             android:label="Chat"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/MagnetChatSDKTheme" />
         <activity
             android:name=".ui.activities.ChatDetailsActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
