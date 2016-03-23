@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.AttributeSet;
 
@@ -29,17 +32,23 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
      */
     public static class Attributes {
         private static Attributes instance;
-        public boolean attrIsNeedImage;
+        protected boolean isNeedImages;
+        protected boolean isNeedBoldHeader;
         protected ColorStateList colorBackground;
-        protected ColorStateList colorTint;
+        protected ColorStateList colorUnreadTint;
         protected ColorStateList colorHeader;
         protected ColorStateList colorMessage;
         protected ColorStateList colorTime;
         protected ColorStateList colorDivider;
+        protected ColorStateList colorBackgroundLoading;
+        protected ColorStateList colorTextLoading;
         protected String textNoMessages;
         protected String textPhotoMessage;
         protected String textLocationMessage;
         protected String textDateFormat;
+        protected int dimenTextHeader;
+        protected int dimenTextMessage;
+        protected int dimenTextTime;
         protected boolean isAttributed;
 
         private Attributes() {
@@ -58,16 +67,16 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
             return instance;
         }
 
-        public boolean isAttrIsNeedImage() {
-            return attrIsNeedImage;
+        public boolean isNeedImages() {
+            return isNeedImages;
         }
 
         public ColorStateList getColorBackground() {
             return colorBackground;
         }
 
-        public ColorStateList getColorTint() {
-            return colorTint;
+        public ColorStateList getColorUnreadTint() {
+            return colorUnreadTint;
         }
 
         public ColorStateList getColorHeader() {
@@ -101,10 +110,39 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
         public String getTextDateFormat() {
             return textDateFormat;
         }
+
+        public int getDimenTextHeader() {
+            return dimenTextHeader;
+        }
+
+        public int getDimenTextMessage() {
+            return dimenTextMessage;
+        }
+
+        public int getDimenTextTime() {
+            return dimenTextTime;
+        }
+
+        public ColorStateList getColorBackgroundLoading() {
+            return colorBackgroundLoading;
+        }
+
+        public ColorStateList getColorTextLoading() {
+            return colorTextLoading;
+        }
+
+        public boolean isNeedBoldHeader() {
+            return isNeedBoldHeader;
+        }
+
     }
 
     @InjectView(R.id.listChannels)
     AdapteredRecyclerView recyclerView;
+    @InjectView(R.id.labelLoading)
+    AppCompatTextView labelLoading;
+    @InjectView(R.id.viewSwipeRefresh)
+    SwipeRefreshLayout viewSwipeRefresh;
 
     public AbstractChannelsView(Context context) {
         super(context);
@@ -143,19 +181,30 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
                 Attributes attr = Attributes.getInstance();
                 if (attr != null) {
                     //Get colors
-                    attr.attrIsNeedImage = attributes.getBoolean(R.styleable.AbstractChannelsView_isNeedChatsImage, true);
+                    attr.isNeedImages = attributes.getBoolean(R.styleable.AbstractChannelsView_isNeedChatsImage, true);
+                    attr.isNeedBoldHeader = attributes.getBoolean(R.styleable.AbstractChannelsView_isNeedBoldHeader, true);
                     attr.colorBackground = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsBackground);
                     attr.colorHeader = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsHeaderText);
                     attr.colorMessage = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsMessageText);
                     attr.colorTime = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsTimeText);
-                    attr.colorTint = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsUnreadTint);
+                    attr.colorUnreadTint = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsUnreadTint);
                     attr.colorDivider = attributes.getColorStateList(R.styleable.AbstractChannelsView_colorChatsDivider);
+                    attr.colorBackgroundLoading = attributes
+                            .getColorStateList(R.styleable.AbstractChannelsView_colorChatsBackgroundLoading);
+                    attr.colorTextLoading = attributes
+                            .getColorStateList(R.styleable.AbstractChannelsView_colorChatsTextLoading);
 
                     //Get texts
                     attr.textDateFormat = attributes.getString(R.styleable.AbstractChannelsView_textChatsDateFormat);
                     attr.textNoMessages = attributes.getString(R.styleable.AbstractChannelsView_textChatsNoMessage);
                     attr.textLocationMessage = attributes.getString(R.styleable.AbstractChannelsView_textChatsLocationMessage);
                     attr.textPhotoMessage = attributes.getString(R.styleable.AbstractChannelsView_textChatsPhotoMessage);
+
+                    attr.dimenTextHeader = attributes.getDimensionPixelSize(R.styleable.AbstractChannelsView_dimenTextChatsHeader, R.dimen.text_18);
+                    attr.dimenTextTime = attributes.getDimensionPixelSize(R.styleable.AbstractChannelsView_dimenTextChatsTime, R.dimen.text_13);
+                    attr.dimenTextMessage =
+                            attributes.getDimensionPixelSize(R.styleable.AbstractChannelsView_dimenTextChatsMessage, R.dimen.text_16);
+
 
                 }
             } finally {
@@ -171,18 +220,38 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
      */
     @Override
     protected void onApplyAttributes() {
-        AbstractChannelsView.Attributes attributes = AbstractChannelsView.Attributes.getInstance();
-        if (attributes != null
-                && attributes.colorBackground != null) {
-            recyclerView.setBackgroundColor(attributes
+        AbstractChannelsView.Attributes attr = AbstractChannelsView.Attributes.getInstance();
+        if (attr != null
+                && attr.colorBackground != null) {
+            recyclerView.setBackgroundColor(attr
                     .colorBackground
                     .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
+
+            if (attr.getColorBackgroundLoading() != null) {
+                labelLoading.setSupportBackgroundTintList(attr.getColorBackgroundLoading());
+            }
+
+            if (attr.getColorTextLoading() != null) {
+                labelLoading.setTextColor(attr.getColorTextLoading());
+            }
         }
     }
 
     @Override
     protected void onCreateView() {
         recyclerView.setLayoutManager(new GridLayoutManager(getCurrentContext(), 1));
+        viewSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (viewSwipeRefresh != null) {
+                    viewSwipeRefresh.setRefreshing(false);
+                }
+
+                if (presenter != null) {
+                    presenter.startChannelReceiving(0);
+                }
+            }
+        });
     }
 
     /**
@@ -225,6 +294,51 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
     }
 
     /**
+     * Method which provide the setting of the lazy load callback
+     *
+     * @param lazyLoadCallback lazy load callback
+     */
+    @Override
+    public void setLazyLoadCallback(@NonNull AdapteredRecyclerView.OnLazyLoadCallback lazyLoadCallback) {
+        recyclerView.setLazyLoadCallback(lazyLoadCallback);
+    }
+
+    /**
+     * Method which provide the setting of the loading message
+     *
+     * @param message    message
+     * @param isNeedShow is need show
+     */
+    @Override
+    public void switchLoadingMessage(@Nullable final String message, final boolean isNeedShow) {
+        runOnMainThread(0, new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (labelLoading != null) {
+                    if (message == null || message.isEmpty() == true) {
+                        labelLoading.setVisibility(GONE);
+                    } else if (isNeedShow == true) {
+                        labelLoading.setText(message);
+                        labelLoading.setVisibility(VISIBLE);
+                    } else {
+                        labelLoading.setVisibility(GONE);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Method which provide the adding of the high priority items
+     *
+     * @param baseObjects list of the high priority items
+     */
+    @Override
+    public void addHighPriorityItem(@NonNull List<AdapteredRecyclerView.BaseObject> baseObjects) {
+        recyclerView.addList(baseObjects);
+    }
+
+    /**
      * Method which provide the setting of the channel list callback
      *
      * @param channelListCallback channel list callback
@@ -235,3 +349,23 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
         }
     }
 }
+
+//SAMPLE TO CUSTOMIZE
+//    <...AbstractChannelsView
+//    android:id="@+id/viewChannels"
+//    android:layout_width="match_parent"
+//    android:layout_height="match_parent"
+//    app:colorChatsBackground="@android:color/black"
+//    app:colorChatsDivider="#64dd17"
+//    app:colorChatsHeaderText="@android:color/white"
+//    app:colorChatsMessageText="#ff6e40"
+//    app:colorChatsTimeText="#00b8d4"
+//    app:colorChatsUnreadTint="#ffea00"
+//    app:dimenTextChatsHeader="@dimen/text_16"
+//    app:dimenTextChatsMessage="@dimen/text_14"
+//    app:dimenTextChatsTime="@dimen/dimen_10"
+//    app:isNeedChatsImage="true"
+//    app:textChatsDateFormat="MMM -> hh:mm"
+//    app:textChatsLocationMessage="Map message"
+//    app:textChatsNoMessage="No more message"
+//    app:textChatsPhotoMessage="Instagram message" />

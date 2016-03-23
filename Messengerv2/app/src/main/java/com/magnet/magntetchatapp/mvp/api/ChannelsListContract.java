@@ -1,11 +1,15 @@
 package com.magnet.magntetchatapp.mvp.api;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -54,13 +58,35 @@ public interface ChannelsListContract {
          */
         void clearChannels();
 
+        /**
+         * Method which provide the setting of the lazy load callback
+         *
+         * @param lazyLoadCallback lazy load callback
+         */
+        void setLazyLoadCallback(@NonNull AdapteredRecyclerView.OnLazyLoadCallback lazyLoadCallback);
+
+        /**
+         * Method which provide the setting of the loading message
+         *
+         * @param message    message
+         * @param isNeedShow is need show
+         */
+        void switchLoadingMessage(@Nullable String message, boolean isNeedShow);
+
+        /**
+         * Method which provide the adding of the high priority items
+         *
+         * @param baseObjects list of the high priority items
+         */
+        void addHighPriorityItem(@NonNull List<AdapteredRecyclerView.BaseObject> baseObjects);
+
     }
 
-    interface Presenter extends BaseContract.BasePresenter {
+    interface Presenter extends BaseContract.BasePresenter, AdapteredRecyclerView.OnLazyLoadCallback {
         /**
          * Method which provide to start of channel receiving
          */
-        void startChannelReceiving();
+        void startChannelReceiving(int offset);
     }
 
     //=======================================================================================
@@ -98,6 +124,10 @@ public interface ChannelsListContract {
         ViewGroup viewContent;
         @InjectView(R.id.viewDivider)
         ViewGroup viewDivider;
+        @InjectView(R.id.imagePointer)
+        ImageView imagePointer;
+        @InjectView(R.id.imageNewMessage)
+        ImageView imageNewMessage;
 
         private String dateFormat;
         private String textNoMessages;
@@ -116,11 +146,6 @@ public interface ChannelsListContract {
          */
         @Override
         public void setUp(ChannelObject baseObject) {
-
-            textNoMessages = K_DEFAULT_NO_MESSAGES;
-            textLocationMessage = K_DEFAULT_LOCATION_MESSAGE;
-            textPhotoMessage = K_DEFAULT_PHOTO_MESSAGE;
-            textDateFormat = K_DEFAULT_DATE_FORMAT;
 
             if (baseObject == null) {
                 return;
@@ -145,16 +170,47 @@ public interface ChannelsListContract {
          * Method which provide the setting up of the UI
          */
         private void setUpUi() {
-            runOnMainThread(0, new OnActionPerformer() {
-                @Override
-                public void onActionPerform() {
-                    AbstractChannelsView.Attributes attr = AbstractChannelsView.Attributes.getInstance();
-                    if (attr != null) {
 
-                        if (attr.attrIsNeedImage == true) {
+            final AbstractChannelsView.Attributes attr = AbstractChannelsView.Attributes.getInstance();
+
+            textNoMessages = K_DEFAULT_NO_MESSAGES;
+            textLocationMessage = K_DEFAULT_LOCATION_MESSAGE;
+            textPhotoMessage = K_DEFAULT_PHOTO_MESSAGE;
+            textDateFormat = K_DEFAULT_DATE_FORMAT;
+
+            if (attr != null) {
+
+                //String getting
+                if (attr.getTextLocationMessage() != null) {
+                    textLocationMessage = attr.getTextLocationMessage();
+                }
+
+                if (attr.getTextNoMessages() != null) {
+                    textNoMessages = attr.getTextNoMessages();
+                }
+
+                if (attr.getTextPhotoMessage() != null) {
+                    textPhotoMessage = attr.getTextPhotoMessage();
+                }
+
+                if (attr.getTextDateFormat() != null) {
+                    textDateFormat = attr.getTextDateFormat();
+                }
+
+                runOnMainThread(0, new OnActionPerformer() {
+                    @Override
+                    public void onActionPerform() {
+                        //UI setting
+                        if (attr.isNeedImages() == true) {
                             viewImages.setVisibility(VISIBLE);
                         } else {
                             viewImages.setVisibility(GONE);
+                        }
+
+                        if (attr.isNeedBoldHeader()) {
+                            labelChannelName.setTypeface(null, Typeface.BOLD);
+                        } else {
+                            labelChannelName.setTypeface(null, Typeface.NORMAL);
                         }
 
                         if (attr.getColorHeader() != null) {
@@ -166,6 +222,8 @@ public interface ChannelsListContract {
                         }
 
                         if (attr.getColorTime() != null) {
+                            imagePointer.setColorFilter(attr.getColorTime()
+                                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
                             labelDate.setTextColor(attr.getColorTime());
                         }
 
@@ -174,26 +232,21 @@ public interface ChannelsListContract {
                                     .getColorDivider()
                                     .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
                         }
-
-                        //String getting
-                        if (attr.getTextLocationMessage() != null) {
-                            textLocationMessage = attr.getTextLocationMessage();
+                        if (attr.getColorUnreadTint() != null) {
+                            imageNewMessage.setColorFilter(attr.getColorUnreadTint()
+                                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
                         }
 
-                        if (attr.getTextNoMessages() != null) {
-                            textNoMessages = attr.getTextNoMessages();
-                        }
-
-                        if (attr.getTextPhotoMessage() != null) {
-                            textPhotoMessage = attr.getTextPhotoMessage();
-                        }
-
-                        if (attr.getTextDateFormat() != null) {
-                            textDateFormat = attr.getTextDateFormat();
-                        }
+                        labelDate.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                attr.getDimenTextTime());
+                        labelLatestMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                attr.getDimenTextMessage());
+                        labelChannelName.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                                attr.getDimenTextHeader());
                     }
-                }
-            });
+                });
+
+            }
         }
 
         /**
@@ -290,22 +343,22 @@ public interface ChannelsListContract {
          *
          * @param channelDetail channel detail object
          */
-        private void setUpDate(@NonNull ChannelDetail channelDetail, @NonNull String dateFormat) {
+        private void setUpDate(@NonNull final ChannelDetail channelDetail, @NonNull final String dateFormat) {
             final Date date = channelDetail.getLastPublishedTime();
-            try {
-                final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-                runOnMainThread(0, new OnActionPerformer() {
-                    @Override
-                    public void onActionPerform() {
+            runOnMainThread(0, new OnActionPerformer() {
+                @Override
+                public void onActionPerform() {
+                    try {
+                        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
                         labelDate.setText(simpleDateFormat.format(date));
+                    } catch (Exception exception) {
+                        Log.e(TAG, exception.toString());
+                        if (dateFormat.equalsIgnoreCase(K_DEFAULT_DATE_FORMAT) == false) {
+                            setUpDate(channelDetail, K_DEFAULT_DATE_FORMAT);
+                        }
                     }
-                });
-            } catch (Exception exception) {
-                Log.e(TAG, exception.toString());
-                if (dateFormat.equalsIgnoreCase(K_DEFAULT_DATE_FORMAT) == false) {
-                    setUpDate(channelDetail, K_DEFAULT_DATE_FORMAT);
                 }
-            }
+            });
         }
 
         /**

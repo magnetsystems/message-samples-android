@@ -9,12 +9,21 @@
         android:id="@+id/viewChannels"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:colorChatsBackground="@android:color/black"
-        app:colorChatsDivider="#64dd17"
-        app:colorChatsHeaderText="@android:color/white"
-        app:colorChatsMessageText="#ff6e40"
-        app:colorChatsTimeText="#00b8d4"
-        app:isNeedChatsImage="true" />
+        app:colorChatsBackground="@android:color/white"
+        app:colorChatsDivider="@android:color/darker_gray"
+        app:colorChatsHeaderText="@android:color/black"
+        app:colorChatsMessageText="@android:color/darker_gray"
+        app:colorChatsTimeText="@android:color/darker_gray"
+        app:colorChatsUnreadTint="@color/colorBlueDark"
+        app:dimenTextChatsHeader="@dimen/text_18"
+        app:dimenTextChatsMessage="@dimen/text_16"
+        app:dimenTextChatsTime="@dimen/dimen_14"
+        app:isNeedBoldHeader="false"
+        app:isNeedChatsImage="true"
+        app:textChatsDateFormat="MMM, dd"
+        app:textChatsLocationMessage="Location message"
+        app:textChatsNoMessage="No messages"
+        app:textChatsPhotoMessage="Photo message" />
 
 
 </FrameLayout>

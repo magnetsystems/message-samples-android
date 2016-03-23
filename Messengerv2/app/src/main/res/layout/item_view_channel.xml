@@ -18,6 +18,7 @@
             android:visibility="gone">
 
             <ImageView
+                android:id="@+id/imageNewMessage"
                 style="@style/styleCropImageCenter"
                 android:layout_width="@dimen/dimen_10"
                 android:layout_height="@dimen/dimen_10"
@@ -85,6 +86,7 @@
                     android:textSize="@dimen/text_13" />
 
                 <ImageView
+                    android:id="@+id/imagePointer"
                     style="@style/styleCropImageCenter"
                     android:layout_width="@dimen/dimen_20"
                     android:layout_height="match_parent"

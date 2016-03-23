@@ -21,6 +21,8 @@ import com.magnet.magntetchatapp.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -33,7 +35,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     private static final String TAG = "AdapteredRecyclerView";
 
     private BaseApplicationRecyclerAdapter adapter;
-    private List<BaseObject> objectList;
+    private List<T> objectList;
 
     public AdapteredRecyclerView(Context context) {
         super(context);
@@ -61,6 +63,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         }
         objectList = new ArrayList<>();
         adapter = new BaseApplicationRecyclerAdapter(objectList);
+        adapter.setSizeListOld(0);
         setAdapter(adapter);
         setHasFixedSize(true);
     }
@@ -72,7 +75,9 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      */
     public void updateList(@NonNull List<T> baseObjects) {
         objectList.clear();
+        adapter.setSizeListOld(0);
         objectList.addAll(baseObjects);
+        sortByPriority(objectList);
         adapter.notifyDataSetChanged();
     }
 
@@ -83,6 +88,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      */
     public void addList(@NonNull List<T> baseObjects) {
         objectList.addAll(baseObjects);
+        sortByPriority(objectList);
         adapter.notifyDataSetChanged();
     }
 
@@ -91,6 +97,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      */
     public void clearList() {
         objectList.clear();
+        adapter.setSizeListOld(0);
         adapter.notifyDataSetChanged();
     }
 
@@ -131,6 +138,28 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         }
     }
 
+    /**
+     * Method which provide the setting of the lazy load callback
+     *
+     * @param lazyLoadCallback lazy load callback
+     */
+    public void setLazyLoadCallback(@NonNull OnLazyLoadCallback lazyLoadCallback) {
+        if (adapter != null) {
+            adapter.setLazyLoadCallback(lazyLoadCallback);
+        }
+    }
+
+    /**
+     * Method which provide the sorting by priority
+     *
+     * @param objectList priority list
+     */
+    private void sortByPriority(@Nullable List<T> objectList) {
+        if (objectList != null) {
+            Collections.sort(objectList, new PriorityComparator());
+        }
+    }
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////HELP OBJECTS/////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +176,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
             HIGHT
         }
 
-        private Priority priority;
+        private Priority priority = Priority.MIDDLE;
         protected int index;
 
         /**
@@ -179,9 +208,12 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
         private List<T> listItems;
         private BaseRecyclerCallback itemActionListener;
+        private OnLazyLoadCallback lazyLoadCallback;
+        private int sizeListOld;
 
         public BaseApplicationRecyclerAdapter(List<T> listItems) {
             this.listItems = listItems;
+            this.sizeListOld = 0;
         }
 
         @Override
@@ -206,6 +238,15 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
             holder.recycleItem.setObject(recyclerItem);
             //Set item listener
             holder.recycleItem.setItemActionListener(itemActionListener);
+            //Lazy load
+            int listItemSize = listItems.size();
+            if ((position == listItemSize - 1)
+                    && (listItemSize > sizeListOld)) {
+                if (lazyLoadCallback != null) {
+                    lazyLoadCallback.onAlmostAtBottom(listItemSize);
+                    sizeListOld = listItemSize;
+                }
+            }
         }
 
         @Override
@@ -232,6 +273,23 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
             notifyDataSetChanged();
         }
 
+        /**
+         * Method which provide the setting of the lazy load callback
+         *
+         * @param lazyLoadCallback lazy load callback
+         */
+        public void setLazyLoadCallback(@NonNull OnLazyLoadCallback lazyLoadCallback) {
+            this.lazyLoadCallback = lazyLoadCallback;
+        }
+
+        /**
+         * Method which provide the setting of the old list size
+         *
+         * @param sizeListOld size list (old value)
+         */
+        public void setSizeListOld(int sizeListOld) {
+            this.sizeListOld = sizeListOld;
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -577,6 +635,27 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
          * @param object       object
          */
         void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull T object);
+    }
+
+    /**
+     * Callback which provide the lazy loading inside the RecyclerView
+     */
+    public interface OnLazyLoadCallback {
+        /**
+         * Method which provide the notifying about end of list
+         *
+         * @param listSize list size
+         */
+        void onAlmostAtBottom(int listSize);
+    }
+
+    //COMPARATORS
+
+    private static class PriorityComparator implements Comparator<BaseObject> {
+        @Override
+        public int compare(BaseObject lhs, BaseObject rhs) {
+            return rhs.getPriority().compareTo(lhs.getPriority());
+        }
     }
 
 }

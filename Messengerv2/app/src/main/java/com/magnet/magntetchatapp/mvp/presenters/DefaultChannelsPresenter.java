@@ -17,6 +17,7 @@ import java.util.List;
 public class DefaultChannelsPresenter implements ChannelsListContract.Presenter {
 
     private static final String TAG = "DefaultChannelsPresenter";
+    private static int K_PAGE_SIZE = 10;
 
     private final ChannelsListContract.View view;
 
@@ -29,7 +30,8 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
      */
     @Override
     public void onActivityCreate() {
-        startChannelReceiving();
+        view.setLazyLoadCallback(this);
+        startChannelReceiving(0);
     }
 
     /**
@@ -60,8 +62,9 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
      * Method which provide to start of channel receiving
      */
     @Override
-    public void startChannelReceiving() {
-        ChannelHelper.getSubscriptionDetails(0, 100, new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+    public void startChannelReceiving(final int offset) {
+        view.switchLoadingMessage("Loading channels", true);
+        ChannelHelper.getSubscriptionDetails(offset, K_PAGE_SIZE, new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
             @Override
             public void onSuccess(List<ChannelDetail> result) {
                 if (result != null && result.isEmpty() == false) {
@@ -70,8 +73,15 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
                         objects.add(new ChannelsListContract.ChannelObject(channelDetail));
                     }
                     if (view != null) {
-                        view.addChannels(objects);
+                        if (offset == 0) {
+                            view.setChannels(objects);
+                        } else {
+                            view.addChannels(objects);
+                        }
                     }
+                }
+                if (view != null) {
+                    view.switchLoadingMessage(null, false);
                 }
             }
 
@@ -79,7 +89,20 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
             @Override
             public void onFailure(MMXChannel.FailureCode code, Throwable throwable) {
                 Log.e(TAG, throwable.toString());
+                if (view != null) {
+                    view.switchLoadingMessage(null, false);
+                }
             }
         });
+    }
+
+    /**
+     * Method which provide the notifying about end of list
+     *
+     * @param listSize list size
+     */
+    @Override
+    public void onAlmostAtBottom(int listSize) {
+        startChannelReceiving(listSize);
     }
 }
