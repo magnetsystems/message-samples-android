@@ -255,7 +255,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             messagesListView.setAdapter(mAdapter);
         } else {
             if (toAppend) {
-                if(!messages.isEmpty()) {
+                if (!messages.isEmpty()) {
                     mAdapter.addItem(Message.fromMMXMessages(messages));
                 }
             } else {
@@ -482,9 +482,8 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     }
 
     public static Intent getIntentWithChannel(final Context context, final Chat conversation) {
-
         if (null != conversation && null != conversation.getChannel()) {
-            Intent intent =null;
+            Intent intent = null;
             intent = new Intent(context, ChatActivity.class);
             intent.putExtra(TAG_CHANNEL_NAME, conversation.getChannel().getName());
             return intent;
@@ -492,7 +491,6 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             Log.e(TAG, "getIntentWithChannel return null because conversation or channel is null");
             return null;
         }
-//        return intent;
     }
 
     public static Intent getIntentForNewChannel(Context context, List<User> recipients) {

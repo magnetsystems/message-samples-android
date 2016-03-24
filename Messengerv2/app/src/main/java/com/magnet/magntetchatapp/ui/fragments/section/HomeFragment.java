@@ -5,10 +5,12 @@ import android.support.annotation.NonNull;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.ui.activities.ChatActivity;
 import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magntetchatapp.R;
+import com.magnet.magntetchatapp.core.CurrentApplication;
 import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
 import com.magnet.magntetchatapp.mvp.views.AbstractChannelsView;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
@@ -61,7 +63,10 @@ public class HomeFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_create_channel) {
-            startActivity(ChooseUserActivity.getIntentToCreateChannel(getActivity()));
+            Intent intent = ChooseUserActivity.getIntentToCreateChannel(getContext());
+            if (intent != null) {
+                startActivity(intent);
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -78,8 +83,14 @@ public class HomeFragment extends BaseFragment {
             ChannelDetail channelDetail = object.getChannelDetail();
             final Chat chat = new Chat(channelDetail);
             if (chat != null) {
-                Intent i = new Intent(getContext(), ChatActivity.class);
-                startActivity(i);
+                ChatManager.getInstance().addConversation(chat);
+                runOnMainThread(0, new OnActionPerformer() {
+                    @Override
+                    public void onActionPerform() {
+                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
+                        startActivity(intent);
+                    }
+                });
             }
         }
 

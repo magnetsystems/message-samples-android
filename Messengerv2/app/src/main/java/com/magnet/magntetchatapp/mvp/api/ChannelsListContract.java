@@ -24,9 +24,11 @@ import com.magnet.magntetchatapp.mvp.views.AbstractChannelsView;
 import com.magnet.magntetchatapp.ui.custom.AdapteredRecyclerView;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
+import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -87,6 +89,20 @@ public interface ChannelsListContract {
          * Method which provide to start of channel receiving
          */
         void startChannelReceiving(int offset);
+
+        /**
+         * Method which provide the getting of the channel details
+         *
+         * @param channels
+         */
+        void getChannelsDetails(@Nullable final List<MMXChannel> channels);
+
+        /**
+         * Method which provide the hannel post processing
+         *
+         * @param channelDetails channel details
+         */
+        void onChannelsPostProcessing(@Nullable final List<ChannelDetail> channelDetails);
     }
 
     //=======================================================================================
@@ -128,6 +144,8 @@ public interface ChannelsListContract {
         ImageView imagePointer;
         @InjectView(R.id.imageNewMessage)
         ImageView imageNewMessage;
+        @InjectView(R.id.itemContent)
+        ViewGroup contentView;
 
         private String dateFormat;
         private String textNoMessages;
@@ -146,17 +164,18 @@ public interface ChannelsListContract {
          */
         @Override
         public void setUp(ChannelObject baseObject) {
-
+            contentView.setVisibility(INVISIBLE);
             if (baseObject == null) {
                 return;
             }
+            final String channelName = baseObject.getChannelName();
             final ChannelDetail channelDetail = baseObject.channelDetail;
             if (channelDetail != null) {
                 runOnBackground(0, new OnActionPerformer() {
                     @Override
                     public void onActionPerform() {
                         setUpUi();
-                        setUpName(channelDetail);
+                        setUpName(channelName);
                         setUpImage(channelDetail);
                         setUpDate(channelDetail, textDateFormat);
                         setUpLastMessage(channelDetail);
@@ -279,25 +298,13 @@ public interface ChannelsListContract {
         /**
          * Method which provide the setting up of the name for the current channel object
          *
-         * @param channelDetail channel details object
+         * @param channelName channel name
          */
-        private void setUpName(@NonNull ChannelDetail channelDetail) {
-            final StringBuilder name = new StringBuilder();
-            for (UserProfile profile : channelDetail.getSubscribers()) {
-                String displayName = profile.getDisplayName();
-                if (displayName != null) {
-                    String separator = ", ";
-                    if (name.length() == 0) {
-                        separator = "";
-                    }
-                    name.append(separator);
-                    name.append(displayName);
-                }
-            }
+        private void setUpName(@NonNull final String channelName) {
             runOnMainThread(0, new OnActionPerformer() {
                 @Override
                 public void onActionPerform() {
-                    labelChannelName.setText(name);
+                    labelChannelName.setText(channelName);
                 }
             });
         }
@@ -372,19 +379,19 @@ public interface ChannelsListContract {
             if (messageCount > 0) {
                 List<MMXMessage> messages = channelDetail.getMessages();
                 if (messages != null && messages.size() > 0) {
-                    MMXMessage mmxMessage = messages.get(0);
+                    MMXMessage mmxMessage = messages.get(messages.size() - 1);
                     if (mmxMessage != null) {
                         Message message = Message.createMessageFrom(mmxMessage);
                         if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
+                            messageText = textPhotoMessage;
+                        } else if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
+                            messageText = textLocationMessage;
+                        } else if (message != null
                                 && message.getText() != null
                                 && message.getText().isEmpty() != true) {
                             messageText = message.getText();
-                        } else if (message != null
-                                && message.getType() == Message.TYPE_PHOTO) {
-                            messageText = textPhotoMessage;
-                        } else if (message != null
-                                && message.getType() == Message.TYPE_MAP) {
-                            messageText = textLocationMessage;
                         }
                     }
                 }
@@ -432,6 +439,7 @@ public interface ChannelsListContract {
             runOnMainThread(0, new OnActionPerformer() {
                 @Override
                 public void onActionPerform() {
+                    contentView.setVisibility(VISIBLE);
                     if (isHaveNewMessages == true) {
                         viewNewMessage.setVisibility(VISIBLE);
                     } else {
@@ -448,7 +456,9 @@ public interface ChannelsListContract {
         private final RequestListener<String, GlideDrawable> glideCallback = new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                Log.e("ChannelRecyclerItem", e.toString());
+                if (e != null) {
+                    Log.e("ChannelRecyclerItem", e.toString());
+                }
                 return false;
             }
 
@@ -469,10 +479,14 @@ public interface ChannelsListContract {
      */
     class ChannelObject extends AdapteredRecyclerView.BaseObject {
 
+        private static final String K_NO_AVAILABLE = "Not available";
+
         private final ChannelDetail channelDetail;
+        private final String channelName;
 
         public ChannelObject(ChannelDetail channelDetail) {
             this.channelDetail = channelDetail;
+            this.channelName = getChannelName(channelDetail);
         }
 
         @Override
@@ -488,6 +502,45 @@ public interface ChannelsListContract {
         public ChannelDetail getChannelDetail() {
             return channelDetail;
         }
+
+        /**
+         * Method which provide the setting up of the name for the current channel object
+         *
+         * @param channelDetail channel details object
+         */
+        private String getChannelName(@NonNull ChannelDetail channelDetail) {
+            if (channelDetail != null
+                    && channelDetail.getChannel() != null
+                    && channelDetail.getSubscribers().isEmpty() == false) {
+                StringBuilder name = new StringBuilder();
+                for (UserProfile profile : channelDetail.getSubscribers()) {
+                    if (profile != null
+                            && profile.getDisplayName() != null
+                            && profile.getDisplayName().isEmpty() == false) {
+                        String displayName = profile.getDisplayName();
+                        if (displayName != null) {
+                            String separator = ", ";
+                            if (name.length() == 0) {
+                                separator = "";
+                            }
+                            name.append(separator);
+                            name.append(displayName);
+                        }
+                    }
+                }
+                return name.toString().trim();
+            }
+            return K_NO_AVAILABLE;
+        }
+
+        /**
+         * Method which provide the getting of the channel name
+         *
+         * @return channel name
+         */
+        public String getChannelName() {
+            return channelName;
+        }
     }
 
 //=======================================================================================
@@ -499,5 +552,19 @@ public interface ChannelsListContract {
      * Callback which provide the listening the action which happening inside the RecyclerView
      */
     interface OnChannelListCallback extends AdapteredRecyclerView.BaseRecyclerCallback<ChannelObject> {
+    }
+
+//=======================================================================================
+//===================================COMPARARTORS========================================
+//=======================================================================================
+
+    /**
+     * Comparartor which provide the sorting of the
+     */
+    class ChannelsDateComparator implements Comparator<ChannelDetail> {
+        @Override
+        public int compare(ChannelDetail lhs, ChannelDetail rhs) {
+            return lhs.getChannel().getLastTimeActive().compareTo(rhs.getChannel().getLastTimeActive());
+        }
     }
 }

@@ -38,7 +38,8 @@
         <activity
             android:name=".ui.activities.ChatDetailsActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/MagnetChatSDKTheme" />
         <activity
             android:name="nl.changer.polypicker.ImagePickerActivity"
             android:theme="@style/MagnetChatSDKTheme" />

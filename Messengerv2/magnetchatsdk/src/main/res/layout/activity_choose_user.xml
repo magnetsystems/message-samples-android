@@ -39,23 +39,7 @@
 
             </android.support.v7.widget.Toolbar>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <ProgressBar
-                    android:id="@+id/chooseUserProgress"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="?attr/colorPrimary"
-                    android:indeterminate="true" />
-            </LinearLayout>
-
         </LinearLayout>
-
 
     </android.support.design.widget.AppBarLayout>
 
@@ -87,10 +71,31 @@
 
         </LinearLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/chooseUserList"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/chooseUserList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:orientation="vertical">
+
+                <ProgressBar
+                    android:id="@+id/chooseUserProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:indeterminate="true" />
+            </LinearLayout>
+        </FrameLayout>
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

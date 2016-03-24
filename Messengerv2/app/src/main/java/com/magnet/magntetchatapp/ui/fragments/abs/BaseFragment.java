@@ -3,6 +3,7 @@ package com.magnet.magntetchatapp.ui.fragments.abs;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -22,10 +23,15 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment implements View.OnClickListener {
 
+    protected interface OnActionPerformer {
+        void onActionPerform();
+    }
+
     protected static final int NONE_MENU = Integer.MIN_VALUE;
 
     protected View containerView;
     protected OnActivityEventCallback eventCallback;
+    protected final Handler MAIN_THREAD_HANDLER = new Handler();
 
     public BaseFragment() {
     }
@@ -103,7 +109,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void startActivity(Class activtyClass, boolean isNeedFinishCurrent) {
         Activity baseActivity = getActivity();
-        if (baseActivity.getClass().isInstance(BaseActivity.class)) {
+        if ((baseActivity instanceof BaseActivity) == true) {
             ((BaseActivity) baseActivity).startActivity(activtyClass, isNeedFinishCurrent);
         }
     }
@@ -116,7 +122,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void startActivity(Intent activtyClass, boolean isNeedFinishCurrent) {
         Activity baseActivity = getActivity();
-        if (baseActivity.getClass().isInstance(BaseActivity.class)) {
+        if ((baseActivity instanceof BaseActivity) == true) {
             ((BaseActivity) baseActivity).startActivity(activtyClass, isNeedFinishCurrent);
         }
     }
@@ -128,7 +134,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void startActivityWithClearTop(Class activtyClass) {
         Activity baseActivity = getActivity();
-        if (baseActivity.getClass().isInstance(BaseActivity.class)) {
+        if ((baseActivity instanceof BaseActivity) == true) {
             ((BaseActivity) baseActivity).startActivityWithClearTop(activtyClass);
         }
     }
@@ -151,5 +157,20 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     public void setEventCallback(@NonNull OnActivityEventCallback eventCallback) {
         this.eventCallback = eventCallback;
+    }
+
+    /**
+     * Method which provide the doing action on UI thread after the delaying time
+     *
+     * @param delayTime       delaying time (in seconds)
+     * @param actionPerformer current action
+     */
+    protected void runOnMainThread(double delayTime, final OnActionPerformer actionPerformer) {
+        MAIN_THREAD_HANDLER.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                actionPerformer.onActionPerform();
+            }
+        }, (int) (delayTime * 1000));
     }
 }

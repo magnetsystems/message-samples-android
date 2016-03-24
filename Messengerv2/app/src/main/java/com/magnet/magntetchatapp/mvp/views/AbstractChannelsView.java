@@ -13,7 +13,6 @@ import android.util.AttributeSet;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.mvp.abs.BasePresenterView;
 import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
-import com.magnet.magntetchatapp.mvp.presenters.DefaultChannelsPresenter;
 import com.magnet.magntetchatapp.ui.custom.AdapteredRecyclerView;
 
 import java.util.List;
@@ -23,7 +22,7 @@ import butterknife.InjectView;
 /**
  * Created by Artli_000 on 18.03.2016.
  */
-public class AbstractChannelsView extends BasePresenterView<ChannelsListContract.Presenter> implements ChannelsListContract.View {
+public abstract class AbstractChannelsView extends BasePresenterView<ChannelsListContract.Presenter> implements ChannelsListContract.View {
 
     private static final String TAG = "AbstractChannelsView";
 
@@ -154,12 +153,6 @@ public class AbstractChannelsView extends BasePresenterView<ChannelsListContract
 
     public AbstractChannelsView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @NonNull
-    @Override
-    public ChannelsListContract.Presenter getPresenter() {
-        return new DefaultChannelsPresenter(this);
     }
 
     @Override
