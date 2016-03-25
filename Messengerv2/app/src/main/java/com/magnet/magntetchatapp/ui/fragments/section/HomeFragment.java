@@ -1,9 +1,14 @@
 package com.magnet.magntetchatapp.ui.fragments.section;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.model.Chat;
@@ -61,6 +66,23 @@ public class HomeFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            final SearchView search = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            search.setOnQueryTextListener(queryTextListener);
+            search.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    search.onActionViewCollapsed();
+                    onApplyFilter(null);
+                    return true;
+                }
+            });
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_create_channel) {
             Intent intent = ChooseUserActivity.getIntentToCreateChannel(getContext());
@@ -70,6 +92,17 @@ public class HomeFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Method which provide the filter applying
+     *
+     * @param query filter query
+     */
+    private void onApplyFilter(@Nullable String query) {
+        if (viewChannels != null) {
+            viewChannels.filterChannels(query);
+        }
     }
 
     /**
@@ -97,6 +130,23 @@ public class HomeFragment extends BaseFragment {
         @Override
         public void onActionPerformed(RecycleEvent recycleEvent, int index, @NonNull ChannelsListContract.ChannelObject object) {
 
+        }
+    };
+
+    /**
+     * Listener which provide the query text listening
+     */
+    private final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            onApplyFilter(query);
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            onApplyFilter(newText);
+            return true;
         }
     };
 }

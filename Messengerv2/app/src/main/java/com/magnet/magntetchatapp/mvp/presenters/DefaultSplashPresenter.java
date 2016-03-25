@@ -2,7 +2,6 @@ package com.magnet.magntetchatapp.mvp.presenters;
 
 import android.util.Log;
 
-import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magntetchatapp.mvp.api.SplashContract;
 import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
 import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;
@@ -10,16 +9,13 @@ import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMX;
-import com.magnet.mmx.client.api.MMXChannel;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by dlernatovich on 3/11/16.
  */
 public class DefaultSplashPresenter implements SplashContract.Presenter {
+
+    private static final String TAG = "DefaultSplashPresenter";
 
     private final SplashContract.View view;
 
@@ -32,7 +28,9 @@ public class DefaultSplashPresenter implements SplashContract.Presenter {
      */
     @Override
     public void onSplashAction() {
+        Log.e(TAG, "Start splash action");
         if (User.getSessionStatus() == null) {
+            Log.e(TAG, "User.getSessionStatus() == null");
             navigateToLogin();
             return;
         }
@@ -40,6 +38,7 @@ public class DefaultSplashPresenter implements SplashContract.Presenter {
         Log.d("SessionStatus", User.getSessionStatus().toString());
 
         if (User.SessionStatus.LoggedIn == User.getSessionStatus()) {
+            User.resumeSession(callbackResumeSession);
         } else if (User.SessionStatus.CanResume == User.getSessionStatus()) {
             User.resumeSession(callbackResumeSession);
         } else {
@@ -68,33 +67,6 @@ public class DefaultSplashPresenter implements SplashContract.Presenter {
     }
 
     /**
-     * Method which provide the creating of the template data
-     */
-    //TODO Should be removed after create channel implementation
-    @Override
-    public void onCreateTemplateData() {
-        List<String> userIDs = new ArrayList<String>(Arrays.asList(User.getCurrentUserId()));
-        for (int i = 0; i < 10; i++) {
-            ChannelHelper.createChannelForUsers(userIDs, new ChannelHelper.OnCreateChannelListener() {
-                @Override
-                public void onSuccessCreated(MMXChannel channel) {
-
-                }
-
-                @Override
-                public void onChannelExists(MMXChannel channel) {
-
-                }
-
-                @Override
-                public void onFailureCreated(Throwable throwable) {
-
-                }
-            });
-        }
-    }
-
-    /**
      * Callback which provide to listening of the resume session action
      */
     private final ApiCallback<Boolean> callbackResumeSession = new ApiCallback<Boolean>() {
@@ -102,7 +74,6 @@ public class DefaultSplashPresenter implements SplashContract.Presenter {
         public void success(Boolean aBoolean) {
             if (aBoolean) {
                 MMX.start();
-                onCreateTemplateData();
                 navigateToHome();
             } else {
                 handleError("");

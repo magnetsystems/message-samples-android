@@ -210,6 +210,21 @@ public abstract class BaseView extends FrameLayout implements View.OnClickListen
     }
 
     /**
+     * Method which provide the running action on the background thread
+     *
+     * @param onActionPerformer action performer
+     */
+    protected void runOnBackground(final OnActionPerformer onActionPerformer) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                onActionPerformer.onActionPerform();
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    /**
      * Method which provide the keyboard hiding
      */
     protected void hideKeyboard() {

@@ -128,6 +128,16 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     }
 
     /**
+     * Method which provide the getting of the items list
+     *
+     * @return current items list
+     */
+    @NonNull
+    public List<T> getListItems() {
+        return objectList;
+    }
+
+    /**
      * Method which provide the setting of the item action listener
      *
      * @param itemActionListener

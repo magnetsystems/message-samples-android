@@ -32,11 +32,5 @@ public interface SplashContract {
          */
         void navigateToHome();
 
-        /**
-         * Method which provide the creating of the template data
-         */
-        //TODO Should be removed after create channel implementation
-        void onCreateTemplateData();
-
     }
 }

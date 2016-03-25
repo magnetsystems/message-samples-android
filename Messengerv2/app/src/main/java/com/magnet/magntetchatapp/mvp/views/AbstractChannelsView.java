@@ -1,5 +1,6 @@
 package com.magnet.magntetchatapp.mvp.views;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -9,12 +10,19 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.magnet.magntetchatapp.R;
+import com.magnet.magntetchatapp.filters.ArrayFilter;
 import com.magnet.magntetchatapp.mvp.abs.BasePresenterView;
 import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
 import com.magnet.magntetchatapp.ui.custom.AdapteredRecyclerView;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -143,6 +151,9 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     @InjectView(R.id.viewSwipeRefresh)
     SwipeRefreshLayout viewSwipeRefresh;
 
+    private String filterQuery;
+    private List<ChannelsListContract.ChannelObject> fullArrayObject;
+
     public AbstractChannelsView(Context context) {
         super(context);
     }
@@ -232,6 +243,8 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
 
     @Override
     protected void onCreateView() {
+        onInitializeListeners();
+        fullArrayObject = new ArrayList<ChannelsListContract.ChannelObject>();
         recyclerView.setLayoutManager(new GridLayoutManager(getCurrentContext(), 1));
         viewSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -243,6 +256,23 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
                 if (presenter != null) {
                     presenter.startChannelReceiving(0);
                 }
+            }
+        });
+    }
+
+    /**
+     * Method which provide the initializing of the lesteners
+     */
+    private void onInitializeListeners() {
+        MMX.registerListener(new MMX.EventListener() {
+            @SuppressLint("LongLogTag")
+            @Override
+            public boolean onMessageReceived(MMXMessage message) {
+                Log.e(TAG, "MMX.EventListener -> onMMXMessageReceived(MMXMessage message)");
+                if (message != null) {
+                    onMMXMessageReceived(message);
+                }
+                return false;
             }
         });
     }
@@ -284,6 +314,20 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     @Override
     public void clearChannels() {
         recyclerView.clearList();
+    }
+
+    /**
+     * Method which provide the sorting of the channels
+     */
+    @Override
+    public void sortChannels() {
+        Collections.sort(recyclerView.getListItems(), Collections.reverseOrder(new ChannelsListContract.ChannelsDateComparator()));
+        runOnMainThread(0, new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                recyclerView.notifyDataSetChanged();
+            }
+        });
     }
 
     /**
@@ -332,6 +376,72 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     }
 
     /**
+     * Method which provide the filtering of the channel
+     *
+     * @param query current query
+     */
+    @Override
+    public void filterChannels(@Nullable String query) {
+        if (query != null && query.isEmpty() == false) {
+            if (fullArrayObject.isEmpty() == true) {
+                fullArrayObject.addAll(recyclerView.getListItems());
+            }
+            setChannels(LAST_MESSAGE_FILTER.applyFilter(fullArrayObject, query));
+        } else {
+            if (fullArrayObject.isEmpty() == false) {
+                setChannels(fullArrayObject);
+                fullArrayObject.clear();
+            }
+        }
+    }
+
+    /**
+     * Method which provide the clearing filter
+     */
+    @Override
+    public void clearFilter() {
+        filterChannels(null);
+    }
+
+    /**
+     * Method which provide the action when MMXMessage received
+     *
+     * @param message current message
+     */
+    private void onMMXMessageReceived(@NonNull final MMXMessage message) {
+        runOnBackground(new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (recyclerView == null || message == null) {
+                    Log.e(TAG, "onMMXMessageReceived -> recyclerView == null || message == null");
+                    return;
+                }
+
+                final List<Object> objects = recyclerView.getListItems();
+                for (Object object : objects) {
+                    if (object instanceof ChannelsListContract.ChannelObject) {
+                        final ChannelsListContract.ChannelObject channelObject = (ChannelsListContract.ChannelObject) object;
+                        final MMXChannel mmxChannel = channelObject.getChannelDetail().getChannel();
+                        final MMXChannel mmxChannel1 = message.getChannel();
+                        if (mmxChannel != null
+                                && mmxChannel1 != null
+                                && mmxChannel.getName() != null
+                                && mmxChannel1.getName() != null) {
+                            final String channelName = mmxChannel.getName();
+                            final String channelName1 = mmxChannel1.getName();
+                            if (channelName.equalsIgnoreCase(channelName1) == true) {
+                                channelObject.updateChannelMessage(message);
+                                break;
+                            }
+                        }
+                    }
+                }
+                sortChannels();
+            }
+        });
+    }
+
+    /**
      * Method which provide the setting of the channel list callback
      *
      * @param channelListCallback channel list callback
@@ -341,6 +451,24 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
             recyclerView.setItemActionListener(channelListCallback);
         }
     }
+
+    //ARRAY FILTERS
+
+    /**
+     * Filter which provide the channels filtering by last message context
+     */
+    private static final ArrayFilter LAST_MESSAGE_FILTER = new ArrayFilter<ChannelsListContract.ChannelObject, String>() {
+        @Override
+        public boolean compare(@NonNull ChannelsListContract.ChannelObject channelObject, @Nullable String s) {
+            if (s == null
+                    || s.isEmpty()
+                    || channelObject == null
+                    || channelObject.getLastMessage() == null) {
+                return false;
+            }
+            return channelObject.getLastMessage().toLowerCase().contains(s.toLowerCase());
+        }
+    };
 }
 
 //SAMPLE TO CUSTOMIZE

@@ -61,6 +61,11 @@ public interface ChannelsListContract {
         void clearChannels();
 
         /**
+         * Method which provide the sorting of the channels
+         */
+        void sortChannels();
+
+        /**
          * Method which provide the setting of the lazy load callback
          *
          * @param lazyLoadCallback lazy load callback
@@ -81,6 +86,18 @@ public interface ChannelsListContract {
          * @param baseObjects list of the high priority items
          */
         void addHighPriorityItem(@NonNull List<AdapteredRecyclerView.BaseObject> baseObjects);
+
+        /**
+         * Method which provide the filtering of the channel
+         *
+         * @param query current query
+         */
+        void filterChannels(@Nullable String query);
+
+        /**
+         * Method which provide the clearing filter
+         */
+        void clearFilter();
 
     }
 
@@ -163,7 +180,7 @@ public interface ChannelsListContract {
          * @param baseObject current object
          */
         @Override
-        public void setUp(ChannelObject baseObject) {
+        public void setUp(final ChannelObject baseObject) {
             contentView.setVisibility(INVISIBLE);
             if (baseObject == null) {
                 return;
@@ -178,7 +195,7 @@ public interface ChannelsListContract {
                         setUpName(channelName);
                         setUpImage(channelDetail);
                         setUpDate(channelDetail, textDateFormat);
-                        setUpLastMessage(channelDetail);
+                        setUpLastMessage(baseObject);
                         setUpNewMessage(channelDetail);
                     }
                 });
@@ -371,37 +388,15 @@ public interface ChannelsListContract {
         /**
          * Method which provide to updating of the latest message
          *
-         * @param channelDetail latest message
+         * @param channelObject channel object
          */
-        private void setUpLastMessage(@NonNull ChannelDetail channelDetail) {
-            String messageText = textNoMessages;
-            int messageCount = channelDetail.getTotalMessages();
-            if (messageCount > 0) {
-                List<MMXMessage> messages = channelDetail.getMessages();
-                if (messages != null && messages.size() > 0) {
-                    MMXMessage mmxMessage = messages.get(messages.size() - 1);
-                    if (mmxMessage != null) {
-                        Message message = Message.createMessageFrom(mmxMessage);
-                        if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
-                            messageText = textPhotoMessage;
-                        } else if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
-                            messageText = textLocationMessage;
-                        } else if (message != null
-                                && message.getText() != null
-                                && message.getText().isEmpty() != true) {
-                            messageText = message.getText();
-                        }
-                    }
-                }
-            }
-
-            final String finalMessageText = messageText;
+        private void setUpLastMessage(@NonNull final ChannelObject channelObject) {
+            final String lastMessage = channelObject.getLastMessage(textPhotoMessage,
+                    textLocationMessage, textNoMessages);
             runOnMainThread(0, new OnActionPerformer() {
                 @Override
                 public void onActionPerform() {
-                    labelLatestMessage.setText(finalMessageText);
+                    labelLatestMessage.setText(lastMessage);
                 }
             });
         }
@@ -480,13 +475,21 @@ public interface ChannelsListContract {
     class ChannelObject extends AdapteredRecyclerView.BaseObject {
 
         private static final String K_NO_AVAILABLE = "Not available";
+        private static final String K_NO_MESSAGES = "No messages";
 
         private final ChannelDetail channelDetail;
         private final String channelName;
+        private Date lastTimeActive;
+        private String lastMessage;
+
+        private String textNoMessage;
+        private String textPhotoMessage;
+        private String textLocationMessage;
 
         public ChannelObject(ChannelDetail channelDetail) {
             this.channelDetail = channelDetail;
             this.channelName = getChannelName(channelDetail);
+            updateChannelMessage(channelDetail);
         }
 
         @Override
@@ -534,12 +537,130 @@ public interface ChannelsListContract {
         }
 
         /**
+         * Method which provide the getting of the last message
+         *
+         * @param textLocationMessage default text for location message
+         * @param textPhotoMessage    default text for photo message
+         * @return last message
+         */
+        public String getLastMessage(@NonNull String textPhotoMessage,
+                                     @NonNull String textLocationMessage,
+                                     @NonNull String textNoMessage) {
+
+            this.textNoMessage = textNoMessage;
+            this.textLocationMessage = textLocationMessage;
+            this.textPhotoMessage = textPhotoMessage;
+
+            if (lastMessage != null) {
+                return lastMessage;
+            }
+
+            int messageCount = channelDetail.getTotalMessages();
+            if (messageCount > 0) {
+                List<MMXMessage> messages = channelDetail.getMessages();
+                if (messages != null && messages.size() > 0) {
+                    MMXMessage mmxMessage = messages.get(messages.size() - 1);
+                    if (mmxMessage != null) {
+                        Message message = Message.createMessageFrom(mmxMessage);
+                        if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
+                            lastMessage = textPhotoMessage;
+                        } else if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
+                            lastMessage = textLocationMessage;
+                        } else if (message != null
+                                && message.getText() != null
+                                && message.getText().isEmpty() != true) {
+                            lastMessage = message.getText();
+                        }
+                    }
+                }
+            }
+
+            if (lastMessage == null) {
+                lastMessage = textNoMessage;
+            }
+
+            return lastMessage;
+        }
+
+        /**
+         * Method which provide the updating of the last time activ
+         *
+         * @param channelDetail channel details
+         */
+        private void updateChannelMessage(@Nullable ChannelDetail channelDetail) {
+            if (channelDetail != null
+                    && channelDetail.getChannel() != null
+                    && channelDetail.getChannel().getLastTimeActive() != null) {
+                this.lastTimeActive = channelDetail.getChannel().getLastTimeActive();
+            } else {
+                if (this.lastTimeActive == null) {
+                    this.lastTimeActive = new Date();
+                }
+            }
+        }
+
+        /**
+         * Method which provide the updating of the last time active date
+         *
+         * @param mmxMessage mmx message
+         */
+        public void updateChannelMessage(@Nullable final MMXMessage mmxMessage) {
+            if (mmxMessage != null) {
+                Message message = Message.createMessageFrom(mmxMessage);
+                if (message != null) {
+
+                    lastTimeActive = message.getCreateTime();
+
+                    if (message != null
+                            && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
+                        lastMessage = textPhotoMessage;
+                    } else if (message != null
+                            && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
+                        lastMessage = textLocationMessage;
+                    } else if (message != null
+                            && message.getText() != null
+                            && message.getText().isEmpty() != true) {
+                        lastMessage = message.getText();
+                    }
+                }
+
+                if (lastMessage == null) {
+                    if (textNoMessage == null) {
+                        lastMessage = textNoMessage;
+                    } else {
+                        lastMessage = K_NO_MESSAGES;
+                    }
+                }
+            }
+        }
+
+        /**
+         * Method which provide the getting of the last message
+         *
+         * @return last message
+         */
+        public String getLastMessage() {
+            return lastMessage;
+        }
+
+        /**
          * Method which provide the getting of the channel name
          *
          * @return channel name
          */
         public String getChannelName() {
             return channelName;
+        }
+
+        /**
+         * Method which provide the getting of the last time active
+         *
+         * @return last time active
+         */
+        public Date getLastTimeActive() {
+            return lastTimeActive;
         }
     }
 
@@ -555,16 +676,19 @@ public interface ChannelsListContract {
     }
 
 //=======================================================================================
-//===================================COMPARARTORS========================================
+//===================================COMPARATORS=========================================
 //=======================================================================================
 
     /**
      * Comparartor which provide the sorting of the
      */
-    class ChannelsDateComparator implements Comparator<ChannelDetail> {
+    class ChannelsDateComparator implements Comparator<ChannelObject> {
         @Override
-        public int compare(ChannelDetail lhs, ChannelDetail rhs) {
-            return lhs.getChannel().getLastTimeActive().compareTo(rhs.getChannel().getLastTimeActive());
+        public int compare(ChannelObject lhs, ChannelObject rhs) {
+            if (lhs.getLastTimeActive() == null || rhs.getLastTimeActive() == null) {
+                return 0;
+            }
+            return lhs.getLastTimeActive().compareTo(rhs.getLastTimeActive());
         }
     }
 }

@@ -11,7 +11,6 @@ import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -121,7 +120,6 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
      */
     @Override
     public void onChannelsPostProcessing(@Nullable final List<ChannelDetail> channelDetails) {
-        Collections.sort(channelDetails, Collections.reverseOrder(new ChannelsListContract.ChannelsDateComparator()));
         if (channelDetails != null && channelDetails.isEmpty() == false) {
             List<ChannelsListContract.ChannelObject> objects = new ArrayList<ChannelsListContract.ChannelObject>();
             for (ChannelDetail channelDetail : channelDetails) {
@@ -129,6 +127,7 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
             }
             if (view != null) {
                 view.setChannels(objects);
+                view.sortChannels();
             }
         }
         hideProgress();
