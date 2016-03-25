@@ -27,7 +27,7 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     @Override
     protected void onResume() {
         super.onResume();
-        runOnMainThread(0, splashAction);
+        runOnMainThread(2, splashAction);
     }
 
     /**
