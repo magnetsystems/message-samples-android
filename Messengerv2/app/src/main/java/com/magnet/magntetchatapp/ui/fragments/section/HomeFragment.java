@@ -16,8 +16,8 @@ import com.magnet.magnetchat.ui.activities.ChatActivity;
 import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.core.CurrentApplication;
-import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
-import com.magnet.magntetchatapp.mvp.views.AbstractChannelsView;
+import com.magnet.chatsdkcover.mvp.api.ChannelsListContract;
+import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
 import com.magnet.mmx.client.api.ChannelDetail;
 
@@ -108,7 +108,7 @@ public class HomeFragment extends BaseFragment {
     /**
      * Method which provide the listening actions inside the channel list view
      *
-     * @see com.magnet.magntetchatapp.mvp.views.AbstractChannelsView
+     * @see com.magnet.chatsdkcover.mvp.views.AbstractChannelsView
      */
     private final ChannelsListContract.OnChannelListCallback channelListCallback = new ChannelsListContract.OnChannelListCallback() {
         @Override

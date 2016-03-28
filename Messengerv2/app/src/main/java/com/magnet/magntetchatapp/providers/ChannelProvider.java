@@ -1,6 +1,6 @@
 package com.magnet.magntetchatapp.providers;
 
-import com.magnet.magntetchatapp.mvp.api.ChannelsListContract;
+import com.magnet.chatsdkcover.mvp.api.ChannelsListContract;
 
 import java.util.ArrayList;
 import java.util.Arrays;

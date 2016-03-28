@@ -1,5 +1,7 @@
 package com.magnet.magntetchatapp.helpers;
 
+import java.util.Date;
+
 /**
  * Created by dlernatovich on 3/21/16.
  */
@@ -27,6 +29,18 @@ public class DateHelper {
     private static final String K_DEFAULT_JUST_NOW = "Just now";
     private static final String K_DEFAULT_MINUTE_AGO = "A minute ago";
 
+    /**
+     * Method which provide the getting of the time ago
+     *
+     * @param date current date
+     * @return comparasions results
+     */
+    public static String getTimeAgo(Date date) {
+        long miliseconds = date.getTime();
+        return getTimeAgo(miliseconds);
+
+    }
+
 
     /**
      * Method which provide the getting of the time ago
@@ -48,7 +62,7 @@ public class DateHelper {
         // TODO: localize
         final long diff = now - time;
         if (diff < MINUTE_MILLIS) {
-            return "just now";
+            return "Just now";
         } else if (diff < 2 * MINUTE_MILLIS) {
             return "a minute ago";
         } else if (diff < 50 * MINUTE_MILLIS) {

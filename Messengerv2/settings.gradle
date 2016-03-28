@@ -1,1 +1,1 @@
-include ':app', ':magnetchatsdk'
+include ':app', ':magnetchatsdk', ':chatsdkcover'

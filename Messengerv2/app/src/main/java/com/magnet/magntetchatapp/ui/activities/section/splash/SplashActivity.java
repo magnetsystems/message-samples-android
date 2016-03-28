@@ -1,9 +1,11 @@
 package com.magnet.magntetchatapp.ui.activities.section.splash;
 
+import com.magnet.chatsdkcover.mvp.api.SplashContract;
+import com.magnet.chatsdkcover.mvp.presenters.DefaultSplashPresenter;
 import com.magnet.magntetchatapp.R;
-import com.magnet.magntetchatapp.mvp.api.SplashContract;
-import com.magnet.magntetchatapp.mvp.presenters.DefaultSplashPresenter;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
+import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
+import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;
 
 public class SplashActivity extends BaseActivity implements SplashContract.View {
 
@@ -33,11 +35,21 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     /**
      * Method which provide to performing of the navigation
      *
-     * @param activityClass activity class
+     * @param navigationType navigation type
      */
     @Override
-    public void navigate(Class activityClass) {
-        startActivity(activityClass, true);
+    public void navigate(SplashContract.NavigationType navigationType) {
+        switch (navigationType) {
+            case HOME:
+                startActivityWithClearTop(HomeActivity.class);
+                break;
+            case LOGIN:
+                startActivityWithClearTop(LoginActivity.class);
+                break;
+            default:
+                break;
+        }
+
     }
 
     /**
@@ -51,5 +63,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
             }
         }
     };
+
 
 }
