@@ -16,7 +16,7 @@
             android:id="@+id/editEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter email here"
+            android:hint="@string/text_enter_email_here"
             android:inputType="textEmailAddress"
             android:typeface="normal" />
 
@@ -28,7 +28,7 @@
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter password here"
+            android:hint="@string/text_enter_password_here_cover"
             android:inputType="textPassword"
             android:typeface="normal" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Remember me" />
+            android:text="@string/text_remember_me_cover" />
 
         <View
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@android:color/transparent"
-            android:text="Login" />
+            android:text="@string/text_login_cover" />
 
         <View
             android:layout_width="match_parent"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@android:color/transparent"
-            android:text="Register" />
+            android:text="@string/text_register_cover" />
 
     </LinearLayout>
 
@@ -80,27 +80,34 @@
         android:visibility="gone">
 
         <LinearLayout
+            android:id="@+id/viewProgressInside"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/background_white_square"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_5">
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/background_accent_square"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_5">
 
             <ProgressBar
-                style="@android:style/Widget.Holo.ProgressBar.Large"
-                android:layout_width="@dimen/dimen_60"
-                android:layout_height="@dimen/dimen_60"
-                android:layout_gravity="center"
-                android:layout_marginRight="@dimen/dimen_5" />
+                android:id="@+id/progressLoading"
+                style="@android:style/Widget.Holo.ProgressBar.Small"
+                android:layout_width="@dimen/dimen_25"
+                android:layout_height="@dimen/dimen_25"
+                android:layout_gravity="center_vertical" />
 
             <android.support.v7.widget.AppCompatTextView
-                style="@style/style_text_default"
+                android:id="@+id/labelLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Please wait..."
-                android:textColor="@android:color/darker_gray"
-                android:textSize="@dimen/text_15" />
+                android:paddingBottom="@dimen/dimen_10"
+                android:paddingLeft="@dimen/dimen_5"
+                android:paddingRight="@dimen/dimen_10"
+                android:paddingTop="@dimen/dimen_10"
+                android:text="@string/text_authorization_cover"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </FrameLayout>

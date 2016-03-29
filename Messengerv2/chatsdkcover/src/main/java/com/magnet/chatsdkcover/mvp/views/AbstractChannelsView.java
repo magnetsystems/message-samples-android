@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -11,6 +12,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.filters.ArrayFilter;
@@ -143,11 +146,14 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     }
 
     AdapteredRecyclerView recyclerView;
+    ViewGroup viewProgress;
     AppCompatTextView labelLoading;
+    ProgressBar progressLoading;
     SwipeRefreshLayout viewSwipeRefresh;
 
     private String filterQuery;
     private List<ChannelsListContract.ChannelObject> fullArrayObject;
+    private ChannelsListContract.OnChannelsViewCallback channelsViewCallback;
 
     public AbstractChannelsView(Context context) {
         super(context);
@@ -174,6 +180,8 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
         recyclerView = (AdapteredRecyclerView) findViewById(R.id.listChannels);
         labelLoading = (AppCompatTextView) findViewById(R.id.labelLoading);
         viewSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.viewSwipeRefresh);
+        viewProgress = (ViewGroup) findViewById(R.id.viewProgress);
+        progressLoading = (ProgressBar) findViewById(R.id.progressLoading);
     }
 
     /**
@@ -237,11 +245,14 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
                     .getColorForState(EMPTY_STATE_SET, android.R.color.transparent));
 
             if (attr.getColorBackgroundLoading() != null) {
-                labelLoading.setSupportBackgroundTintList(attr.getColorBackgroundLoading());
+                viewProgress.getBackground().setColorFilter(attr.getColorBackgroundLoading()
+                        .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
             }
 
             if (attr.getColorTextLoading() != null) {
                 labelLoading.setTextColor(attr.getColorTextLoading());
+                progressLoading.getIndeterminateDrawable().setColorFilter(attr.getColorTextLoading()
+                        .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
             }
         }
     }
@@ -356,14 +367,14 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
         runOnMainThread(0, new OnActionPerformer() {
             @Override
             public void onActionPerform() {
-                if (labelLoading != null) {
+                if (labelLoading != null && viewProgress != null) {
                     if (message == null || message.isEmpty() == true) {
-                        labelLoading.setVisibility(GONE);
+                        viewProgress.setVisibility(GONE);
                     } else if (isNeedShow == true) {
                         labelLoading.setText(message);
-                        labelLoading.setVisibility(VISIBLE);
+                        viewProgress.setVisibility(VISIBLE);
                     } else {
-                        labelLoading.setVisibility(GONE);
+                        viewProgress.setVisibility(GONE);
                     }
                 }
             }
@@ -409,6 +420,30 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     }
 
     /**
+     * Method which provide the deleting of the channel object
+     *
+     * @param channelObject channel object
+     */
+    @Override
+    public void deleteChannel(@NonNull final ChannelsListContract.ChannelObject channelObject) {
+        if (channelObject != null
+                && channelObject.getChannelDetail() != null
+                && channelObject.getChannelDetail().getChannel() != null) {
+            MMXChannel mmxChannel = channelObject.getChannelDetail().getChannel();
+            mmxChannel.unsubscribe(channelDeleteListener);
+        }
+
+        runOnMainThread(0, new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (recyclerView != null) {
+                    recyclerView.deleteItem(channelObject);
+                }
+            }
+        });
+    }
+
+    /**
      * Method which provide the action when MMXMessage received
      *
      * @param message current message
@@ -451,10 +486,19 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
      *
      * @param channelListCallback channel list callback
      */
-    public void setChannelListCallback(ChannelsListContract.OnChannelListCallback channelListCallback) {
+    public void setChannelListCallback(ChannelsListContract.OnChannelsListCallback channelListCallback) {
         if (recyclerView != null) {
             recyclerView.setItemActionListener(channelListCallback);
         }
+    }
+
+    /**
+     * Method which provide the setting of the OnChannelsViewCallback
+     *
+     * @param channelsViewCallback object channels view callback
+     */
+    public void setChannelsViewCallback(ChannelsListContract.OnChannelsViewCallback channelsViewCallback) {
+        this.channelsViewCallback = channelsViewCallback;
     }
 
     //ARRAY FILTERS
@@ -472,6 +516,31 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
                 return false;
             }
             return channelObject.getLastMessage().toLowerCase().contains(s.toLowerCase());
+        }
+    };
+
+    //CALLBACKS
+
+    /**
+     * Callback which provide to listening of the channel unsubscription
+     */
+    private final MMXChannel.OnFinishedListener channelDeleteListener = new MMXChannel.OnFinishedListener<Boolean>() {
+        @Override
+        public void onSuccess(Boolean result) {
+            if (channelsViewCallback != null
+                    && getContext() != null) {
+                channelsViewCallback.onMessageReceived(
+                        getContext().getString(R.string.text_channel_deleted_successfuly_cover));
+            }
+        }
+
+        @Override
+        public void onFailure(MMXChannel.FailureCode code, Throwable throwable) {
+            if (channelsViewCallback != null
+                    && getContext() != null
+                    && throwable != null) {
+                channelsViewCallback.onMessageReceived(String.format("%s", throwable.toString()));
+            }
         }
     };
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -16,6 +17,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -49,6 +52,10 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
     View viewProgress;
     AppCompatButton buttonSaveChanges;
 
+    ViewGroup viewProgressInside;
+    AppCompatTextView labelLoading;
+    ProgressBar progressLoading;
+
     //ATTRIBUTES
     private Drawable backgroundEditFirstName;
     private Drawable backgroundEditLastName;
@@ -58,6 +65,8 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
     private ColorStateList colorHintEdits;
     private ColorStateList colorTextLabels;
     private ColorStateList colorTextButtons;
+    private ColorStateList colorTextLoading;
+    private ColorStateList colorBackgroundLoading;
 
     private int dimenLabelsText;
     private int dimenEditsText;
@@ -97,6 +106,9 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
             dimenLabelsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserLabels, R.dimen.text_18);
             dimenEditsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserEdits, R.dimen.text_18);
             dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.AbstractEditProfileView_dimenEditUserButton, R.dimen.text_18);
+
+            colorTextLoading = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserLoadingMessage);
+            colorBackgroundLoading = attributes.getColorStateList(R.styleable.AbstractEditProfileView_colorEditUserLoadingBackground);
         } finally {
             attributes.recycle();
             onApplyAttributes();
@@ -139,6 +151,17 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
             buttonSaveChanges.setTextColor(colorTextButtons);
         }
 
+        if (colorBackgroundLoading != null) {
+            viewProgressInside.getBackground().setColorFilter(colorBackgroundLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
+        if (colorTextLoading != null) {
+            labelLoading.setTextColor(colorTextLoading);
+            progressLoading.getIndeterminateDrawable().setColorFilter(colorTextLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
         editFirstName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         editLastName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         labelEmail.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenLabelsText);
@@ -178,6 +201,10 @@ public abstract class AbstractEditProfileView extends BasePresenterView<EditProf
         editLastName = (AppCompatEditText) findViewById(R.id.editLastName);
         viewProgress = findViewById(R.id.viewProgress);
         buttonSaveChanges = (AppCompatButton) findViewById(R.id.buttonSaveChanges);
+
+        labelLoading = (AppCompatTextView) findViewById(R.id.labelLoading);
+        progressLoading = (ProgressBar) findViewById(R.id.progressLoading);
+        viewProgressInside = (ViewGroup) findViewById(R.id.viewProgressInside);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.magnet.chatsdkcover.mvp.views;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -10,9 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
@@ -28,18 +32,16 @@ import com.magnet.chatsdkcover.mvp.api.LoginContract;
 public abstract class AbstractLoginView extends BasePresenterView<LoginContract.Presenter> implements LoginContract.View {
 
 
-    //    @InjectView(R.id.editEmail)
     AppCompatEditText editEmail;
-    //    @InjectView(R.id.editPassword)
     AppCompatEditText editPassword;
-    //    @InjectView(R.id.checkBoxRememberMe)
     AppCompatCheckBox checkBoxRemember;
-    //    @InjectView(R.id.buttonLogin)
     AppCompatButton buttonLogin;
-    //    @InjectView(R.id.buttonRegister)
     AppCompatButton buttonRegister;
-    //    @InjectView(R.id.viewProgress)
     View viewProgress;
+
+    ViewGroup viewProgressInside;
+    AppCompatTextView labelLoading;
+    ProgressBar progressLoading;
 
     //ATTRIBUTES
     private Drawable backgroundsEdit;
@@ -59,6 +61,8 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
     private int dimenEditsText;
     private int dimenRememberText;
     private int dimenButtonsText;
+    private ColorStateList colorTextLoading;
+    private ColorStateList colorBackgroundLoading;
 
     private LoginContract.OnLoginActionCallback loginActionCallback;
 
@@ -96,6 +100,10 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
         buttonLogin = (AppCompatButton) findViewById(R.id.buttonLogin);
         buttonRegister = (AppCompatButton) findViewById(R.id.buttonRegister);
         viewProgress = findViewById(R.id.viewProgress);
+
+        labelLoading = (AppCompatTextView) findViewById(R.id.labelLoading);
+        progressLoading = (ProgressBar) findViewById(R.id.progressLoading);
+        viewProgressInside = (ViewGroup) findViewById(R.id.viewProgressInside);
     }
 
     /**
@@ -145,6 +153,9 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
             dimenEditsText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenEditsText, R.dimen.text_18);
             dimenRememberText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenRememberText, R.dimen.text_18);
             dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.AbstractLoginView_dimenButtonsText, R.dimen.text_18);
+
+            colorTextLoading = attributes.getColorStateList(R.styleable.AbstractLoginView_colorLogLoadingMessage);
+            colorBackgroundLoading = attributes.getColorStateList(R.styleable.AbstractLoginView_colorLogLoadingBackground);
         } finally {
             attributes.recycle();
             onApplyAttributes();
@@ -207,6 +218,18 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
         if (textButtonRegister != null && textButtonRegister.isEmpty() != true) {
             buttonRegister.setText(textButtonRegister);
         }
+
+        if (colorBackgroundLoading != null) {
+            viewProgressInside.getBackground().setColorFilter(colorBackgroundLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
+        if (colorTextLoading != null) {
+            labelLoading.setTextColor(colorTextLoading);
+            progressLoading.getIndeterminateDrawable().setColorFilter(colorTextLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
         editEmail.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         editPassword.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         checkBoxRemember.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenRememberText);

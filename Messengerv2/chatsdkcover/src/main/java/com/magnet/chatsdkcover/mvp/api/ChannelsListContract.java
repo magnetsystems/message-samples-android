@@ -19,9 +19,9 @@ import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BaseContract;
 import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
 import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
+import com.magnet.chatsdkcover.ui.custom.CircleNameView;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.Message;
-import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -97,6 +97,13 @@ public interface ChannelsListContract {
          * Method which provide the clearing filter
          */
         void clearFilter();
+
+        /**
+         * Method which provide the deleting of the channel object
+         *
+         * @param channelObject channel object
+         */
+        void deleteChannel(@NonNull final ChannelObject channelObject);
 
     }
 
@@ -317,6 +324,14 @@ public interface ChannelsListContract {
          */
         @Override
         protected void onCreateView() {
+            //Send on click listener
+            contentView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(android.view.View v) {
+                    sendEvent(ChannelEvent.LONG_CLICK.getRecycleEvent());
+                    return true;
+                }
+            });
         }
 
         /**
@@ -679,7 +694,21 @@ public interface ChannelsListContract {
     /**
      * Callback which provide the listening the action which happening inside the RecyclerView
      */
-    interface OnChannelListCallback extends AdapteredRecyclerView.BaseRecyclerCallback<ChannelObject> {
+    interface OnChannelsListCallback extends AdapteredRecyclerView.BaseRecyclerCallback<ChannelObject> {
+    }
+
+    /**
+     * Callback which provide the litening action what is happening inside the AbstractChannelsView
+     *
+     * @see AbstractChannelsView
+     */
+    interface OnChannelsViewCallback {
+        /**
+         * Method which provide the action when object send message
+         *
+         * @param message message
+         */
+        void onMessageReceived(@NonNull final String message);
     }
 
 //=======================================================================================
@@ -698,4 +727,35 @@ public interface ChannelsListContract {
             return lhs.getLastTimeActive().compareTo(rhs.getLastTimeActive());
         }
     }
+//=======================================================================================
+//====================================CONSTANTS==========================================
+//=======================================================================================
+
+    enum ChannelEvent {
+        LONG_CLICK(0);
+
+        /**
+         * Object
+         */
+        private final AdapteredRecyclerView.BaseRecyclerCallback.RecycleEvent recycleEvent;
+
+        /**
+         * Constructor
+         *
+         * @param eventCode event code
+         */
+        ChannelEvent(int eventCode) {
+            this.recycleEvent = new AdapteredRecyclerView.BaseRecyclerCallback.RecycleEvent(eventCode);
+        }
+
+        /**
+         * Method which provide the getting of the event
+         *
+         * @return current event
+         */
+        public AdapteredRecyclerView.BaseRecyclerCallback.RecycleEvent getRecycleEvent() {
+            return recycleEvent;
+        }
+    }
+
 }

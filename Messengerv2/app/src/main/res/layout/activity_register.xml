@@ -17,6 +17,8 @@
         app:colorRegEdits="@android:color/black"
         app:colorRegHintEdits="@android:color/darker_gray"
         app:colorRegLabels="@android:color/black"
+        app:colorRegLoadingBackground="@color/colorBlue"
+        app:colorRegLoadingMessage="@android:color/white"
         app:colorRegTextButton="@color/colorBlueDark"
         app:dimenRegButton="@dimen/text_14"
         app:dimenRegEdits="@dimen/text_14"

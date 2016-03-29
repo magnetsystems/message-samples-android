@@ -22,6 +22,9 @@
         <attr name="dimenRememberText" format="dimension" />
         <attr name="dimenButtonsText" format="dimension" />
 
+        <attr name="colorLogLoadingBackground" format="color" />
+        <attr name="colorLogLoadingMessage" format="color" />
+
 
         <!--<attr name="showText" format="boolean" />-->
         <!--<attr name="labelPosition" format="enum">-->

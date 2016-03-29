@@ -9,6 +9,8 @@
         <attr name="colorRegHintEdits" format="color" />
         <attr name="colorRegLabels" format="color" />
         <attr name="colorRegTextButton" format="color" />
+        <attr name="colorRegLoadingBackground" format="color" />
+        <attr name="colorRegLoadingMessage" format="color" />
 
         <attr name="dimenRegLabels" format="dimension" />
         <attr name="dimenRegEdits" format="dimension" />

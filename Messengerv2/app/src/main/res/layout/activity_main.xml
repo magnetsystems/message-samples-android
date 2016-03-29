@@ -38,6 +38,8 @@
             android:layout_marginTop="@dimen/dimen_10"
             app:backgroundsEdit="@drawable/background_edit_login"
             app:colorButtonRemember="@color/colorBlueDark"
+            app:colorLogLoadingBackground="@color/colorBlue"
+            app:colorLogLoadingMessage="@android:color/white"
             app:colorTextButtons="@color/colorBlueDark"
             app:colorTextRemember="@android:color/black"
             app:dimenButtonsText="@dimen/text_14"

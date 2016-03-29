@@ -35,11 +35,11 @@
 
         <FrameLayout
             android:id="@+id/viewImages"
-            android:visibility="gone"
             android:layout_width="@dimen/dimen_45"
-            android:layout_height="@dimen/dimen_45">
+            android:layout_height="@dimen/dimen_45"
+            android:visibility="gone">
 
-            <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
+            <com.magnet.chatsdkcover.ui.custom.CircleNameView
                 android:id="@+id/viewCircleName"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

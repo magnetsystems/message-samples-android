@@ -115,6 +115,21 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     }
 
     /**
+     * Method which provide the item deleting
+     *
+     * @param t current item
+     * @return deleting results
+     */
+    public boolean deleteItem(@NonNull final T t) {
+        if (objectList.contains(t)) {
+            objectList.remove(t);
+            notifyDataSetChanged();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Method which provide the notifying of the data set changed
      */
     public void notifyDataSetChanged() {
@@ -617,10 +632,41 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     public interface BaseRecyclerCallback<T extends BaseObject> {
 
         class RecycleEvent {
+
             private final int eventCode;
 
             public RecycleEvent(int eventCode) {
                 this.eventCode = eventCode;
+            }
+
+            /**
+             * Method which provide th equaling of the events
+             *
+             * @param o current event
+             * @return equal results
+             */
+            @Override
+            public boolean equals(Object o) {
+                if (o == null) {
+                    return false;
+                }
+
+                if (o instanceof RecycleEvent) {
+                    RecycleEvent event = (RecycleEvent) o;
+                    if (event.getEventCode() == eventCode) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            /**
+             * Method which provide the event code
+             *
+             * @return event code
+             */
+            public int getEventCode() {
+                return eventCode;
             }
         }
 

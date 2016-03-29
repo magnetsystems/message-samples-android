@@ -17,6 +17,8 @@
         app:colorEditUserEdits="@android:color/black"
         app:colorEditUserHintEdits="@android:color/darker_gray"
         app:colorEditUserLabels="@color/colorBlueDark"
+        app:colorEditUserLoadingBackground="@color/colorBlue"
+        app:colorEditUserLoadingMessage="@android:color/white"
         app:colorEditUserTextButton="@color/colorBlueDark"
         app:dimenEditUserButton="@dimen/text_14"
         app:dimenEditUserEdits="@dimen/text_14"

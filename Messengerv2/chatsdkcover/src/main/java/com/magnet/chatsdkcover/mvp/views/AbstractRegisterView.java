@@ -3,6 +3,7 @@ package com.magnet.chatsdkcover.mvp.views;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,8 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
@@ -41,6 +44,10 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 
     View viewProgress;
 
+    ViewGroup viewProgressInside;
+    AppCompatTextView labelLoading;
+    ProgressBar progressLoading;
+
     //ATTRIBUTES
     private Drawable backgroundEditFirstName;
     private Drawable backgroundEditLastName;
@@ -53,6 +60,9 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
     private ColorStateList colorHintEdits;
     private ColorStateList colorTextLabels;
     private ColorStateList colorTextButtons;
+
+    private ColorStateList colorTextLoading;
+    private ColorStateList colorBackgroundLoading;
 
     private int dimenLabelsText;
     private int dimenEditsText;
@@ -96,6 +106,9 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
             colorHintEdits = attributes.getColorStateList(R.styleable.AbstractRegisterView_colorRegHintEdits);
             colorTextLabels = attributes.getColorStateList(R.styleable.AbstractRegisterView_colorRegLabels);
             colorTextButtons = attributes.getColorStateList(R.styleable.AbstractRegisterView_colorRegTextButton);
+
+            colorTextLoading = attributes.getColorStateList(R.styleable.AbstractRegisterView_colorRegLoadingMessage);
+            colorBackgroundLoading = attributes.getColorStateList(R.styleable.AbstractRegisterView_colorRegLoadingBackground);
 
             dimenLabelsText = attributes.getDimensionPixelSize(R.styleable.AbstractRegisterView_dimenRegLabels, R.dimen.text_18);
             dimenEditsText = attributes.getDimensionPixelSize(R.styleable.AbstractRegisterView_dimenRegEdits, R.dimen.text_18);
@@ -163,6 +176,17 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
             buttonRegister.setTextColor(colorTextButtons);
         }
 
+        if (colorBackgroundLoading != null) {
+            viewProgressInside.getBackground().setColorFilter(colorBackgroundLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
+        if (colorTextLoading != null) {
+            labelLoading.setTextColor(colorTextLoading);
+            progressLoading.getIndeterminateDrawable().setColorFilter(colorTextLoading
+                    .getColorForState(EMPTY_STATE_SET, android.R.color.transparent), PorterDuff.Mode.SRC_IN);
+        }
+
         editFirstName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         editLastName.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
         editEmail.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenEditsText);
@@ -199,6 +223,11 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
         buttonRegister = (AppCompatButton) findViewById(R.id.buttonRegister);
 
         viewProgress = findViewById(R.id.viewProgress);
+
+        labelLoading = (AppCompatTextView) findViewById(R.id.labelLoading);
+        progressLoading = (ProgressBar) findViewById(R.id.progressLoading);
+        viewProgressInside = (ViewGroup) findViewById(R.id.viewProgressInside);
+
     }
 
     /**
@@ -385,7 +414,7 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 
     //EXAMPLE TO CUSTOMIZE
 
-//    <com.magnet.chatsdkcover.mvp.views.AbstractRegisterView
+//    <com.magnet.chatsdkcover.ui.views.section.register.DefaultRegisterView
 //    android:id="@+id/viewRegister"
 //    android:layout_width="match_parent"
 //    android:layout_height="wrap_content"
@@ -395,10 +424,12 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 //    app:colorRegEdits="@android:color/black"
 //    app:colorRegHintEdits="@android:color/darker_gray"
 //    app:colorRegLabels="@android:color/black"
+//    app:colorRegLoadingBackground="@color/colorBlue"
+//    app:colorRegLoadingMessage="@android:color/white"
 //    app:colorRegTextButton="@color/colorBlueDark"
 //    app:dimenRegButton="@dimen/text_14"
 //    app:dimenRegEdits="@dimen/text_14"
 //    app:dimenRegLabels="@dimen/text_14"
-//    app:minimumRegPassLength="10" />
+//    app:minimumRegPassLength="6" />
 
 }

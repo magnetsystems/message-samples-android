@@ -38,3 +38,17 @@ public abstract class MagnetMaxApplication extends MultiDexApplication {
         return instance;
     }
 }
+
+//SAMPLE TO USE:
+//CODE:
+//public class CurrentApplication extends MagnetMaxApplication {
+//
+//    @Override
+//    protected int getPropertyFile() {
+//        return R.raw.magnetmax;
+//    }
+//}
+//MANIFETS.XML
+//<application
+//android:name=".core.CurrentApplication"
+//        android:allowBackup="true"

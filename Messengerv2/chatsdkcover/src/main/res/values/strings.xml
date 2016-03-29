@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">Chat SDK Cover</string>
+    <string name="app_name_cover">Chat SDK Cover</string>
+    <string name="text_updating_cover">Updating</string>
+    <string name="text_please_wait_cover">Please wait</string>
+    <string name="text_register_cover">Register</string>
+    <string name="text_password_again_cover">Password again</string>
+    <string name="text_password_cover">Password</string>
+    <string name="text_enter_your_password_cover">Enter your password</string>
+    <string name="text_email_cover">Email</string>
+    <string name="text_enter_your_email_cover">Enter your email address</string>
+    <string name="text_last_name_cover">Last name</string>
+    <string name="text_first_name_cover">First name</string>
+    <string name="text_enter_your_name_cover">Enter your name</string>
+    <string name="text_save_changes_cover">Save changes</string>
+    <string name="text_edit_cover">Edit</string>
+    <string name="text_login_cover">Login</string>
+    <string name="text_remember_me_cover">Remember me</string>
+    <string name="text_enter_password_here_cover">Enter password here</string>
+    <string name="text_enter_email_here">Enter email here</string>
+    <string name="text_creating_user_cover">Creating user</string>
+    <string name="text_authorization_cover">Authorization</string>
+    <string name="text_channel_deleted_successfuly_cover">You leaved the conversation</string>
 </resources>

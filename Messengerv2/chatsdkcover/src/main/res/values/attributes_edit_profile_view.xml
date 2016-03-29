@@ -13,5 +13,8 @@
         <attr name="dimenEditUserEdits" format="dimension" />
         <attr name="dimenEditUserButton" format="dimension" />
 
+        <attr name="colorEditUserLoadingBackground" format="color" />
+        <attr name="colorEditUserLoadingMessage" format="color" />
+
     </declare-styleable>
 </resources>
