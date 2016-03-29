@@ -393,7 +393,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     ///////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////BASE VIEW///////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    public static abstract class BaseRecyclerView extends FrameLayout implements View.OnClickListener {
+    private static abstract class BaseRecyclerView extends FrameLayout implements View.OnClickListener {
 
         /**
          * Interface which provide the doing some action inside the Handler thread

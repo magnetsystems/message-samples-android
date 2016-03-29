@@ -12,4 +12,5 @@
     <string name="text_leave_the_conversation_text">Are you sure that you want to leave this conversation?</string>
     <string name="text_leave">Leave</string>
     <string name="text_stay">Stay</string>
+    <string name="text_cancel">Cancel</string>
 </resources>

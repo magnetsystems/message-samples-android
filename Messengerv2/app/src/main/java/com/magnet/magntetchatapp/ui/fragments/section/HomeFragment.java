@@ -125,7 +125,7 @@ public class HomeFragment extends BaseFragment {
         builder.setTitle(R.string.text_leave_the_conversation);
         builder.setMessage(R.string.text_leave_the_conversation_text);
         builder.setPositiveButton(R.string.text_leave, onClickListener);
-        builder.setNegativeButton(R.string.text_stay, null);
+        builder.setNegativeButton(R.string.text_cancel, null);
         final AlertDialog alertDialog = builder.create();
         if (alertDialog != null) {
             runOnMainThread(0, new OnActionPerformer() {
