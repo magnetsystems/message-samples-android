@@ -13,4 +13,5 @@
     <string name="text_leave">Leave</string>
     <string name="text_stay">Stay</string>
     <string name="text_cancel">Cancel</string>
+    <string name="text_create_new_channel">Create new channel</string>
 </resources>

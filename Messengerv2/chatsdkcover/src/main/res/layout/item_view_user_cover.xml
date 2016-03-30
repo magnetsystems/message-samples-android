@@ -2,14 +2,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewContent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dimen_5">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimen_5"
-        android:layout_marginTop="@dimen/dimen_5">
+        android:layout_margin="@dimen/dimen_5"
+        android:layout_marginBottom="@dimen/dimen_5">
 
         <com.magnet.chatsdkcover.ui.custom.CircleNameView
             android:id="@+id/viewCircleName"
@@ -18,18 +17,18 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageAvatar"
-            android:layout_width="@dimen/dimen_45"
-            android:layout_height="@dimen/dimen_45"
-            android:src="@drawable/image_no_avatar" />
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_45"
+            android:layout_height="@dimen/dimen_50"
             android:layout_toRightOf="@id/imageAvatar"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/dimen_5">
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/labelFirstName"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -38,6 +37,7 @@
                 android:textSize="@dimen/text_18" />
 
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/labelLastName"
                 android:layout_width="@dimen/dimen_0"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

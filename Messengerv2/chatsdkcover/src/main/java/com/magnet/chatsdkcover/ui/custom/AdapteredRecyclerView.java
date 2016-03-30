@@ -65,6 +65,15 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     }
 
     /**
+     * Method which provide the setting of the list
+     *
+     * @param baseObjects list objects
+     */
+    public void setList(@NonNull List<T> baseObjects) {
+        updateList(baseObjects);
+    }
+
+    /**
      * Method which provide the updating list inside the RecyclerView
      *
      * @param baseObjects current object list

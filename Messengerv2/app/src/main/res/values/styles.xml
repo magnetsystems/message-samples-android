@@ -52,6 +52,13 @@
         <item name="colorAccent">@color/colorBlue</item>
     </style>
 
+    <style name="AppTheme.CreateChannel" parent="AppTheme">
+        <!-- Customize your theme here -->
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/colorBlueDark</item>
+        <item name="colorAccent">@color/colorBlue</item>
+    </style>
+
     <!--===================| ACTIVITY THEMES |s===================-->
 
 
