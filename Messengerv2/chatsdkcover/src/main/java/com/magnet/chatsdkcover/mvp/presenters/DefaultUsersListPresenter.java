@@ -2,8 +2,10 @@ package com.magnet.chatsdkcover.mvp.presenters;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.api.UsersListContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -38,6 +40,7 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
     @Override
     public void onActivityCreate() {
         view.setLazyLoadCallback(this);
+        switchLoading(null, false);
         getAllUsers(0);
     }
 
@@ -96,6 +99,11 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
     @Override
     public void getUsers(@NonNull final String filter, final int offset, @NonNull final String sortOrder) {
 
+        if (view != null
+                && view.getCurrentContext() != null) {
+            switchLoading(view.getCurrentContext().getString(R.string.text_loading_users_cover), true);
+        }
+
         this.filter = filter;
         this.sortOrder = sortOrder;
 
@@ -123,6 +131,8 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
                         addUsers(userObjects);
                     }
                 }
+
+                switchLoading(null, false);
             }
 
             @SuppressLint("LongLogTag")
@@ -131,6 +141,7 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
                 if (error != null) {
                     Log.e(TAG, error.toString());
                 }
+                switchLoading(null, false);
             }
         });
     }
@@ -156,6 +167,19 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
     public void setUsers(@NonNull List<UsersListContract.UserObject> userObjects) {
         if (view != null) {
             view.setUsers(userObjects);
+        }
+    }
+
+    /**
+     * Method which provide the switch loading message
+     *
+     * @param message    message
+     * @param isNeedShow is need show loading message
+     */
+    @Override
+    public void switchLoading(@Nullable final String message, final boolean isNeedShow) {
+        if (view != null) {
+            view.switchLoading(message, isNeedShow);
         }
     }
 

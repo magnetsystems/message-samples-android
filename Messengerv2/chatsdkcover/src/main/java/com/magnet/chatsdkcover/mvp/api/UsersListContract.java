@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -76,6 +77,14 @@ public interface UsersListContract {
          */
         List<User> getSelectedUsers();
 
+        /**
+         * Method which provide the switch loading message
+         *
+         * @param message    message
+         * @param isNeedShow is need show loading message
+         */
+        void switchLoading(@Nullable final String message, final boolean isNeedShow);
+
     }
 
     /**
@@ -120,6 +129,14 @@ public interface UsersListContract {
          * @param userObjects current users
          */
         void setUsers(@NonNull final List<UserObject> userObjects);
+
+        /**
+         * Method which provide the switch loading message
+         *
+         * @param message    message
+         * @param isNeedShow is need show loading message
+         */
+        void switchLoading(@Nullable final String message, final boolean isNeedShow);
     }
 
 

@@ -20,7 +20,6 @@ import com.magnet.magnetchat.ui.activities.ChatActivity;
 import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.core.CurrentApplication;
-import com.magnet.magntetchatapp.ui.activities.section.users.CreateChannelActivity;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
 import com.magnet.mmx.client.api.ChannelDetail;
 
@@ -91,8 +90,9 @@ public class HomeFragment extends BaseFragment {
         if (item.getItemId() == R.id.menu_create_channel) {
             Intent intent = ChooseUserActivity.getIntentToCreateChannel(getContext());
             if (intent != null) {
-//                startActivity(intent);
-                startActivity(CreateChannelActivity.class, false);
+                //TODO
+                startActivity(intent);
+//                startActivity(CreateChannelActivity.class, false);
             }
             return true;
         }

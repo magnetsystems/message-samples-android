@@ -146,9 +146,11 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
     }
 
     AdapteredRecyclerView recyclerView;
-    ViewGroup viewProgress;
+
     AppCompatTextView labelLoading;
+    ViewGroup viewProgress;
     ProgressBar progressLoading;
+
     SwipeRefreshLayout viewSwipeRefresh;
 
     private String filterQuery;

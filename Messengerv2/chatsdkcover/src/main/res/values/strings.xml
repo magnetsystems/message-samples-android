@@ -20,4 +20,6 @@
     <string name="text_creating_user_cover">Creating user</string>
     <string name="text_authorization_cover">Authorization</string>
     <string name="text_channel_deleted_successfuly_cover">You leaved the conversation</string>
+    <string name="text_loading_channels_cover">Loading channels</string>
+    <string name="text_loading_users_cover">Loading users</string>
 </resources>

@@ -4,10 +4,47 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView
-        android:id="@+id/recyclerView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/viewSwipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent">
+
+        <com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:id="@+id/viewProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:background="@drawable/background_accent_square"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_5">
+
+        <ProgressBar
+            android:id="@+id/progressLoading"
+            style="@android:style/Widget.Holo.ProgressBar.Small"
+            android:layout_width="@dimen/dimen_25"
+            android:layout_height="@dimen/dimen_25"
+            android:layout_gravity="center_vertical" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/labelLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_10"
+            android:paddingLeft="@dimen/dimen_5"
+            android:paddingRight="@dimen/dimen_10"
+            android:paddingTop="@dimen/dimen_10"
+            android:text="@string/text_loading_channels_cover"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </FrameLayout>

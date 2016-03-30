@@ -2,8 +2,13 @@ package com.magnet.chatsdkcover.mvp.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.GridLayoutManager;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
@@ -21,6 +26,12 @@ import java.util.List;
 public class AbstractUsersListView extends BasePresenterView<UsersListContract.Presenter> implements UsersListContract.View {
 
     private AdapteredRecyclerView recyclerView;
+
+    AppCompatTextView labelLoading;
+    ViewGroup viewProgress;
+    ProgressBar progressLoading;
+
+    SwipeRefreshLayout viewSwipeRefresh;
 
     public AbstractUsersListView(Context context) {
         super(context);
@@ -61,6 +72,10 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
     @Override
     protected void onLinkInterface() {
         recyclerView = (AdapteredRecyclerView) findViewById(R.id.recyclerView);
+        labelLoading = (AppCompatTextView) findViewById(R.id.labelLoading);
+        viewSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.viewSwipeRefresh);
+        viewProgress = (ViewGroup) findViewById(R.id.viewProgress);
+        progressLoading = (ProgressBar) findViewById(R.id.progressLoading);
     }
 
     /**
@@ -69,6 +84,18 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
     @Override
     protected void onCreateView() {
         recyclerView.setLayoutManager(new GridLayoutManager(getCurrentContext(), 1));
+        viewSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (viewSwipeRefresh != null) {
+                    viewSwipeRefresh.setRefreshing(false);
+                }
+
+                if (presenter != null) {
+                    presenter.getAllUsers(0);
+                }
+            }
+        });
     }
 
     /**
@@ -166,5 +193,31 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
             }
         }
         return userObjects;
+    }
+
+    /**
+     * Method which provide the switch loading message
+     *
+     * @param message    message
+     * @param isNeedShow is need show loading message
+     */
+    @Override
+    public void switchLoading(@Nullable final String message, final boolean isNeedShow) {
+        runOnMainThread(0, new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (labelLoading != null && viewProgress != null) {
+                    if (message == null || message.isEmpty() == true) {
+                        viewProgress.setVisibility(GONE);
+                    } else if (isNeedShow == true) {
+                        labelLoading.setText(message);
+                        viewProgress.setVisibility(VISIBLE);
+                    } else {
+                        viewProgress.setVisibility(GONE);
+                    }
+                }
+            }
+        });
+
     }
 }
