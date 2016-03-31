@@ -22,6 +22,7 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
     private static final String TAG = "DefaultUsersListPresenter";
 
     private final UsersListContract.View view;
+    private final List<String> selectedUsers;
     private String filter;
     private String sortOrder;
 
@@ -31,6 +32,7 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
      * @param view current view
      */
     public DefaultUsersListPresenter(UsersListContract.View view) {
+        selectedUsers = new ArrayList<String>();
         this.view = view;
     }
 
@@ -66,6 +68,26 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
     @Override
     public void onActivityDestroy() {
 
+    }
+
+    /**
+     * Method which provide the user searching
+     *
+     * @param query query
+     */
+    @Override
+    public void searchUsers(@NonNull final String query, @NonNull final List<User> users) {
+        selectedUsers.clear();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                for (User user : users) {
+                    selectedUsers.add(user.getUserIdentifier());
+                }
+                getUsers(query, 0);
+            }
+        };
+        new Thread(runnable).start();
     }
 
     /**
@@ -118,7 +140,11 @@ public class DefaultUsersListPresenter implements UsersListContract.Presenter {
                     for (User user : users) {
                         String userID = user.getUserIdentifier();
                         if (userID.equalsIgnoreCase(currentUserID) == false) {
-                            userObjects.add(new UsersListContract.UserObject(user));
+                            UsersListContract.UserObject userObject = new UsersListContract.UserObject(user);
+                            userObjects.add(userObject);
+                            if (selectedUsers.contains(currentUserID)) {
+                                userObject.setIsSelected(true);
+                            }
                         }
                     }
                 }

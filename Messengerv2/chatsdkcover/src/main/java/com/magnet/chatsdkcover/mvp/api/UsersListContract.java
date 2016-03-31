@@ -20,6 +20,7 @@ import com.magnet.chatsdkcover.ui.custom.CircleNameView;
 import com.magnet.max.android.User;
 
 import java.lang.ref.WeakReference;
+import java.util.Comparator;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -85,12 +86,26 @@ public interface UsersListContract {
          */
         void switchLoading(@Nullable final String message, final boolean isNeedShow);
 
+        /**
+         * Method which provide the user searching
+         *
+         * @param query query
+         */
+        void searchUsers(@NonNull final String query);
+
     }
 
     /**
      * Presenter
      */
     interface Presenter extends BaseContract.BasePresenter, AdapteredRecyclerView.OnLazyLoadCallback {
+
+        /**
+         * Method which provide the user searching
+         *
+         * @param query query
+         */
+        void searchUsers(@NonNull final String query, @NonNull final List<User> users);
 
         /**
          * Method which provide to getting of the all users with offset
@@ -137,6 +152,7 @@ public interface UsersListContract {
          * @param isNeedShow is need show loading message
          */
         void switchLoading(@Nullable final String message, final boolean isNeedShow);
+
     }
 
 
@@ -313,10 +329,10 @@ public interface UsersListContract {
          */
         public UserObject(@NonNull User user) {
             this.user = user;
-            this.firstName = user.getFirstName();
-            this.lastName = user.getLastName();
+            this.firstName = user.getFirstName().trim();
+            this.lastName = user.getLastName().trim();
             this.avatarUrl = user.getAvatarUrl();
-            this.fullName = String.format("%s %s", this.firstName, this.lastName);
+            this.fullName = String.format("%s %s", this.firstName, this.lastName).trim();
         }
 
         /**
@@ -362,6 +378,35 @@ public interface UsersListContract {
          */
         public void setIsSelected(boolean isSelected) {
             this.isSelected = isSelected;
+        }
+    }
+
+
+    //=======================================================================================
+    //====================================COMPARATOR=========================================
+    //=======================================================================================
+
+    /**
+     * Comparartor which provide the sorting of the users by the last name
+     */
+    class UserLastNameComparator implements Comparator<UserObject> {
+
+        @Override
+        public int compare(UserObject lhs, UserObject rhs) {
+            if (lhs == null
+                    || rhs == null) {
+                return 0;
+            }
+
+            String lastName = lhs.lastName;
+            String lastNameCompare = rhs.lastName;
+
+            if (lastName == null
+                    || lastNameCompare == null) {
+                return 0;
+            }
+
+            return lastName.compareToIgnoreCase(lastNameCompare);
         }
     }
 

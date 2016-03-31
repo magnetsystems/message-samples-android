@@ -121,6 +121,7 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
             public void onActionPerform() {
                 if (recyclerView != null) {
                     recyclerView.addList(userObjects);
+                    recyclerView.sort(new UsersListContract.UserLastNameComparator(), false);
                 }
             }
         });
@@ -138,6 +139,7 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
             public void onActionPerform() {
                 if (recyclerView != null) {
                     recyclerView.setList(userObjects);
+                    recyclerView.sort(new UsersListContract.UserLastNameComparator(), false);
                 }
             }
         });
@@ -219,5 +221,18 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
             }
         });
 
+    }
+
+    /**
+     * Method which provide the user searching
+     *
+     * @param query query
+     */
+    @Override
+    public void searchUsers(@NonNull String query) {
+        if (presenter != null) {
+            List<User> users = getSelectedUsers();
+            presenter.searchUsers(query, users);
+        }
     }
 }

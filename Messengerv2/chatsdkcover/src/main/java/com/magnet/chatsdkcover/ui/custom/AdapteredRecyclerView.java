@@ -30,6 +30,15 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
 
     private static final String TAG = "AdapteredRecyclerView";
 
+    /**
+     * Interface which provide the doing some action inside the Handler thread
+     */
+    protected interface OnActionPerformer {
+        void onActionPerform();
+    }
+
+    private final Handler MAIN_THREAD_HANDLER = new Handler();
+
     private BaseApplicationRecyclerAdapter adapter;
     private List<T> objectList;
 
@@ -65,6 +74,26 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     }
 
     /**
+     * Method which provide the sorting of the objects
+     *
+     * @param comparator comparartor
+     * @param isReverse  is need reverse
+     */
+    public void sort(final Comparator<T> comparator, final boolean isReverse) {
+        runOnBackground(new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (isReverse == false) {
+                    Collections.sort(objectList, comparator);
+                } else {
+                    Collections.sort(objectList, Collections.reverseOrder(comparator));
+                }
+                notifyDataSetChanged();
+            }
+        });
+    }
+
+    /**
      * Method which provide the setting of the list
      *
      * @param baseObjects list objects
@@ -83,7 +112,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         adapter.setSizeListOld(0);
         objectList.addAll(baseObjects);
         sortByPriority(objectList);
-        adapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     /**
@@ -94,7 +123,7 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
     public void addList(@NonNull List<T> baseObjects) {
         objectList.addAll(baseObjects);
         sortByPriority(objectList);
-        adapter.notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
     /**
@@ -142,9 +171,14 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
      * Method which provide the notifying of the data set changed
      */
     public void notifyDataSetChanged() {
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
+        runOnMainThread(0, new OnActionPerformer() {
+            @Override
+            public void onActionPerform() {
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     /**
@@ -188,6 +222,36 @@ public class AdapteredRecyclerView<T extends AdapteredRecyclerView.BaseObject> e
         if (objectList != null) {
             Collections.sort(objectList, new PriorityComparator());
         }
+    }
+
+    /**
+     * Method which provide the doing action on UI thread after the delaying time
+     *
+     * @param delay     delaying time (in seconds)
+     * @param performer current action
+     */
+    protected void runOnMainThread(int delay, final OnActionPerformer performer) {
+        MAIN_THREAD_HANDLER.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                performer.onActionPerform();
+            }
+        }, delay);
+    }
+
+    /**
+     * Method which provide the running action on the background thread
+     *
+     * @param onActionPerformer action performer
+     */
+    protected void runOnBackground(final OnActionPerformer onActionPerformer) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                onActionPerformer.onActionPerform();
+            }
+        };
+        new Thread(runnable).start();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
