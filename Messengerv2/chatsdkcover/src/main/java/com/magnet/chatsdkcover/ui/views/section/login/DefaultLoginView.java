@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.chatsdkcover.mvp.api.LoginContract;
+import com.magnet.chatsdkcover.mvp.api.abs.LoginContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultLoginPresenter;
 import com.magnet.chatsdkcover.mvp.views.AbstractLoginView;
 

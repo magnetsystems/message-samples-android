@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.chatsdkcover.mvp.api.RegisterContract;
+import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultRegisterPresenter;
 import com.magnet.chatsdkcover.mvp.views.AbstractRegisterView;
 

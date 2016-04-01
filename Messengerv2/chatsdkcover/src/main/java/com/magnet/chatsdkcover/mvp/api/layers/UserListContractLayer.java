@@ -1,10 +1,9 @@
-package com.magnet.chatsdkcover.mvp.api;
+package com.magnet.chatsdkcover.mvp.api.layers;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -14,147 +13,25 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.chatsdkcover.R;
-import com.magnet.chatsdkcover.mvp.abs.BaseContract;
 import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
 import com.magnet.chatsdkcover.ui.custom.CircleNameView;
 import com.magnet.max.android.User;
 
 import java.lang.ref.WeakReference;
 import java.util.Comparator;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
- * Created by Artli_000 on 29.03.2016.
+ * Created by dlernatovich on 4/1/16.
  */
-public interface UsersListContract {
-
+public interface UserListContractLayer {
     //Querry params
     String QUERY_TEMPLATE = "lastName:%s*";
     String QUERY_SEARCH_ALL_USERS = "*";
     String SORT_ORDER = "lastName:asc";
     //Offset params
     int LIMIT = 15;
-
-
-    /**
-     * View
-     */
-    interface View extends BaseContract.BaseView {
-
-        /**
-         * Method which privide the users adding to the list
-         *
-         * @param userObjects users list
-         */
-        void addUsers(@NonNull final List<UserObject> userObjects);
-
-        /**
-         * Method which provide the setting of the users list
-         *
-         * @param userObjects users list
-         */
-        void setUsers(@NonNull final List<UserObject> userObjects);
-
-        /**
-         * Method which provide the setting of the OnLazyLoadCallback
-         *
-         * @param lazyLoadCallback current lazyLoadCallback
-         */
-        void setLazyLoadCallback(@NonNull final AdapteredRecyclerView.OnLazyLoadCallback lazyLoadCallback);
-
-        /**
-         * Method which provide to getting of the selected user objects list
-         *
-         * @return user objects list
-         */
-        List<UserObject> getSelectedUserObjects();
-
-        /**
-         * Method which provide to getting of the selecting user objects
-         *
-         * @return user objects
-         */
-        List<User> getSelectedUsers();
-
-        /**
-         * Method which provide the switch loading message
-         *
-         * @param message    message
-         * @param isNeedShow is need show loading message
-         */
-        void switchLoading(@Nullable final String message, final boolean isNeedShow);
-
-        /**
-         * Method which provide the user searching
-         *
-         * @param query query
-         */
-        void searchUsers(@NonNull final String query);
-
-    }
-
-    /**
-     * Presenter
-     */
-    interface Presenter extends BaseContract.BasePresenter, AdapteredRecyclerView.OnLazyLoadCallback {
-
-        /**
-         * Method which provide the user searching
-         *
-         * @param query query
-         */
-        void searchUsers(@NonNull final String query, @NonNull final List<User> users);
-
-        /**
-         * Method which provide to getting of the all users with offset
-         *
-         * @param offset current offset
-         */
-        void getAllUsers(final int offset);
-
-        /**
-         * Method which provide the users getting
-         *
-         * @param filter filter by last name
-         * @param offset offset
-         */
-        void getUsers(@NonNull final String filter, final int offset);
-
-        /**
-         * Method which provide the users getting
-         *
-         * @param filter    filter by last name
-         * @param offset    offset
-         * @param sortOrder sort order
-         */
-        void getUsers(@NonNull final String filter, final int offset, @NonNull final String sortOrder);
-
-        /**
-         * Method which provide the adding of the users list
-         *
-         * @param userObjects users list
-         */
-        void addUsers(@NonNull final List<UserObject> userObjects);
-
-        /**
-         * Method which provide the setting of the users
-         *
-         * @param userObjects current users
-         */
-        void setUsers(@NonNull final List<UserObject> userObjects);
-
-        /**
-         * Method which provide the switch loading message
-         *
-         * @param message    message
-         * @param isNeedShow is need show loading message
-         */
-        void switchLoading(@Nullable final String message, final boolean isNeedShow);
-
-    }
-
 
     //=======================================================================================
     //==================================RECYCLER ITEMS=======================================

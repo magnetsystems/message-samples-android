@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.chatsdkcover.mvp.api.EditProfileContract;
+import com.magnet.chatsdkcover.mvp.api.abs.EditProfileContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultEditProfilePresenter;
 import com.magnet.chatsdkcover.mvp.views.AbstractEditProfileView;
 

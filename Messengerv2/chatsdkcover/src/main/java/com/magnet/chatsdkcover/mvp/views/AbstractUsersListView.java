@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.UsersListContract;
+import com.magnet.chatsdkcover.mvp.api.abs.UsersListContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultUsersListPresenter;
 import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
 import com.magnet.max.android.User;
@@ -27,9 +27,9 @@ public class AbstractUsersListView extends BasePresenterView<UsersListContract.P
 
     private AdapteredRecyclerView recyclerView;
 
-    AppCompatTextView labelLoading;
-    ViewGroup viewProgress;
-    ProgressBar progressLoading;
+    private AppCompatTextView labelLoading;
+    private ViewGroup viewProgress;
+    private ProgressBar progressLoading;
 
     SwipeRefreshLayout viewSwipeRefresh;
 

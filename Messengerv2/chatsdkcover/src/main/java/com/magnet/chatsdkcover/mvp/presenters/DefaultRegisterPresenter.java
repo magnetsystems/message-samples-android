@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
 import com.magnet.magnetchat.util.AppLogger;
-import com.magnet.chatsdkcover.mvp.api.RegisterContract;
+import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
 import com.magnet.max.android.ApiError;
 
 /**

@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.RegisterContract;
+import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
 import com.magnet.magnetchat.helpers.UserHelper;
 
 //import com.magnet.magntetchatapp.R;

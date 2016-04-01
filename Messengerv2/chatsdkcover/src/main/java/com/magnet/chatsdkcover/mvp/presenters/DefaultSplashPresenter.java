@@ -2,7 +2,7 @@ package com.magnet.chatsdkcover.mvp.presenters;
 
 import android.util.Log;
 
-import com.magnet.chatsdkcover.mvp.api.SplashContract;
+import com.magnet.chatsdkcover.mvp.api.abs.SplashContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;

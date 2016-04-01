@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.api;
+package com.magnet.chatsdkcover.mvp.api.abs;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

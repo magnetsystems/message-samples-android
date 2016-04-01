@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.view.MenuItem;
 
 import com.magnet.magntetchatapp.R;
-import com.magnet.chatsdkcover.mvp.api.RegisterContract;
+import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
 import com.magnet.chatsdkcover.mvp.views.AbstractRegisterView;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.edit.FirstSetupActivity;

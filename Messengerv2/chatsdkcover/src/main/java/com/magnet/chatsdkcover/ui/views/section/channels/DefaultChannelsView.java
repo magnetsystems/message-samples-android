@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.chatsdkcover.mvp.api.ChannelsListContract;
+import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultChannelsPresenter;
 import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
 

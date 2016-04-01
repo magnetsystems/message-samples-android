@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.chatsdkcover.mvp.api.LoginContract;
+import com.magnet.chatsdkcover.mvp.api.abs.LoginContract;
 import com.magnet.max.android.ApiError;
 import com.magnet.mmx.client.api.MMX;
 

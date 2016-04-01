@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.filters.ArrayFilter;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.ChannelsListContract;
+import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
 import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;

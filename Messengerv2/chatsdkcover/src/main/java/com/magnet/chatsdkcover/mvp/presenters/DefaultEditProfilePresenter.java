@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.magnet.chatsdkcover.mvp.api.EditProfileContract;
+import com.magnet.chatsdkcover.mvp.api.abs.EditProfileContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;

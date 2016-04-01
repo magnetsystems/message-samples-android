@@ -7,6 +7,9 @@ import android.support.annotation.NonNull;
  * Created by dlernatovich on 3/14/16.
  */
 public interface BaseContract {
+    /**
+     * Base View
+     */
     interface BaseView {
 
         /**
@@ -19,6 +22,9 @@ public interface BaseContract {
 
     }
 
+    /**
+     * Base Presenter
+     */
     interface BasePresenter {
 
         /**

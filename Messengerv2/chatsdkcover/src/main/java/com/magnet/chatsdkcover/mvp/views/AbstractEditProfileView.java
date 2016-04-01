@@ -28,7 +28,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.chatsdkcover.R;
 import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.EditProfileContract;
+import com.magnet.chatsdkcover.mvp.api.abs.EditProfileContract;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;

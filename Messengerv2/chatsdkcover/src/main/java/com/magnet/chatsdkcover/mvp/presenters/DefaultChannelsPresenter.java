@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.magnet.chatsdkcover.mvp.api.ChannelsListContract;
+import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
 import com.magnet.magnetchat.Constants;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;

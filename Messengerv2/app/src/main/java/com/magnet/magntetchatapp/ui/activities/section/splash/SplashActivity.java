@@ -1,6 +1,6 @@
 package com.magnet.magntetchatapp.ui.activities.section.splash;
 
-import com.magnet.chatsdkcover.mvp.api.SplashContract;
+import com.magnet.chatsdkcover.mvp.api.abs.SplashContract;
 import com.magnet.chatsdkcover.mvp.presenters.DefaultSplashPresenter;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;

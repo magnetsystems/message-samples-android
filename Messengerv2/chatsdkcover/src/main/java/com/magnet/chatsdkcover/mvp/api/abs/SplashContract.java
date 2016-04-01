@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.api;
+package com.magnet.chatsdkcover.mvp.api.abs;
 
 /**
  * Created by dlernatovich on 3/11/16.
