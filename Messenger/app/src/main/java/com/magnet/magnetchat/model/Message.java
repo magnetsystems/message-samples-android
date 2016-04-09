@@ -47,7 +47,7 @@ public class Message {
         if (mmxMessage.getAttachments() == null || mmxMessage.getAttachments().size() == 0) {
             return null;
         }
-        return mmxMessage.getAttachments().get(0);
+        return (Attachment) mmxMessage.getAttachments().get(0);
     }
 
     public Date getCreateTime() {
@@ -85,14 +85,14 @@ public class Message {
         if (mmxMessage == null) {
             return null;
         }
-        return mmxMessage.getContent().get(TAG_TEXT);
+        return (String) mmxMessage.getContent().get(TAG_TEXT);
     }
 
     public String getType() {
         if (mmxMessage == null) {
             return null;
         }
-        return mmxMessage.getContent().get(TAG_TYPE);
+        return (String) mmxMessage.getContent().get(TAG_TYPE);
     }
 
     public String getMessageSummary() {

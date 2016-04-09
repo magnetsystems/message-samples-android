@@ -27,7 +27,7 @@ public class WakeupReceiver extends BroadcastReceiver {
         } else if (PubSubNotification.getType().equals(event.getType())) {
             PubSubNotification pubsub = event.getCustomObject(PubSubNotification.class);
             showNotification(context, StringUtil.isNotEmpty(pubsub.getTitle()) ? pubsub.getTitle() : "Magnet Messenger",
-                StringUtil.isNotEmpty(pubsub.getText()) ? pubsub.getText() : "New message is available");
+                StringUtil.isNotEmpty(pubsub.getBody()) ? pubsub.getBody() : "New message is available");
         }
     }
 
