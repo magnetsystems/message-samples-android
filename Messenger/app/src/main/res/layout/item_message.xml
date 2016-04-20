@@ -92,12 +92,11 @@
                 android:padding="@dimen/dimen_10" />
         </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/itemMessageImage"
-            android:layout_width="200sp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:visibility="gone" />
+        <FrameLayout
+            android:id="@+id/flContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </FrameLayout>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/itemMessageDelivered"
@@ -105,8 +104,7 @@
             android:layout_height="wrap_content"
             android:text="Delivered"
             android:textColor="#7d7d7d"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

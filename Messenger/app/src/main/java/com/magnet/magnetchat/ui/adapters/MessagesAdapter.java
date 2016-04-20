@@ -7,56 +7,78 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import android.widget.ListView;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.ui.custom.ResizedListView;
 import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.magnetchat.util.Utils;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.util.StringUtil;
 
+import com.magnet.mmx.client.ext.poll.MMXPoll;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageContentViewHolder> {
+    private static final int CONTENT_TYPE_TEXT = 1;
+    private static final int CONTENT_TYPE_IMAGE = 2;
+    private static final int CONTENT_TYPE_POLL = 3;
+
     private final static String TAG = MessagesAdapter.class.getSimpleName();
 
     private LayoutInflater inflater;
     private List<Message> messageList;
     private Context context;
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        LinearLayout messageArea;
-        AppCompatTextView date;
-        AppCompatTextView sender;
-        AppCompatTextView text;
-        AppCompatTextView delivered;
-        ImageView image;
-        Message message;
-        ImageView imageMyAvatar;
-        ImageView imageOtherAvatar;
-        CircleNameView viewMyAvatar;
-        CircleNameView viewOtherAvatar;
+    public class MessageContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        protected LinearLayout messageArea;
+        protected AppCompatTextView tvDate;
+        protected AppCompatTextView sender;
+        protected AppCompatTextView text;
+        protected AppCompatTextView delivered;
+        protected FrameLayout flContent;
+        protected ImageView imageMyAvatar;
+        protected ImageView imageOtherAvatar;
+        protected CircleNameView viewMyAvatar;
+        protected CircleNameView viewOtherAvatar;
 
-        public ViewHolder(View itemView) {
+        protected Message message;
+
+        public MessageContentViewHolder(View itemView, View contentView, int contentType) {
             super(itemView);
             this.messageArea = (LinearLayout) itemView.findViewById(R.id.itemMessageArea);
-            this.date = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDate);
+            this.tvDate = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDate);
             this.sender = (AppCompatTextView) itemView.findViewById(R.id.itemMessageSender);
-            this.image = (ImageView) itemView.findViewById(R.id.itemMessageImage);
             this.text = (AppCompatTextView) itemView.findViewById(R.id.itemMessageText);
             this.delivered = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDelivered);
             this.imageMyAvatar = (ImageView) itemView.findViewById(R.id.imageMyAvatar);
@@ -67,7 +89,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             this.imageOtherAvatar.setImageResource(android.R.color.transparent);
             this.viewMyAvatar = (CircleNameView) itemView.findViewById(R.id.viewMyAvatar);
             this.viewOtherAvatar = (CircleNameView) itemView.findViewById(R.id.viewOtherAvatar);
-            this.image.setOnClickListener(this);
+
+            this.flContent = (FrameLayout) itemView.findViewById(R.id.flContent);
+            if(null != contentView) {
+                FrameLayout.LayoutParams layoutParams =
+                    new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                flContent.addView(contentView, layoutParams);
+            } else {
+                flContent.setVisibility(View.GONE);
+            }
         }
 
         @Override
@@ -77,6 +107,146 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
             } catch (Exception e) {
                 AppLogger.error(this, e.toString());
             }
+        }
+
+        public void showMessage(Message message, Message previousMessage, Message nextMessage) {
+            if(null != this.message && this.message.equals(message)) {
+                return;
+            }
+
+            this.message = message;
+            boolean sameDate = configureDate(previousMessage);
+            if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
+                makeMessageFromMe(nextMessage, sameDate);
+            } else {
+                makeMessageToMe(previousMessage);
+            }
+
+            showMessageContent();
+        }
+
+        protected void showMessageContent() {
+            if(Message.TYPE_TEXT.equals(message.getType())) {
+                text.setText(message.getText());
+                text.setVisibility(View.VISIBLE);
+            }
+        }
+
+        protected void makeMessageToMe(Message previous) {
+            imageMyAvatar.setVisibility(View.GONE);
+            viewMyAvatar.setVisibility(View.GONE);
+            imageOtherAvatar.setVisibility(View.VISIBLE);
+            imageOtherAvatar.setBackgroundResource(android.R.color.transparent);
+            imageOtherAvatar.setImageResource(android.R.color.transparent);
+            viewOtherAvatar.setVisibility(View.VISIBLE);
+
+            messageArea.setGravity(Gravity.LEFT | Gravity.START);
+            text.setBackgroundResource(R.drawable.bubble_odd);
+            text.setTextColor(Color.BLACK);
+            delivered.setVisibility(View.GONE);
+            if (message.getSender() != null) {
+                String userName = UserHelper.getDisplayName(message.getSender());
+                String previousUser = "";
+                if (previous != null) {
+                    previousUser = UserHelper.getDisplayName(previous.getSender());
+                }
+                viewOtherAvatar.setUserName(userName);
+                sender.setText(userName);
+                if (userName.equalsIgnoreCase(previousUser)) {
+                    sender.setVisibility(View.GONE);
+                } else {
+                    sender.setVisibility(View.VISIBLE);
+                }
+                if (null != message.getSender().getAvatarUrl()) {
+                    Glide.with(context)
+                        .load(message.getSender().getAvatarUrl())
+                        .fitCenter()
+                        .into(imageOtherAvatar);
+                }
+            }
+        }
+
+        protected void makeMessageFromMe(Message next, boolean previousSameDate) {
+            User user = User.getCurrentUser();
+
+            imageMyAvatar.setVisibility(View.VISIBLE);
+            imageMyAvatar.setBackgroundResource(android.R.color.transparent);
+            imageMyAvatar.setImageResource(android.R.color.transparent);
+            viewMyAvatar.setVisibility(View.VISIBLE);
+            imageOtherAvatar.setVisibility(View.GONE);
+            viewOtherAvatar.setVisibility(View.GONE);
+
+            messageArea.setGravity(Gravity.RIGHT | Gravity.END);
+            text.setBackgroundResource(R.drawable.bubble2);
+            text.setTextColor(Color.WHITE);
+            sender.setVisibility(View.GONE);
+
+            String previousUserId = "";
+            if (next != null) {
+                if (next.getSender() != null) {
+                    previousUserId = next.getSender().getUserIdentifier();
+                } else {
+                    previousUserId = User.getCurrentUserId();
+                }
+            }
+            if (next == null || !User.getCurrentUserId().equals(previousUserId)) {
+                delivered.setVisibility(View.VISIBLE);
+                switch (message.getMessageStatus()) {
+                    case DELIVERED:
+                        delivered.setText("Delivered");
+                        break;
+                    case ERROR:
+                        delivered.setText("Error");
+                        break;
+                    case PENDING:
+                        delivered.setText("Pending");
+                        break;
+                }
+            } else {
+                delivered.setVisibility(View.GONE);
+            }
+
+            if ((user != null)) {
+                String userName = UserHelper.getDisplayName(user);
+                viewMyAvatar.setUserName(userName);
+                if ((null != user.getAvatarUrl())) {
+                    Glide.with(context)
+                        .load(user.getAvatarUrl())
+                        .fitCenter()
+                        .into(imageMyAvatar);
+                }
+            }
+        }
+
+        /**
+         * Returns true if current message and previous have the same date
+         * @param previous
+         * @return
+         */
+        public boolean configureDate(Message previous) {
+            Date date;
+            Date previousDate = null;
+            if (message.getCreateTime() == null) {
+                date = new Date();
+            } else {
+                date = DateHelper.utcToLocal(message.getCreateTime());
+            }
+            if (previous != null) {
+                previousDate = DateHelper.utcToLocal(null != previous.getCreateTime() ? previous.getCreateTime() : new Date());
+            }
+            String msgDate = DateHelper.getMessageDateTime(date);
+            String previousMsgDate = null;
+            if (previousDate != null) {
+                previousMsgDate = DateHelper.getMessageDateTime(previousDate);
+            }
+            if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
+                tvDate.setVisibility(View.VISIBLE);
+                tvDate.setText(msgDate);
+                return true;
+            } else {
+                tvDate.setVisibility(View.GONE);
+            }
+            return false;
         }
 
         /**
@@ -136,10 +306,183 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
                             }
                         }
                         break;
+                    case Message.TYPE_POLL:
+
+                        break;
                 }
             }
         }
 
+    }
+
+    public class TextContentViewHolder extends MessageContentViewHolder {
+
+        public TextContentViewHolder(View itemView, View contentView, int contentType) {
+            super(itemView, contentView, contentType);
+        }
+    }
+
+    public class ImageContentViewHolder extends MessageContentViewHolder {
+        ImageView imageView;
+
+        public ImageContentViewHolder(View itemView, View contentView, int contentType) {
+            super(itemView, contentView, contentType);
+            imageView = (ImageView) contentView.findViewById(R.id.itemMessageImage);
+        }
+
+        public void showMessageContent() {
+            text.setVisibility(View.GONE);
+
+            switch (message.getType()) {
+                case Message.TYPE_MAP:
+                    configureMapMsg();
+                    break;
+                case Message.TYPE_VIDEO:
+                    configureVideoMsg();
+                    break;
+                case Message.TYPE_PHOTO:
+                    configImageMsg();
+                    break;
+            }
+        }
+
+        private void configImageMsg() {
+            final Attachment attachment = message.getAttachment();
+            if (attachment != null) {
+                String attachmentId = null;
+                try {
+                    attachmentId = attachment.getDownloadUrl();
+                } catch (IllegalStateException e) {
+                    Log.d(TAG, "Attachment is not ready2", e);
+                }
+                if (null != attachmentId) {
+                    Glide.with(context)
+                        .load(Uri.parse(attachmentId))
+                        .centerCrop()
+                        .placeholder(R.drawable.photo_msg)
+                        .into(imageView);
+                } else {
+                    Glide.with(context)
+                        .load(R.drawable.photo_msg)
+                        .centerCrop()
+                        .into(imageView);
+                }
+            }
+        }
+
+        private void configureMapMsg() {
+            String loc = "http://maps.google.com/maps/api/staticmap?center=" + message.getLatitudeLongitude() + "&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C" + message.getLatitudeLongitude();
+            Glide.with(context).load(loc).placeholder(R.drawable.map_msg).centerCrop().into(imageView);
+        }
+
+        private void configureVideoMsg() {
+            imageView.setImageResource(R.drawable.video_msg);
+            imageView.setContentDescription("Click to watch the video");
+        }
+    }
+
+    public class PollContentViewHolder extends MessageContentViewHolder {
+
+        @InjectView(R.id.rvOptions) ListView rvOptions;
+        Button btnSubmit;
+        @InjectView(R.id.tvName) TextView tvName;
+        @InjectView(R.id.tvQuestion) TextView tvQuestion;
+
+        View footer;
+
+        PollOptionAdapter adapter;
+
+        private Set<Integer> selectedIndexes;
+
+        public PollContentViewHolder(View itemView, View contentView, View footer, int contentType) {
+            super(itemView, contentView, contentType);
+            //imageView = (ImageView) contentView.findViewById(R.id.itemMessageImage);
+            ButterKnife.inject(this, contentView);
+
+            this.footer = footer;
+            btnSubmit = (Button) footer.findViewById(R.id.btnSubmit);
+
+            selectedIndexes = new TreeSet<>();
+        }
+
+        @Override protected void showMessageContent() {
+            text.setVisibility(View.GONE);
+            message.getPoll(new ApiCallback<MMXPoll>() {
+                @Override public void success(MMXPoll poll) {
+                    showPoll(poll);
+                }
+
+                @Override public void failure(ApiError error) {
+                    Log.e(TAG, "Failed to get poll " + error.toString());
+                    //FIXME testing
+                    MMXPoll testPoll = new MMXPoll.Builder().name("Favorite Color").question("What's your favorite color ?")
+                        .option("Red").option("Blue").option("Yellow").allowMultiChoice(false).build();
+                    showPoll(testPoll);
+                }
+            });
+        }
+
+        private void showPoll(MMXPoll poll) {
+            if(null != poll) {
+                tvName.setText(poll.getName());
+                tvQuestion.setText(poll.getQuestion());
+
+                Log.d(TAG, "-----------------Allowing multichoice " + poll.getName() + " : " + poll.isAllowMultiChoices());
+                rvOptions.setChoiceMode(poll.isAllowMultiChoices() ? ListView.CHOICE_MODE_MULTIPLE : ListView.CHOICE_MODE_SINGLE);
+
+                if (null == adapter) {
+                    adapter = new PollOptionAdapter(context, poll.getOptions());
+                    rvOptions.setAdapter(adapter);
+                    if(poll.isAllowMultiChoices()) {
+                        rvOptions.addFooterView(footer, null, false);
+                    }
+
+                    rvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position,long arg3) {
+                            //view.setSelected(true);
+                        }
+                    });
+                } else {
+                    adapter.clear();
+                    adapter.addAll(poll.getOptions());
+                    adapter.notifyDataSetChanged();
+                    //rvOptions.invalidate();
+                    //if(rvOptions.getFooterViewsCount() == 1) {
+                    //    if (!poll.isAllowMultiChoices()) {
+                    //        rvOptions.removeFooterView(footer);
+                    //    }
+                    //} else if(rvOptions.getFooterViewsCount() == 0) {
+                    //    if(poll.isAllowMultiChoices()) {
+                    //        rvOptions.addFooterView(footer, null, false);
+                    //    }
+                    //}
+                }
+
+                //footer.setVisibility(poll.isAllowMultiChoices() ? View.VISIBLE : View.GONE);
+            } else { // testing
+                tvName.setText("Favoriate Color");
+                tvQuestion.setText("What's your favorite color");
+
+                rvOptions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+                if (null == adapter) {
+                    List<MMXPollOption> pollOptions = new ArrayList<MMXPollOption>();
+                    pollOptions.add(new MMXPollOption("Red"));
+                    pollOptions.add(new MMXPollOption("Blue"));
+                    pollOptions.add(new MMXPollOption("Yellow"));
+                    adapter = new PollOptionAdapter(context, /**poll.getOptions()*/pollOptions);
+                    rvOptions.setAdapter(adapter);
+                    rvOptions.addFooterView(footer);
+                } else {
+                    //adapter.clear();
+                    //adapter.addAll(poll.getOptions());
+                    //adapter.notifyDataSetChanged();
+                }
+
+                //btnSubmit.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     public MessagesAdapter(Context context, List<Message> messages) {
@@ -148,14 +491,44 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         this.context = context;
     }
 
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_message, parent, false);
-        return new ViewHolder(view);
+    @Override public int getItemViewType(int position) {
+        Message message = getItem(position);
+        if (message.getType() != null) {
+            switch (message.getType()) {
+                case Message.TYPE_MAP:
+                case Message.TYPE_VIDEO:
+                case Message.TYPE_PHOTO:
+                    return CONTENT_TYPE_IMAGE;
+                case Message.TYPE_TEXT:
+                    return CONTENT_TYPE_TEXT;
+                case Message.TYPE_POLL:
+                    return CONTENT_TYPE_POLL;
+                default:
+                    return CONTENT_TYPE_TEXT;
+            }
+        } else {
+            return CONTENT_TYPE_TEXT;
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public MessageContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = inflater.inflate(R.layout.item_message, parent, false);
+        if(viewType == CONTENT_TYPE_TEXT) {
+            return new TextContentViewHolder(view, null, viewType);
+        } else if(viewType == CONTENT_TYPE_IMAGE) {
+            View contentView = inflater.inflate(R.layout.view_image_content, parent, false);
+            return new ImageContentViewHolder(view, contentView, viewType);
+        } else if(viewType == CONTENT_TYPE_POLL) {
+            View contentView = inflater.inflate(R.layout.view_poll, parent, false);
+            View footer = inflater.inflate(R.layout.view_poll_footer, parent, false );
+            return new PollContentViewHolder(view, contentView, footer, viewType);
+        }
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(MessageContentViewHolder holder, int position) {
         if (position >= getItemCount()) {
             return;
         }
@@ -164,35 +537,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
         if (position > 0) {
             previous = getItem(position - 1);
         }
-        holder.message = message;
-        boolean sameDate = configureDate(holder, message, previous);
-        if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
-            Message next = null;
-            if (position < getItemCount() - 1) {
-                next = getItem(position + 1);
-            }
-            makeMessageFromMe(holder, message, next, sameDate);
-        } else {
-            makeMessageToMe(holder, message, previous);
+        Message next = null;
+        if (position < getItemCount() - 1) {
+            next = getItem(position + 1);
         }
-        if (message.getType() != null) {
-            switch (message.getType()) {
-                case Message.TYPE_MAP:
-                    configureMapMsg(holder, message);
-                    break;
-                case Message.TYPE_VIDEO:
-                    configureVideoMsg(holder, message);
-                    break;
-                case Message.TYPE_PHOTO:
-                    configureImageMsg(holder, message);
-                    break;
-                case Message.TYPE_TEXT:
-                    configureTextMsg(holder, message);
-                    break;
-            }
-        } else {
-            configureTextMsg(holder, message);
-        }
+
+        holder.showMessage(message, previous, next);
     }
 
     @Override
@@ -203,190 +553,4 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     private Message getItem(int position) {
         return messageList.get(position);
     }
-
-    /**
-     * Returns true if current message and previous have the same date
-     * @param viewHolder
-     * @param message
-     * @param previous
-     * @return
-     */
-    private boolean configureDate(ViewHolder viewHolder, Message message, Message previous) {
-        Date date;
-        Date previousDate = null;
-        if (message.getCreateTime() == null) {
-            date = new Date();
-        } else {
-            date = DateHelper.utcToLocal(message.getCreateTime());
-        }
-        if (previous != null) {
-            previousDate = DateHelper.utcToLocal(previous.getCreateTime());
-        }
-        String msgDate = DateHelper.getMessageDateTime(date);
-        String previousMsgDate = null;
-        if (previousDate != null) {
-            previousMsgDate = DateHelper.getMessageDateTime(previousDate);
-        }
-        if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
-            viewHolder.date.setVisibility(View.VISIBLE);
-            viewHolder.date.setText(msgDate);
-            return true;
-        } else {
-            viewHolder.date.setVisibility(View.GONE);
-        }
-        return false;
-    }
-
-    /**
-     * Returns true, if previous message is from the same user as current
-     * @param message
-     * @param previous
-     * @return
-     */
-    private boolean isPreviousFromSameUser(Message message, Message previous) {
-        String userName = UserHelper.getDisplayName(message.getSender());
-        String previousUser = "";
-        if (previous != null) {
-            previousUser = UserHelper.getDisplayName(previous.getSender());
-        }
-        if (userName.equalsIgnoreCase(previousUser)) {
-            return true;
-        }
-        return false;
-    }
-
-    private void makeMessageToMe(ViewHolder viewHolder, Message message, Message previous) {
-        viewHolder.imageMyAvatar.setVisibility(View.GONE);
-        viewHolder.viewMyAvatar.setVisibility(View.GONE);
-        viewHolder.imageOtherAvatar.setVisibility(View.VISIBLE);
-        viewHolder.imageOtherAvatar.setBackgroundResource(android.R.color.transparent);
-        viewHolder.imageOtherAvatar.setImageResource(android.R.color.transparent);
-        viewHolder.viewOtherAvatar.setVisibility(View.VISIBLE);
-
-        viewHolder.messageArea.setGravity(Gravity.LEFT | Gravity.START);
-        viewHolder.text.setBackgroundResource(R.drawable.bubble_odd);
-        viewHolder.text.setTextColor(Color.BLACK);
-        viewHolder.delivered.setVisibility(View.GONE);
-        if (message.getSender() != null) {
-            String userName = UserHelper.getDisplayName(message.getSender());
-            String previousUser = "";
-            if (previous != null) {
-                previousUser = UserHelper.getDisplayName(previous.getSender());
-            }
-            viewHolder.viewOtherAvatar.setUserName(userName);
-            viewHolder.sender.setText(userName);
-            if (userName.equalsIgnoreCase(previousUser)) {
-                viewHolder.sender.setVisibility(View.GONE);
-            } else {
-                viewHolder.sender.setVisibility(View.VISIBLE);
-            }
-            if (null != message.getSender().getAvatarUrl()) {
-                Glide.with(context)
-                        .load(message.getSender().getAvatarUrl())
-                        .fitCenter()
-                        .into(viewHolder.imageOtherAvatar);
-            }
-        }
-    }
-
-    private void makeMessageFromMe(ViewHolder viewHolder, Message message, Message next, boolean previousSameDate) {
-        User user = User.getCurrentUser();
-
-        viewHolder.imageMyAvatar.setVisibility(View.VISIBLE);
-        viewHolder.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
-        viewHolder.imageMyAvatar.setImageResource(android.R.color.transparent);
-        viewHolder.viewMyAvatar.setVisibility(View.VISIBLE);
-        viewHolder.imageOtherAvatar.setVisibility(View.GONE);
-        viewHolder.viewOtherAvatar.setVisibility(View.GONE);
-
-        viewHolder.messageArea.setGravity(Gravity.RIGHT | Gravity.END);
-        viewHolder.text.setBackgroundResource(R.drawable.bubble2);
-        viewHolder.text.setTextColor(Color.WHITE);
-        viewHolder.sender.setVisibility(View.GONE);
-
-        String previousUserId = "";
-        if (next != null) {
-            if (next.getSender() != null) {
-                previousUserId = next.getSender().getUserIdentifier();
-            } else {
-                previousUserId = User.getCurrentUserId();
-            }
-        }
-        if (next == null || !User.getCurrentUserId().equals(previousUserId)) {
-            viewHolder.delivered.setVisibility(View.VISIBLE);
-            switch (message.getMessageStatus()) {
-                case DELIVERED:
-                    viewHolder.delivered.setText("Delivered");
-                    break;
-                case ERROR:
-                    viewHolder.delivered.setText("Error");
-                    break;
-                case PENDING:
-                    viewHolder.delivered.setText("Pending");
-                    break;
-            }
-        } else {
-            viewHolder.delivered.setVisibility(View.GONE);
-        }
-
-        if ((user != null)) {
-            String userName = UserHelper.getDisplayName(user);
-            viewHolder.viewMyAvatar.setUserName(userName);
-            if ((null != user.getAvatarUrl())) {
-                Glide.with(context)
-                        .load(user.getAvatarUrl())
-                        .fitCenter()
-                        .into(viewHolder.imageMyAvatar);
-            }
-        }
-    }
-
-    private void configureMediaMsg(ViewHolder holder) {
-        holder.text.setVisibility(View.GONE);
-        holder.image.setVisibility(View.VISIBLE);
-    }
-
-    private void configureMapMsg(ViewHolder holder, Message message) {
-        configureMediaMsg(holder);
-        String loc = "http://maps.google.com/maps/api/staticmap?center=" + message.getLatitudeLongitude() + "&zoom=18&size=700x300&sensor=false&markers=color:blue%7Clabel:S%7C" + message.getLatitudeLongitude();
-        Glide.with(context).load(loc).placeholder(R.drawable.map_msg).centerCrop().into(holder.image);
-    }
-
-    private void configureVideoMsg(ViewHolder holder, Message message) {
-        configureMediaMsg(holder);
-        holder.image.setImageResource(R.drawable.video_msg);
-        holder.image.setContentDescription("Click to watch the video");
-    }
-
-    private void configureImageMsg(final ViewHolder holder, Message message) {
-        configureMediaMsg(holder);
-        final Attachment attachment = message.getAttachment();
-        if (attachment != null) {
-            String attachmentId = null;
-            try {
-                attachmentId = attachment.getDownloadUrl();
-            } catch (IllegalStateException e) {
-                Log.d(TAG, "Attachment is not ready2", e);
-            }
-            if (null != attachmentId) {
-                Glide.with(context)
-                        .load(Uri.parse(attachmentId))
-                        .centerCrop()
-                        .placeholder(R.drawable.photo_msg)
-                        .into(holder.image);
-            } else {
-                Glide.with(context)
-                        .load(R.drawable.photo_msg)
-                        .centerCrop()
-                        .into(holder.image);
-            }
-        }
-    }
-
-    private void configureTextMsg(ViewHolder holder, Message message) {
-        holder.text.setText(message.getText());
-        holder.text.setVisibility(View.VISIBLE);
-        holder.image.setVisibility(View.GONE);
-    }
-
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/llPoll">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:text="Name"
+        android:id="@+id/tvName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/tvName"
+        android:text="Question"
+        android:id="@+id/tvQuestion"/>
+
+    <com.magnet.magnetchat.ui.custom.ResizedListView
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tvQuestion"
+        android:layout_alignParentBottom="true"
+        android:listSelector="@color/colorAccent"
+        android:id="@+id/rvOptions">
+    </com.magnet.magnetchat.ui.custom.ResizedListView>
+
+  </RelativeLayout>

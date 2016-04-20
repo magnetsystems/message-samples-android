@@ -27,8 +27,8 @@ android {
         applicationId 'com.magnet.magnetchat'
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 12
-        versionName "1.1.2"
+        versionCode 112
+        versionName "0.1.2"
         // Enabling multidex support.
         multiDexEnabled true
     }
