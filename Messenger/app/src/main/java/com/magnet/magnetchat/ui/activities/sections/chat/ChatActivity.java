@@ -123,6 +123,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(false);
         messagesListView.setLayoutManager(layoutManager);
+        layoutManager.setAutoMeasureEnabled(true);
 
         if (getIntent().getBooleanExtra(TAG_CREATE_NEW, false)) {
             String[] userIds = getIntent().getStringArrayExtra(TAG_CREATE_WITH_USER_ID);
@@ -256,7 +257,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                         @Override public void onSuccess(MMXMessage result) {
                             Message message = Message.createMessageFrom(result);
                             currentConversation.addMessage(message);
-                            sendMessageListener.onSuccessSend(message);
+                            //sendMessageListener.onSuccessSend(message);
                         }
 
                         @Override public void onFailure(MMX.FailureCode code, Throwable ex) {
@@ -405,7 +406,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void setMessagesList(List<Message> messages) {
-        adapter = new MessagesAdapter(this, messages);
+        adapter = new MessagesAdapter(this, messages, currentConversation);
         messagesListView.setAdapter(adapter);
     }
 

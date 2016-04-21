@@ -32,6 +32,7 @@ public class PollEditActivity extends BaseActivity {
     @InjectView(R.id.etName) EditText etName;
     @InjectView(R.id.etQuestion) EditText etQuestion;
     @InjectView(R.id.cbMultiChoice) CheckBox cbMultiChoice;
+    @InjectView(R.id.cbHideResults) CheckBox cbHideResults;
 
     //PollOptionItemAdapter pollOptionItemAdapter;
     ArrayAdapter<String> itemsAdapter;
@@ -73,6 +74,7 @@ public class PollEditActivity extends BaseActivity {
             case R.id.action_create:
                 MMXPoll.Builder newPollBuilder = new MMXPoll.Builder().name(etName.getText().toString())
                     .question(etQuestion.getText().toString())
+                    .hideResultsFromOthers(cbHideResults.isChecked())
                     .allowMultiChoice(cbMultiChoice.isChecked());
                 for(String s : options) {
                     newPollBuilder.option(s);

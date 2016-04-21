@@ -5,6 +5,7 @@ package com.magnet.magnetchat.ui.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,11 @@ import java.util.List;
 
 public class PollOptionAdapter extends ArrayAdapter<MMXPollOption> {
 
-  public PollOptionAdapter(Context context, List<MMXPollOption> objects) {
-    super(context, R.layout.item_poll_option, objects);
+  boolean showCount;
+
+  public PollOptionAdapter(Context context, List<MMXPollOption> objects, boolean showCount) {
+    super(context, R.layout.item_poll_option, new ArrayList<MMXPollOption>(objects));
+    this.showCount = showCount;
   }
 
   @Override
@@ -31,13 +35,24 @@ public class PollOptionAdapter extends ArrayAdapter<MMXPollOption> {
     }
     // Lookup view for data population
     TextView tvText = (TextView) convertView.findViewById(R.id.tvText);
-
     tvText.setText(option.getText());
+
+    if(showCount) {
+      TextView tvCount = (TextView) convertView.findViewById(R.id.tvCount);
+      tvCount.setText(String.valueOf(option.getCount()));
+    }
 
     return convertView;
   }
 
   public void resetData(List<MMXPollOption> data) {
+    Log.d("PollOptionAdapter", "---------reseting data to " + data);
+    clear();
+    addAll(data);
+    notifyDataSetChanged();
+  }
 
+  public void setShowCount(boolean value) {
+    this.showCount = value;
   }
 }

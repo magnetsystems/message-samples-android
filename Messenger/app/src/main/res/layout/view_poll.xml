@@ -25,11 +25,11 @@
 
     <com.magnet.magnetchat.ui.custom.ResizedListView
         android:layout_margin="10dp"
+        android:background="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@+id/tvQuestion"
         android:layout_alignParentBottom="true"
-        android:listSelector="@color/colorAccent"
         android:id="@+id/rvOptions">
     </com.magnet.magnetchat.ui.custom.ResizedListView>
 

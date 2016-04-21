@@ -68,10 +68,16 @@
         android:layout_below="@+id/etQuestion"
         android:text="Allow multiple choices"
         android:id="@+id/cbMultiChoice"/>
-    <TextView
+    <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/cbMultiChoice"
+        android:text="Hide results"
+        android:id="@+id/cbHideResults"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/cbHideResults"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Options"
         android:id="@+id/tvOptions"/>
