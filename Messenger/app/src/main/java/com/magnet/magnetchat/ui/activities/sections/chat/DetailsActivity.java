@@ -68,7 +68,10 @@ public class DetailsActivity extends BaseActivity {
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
 
-        currentChannel = getIntent().getParcelableExtra(TAG_CHANNEL);
+        MMXChannel channelPassed = getIntent().getParcelableExtra(TAG_CHANNEL);
+        if(null != channelPassed) {
+            currentChannel = ChannelCacheManager.getInstance().getConversationByName(channelPassed.getName()).getChannel();
+        }
         if (currentChannel != null) {
             detailsProgress.setVisibility(View.VISIBLE);
             currentChannel.getAllSubscribers(100, 0, new MMXChannel.OnFinishedListener<ListResult<User>>() {
