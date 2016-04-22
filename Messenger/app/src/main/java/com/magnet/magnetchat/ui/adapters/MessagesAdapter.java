@@ -449,8 +449,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     adapter = new PollOptionAdapter(context, poll.getOptions(),showCount);
                     rvOptions.setAdapter(adapter);
                 }
-                if(poll.isAllowMultiChoices()) {
+                if(rvOptions.getFooterViewsCount() == 0) {
                     rvOptions.addFooterView(footer, null, false);
+                }
+                if(poll.isAllowMultiChoices()) {
+                    //rvOptions.addFooterView(footer, null, false);
+                    //footer.setVisibility(View.VISIBLE);
 
                     btnSubmit = (Button) footer.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -476,7 +480,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         }
                     });
                 } else {
+                    Log.d(TAG, "-----removing footer");
                     if(rvOptions.getFooterViewsCount() > 0) {
+                        Log.d(TAG, "-----removed footer : " + rvOptions.getFooterViewsCount());
+                        //footer.setVisibility(View.GONE);
                         rvOptions.removeFooterView(footer);
                     }
                 }
