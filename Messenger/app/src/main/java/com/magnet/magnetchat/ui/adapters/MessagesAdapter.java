@@ -45,7 +45,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageContentViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.AbstractMessageViewHolder> {
     private static final int CONTENT_TYPE_TEXT = 1;
     private static final int CONTENT_TYPE_IMAGE = 2;
     private static final int CONTENT_TYPE_POLL = 3;
@@ -58,11 +58,89 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     private Context context;
     private Conversation currentConversation;
 
-    public class MessageContentViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public abstract class AbstractMessageViewHolder extends RecyclerView.ViewHolder {
+        TextView tvDate;
+
+        public AbstractMessageViewHolder(View itemView, TextView tvDate) {
+            super(itemView);
+            this.tvDate = tvDate;
+        }
+
+        public abstract void showMessage(Message message, Message previousMessage, Message nextMessage);
+
+        /**
+         * Returns true if current message and previous have the same date
+         * @param previous
+         * @return
+         */
+        protected boolean configureDate(Message message, Message previous) {
+            if(null != tvDate) {
+                Date date;
+                Date previousDate = null;
+                if (message.getCreateTime() == null) {
+                    date = new Date();
+                } else {
+                    date = DateHelper.utcToLocal(message.getCreateTime());
+                }
+                if (previous != null) {
+                    previousDate = DateHelper.utcToLocal(
+                        null != previous.getCreateTime() ? previous.getCreateTime() : new Date());
+                }
+                String msgDate = DateHelper.getMessageDateTime(date);
+                String previousMsgDate = null;
+                if (previousDate != null) {
+                    previousMsgDate = DateHelper.getMessageDateTime(previousDate);
+                }
+                if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
+                    tvDate.setVisibility(View.VISIBLE);
+                    tvDate.setText(msgDate);
+                    return true;
+                } else {
+                    tvDate.setVisibility(View.GONE);
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public class FeedMessageViewHolder extends AbstractMessageViewHolder {
+        @InjectView(R.id.tvUserName) TextView tvUserName;
+        @InjectView(R.id.tvAction) TextView tvAction;
+        @InjectView(R.id.tvContent) TextView tvContent;
+        @InjectView(R.id.tvSubject) TextView tvSubject;
+
+        public FeedMessageViewHolder(View itemView, int contentType) {
+            super(itemView, (TextView) itemView.findViewById(R.id.tvDate));
+            ButterKnife.inject(this, itemView);
+        }
+
+        @Override
+        public void showMessage(Message message, Message previousMessage, Message nextMessage) {
+            MMXPoll.MMXPollAnswer pollAnswer =
+                (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
+            if(null != pollAnswer) {
+                configureDate(message, previousMessage);
+                tvUserName.setText(message.getSender().getDisplayName());
+                tvAction.setText(" chose ");
+                tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
+                tvSubject.setText(pollAnswer.getName());
+            } else {
+                resetText();
+            }
+        }
+
+        private void resetText() {
+            tvUserName.setText("");
+            tvAction.setText("");
+            tvContent.setText("");
+            tvSubject.setText("");
+        }
+    }
+
+    public abstract class MessageContentViewHolder extends AbstractMessageViewHolder implements View.OnClickListener {
         protected LinearLayout messageArea;
-        protected AppCompatTextView tvDate;
         protected AppCompatTextView sender;
-        protected AppCompatTextView text;
         protected AppCompatTextView delivered;
         protected FrameLayout flContent;
         protected ImageView imageMyAvatar;
@@ -73,11 +151,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         protected Message message;
 
         public MessageContentViewHolder(View itemView, View contentView, int contentType) {
-            super(itemView);
+            super(itemView, (TextView) itemView.findViewById(R.id.itemMessageDate));
             this.messageArea = (LinearLayout) itemView.findViewById(R.id.itemMessageArea);
-            this.tvDate = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDate);
             this.sender = (AppCompatTextView) itemView.findViewById(R.id.itemMessageSender);
-            this.text = (AppCompatTextView) itemView.findViewById(R.id.itemMessageText);
             this.delivered = (AppCompatTextView) itemView.findViewById(R.id.itemMessageDelivered);
             this.imageMyAvatar = (ImageView) itemView.findViewById(R.id.imageMyAvatar);
             this.imageMyAvatar.setBackgroundResource(android.R.color.transparent);
@@ -98,6 +174,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             }
         }
 
+        abstract protected void showMessageContent();
+
+        protected void setupContentToMe() {
+            if(null != this.flContent) {
+                this.flContent.setBackgroundResource(R.drawable.bubble_odd);
+            }
+        }
+
+        protected void setupContentFromMe() {
+            if(null != this.flContent) {
+                this.flContent.setBackgroundResource(R.drawable.bubble2);
+            }
+        }
+
         @Override
         public void onClick(View v) {
             try {
@@ -113,7 +203,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             }
 
             this.message = message;
-            boolean sameDate = configureDate(previousMessage);
+            boolean sameDate = configureDate(message, previousMessage);
             if (message.getSender() == null || StringUtil.isStringValueEqual(User.getCurrentUserId(), message.getSender().getUserIdentifier())) {
                 makeMessageFromMe(nextMessage, sameDate);
             } else {
@@ -121,13 +211,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             }
 
             showMessageContent();
-        }
-
-        protected void showMessageContent() {
-            if(Message.TYPE_TEXT.equals(message.getType())) {
-                text.setText(message.getText());
-                text.setVisibility(View.VISIBLE);
-            }
         }
 
         protected void makeMessageToMe(Message previous) {
@@ -139,8 +222,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             viewOtherAvatar.setVisibility(View.VISIBLE);
 
             messageArea.setGravity(Gravity.LEFT | Gravity.START);
-            text.setBackgroundResource(R.drawable.bubble_odd);
-            text.setTextColor(Color.BLACK);
+
+            setupContentToMe();
+
             delivered.setVisibility(View.GONE);
             if (message.getSender() != null) {
                 String userName = UserHelper.getDisplayName(message.getSender());
@@ -175,8 +259,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             viewOtherAvatar.setVisibility(View.GONE);
 
             messageArea.setGravity(Gravity.RIGHT | Gravity.END);
-            text.setBackgroundResource(R.drawable.bubble2);
-            text.setTextColor(Color.WHITE);
+
+            setupContentFromMe();
+
             sender.setVisibility(View.GONE);
 
             String previousUserId = "";
@@ -214,37 +299,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                         .into(imageMyAvatar);
                 }
             }
-        }
-
-        /**
-         * Returns true if current message and previous have the same date
-         * @param previous
-         * @return
-         */
-        public boolean configureDate(Message previous) {
-            Date date;
-            Date previousDate = null;
-            if (message.getCreateTime() == null) {
-                date = new Date();
-            } else {
-                date = DateHelper.utcToLocal(message.getCreateTime());
-            }
-            if (previous != null) {
-                previousDate = DateHelper.utcToLocal(null != previous.getCreateTime() ? previous.getCreateTime() : new Date());
-            }
-            String msgDate = DateHelper.getMessageDateTime(date);
-            String previousMsgDate = null;
-            if (previousDate != null) {
-                previousMsgDate = DateHelper.getMessageDateTime(previousDate);
-            }
-            if (!msgDate.equalsIgnoreCase(previousMsgDate)) {
-                tvDate.setVisibility(View.VISIBLE);
-                tvDate.setText(msgDate);
-                return true;
-            } else {
-                tvDate.setVisibility(View.GONE);
-            }
-            return false;
         }
 
         /**
@@ -314,9 +368,28 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
     public class TextContentViewHolder extends MessageContentViewHolder {
+        protected AppCompatTextView text;
 
         public TextContentViewHolder(View itemView, View contentView, int contentType) {
             super(itemView, contentView, contentType);
+            this.text = (AppCompatTextView) contentView.findViewById(R.id.itemMessageText);
+        }
+
+        protected void showMessageContent() {
+            if(Message.TYPE_TEXT.equals(message.getType())) {
+                text.setText(message.getText());
+                text.setVisibility(View.VISIBLE);
+            }
+        }
+
+        protected void setupContentToMe() {
+            super.setupContentToMe();
+            text.setTextColor(Color.BLACK);
+        }
+
+        protected void setupContentFromMe() {
+            super.setupContentFromMe();
+            text.setTextColor(Color.WHITE);
         }
     }
 
@@ -329,8 +402,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         }
 
         public void showMessageContent() {
-            text.setVisibility(View.GONE);
-
             switch (message.getType()) {
                 case Message.TYPE_MAP:
                     configureMapMsg();
@@ -401,7 +472,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         }
 
         @Override protected void showMessageContent() {
-            text.setVisibility(View.GONE);
             message.getPoll(new ApiCallback<MMXPoll>() {
                 @Override public void success(MMXPoll poll) {
                     showPoll(poll);
@@ -600,15 +670,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         }
 
         @Override protected void showMessageContent() {
-            text.setVisibility(View.VISIBLE);
-
-            MMXPoll.MMXPollAnswer pollAnswer =
-                (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
-            if(null != pollAnswer) {
-                text.setText(message.getSender().getDisplayName() + " chose " + pollAnswer.getSelectedOptionsAsString()  + " for poll " + pollAnswer.getName());
-            } else {
-                text.setText("");
-            }
+            //text.setVisibility(View.VISIBLE);
+            //
+            //MMXPoll.MMXPollAnswer pollAnswer =
+            //    (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
+            //if(null != pollAnswer) {
+            //    text.setText(message.getSender().getDisplayName() + " chose " + pollAnswer.getSelectedOptionsAsString()  + " for poll " + pollAnswer.getName());
+            //} else {
+            //    text.setText("");
+            //}
         }
     }
 
@@ -642,25 +712,29 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
     @Override
-    public MessageContentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_message, parent, false);
-        if(viewType == CONTENT_TYPE_TEXT) {
-            return new TextContentViewHolder(view, null, viewType);
-        } else if(viewType == CONTENT_TYPE_IMAGE) {
-            View contentView = inflater.inflate(R.layout.view_image_content, parent, false);
-            return new ImageContentViewHolder(view, contentView, viewType);
-        } else if(viewType == CONTENT_TYPE_POLL) {
-            View contentView = inflater.inflate(R.layout.view_poll, parent, false);
-            View footer = inflater.inflate(R.layout.view_poll_footer, parent, false );
-            return new PollContentViewHolder(view, contentView, footer, viewType);
+    public AbstractMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == CONTENT_TYPE_TEXT || viewType == CONTENT_TYPE_IMAGE || viewType == CONTENT_TYPE_POLL) {
+            View view = inflater.inflate(R.layout.item_message, parent, false);
+            if (viewType == CONTENT_TYPE_TEXT) {
+                return new TextContentViewHolder(view,
+                    inflater.inflate(R.layout.view_text_content, parent, false), viewType);
+            } else if (viewType == CONTENT_TYPE_IMAGE) {
+                View contentView = inflater.inflate(R.layout.view_image_content, parent, false);
+                return new ImageContentViewHolder(view, contentView, viewType);
+            } else if (viewType == CONTENT_TYPE_POLL) {
+                View contentView = inflater.inflate(R.layout.view_poll, parent, false);
+                View footer = inflater.inflate(R.layout.view_poll_footer, parent, false);
+                return new PollContentViewHolder(view, contentView, footer, viewType);
+            }
         } else if(viewType == CONTENT_TYPE_POLL_ANSWER) {
-            return new PollAnswerContentViewHolder(view, viewType);
+            View view = inflater.inflate(R.layout.item_message_poll_update, parent, false);
+            return new FeedMessageViewHolder(view, viewType);
         }
         return null;
     }
 
     @Override
-    public void onBindViewHolder(MessageContentViewHolder holder, int position) {
+    public void onBindViewHolder(AbstractMessageViewHolder holder, int position) {
         if (position >= getItemCount()) {
             return;
         }

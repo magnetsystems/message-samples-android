@@ -34,7 +34,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="bottom">
 
             <com.magnet.magnetchat.ui.views.CircleNameView
                 android:id="@+id/viewOtherAvatar"
@@ -42,6 +43,7 @@
                 android:layout_height="@dimen/dimen_50"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginRight="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="gone" />
@@ -52,6 +54,7 @@
                 android:layout_height="@dimen/dimen_50"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginRight="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="gone" />
@@ -63,6 +66,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="visible" />
@@ -74,29 +78,25 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="visible" />
 
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/itemMessageText"
+            <FrameLayout
+                android:id="@+id/flContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
                 android:layout_toLeftOf="@id/imageMyAvatar"
                 android:layout_toRightOf="@id/imageOtherAvatar"
-                android:background="#dddde4"
                 android:gravity="center_vertical"
-                android:padding="@dimen/dimen_10" />
-        </RelativeLayout>
+                android:padding="@dimen/dimen_10" >
+            </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/flContent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </FrameLayout>
+        </RelativeLayout>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/itemMessageDelivered"
