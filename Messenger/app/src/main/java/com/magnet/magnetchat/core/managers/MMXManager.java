@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Vibrator;
 
+import android.util.Log;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
@@ -30,6 +31,8 @@ import java.lang.ref.WeakReference;
  * Class which provide to management of the MMX functional
  */
 public class MMXManager {
+
+    private static String TAG = "MMXManager";
 
     private static MMXManager instance;
 
@@ -132,7 +135,13 @@ public class MMXManager {
                 String content = Message.createMessageFrom(mmxMessage).getMessageSummary();
                 MMXChannel mmxChannel = mmxMessage.getChannel();
                 if (mmxChannel != null) {
-                    messageNotification(mmxChannel.getName(), mmxMessage.getSender().getDisplayName(), mmxChannel.getOwnerId(), content);
+                    Conversation conversation = ChannelCacheManager.getInstance().getConversationByChannel(mmxMessage.getChannel());
+                    if(null != conversation && null != conversation.getChannel() && conversation.getChannel().isMuted()) {
+                        Log.d(TAG, "Channel " + mmxChannel + " is muted by user, won't notify");
+                    } else {
+                        messageNotification(mmxChannel.getName(), mmxMessage.getSender().getDisplayName(), mmxChannel.getOwnerId(),
+                            content);
+                    }
                 } else {
                     messageNotification("", mmxMessage.getSender().getDisplayName(), null, content);
                 }
