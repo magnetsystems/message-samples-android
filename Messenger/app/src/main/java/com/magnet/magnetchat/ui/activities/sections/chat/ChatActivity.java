@@ -464,7 +464,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         public void onSuccessSend(Message message) {
             sendMessageButton.setEnabled(true);
             chatMessageProgress.setVisibility(View.GONE);
-            ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+
+            message.setMessageStatus(Message.MessageStatus.DELIVERED);
+
+            // Channel message no ack
+            //ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
                 editMessage.setText("");
             }
