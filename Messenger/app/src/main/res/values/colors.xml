@@ -32,4 +32,8 @@
     <item name="darkorange" type="color">#FFFF8800</item>
     <item name="darkred" type="color">#FFCC0000</item>
 
+    <!-- Pooll -->
+    <item name="inactive_choice" type="color">#3E9AFC</item>
+    <item name="active_choice" type="color">#8FBAFA</item>
+
 </resources>

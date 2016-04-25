@@ -30,6 +30,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/tvQuestion"
         android:layout_alignParentBottom="true"
+        android:dividerHeight="4dp"
+        android:divider="@android:color/transparent"
         android:id="@+id/rvOptions">
     </com.magnet.magnetchat.ui.custom.ResizedListView>
 

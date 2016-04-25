@@ -4,13 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/poll_option_selector"
+    android:layout_marginTop="@dimen/dimen_4"
+    android:layout_marginBottom="@dimen/dimen_4"
     android:gravity="center_vertical"
+    android:weightSum="7"
 >
 
   <TextView
-      android:layout_weight="4"
+      android:layout_weight="6"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:textColor="@color/white"
       android:id="@+id/tvText"
   />
 
@@ -18,6 +22,7 @@
       android:id="@+id/tvCount"
       android:layout_weight="1"
       android:layout_width="0dp"
+      android:textColor="@color/white"
       android:layout_height="wrap_content"/>
 
 </LinearLayout>
