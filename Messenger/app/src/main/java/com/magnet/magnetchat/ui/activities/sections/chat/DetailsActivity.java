@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ import java.util.List;
 import butterknife.InjectView;
 
 public class DetailsActivity extends BaseActivity {
+
+    private static final String TAG = "DetailsActivity";
 
     public static final String TAG_CHANNEL = "channel";
 
@@ -65,7 +68,10 @@ public class DetailsActivity extends BaseActivity {
         listView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         listView.addItemDecoration(new DividerItemDecoration(this, R.drawable.divider));
 
-        currentChannel = getIntent().getParcelableExtra(TAG_CHANNEL);
+        MMXChannel channelPassed = getIntent().getParcelableExtra(TAG_CHANNEL);
+        if(null != channelPassed) {
+            currentChannel = ChannelCacheManager.getInstance().getConversationByName(channelPassed.getName()).getChannel();
+        }
         if (currentChannel != null) {
             detailsProgress.setVisibility(View.VISIBLE);
             currentChannel.getAllSubscribers(100, 0, new MMXChannel.OnFinishedListener<ListResult<User>>() {
@@ -107,12 +113,15 @@ public class DetailsActivity extends BaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (currentChannel != null && !currentChannel.getName().equalsIgnoreCase(ChannelHelper.ASK_MAGNET)) {
             getMenuInflater().inflate(R.menu.menu_detail, menu);
+
+            MenuItem mi = menu.getItem(1);
+            setMuteMenuItemTitle(mi);
         }
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -135,6 +144,25 @@ public class DetailsActivity extends BaseActivity {
 
                         }
                     });
+                }
+                return true;
+            case R.id.menuDetailMute:
+                if (currentChannel != null) {
+                    MMXChannel.OnFinishedListener<Void> listener = new MMXChannel.OnFinishedListener<Void>() {
+                        @Override public void onSuccess(Void aVoid) {
+                            setMuteMenuItemTitle(item);
+                        }
+
+                        @Override public void onFailure(MMXChannel.FailureCode failureCode,
+                            Throwable throwable) {
+                            Log.e(TAG, "Failed to mute/unmute due to " + failureCode, throwable);
+                        }
+                    };
+                    if(currentChannel.isMuted()) {
+                        currentChannel.unMute(listener);
+                    } else {
+                        currentChannel.mute(listener);
+                    }
                 }
                 return true;
         }
@@ -163,6 +191,10 @@ public class DetailsActivity extends BaseActivity {
     private void exit(String error) {
         showMessage("Couldn't load channel due to " + error + ". Please try later");
         finish();
+    }
+
+    private void setMuteMenuItemTitle(MenuItem menuItem) {
+        menuItem.setTitle(currentChannel.isMuted() ? "UnMute" : "Mute");
     }
 
 }

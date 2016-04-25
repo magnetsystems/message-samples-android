@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatTextView
@@ -34,7 +34,8 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="bottom">
 
             <com.magnet.magnetchat.ui.views.CircleNameView
                 android:id="@+id/viewOtherAvatar"
@@ -42,6 +43,7 @@
                 android:layout_height="@dimen/dimen_50"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginRight="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="gone" />
@@ -52,6 +54,7 @@
                 android:layout_height="@dimen/dimen_50"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginRight="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="gone" />
@@ -63,6 +66,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="visible" />
@@ -74,30 +78,25 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center_vertical"
                 android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
                 android:layout_marginLeft="@dimen/dimen_10"
                 android:layout_marginTop="@dimen/dimen_5"
                 android:visibility="visible" />
 
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/itemMessageText"
+            <FrameLayout
+                android:id="@+id/flContent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center_vertical"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
                 android:layout_toLeftOf="@id/imageMyAvatar"
                 android:layout_toRightOf="@id/imageOtherAvatar"
-                android:background="#dddde4"
                 android:gravity="center_vertical"
-                android:padding="@dimen/dimen_10" />
-        </RelativeLayout>
+                android:padding="@dimen/dimen_10" >
+            </FrameLayout>
 
-        <ImageView
-            android:id="@+id/itemMessageImage"
-            android:layout_width="200sp"
-            android:layout_height="150dp"
-            android:scaleType="fitCenter"
-            android:visibility="gone" />
+        </RelativeLayout>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/itemMessageDelivered"
@@ -105,8 +104,7 @@
             android:layout_height="wrap_content"
             android:text="Delivered"
             android:textColor="#7d7d7d"
-            android:textSize="12sp"
-            android:visibility="gone" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

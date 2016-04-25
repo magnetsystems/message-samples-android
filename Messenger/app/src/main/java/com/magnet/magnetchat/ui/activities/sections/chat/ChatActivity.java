@@ -30,6 +30,7 @@ import com.google.android.gms.location.LocationServices;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.core.application.CurrentApplication;
 import com.magnet.magnetchat.core.managers.ChannelCacheManager;
+import com.magnet.magnetchat.core.managers.MMXManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.helpers.PermissionHelper;
@@ -37,6 +38,7 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
+import com.magnet.magnetchat.ui.activities.sections.poll.PollEditActivity;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
@@ -48,6 +50,7 @@ import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import com.magnet.mmx.client.ext.poll.MMXPoll;
 import java.util.List;
 
 import butterknife.InjectView;
@@ -64,7 +67,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     public static final String TAG_CREATE_WITH_USER_ID = "createWithUserId";
     public static final String TAG_CREATE_NEW = "createNew";
 
-    private static final String[] ATTACHMENT_VARIANTS = {"Send photo", "Send location", "Send video", "Cancel"};
+    private static final String[] ATTACHMENT_VARIANTS = {"Send photo", "Send location", "Send video", "Send poll", "Cancel"};
 
     public static final int INTENT_REQUEST_GET_IMAGES = 14;
     public static final int INTENT_SELECT_VIDEO = 13;
@@ -120,6 +123,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(false);
         messagesListView.setLayoutManager(layoutManager);
+        layoutManager.setAutoMeasureEnabled(true);
 
         if (getIntent().getBooleanExtra(TAG_CREATE_NEW, false)) {
             String[] userIds = getIntent().getStringArrayExtra(TAG_CREATE_WITH_USER_ID);
@@ -215,7 +219,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    protected void onActivityResult(final int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
 
         if (resultCode == Activity.RESULT_OK) {
@@ -245,6 +249,23 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                 } else {
                     Logger.error(TAG, "Can't read video from Uri : " + videoUri);
                     showMessage("Can't read the video file");
+                }
+            } else if (requestCode == PollEditActivity.REQUEST_CODE) {
+                MMXPoll newPoll = intent.getParcelableExtra("newPoll");
+                if(null != newPoll) {
+                    newPoll.publish(currentConversation.getChannel(), new MMX.OnFinishedListener<MMXMessage>() {
+                        @Override public void onSuccess(MMXMessage result) {
+                            Message message = Message.createMessageFrom(result);
+                            currentConversation.addMessage(message);
+                            //sendMessageListener.onSuccessSend(message);
+                        }
+
+                        @Override public void onFailure(MMX.FailureCode code, Throwable ex) {
+                            Log.e(TAG, "Failed to publish poll to channel : " + code, ex);
+                        }
+                    });
+                } else {
+                    Log.e(TAG, "New poll was not created");
                 }
             }
         }
@@ -321,6 +342,10 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
                             }
                             break;
                         case 3:
+                            PollEditActivity.startPollEdit(ChatActivity.this);
+                            break;
+                        case 4:
+
                             break;
                     }
                     attachmentDialog.dismiss();
@@ -381,13 +406,20 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
     private void setMessagesList(List<Message> messages) {
-        adapter = new MessagesAdapter(this, messages);
+        adapter = new MessagesAdapter(this, messages, currentConversation);
         messagesListView.setAdapter(adapter);
     }
 
     private void updateList() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+            messagesListView.smoothScrollToPosition(adapter.getItemCount());
+        }
+    }
+
+    private void updateInserted() {
+        if (adapter != null) {
+            adapter.notifyItemInserted(adapter.getItemCount() - 1);
             messagesListView.smoothScrollToPosition(adapter.getItemCount());
         }
     }
@@ -432,7 +464,12 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
         public void onSuccessSend(Message message) {
             sendMessageButton.setEnabled(true);
             chatMessageProgress.setVisibility(View.GONE);
-            ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+
+            message.setMessageStatus(Message.MessageStatus.DELIVERED);
+
+            // Channel message no ack
+            //ChannelCacheManager.getInstance().getMessagesToApproveDeliver().put(message.getMessageId(), message);
+
             if (message.getType() != null && message.getType().equals(Message.TYPE_TEXT)) {
                 editMessage.setText("");
             }
@@ -496,7 +533,7 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
-            Logger.debug(TAG, "Received message in : " + mmxMessage);
+            Logger.debug(TAG, "Received message  : " + mmxMessage);
             MMXChannel channel = mmxMessage.getChannel();
             if (channel != null && adapter != null) {
                 String messageChannelName = channel.getName();

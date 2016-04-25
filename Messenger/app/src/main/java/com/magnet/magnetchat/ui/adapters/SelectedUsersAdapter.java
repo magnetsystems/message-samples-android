@@ -11,6 +11,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.ui.views.CircleNameView;
 import com.magnet.max.android.UserProfile;
 
@@ -52,7 +53,7 @@ public class SelectedUsersAdapter extends RecyclerView.Adapter<SelectedUsersAdap
     public void onBindViewHolder(final AvatarViewHolder holder, int position) {
         UserProfile user = userList.get(position);
         if (user != null) {
-            holder.nameView.setUserName(user.getDisplayName());
+            holder.nameView.setText(UserHelper.getInitialName(user.getDisplayName()));
             if (user.getAvatarUrl() != null) {
                 holder.imageView.setVisibility(View.VISIBLE);
                 Glide.with(context).load(user.getAvatarUrl()).fitCenter().listener(new RequestListener<String, GlideDrawable>() {

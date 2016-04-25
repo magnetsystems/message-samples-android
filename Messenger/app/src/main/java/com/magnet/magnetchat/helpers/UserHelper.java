@@ -214,6 +214,22 @@ public class UserHelper {
         return users.toString();
     }
 
+    public static String getInitialName(String userName) {
+        if ((userName != null) && (userName.isEmpty() == false)) {
+            StringBuilder builder = new StringBuilder();
+            userName.trim();
+            String[] nameArray = userName.split(" ");
+            for (String name : nameArray) {
+                if (name.length() > 0) {
+                    builder.append(name.charAt(0));
+                }
+            }
+            return builder.toString();
+        } else {
+            return "UN";
+        }
+    }
+
     /**
      * Method which provide the checking if current string is email
      *
