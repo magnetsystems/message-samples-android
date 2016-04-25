@@ -37,6 +37,7 @@ import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
@@ -458,6 +459,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         @InjectView(R.id.tvName) TextView tvName;
         @InjectView(R.id.tvVote) TextView tvVote;
         @InjectView(R.id.tvQuestion) TextView tvQuestion;
+        @InjectView(R.id.ivRefresh) ImageView ivRefresh;
 
         View footer;
 
@@ -519,6 +521,30 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
                 boolean showCount = !poll.shouldHideResultsFromOthers() || (poll.shouldHideResultsFromOthers()
                     && poll.getOwnerId().equals(User.getCurrentUserId()));
+
+                if(showCount) {
+                    ivRefresh.setVisibility(View.VISIBLE);
+                    ivRefresh.setOnClickListener(new View.OnClickListener() {
+                        @Override public void onClick(View v) {
+                            poll.refreshResults(new MMXChannel.OnFinishedListener<Void>() {
+                                @Override public void onSuccess(Void result) {
+                                    if(null != adapter) {
+                                        adapter.resetData(poll.getOptions());
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                @Override public void onFailure(MMXChannel.FailureCode code,
+                                    Throwable throwable) {
+
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    ivRefresh.setVisibility(View.GONE);
+                }
+
                 if(null != adapter) {
                     adapter.setShowCount(showCount);
                     adapter.resetData(poll.getOptions());
