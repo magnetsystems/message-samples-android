@@ -7,28 +7,48 @@
     android:padding="@dimen/dimen_8"
     android:id="@+id/llPoll">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold"
+        android:textColor="@color/white"
         android:layout_alignParentTop="true"
         android:text="Name"
         android:id="@+id/tvName"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
         android:layout_below="@+id/tvName"
         android:text="Question"
         android:id="@+id/tvQuestion"/>
+
+  <View
+      android:id="@+id/viewBlank"
+      android:layout_marginTop="2dp"
+      android:layout_marginBottom="2dp"
+      android:layout_below="@+id/tvQuestion"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:layout_height="2dp" />
+
+  <android.support.v7.widget.AppCompatTextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:textColor="@color/white"
+      android:layout_below="@+id/viewBlank"
+      android:text="Vote for your choices"
+      android:id="@+id/tvVote"/>
 
     <com.magnet.magnetchat.ui.custom.ResizedListView
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tvQuestion"
+        android:layout_below="@+id/tvVote"
         android:layout_alignParentBottom="true"
         android:dividerHeight="4dp"
         android:divider="@android:color/transparent"

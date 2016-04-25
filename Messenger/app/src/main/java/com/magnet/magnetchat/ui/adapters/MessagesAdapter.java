@@ -223,7 +223,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 if (previous != null) {
                     previousUser = UserHelper.getDisplayName(previous.getSender());
                 }
-                viewOtherAvatar.setUserName(userName);
+                viewOtherAvatar.setText(UserHelper.getInitialName(userName));
                 sender.setText(userName);
                 if (userName.equalsIgnoreCase(previousUser)) {
                     sender.setVisibility(View.GONE);
@@ -282,7 +282,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
             if ((user != null)) {
                 String userName = UserHelper.getDisplayName(user);
-                viewMyAvatar.setUserName(userName);
+                viewMyAvatar.setText(UserHelper.getInitialName(userName));
                 if ((null != user.getAvatarUrl())) {
                     Glide.with(context)
                         .load(user.getAvatarUrl())
@@ -454,8 +454,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
     public class PollContentViewHolder extends MessageContentViewHolder {
 
         @InjectView(R.id.rvOptions) ListView rvOptions;
-        Button btnSubmit;
+        AppCompatTextView btnSubmit;
         @InjectView(R.id.tvName) TextView tvName;
+        @InjectView(R.id.tvVote) TextView tvVote;
         @InjectView(R.id.tvQuestion) TextView tvQuestion;
 
         View footer;
@@ -464,12 +465,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
         MMXPoll mmxPoll;
 
-        public PollContentViewHolder(View itemView, View contentView, View footer, int contentType) {
+        public PollContentViewHolder(View itemView, View contentView, int contentType) {
             super(itemView, contentView, contentType);
 
             ButterKnife.inject(this, contentView);
 
-            this.footer = footer;
+            footer = View.inflate(context, R.layout.view_poll_footer, null);
         }
 
         @Override protected void showMessageContent() {
@@ -511,6 +512,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 Log.d(TAG, "-----------------Allowing multichoice " + poll.getName() + " : " + poll.isAllowMultiChoices());
                 rvOptions.setChoiceMode(poll.isAllowMultiChoices() ? ListView.CHOICE_MODE_MULTIPLE : ListView.CHOICE_MODE_SINGLE);
 
+                if(poll.isAllowMultiChoices() && rvOptions.getFooterViewsCount() == 0) {
+                    rvOptions.addFooterView(footer, null, false);
+                }
+
                 boolean showCount = !poll.shouldHideResultsFromOthers() || (poll.shouldHideResultsFromOthers()
                     && poll.getOwnerId().equals(User.getCurrentUserId()));
                 if(null != adapter) {
@@ -520,14 +525,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     adapter = new PollOptionAdapter(context, poll.getOptions(),showCount);
                     rvOptions.setAdapter(adapter);
                 }
-                if(rvOptions.getFooterViewsCount() == 0) {
-                    rvOptions.addFooterView(footer, null, false);
-                }
                 if(poll.isAllowMultiChoices()) {
                     //rvOptions.addFooterView(footer, null, false);
                     //footer.setVisibility(View.VISIBLE);
 
-                    btnSubmit = (Button) footer.findViewById(R.id.btnSubmit);
+                    btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
                             List<MMXPollOption> chosenOptions = new ArrayList<MMXPollOption>();
@@ -550,7 +552,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                             });
                         }
                     });
+
+                    tvVote.setText("Vote for your choices");
                 } else {
+                    tvVote.setText("Vote for your choice");
                     Log.d(TAG, "-----removing footer");
                     if(rvOptions.getFooterViewsCount() > 0) {
                         Log.d(TAG, "-----removed footer : " + rvOptions.getFooterViewsCount());
@@ -724,8 +729,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 return new ImageContentViewHolder(view, contentView, viewType);
             } else if (viewType == CONTENT_TYPE_POLL) {
                 View contentView = inflater.inflate(R.layout.view_poll, parent, false);
-                View footer = inflater.inflate(R.layout.view_poll_footer, parent, false);
-                return new PollContentViewHolder(view, contentView, footer, viewType);
+                return new PollContentViewHolder(view, contentView, viewType);
             }
         } else if(viewType == CONTENT_TYPE_POLL_ANSWER) {
             View view = inflater.inflate(R.layout.item_message_poll_update, parent, false);

@@ -34,6 +34,8 @@
 
     <!-- Pooll -->
     <item name="inactive_choice" type="color">#3E9AFC</item>
+    <item name="inactive_choice_border" type="color">#A4C7FC</item>
     <item name="active_choice" type="color">#8FBAFA</item>
+    <item name="option_badge_text_color" type="color">#037dff</item>
 
 </resources>

@@ -1,28 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/poll_option_selector"
-    android:layout_marginTop="@dimen/dimen_4"
-    android:layout_marginBottom="@dimen/dimen_4"
+    android:layout_marginTop="@dimen/dimen_8"
+    android:layout_marginBottom="@dimen/dimen_8"
     android:gravity="center_vertical"
-    android:weightSum="7"
 >
 
   <TextView
-      android:layout_weight="6"
-      android:layout_width="0dp"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_alignParentLeft="true"
+      android:layout_toLeftOf="@+id/tvCount"
       android:textColor="@color/white"
       android:id="@+id/tvText"
   />
 
+
   <TextView
       android:id="@+id/tvCount"
-      android:layout_weight="1"
-      android:layout_width="0dp"
+      android:layout_width="wrap_content"
       android:textColor="@color/white"
-      android:layout_height="wrap_content"/>
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"/>
 
-</LinearLayout>
+  <!--<com.magnet.magnetchat.ui.custom.RoundedTextView-->
+      <!--android:id="@+id/tvCount"-->
+      <!--android:layout_weight="1"-->
+      <!--android:layout_width="0dp"-->
+      <!--android:textColor="@color/option_badge_text_color"-->
+      <!--custom:solidColor="@color/white"-->
+      <!--custom:strokeColor="@android:color/transparent"-->
+      <!--android:layout_height="wrap_content"/>-->
+
+  <!--<com.magnet.magnetchat.ui.views.CircleNameView-->
+      <!--android:id="@+id/tvCount"-->
+      <!--android:layout_width="0dp"-->
+      <!--android:layout_weight="1"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_gravity="center_vertical"-->
+       <!--/>-->
+
+</RelativeLayout>

@@ -4,7 +4,7 @@
 
   <solid android:color="@color/inactive_choice" />
 
-  <stroke android:width="2px" android:color="#ffffff"/>
+  <stroke android:width="2px" android:color="@color/inactive_choice_border"/>
 
   <corners
       android:bottomLeftRadius="8dp"

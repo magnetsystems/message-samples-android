@@ -42,23 +42,9 @@ public class CircleNameView extends BaseView {
     /**
      * Method which provide the setting of the user name
      *
-     * @param userName current user name
+     * @param text current user name
      */
-    public void setUserName(String userName) {
-        StringBuilder builder = new StringBuilder();
-        if ((userName != null) && (userName.isEmpty() == false)) {
-            userName.trim();
-            String[] nameArray = userName.split(" ");
-            for (String name : nameArray) {
-                if (name.length() > 0) {
-                    builder.append(name.charAt(0));
-                }
-            }
-        }
-        if (builder.toString().isEmpty() == true) {
-            labelUserName.setText("UN");
-        } else {
-            labelUserName.setText(builder.toString().trim());
-        }
+    public void setText(String text) {
+        labelUserName.setText(text);
     }
 }
