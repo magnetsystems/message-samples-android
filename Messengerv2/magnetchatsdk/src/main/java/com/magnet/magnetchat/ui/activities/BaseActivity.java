@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.AppLogger;
 import com.magnet.max.android.util.StringUtil;
@@ -344,6 +345,13 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         } catch (Exception ex) {
             AppLogger.error(this, ex.toString());
         }
+    }
+
+    /**
+     * The method provides autocast findById method
+     */
+    protected <T extends View> T findView(int resId) {
+        return (T) findViewById(resId);
     }
 
     @Override
