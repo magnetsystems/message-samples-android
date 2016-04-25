@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.widget.TextView;
 import com.magnet.magnetchat.R;
 
@@ -44,6 +45,8 @@ public class RoundedTextView extends TextView {
     setStrokeWidth(strokeWidth);
 
     a.recycle();
+
+    setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
   }
 
   @Override

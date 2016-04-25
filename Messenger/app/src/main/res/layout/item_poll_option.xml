@@ -13,6 +13,7 @@
   <TextView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
       android:layout_alignParentLeft="true"
       android:layout_toLeftOf="@+id/tvCount"
       android:textColor="@color/white"
@@ -20,24 +21,28 @@
   />
 
 
-  <TextView
+  <!--<TextView-->
+      <!--android:id="@+id/tvCount"-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:textColor="@color/white"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_alignParentRight="true"-->
+      <!--android:layout_centerVertical="true"/>-->
+
+  <com.magnet.magnetchat.ui.custom.RoundedTextView
       android:id="@+id/tvCount"
       android:layout_width="wrap_content"
-      android:textColor="@color/white"
+      android:textColor="@color/option_badge_text_color"
       android:layout_height="wrap_content"
       android:layout_alignParentRight="true"
-      android:layout_centerVertical="true"/>
+      android:layout_centerVertical="true"
+      android:layout_marginTop="@dimen/dimen_8"
+      android:layout_marginBottom="@dimen/dimen_8"
+      android:layout_marginLeft="@dimen/dimen_8"
+      custom:solidColor="@color/white"
+      custom:strokeColor="@android:color/transparent"/>
 
-  <!--<com.magnet.magnetchat.ui.custom.RoundedTextView-->
-      <!--android:id="@+id/tvCount"-->
-      <!--android:layout_weight="1"-->
-      <!--android:layout_width="0dp"-->
-      <!--android:textColor="@color/option_badge_text_color"-->
-      <!--custom:solidColor="@color/white"-->
-      <!--custom:strokeColor="@android:color/transparent"-->
-      <!--android:layout_height="wrap_content"/>-->
-
-  <!--<com.magnet.magnetchat.ui.views.CircleNameView-->
+<!--<com.magnet.magnetchat.ui.views.CircleNameView-->
       <!--android:id="@+id/tvCount"-->
       <!--android:layout_width="0dp"-->
       <!--android:layout_weight="1"-->
