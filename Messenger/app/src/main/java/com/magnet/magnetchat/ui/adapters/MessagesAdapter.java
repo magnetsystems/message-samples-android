@@ -138,7 +138,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         }
     }
 
-    public abstract class MessageContentViewHolder extends AbstractMessageViewHolder implements View.OnClickListener {
+    public abstract class MessageContentViewHolder extends AbstractMessageViewHolder {
         protected LinearLayout messageArea;
         protected AppCompatTextView sender;
         protected AppCompatTextView delivered;
@@ -185,15 +185,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         protected void setupContentFromMe() {
             if(null != this.flContent) {
                 this.flContent.setBackgroundResource(R.drawable.bubble2);
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            try {
-                onOpenAttachment();
-            } catch (Exception e) {
-                AppLogger.error(this, e.toString());
             }
         }
 
@@ -300,6 +291,90 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 }
             }
         }
+    }
+
+    public class TextContentViewHolder extends MessageContentViewHolder {
+        protected AppCompatTextView text;
+
+        public TextContentViewHolder(View itemView, View contentView, int contentType) {
+            super(itemView, contentView, contentType);
+            this.text = (AppCompatTextView) contentView.findViewById(R.id.itemMessageText);
+        }
+
+        protected void showMessageContent() {
+            if(Message.TYPE_TEXT.equals(message.getType())) {
+                text.setText(message.getText());
+                text.setVisibility(View.VISIBLE);
+            }
+        }
+
+        protected void setupContentToMe() {
+            super.setupContentToMe();
+            text.setTextColor(Color.BLACK);
+        }
+
+        protected void setupContentFromMe() {
+            super.setupContentFromMe();
+            text.setTextColor(Color.WHITE);
+        }
+    }
+
+    public class ImageContentViewHolder extends MessageContentViewHolder implements View.OnClickListener {
+        ImageView imageView;
+
+        public ImageContentViewHolder(View itemView, View contentView, int contentType) {
+            super(itemView, contentView, contentType);
+            imageView = (ImageView) contentView.findViewById(R.id.itemMessageImage);
+
+            imageView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            try {
+                onOpenAttachment();
+            } catch (Exception e) {
+                AppLogger.error(this, e.toString());
+            }
+        }
+
+        public void showMessageContent() {
+            switch (message.getType()) {
+                case Message.TYPE_MAP:
+                    configureMapMsg();
+                    break;
+                case Message.TYPE_VIDEO:
+                    configureVideoMsg();
+                    break;
+                case Message.TYPE_PHOTO:
+                    configImageMsg();
+                    break;
+            }
+        }
+
+        private void configImageMsg() {
+            final Attachment attachment = message.getAttachment();
+            if (attachment != null) {
+                String attachmentId = null;
+                try {
+                    attachmentId = attachment.getDownloadUrl();
+                } catch (IllegalStateException e) {
+                    Log.d(TAG, "Attachment is not ready2", e);
+                }
+                if (null != attachmentId) {
+                    Glide.with(context)
+                        .load(Uri.parse(attachmentId))
+                        .centerCrop()
+                        .placeholder(R.drawable.photo_msg)
+                        .into(imageView);
+                } else {
+                    Glide.with(context)
+                        .load(R.drawable.photo_msg)
+                        .centerCrop()
+                        .into(imageView);
+                }
+            }
+        }
 
         /**
          * Method which provide the opening of the attachment
@@ -361,80 +436,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     case Message.TYPE_POLL:
 
                         break;
-                }
-            }
-        }
-
-    }
-
-    public class TextContentViewHolder extends MessageContentViewHolder {
-        protected AppCompatTextView text;
-
-        public TextContentViewHolder(View itemView, View contentView, int contentType) {
-            super(itemView, contentView, contentType);
-            this.text = (AppCompatTextView) contentView.findViewById(R.id.itemMessageText);
-        }
-
-        protected void showMessageContent() {
-            if(Message.TYPE_TEXT.equals(message.getType())) {
-                text.setText(message.getText());
-                text.setVisibility(View.VISIBLE);
-            }
-        }
-
-        protected void setupContentToMe() {
-            super.setupContentToMe();
-            text.setTextColor(Color.BLACK);
-        }
-
-        protected void setupContentFromMe() {
-            super.setupContentFromMe();
-            text.setTextColor(Color.WHITE);
-        }
-    }
-
-    public class ImageContentViewHolder extends MessageContentViewHolder {
-        ImageView imageView;
-
-        public ImageContentViewHolder(View itemView, View contentView, int contentType) {
-            super(itemView, contentView, contentType);
-            imageView = (ImageView) contentView.findViewById(R.id.itemMessageImage);
-        }
-
-        public void showMessageContent() {
-            switch (message.getType()) {
-                case Message.TYPE_MAP:
-                    configureMapMsg();
-                    break;
-                case Message.TYPE_VIDEO:
-                    configureVideoMsg();
-                    break;
-                case Message.TYPE_PHOTO:
-                    configImageMsg();
-                    break;
-            }
-        }
-
-        private void configImageMsg() {
-            final Attachment attachment = message.getAttachment();
-            if (attachment != null) {
-                String attachmentId = null;
-                try {
-                    attachmentId = attachment.getDownloadUrl();
-                } catch (IllegalStateException e) {
-                    Log.d(TAG, "Attachment is not ready2", e);
-                }
-                if (null != attachmentId) {
-                    Glide.with(context)
-                        .load(Uri.parse(attachmentId))
-                        .centerCrop()
-                        .placeholder(R.drawable.photo_msg)
-                        .into(imageView);
-                } else {
-                    Glide.with(context)
-                        .load(R.drawable.photo_msg)
-                        .centerCrop()
-                        .into(imageView);
                 }
             }
         }
