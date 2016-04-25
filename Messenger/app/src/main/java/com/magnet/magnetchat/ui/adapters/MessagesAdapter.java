@@ -530,7 +530,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                                 @Override public void onSuccess(Void result) {
                                     if(null != adapter) {
                                         adapter.resetData(poll.getOptions());
-                                        adapter.notifyDataSetChanged();
                                     }
                                 }
 
