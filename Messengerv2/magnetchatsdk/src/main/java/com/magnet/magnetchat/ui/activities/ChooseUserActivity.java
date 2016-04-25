@@ -1,6 +1,5 @@
 package com.magnet.magnetchat.ui.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -60,10 +58,9 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        enableBackButton();
 
         setOnClickListeners(R.id.fabAdd);
 
@@ -75,8 +72,7 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
         LinearLayoutManager userListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         userList.setLayoutManager(userListLayoutManager);
         userList.addOnScrollListener(new EndlessLinearRecyclerViewScrollListener(userListLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
+            @Override public void onLoadMore(int page, int totalItemsCount) {
                 Log.d(TAG, "------------onLoadMore User: " + page + "/" + totalItemsCount + "\n");
                 mPresenter.onLoad(totalItemsCount, Constants.USER_PAGE_SIZE);
             }
@@ -141,16 +137,6 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     //MVP METHODS
 
     /**
@@ -174,11 +160,11 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     public void showUsers(@NonNull List<User> users, boolean toAppend) {
         if (null == mAdapter) {
             mAdapter =
-                    new UsersAdapter(this, users, selectedUsers, mPresenter.getItemComparator());
+                new UsersAdapter(this, users, selectedUsers, mPresenter.getItemComparator());
             userList.setAdapter(mAdapter);
             mAdapter.setOnClickListener(userClickListener);
         } else {
-            if (toAppend) {
+            if(toAppend) {
                 mAdapter.addItem(users);
             } else {
                 mAdapter.swapData(users);
@@ -269,21 +255,5 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
 
         }
     };
-
-    /**
-     * Method which provide to enabling of the back button
-     */
-    protected void enableBackButton() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            android.support.v7.app.ActionBar actionBarv7 = getSupportActionBar();
-            if (actionBarv7 != null) {
-                actionBarv7.setDisplayHomeAsUpEnabled(true);
-            }
-        }
-    }
-
 
 }
