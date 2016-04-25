@@ -512,6 +512,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 Log.d(TAG, "-----------------Allowing multichoice " + poll.getName() + " : " + poll.isAllowMultiChoices());
                 rvOptions.setChoiceMode(poll.isAllowMultiChoices() ? ListView.CHOICE_MODE_MULTIPLE : ListView.CHOICE_MODE_SINGLE);
 
+                // http://stackoverflow.com/questions/24700588/i-am-using-the-listview-add-remove-footer-for-listview-cross-app-in-android-vers
                 if(poll.isAllowMultiChoices() && rvOptions.getFooterViewsCount() == 0) {
                     rvOptions.addFooterView(footer, null, false);
                 }
