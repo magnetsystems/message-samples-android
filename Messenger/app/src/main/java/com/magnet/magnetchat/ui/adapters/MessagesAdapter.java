@@ -798,7 +798,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         return messageList.size();
     }
 
-    private Message getItem(int position) {
-        return messageList.get(position);
+    public Message getItem(int position) {
+        return position < messageList.size() ? messageList.get(position) : null;
     }
 }
