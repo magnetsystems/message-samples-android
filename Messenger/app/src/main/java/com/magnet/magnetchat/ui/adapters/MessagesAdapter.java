@@ -43,6 +43,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -569,6 +570,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                                 }
                             }
 
+                            if(isSameAnswer(poll, chosenOptions)) {
+                                SnackNotificationHelper.show(itemView, "You already voted same options.");
+                                return;
+                            }
+
                             poll.choose(chosenOptions, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
                                     SnackNotificationHelper.show(itemView, "You voted successfully.");
@@ -626,10 +632,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         //}
 
                         if(!poll.isAllowMultiChoices()) {
-                            MMXPollOption optionChosen = poll.getOptions().get(position);
-
-                            // Same answer
-                            if(null != poll.getMyVotes() && !poll.getMyVotes().isEmpty() && poll.getMyVotes().get(0).getOptionId().equals(optionChosen.getOptionId())) {
+                            List<MMXPollOption> optionChosen = Arrays.asList(poll.getOptions().get(position));
+                            if(isSameAnswer(poll, optionChosen)) {
                                 return;
                             }
                             poll.choose(optionChosen, new MMX.OnFinishedListener<MMXMessage>() {
@@ -709,6 +713,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             } else {
                 Log.e(TAG, "MMXMessage is null");
             }
+        }
+
+        private boolean isSameAnswer(MMXPoll poll, List<MMXPollOption> options) {
+            if(null == poll.getMyVotes() || poll.getMyVotes().isEmpty() || poll.getMyVotes().size() != options.size()) {
+                return false;
+            }
+
+            for(MMXPollOption option : options) {
+                if(!poll.getMyVotes().contains(option)) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
