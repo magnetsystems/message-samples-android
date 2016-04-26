@@ -109,8 +109,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
     public class FeedMessageViewHolder extends AbstractMessageViewHolder {
         @InjectView(R.id.tvUserName) TextView tvUserName;
         @InjectView(R.id.tvAction) TextView tvAction;
-        @InjectView(R.id.tvContent) TextView tvContent;
-        @InjectView(R.id.tvSubject) TextView tvSubject;
+        //@InjectView(R.id.tvContent) TextView tvContent;
+        //@InjectView(R.id.tvSubject) TextView tvSubject;
 
         public FeedMessageViewHolder(View itemView, int contentType) {
             super(itemView, (TextView) itemView.findViewById(R.id.tvDate));
@@ -124,9 +124,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             if(null != pollAnswer) {
                 configureDate(message, previousMessage);
                 tvUserName.setText(message.getSender().getDisplayName());
-                tvAction.setText(" chose ");
-                tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
-                tvSubject.setText(pollAnswer.getName());
+                tvAction.setText(" voted.");
+                //tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
+                //tvSubject.setText(pollAnswer.getName());
             } else {
                 resetText();
             }
@@ -135,8 +135,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         private void resetText() {
             tvUserName.setText("");
             tvAction.setText("");
-            tvContent.setText("");
-            tvSubject.setText("");
+            //tvContent.setText("");
+            //tvSubject.setText("");
         }
     }
 
@@ -457,7 +457,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
         @InjectView(R.id.rvOptions) ListView rvOptions;
         AppCompatTextView btnSubmit;
-        @InjectView(R.id.tvName) TextView tvName;
+        //@InjectView(R.id.tvName) TextView tvName;
         @InjectView(R.id.tvVote) TextView tvVote;
         @InjectView(R.id.tvQuestion) TextView tvQuestion;
         @InjectView(R.id.ivRefresh) ImageView ivRefresh;
@@ -509,7 +509,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
                 mmxPoll = poll;
 
-                tvName.setText(poll.getName());
+                //tvName.setText(poll.getName());
                 tvQuestion.setText(poll.getQuestion());
 
                 Log.d(TAG, "-----------------Allowing multichoice " + poll.getName() + " : " + poll.isAllowMultiChoices());
