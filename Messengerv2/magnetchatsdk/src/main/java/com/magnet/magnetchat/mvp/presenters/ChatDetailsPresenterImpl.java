@@ -6,6 +6,7 @@ package com.magnet.magnetchat.mvp.presenters;
 import android.app.Activity;
 import android.util.Log;
 
+import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.mvp.api.ChatDetailsContract;
 import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
@@ -83,25 +84,68 @@ public class ChatDetailsPresenterImpl implements ChatDetailsContract.Presenter {
         return StringUtil.isStringValueEqual(mCurrentChannel.getOwnerId(), User.getCurrentUserId());
     }
 
-    @Override public BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator() {
+    @Override
+    public void changeMuteAction() {
+        if(mCurrentChannel.isMuted()){
+            unmute();
+        }else {
+            mute();
+        }
+    }
+
+    private void mute() {
+        mCurrentChannel.mute(new MMXChannel.OnFinishedListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                mView.onMute(mCurrentChannel.isMuted());
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode code, Throwable throwable) {
+                mView.onMute(mCurrentChannel.isMuted());
+                mView.onMessage(R.string.err_channel_mute);
+            }
+        });
+    }
+
+    private void unmute() {
+        mCurrentChannel.unMute(new MMXChannel.OnFinishedListener<Void>() {
+            @Override
+            public void onSuccess(Void result) {
+                mView.onMute(mCurrentChannel.isMuted());
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode code, Throwable throwable) {
+                mView.onMute(mCurrentChannel.isMuted());
+                mView.onMessage(R.string.err_channel_unmute);
+            }
+        });
+    }
+
+    @Override
+    public BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator() {
         return userProfileItemComparator;
     }
 
     private final BaseSortedAdapter.ItemComparator<UserProfile> userProfileItemComparator = new BaseSortedAdapter.ItemComparator<UserProfile>() {
-        @Override public int compare(UserProfile o1, UserProfile o2) {
-            if(StringUtil.isStringValueEqual(o1.getLastName(), o2.getLastName())){
+        @Override
+        public int compare(UserProfile o1, UserProfile o2) {
+            if (StringUtil.isStringValueEqual(o1.getLastName(), o2.getLastName())) {
                 return Utils.compareString(o1.getFirstName(), o2.getFirstName());
             } else {
                 return Utils.compareString(o1.getLastName(), o2.getLastName());
             }
         }
 
-        @Override public boolean areContentsTheSame(UserProfile o1, UserProfile o2) {
+        @Override
+        public boolean areContentsTheSame(UserProfile o1, UserProfile o2) {
             return areItemsTheSame(o1, o2)
-                && o1.getDisplayName().equalsIgnoreCase(o2.getDisplayName());
+                    && o1.getDisplayName().equalsIgnoreCase(o2.getDisplayName());
         }
 
-        @Override public boolean areItemsTheSame(UserProfile item1, UserProfile item2) {
+        @Override
+        public boolean areItemsTheSame(UserProfile item1, UserProfile item2) {
             return item1.getUserIdentifier().equals(item2.getUserIdentifier());
         }
     };

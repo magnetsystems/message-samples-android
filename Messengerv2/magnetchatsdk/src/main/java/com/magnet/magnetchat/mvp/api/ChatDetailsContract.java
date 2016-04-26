@@ -22,6 +22,12 @@ public interface ChatDetailsContract {
         void showRecipients(List<UserProfile> recipients);
 
         void finishDetails();
+
+        void onMute(boolean isMuted);
+
+        void onMessage(int stringRes);
+
+        void onMessage(CharSequence message);
     }
 
     interface Presenter {
@@ -39,6 +45,8 @@ public interface ChatDetailsContract {
          * @return
          */
         boolean isChannelOwner();
+
+        void changeMuteAction();
 
         BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator();
     }
