@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".MainActivity">
+    tools:context=".ui.activities.sections.chat.ChooseUserActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

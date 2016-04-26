@@ -140,6 +140,12 @@ public class UsersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.onUserClickListener = onUserClickListener;
     }
 
+    public void resetData(List<? extends UserProfile> users) {
+        userList.clear();
+        userList.addAll((List<UserProfile>) users);
+        notifyDataSetChanged();
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;

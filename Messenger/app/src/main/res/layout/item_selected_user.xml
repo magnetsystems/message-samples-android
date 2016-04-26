@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/dimen_10">
 
-    <com.magnet.magnetchat.ui.views.CircleNameView
-        android:id="@+id/viewUserName"
+    <!--<com.magnet.magnetchat.ui.views.CircleNameView-->
+        <!--android:id="@+id/viewUserName"-->
+        <!--android:layout_width="@dimen/dimen_40"-->
+        <!--android:layout_height="@dimen/dimen_40" />-->
+
+    <com.magnet.magnetchat.ui.custom.RoundedTextView
+        android:id="@+id/tvUserInitial"
         android:layout_width="@dimen/dimen_40"
-        android:layout_height="@dimen/dimen_40" />
+        android:layout_height="@dimen/dimen_40"
+        android:textColor="@color/white"
+        android:gravity="center"
+        custom:solidColor="#57a7ff"
+        android:textStyle="bold"
+        />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageUserAvatar"
