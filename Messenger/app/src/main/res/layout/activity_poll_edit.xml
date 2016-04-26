@@ -35,27 +35,26 @@
       android:layout_marginTop="?actionBarSize"
       android:layout_marginLeft="@dimen/activity_vertical_margin">
 
-    <!--<TextView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-        <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:text="Name"-->
-        <!--android:id="@+id/tvName"/>-->
-
-    <!--<EditText-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@+id/tvName"-->
-        <!--android:id="@+id/etName" />-->
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_alignParentTop="true"
+        android:text="Name"
+        android:id="@+id/tvName"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvName"
+        android:id="@+id/etName" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/etName"
         android:text="Question"
         android:id="@+id/tvQuestion"/>
 

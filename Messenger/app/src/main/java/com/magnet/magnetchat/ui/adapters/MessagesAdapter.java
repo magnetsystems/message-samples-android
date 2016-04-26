@@ -458,7 +458,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
         @InjectView(R.id.rvOptions) ListView rvOptions;
         AppCompatTextView btnSubmit;
-        //@InjectView(R.id.tvName) TextView tvName;
+        @InjectView(R.id.tvName) TextView tvName;
         @InjectView(R.id.tvVote) TextView tvVote;
         @InjectView(R.id.tvQuestion) TextView tvQuestion;
         @InjectView(R.id.ivRefresh) ImageView ivRefresh;
@@ -510,7 +510,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
                 mmxPoll = poll;
 
-                //tvName.setText(poll.getName());
+                tvName.setText(poll.getName());
                 tvQuestion.setText(poll.getQuestion());
 
                 Log.d(TAG, "-----------------Allowing multichoice " + poll.getName() + " : " + poll.isAllowMultiChoices());
@@ -531,6 +531,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                             poll.refreshResults(new MMXChannel.OnFinishedListener<Void>() {
                                 @Override public void onSuccess(Void result) {
                                     if(null != adapter) {
+                                        SnackNotificationHelper.show(itemView, "Results refreshed.");
                                         adapter.resetData(poll.getOptions());
                                     }
                                 }

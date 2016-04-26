@@ -10,26 +10,16 @@
     <RelativeLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/rlName">
-        <!--<android.support.v7.widget.AppCompatTextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-            <!--android:textStyle="bold"-->
-            <!--android:textColor="@color/white"-->
-            <!--android:layout_alignParentLeft="true"-->
-            <!--android:layout_toLeftOf="@+id/ivRefresh"-->
-            <!--android:text="Name"-->
-            <!--android:id="@+id/tvName"/>-->
-      <android.support.v7.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textStyle="bold"
-        android:textColor="@color/white"
-        android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/ivRefresh"
-        android:text="Question"
-        android:id="@+id/tvQuestion"/>
+        <android.support.v7.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/ivRefresh"
+            android:text="Name"
+            android:id="@+id/tvName"/>
       <ImageView
           android:id="@+id/ivRefresh"
           android:layout_width="wrap_content"
@@ -39,20 +29,20 @@
       />
     </RelativeLayout>
 
-    <!--<android.support.v7.widget.AppCompatTextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
-        <!--android:textColor="@color/white"-->
-        <!--android:layout_below="@+id/rlName"-->
-        <!--android:text="Question"-->
-        <!--android:id="@+id/tvQuestion"/>-->
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/white"
+        android:layout_below="@+id/rlName"
+        android:text="Question"
+        android:id="@+id/tvQuestion"/>
 
   <View
       android:id="@+id/viewBlank"
       android:layout_marginTop="2dp"
       android:layout_marginBottom="2dp"
-      android:layout_below="@+id/rlName"
+      android:layout_below="@+id/tvQuestion"
       android:layout_width="match_parent"
       android:background="@color/white"
       android:layout_height="2dp" />

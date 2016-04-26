@@ -31,7 +31,7 @@ public class PollEditActivity extends BaseActivity {
     @InjectView(R.id.rvOptions) ListView rvOptions;
     @InjectView(R.id.btnAdd) Button btnAdd;
     @InjectView(R.id.etOptionText) EditText etOptionText;
-    //@InjectView(R.id.etName) EditText etName;
+    @InjectView(R.id.etName) EditText etName;
     @InjectView(R.id.etQuestion) EditText etQuestion;
     @InjectView(R.id.cbMultiChoice) CheckBox cbMultiChoice;
     @InjectView(R.id.cbHideResults) CheckBox cbHideResults;
@@ -83,12 +83,12 @@ public class PollEditActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create:
-                //String name = etName.getText().toString();
-                //if(StringUtil.isEmpty(name)) {
-                //    showMessage("Name is required");
-                //    etName.requestFocus();
-                //    return false;
-                //}
+                String name = etName.getText().toString();
+                if(StringUtil.isEmpty(name)) {
+                    showMessage("Name is required");
+                    etName.requestFocus();
+                    return false;
+                }
                 String question = etQuestion.getText().toString();
                 if(StringUtil.isEmpty(question)) {
                     showMessage("Question is required");
@@ -101,7 +101,7 @@ public class PollEditActivity extends BaseActivity {
                     return false;
                 }
 
-                MMXPoll.Builder newPollBuilder = new MMXPoll.Builder()//.name(name)
+                MMXPoll.Builder newPollBuilder = new MMXPoll.Builder().name(name)
                     .question(question)
                     .hideResultsFromOthers(cbHideResults.isChecked())
                     .allowMultiChoice(cbMultiChoice.isChecked());
