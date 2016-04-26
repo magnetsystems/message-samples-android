@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
+import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.ui.views.CircleNameView;
@@ -187,7 +188,7 @@ public abstract class BaseConversationsAdapter extends RecyclerView.Adapter<Base
     protected void setUserAvatar(UserProfile user, final AvatarConversationViewHolder viewHolder) {
         if (user != null) {
             viewHolder.title.setText(user.getDisplayName());
-            viewHolder.viewAvatar.setUserName(user.getDisplayName());
+            viewHolder.viewAvatar.setText(UserHelper.getInitialName(user.getDisplayName()));
             if (user.getAvatarUrl() != null) {
                 viewHolder.imageAvatar.setVisibility(View.VISIBLE);
                 Glide.with(context).load(user.getAvatarUrl()).fitCenter().listener(new RequestListener<String, GlideDrawable>() {

@@ -261,29 +261,37 @@ public class ChooseUserActivity extends BaseActivity implements SearchView.OnQue
     }
 
     private void updateList(List<? extends UserProfile> users) {
-        adapter = new UsersAdapter(this, users, selectedUsers);
-        userList.setAdapter(adapter);
-        adapter.setOnUserClickListener(new UsersAdapter.OnUserClickListener() {
-            @Override
-            public void onUserClick(UserProfile user, int position) {
-                hideKeyboard();
-                if (user != null) {
-                    if (selectedUsers.contains(user)) {
-                        selectedUsers.remove(user);
-                    } else {
-                        selectedUsers.add(user);
+        if(null == adapter) {
+            adapter = new UsersAdapter(this, users, selectedUsers);
+            userList.setAdapter(adapter);
+            adapter.setOnUserClickListener(new UsersAdapter.OnUserClickListener() {
+                @Override public void onUserClick(UserProfile user, int position) {
+                    hideKeyboard();
+                    if (user != null) {
+                        int previousSize = selectedUsers.size();
+                        if (selectedUsers.contains(user)) {
+                            selectedUsers.remove(user);
+                            selectedAdapter.notifyItemRemoved(selectedUsers.size());
+                        } else {
+                            selectedUsers.add(user);
+                            selectedAdapter.notifyItemInserted(selectedUsers.size() - 1);
+                        }
+                        if (selectedUsers.size() > 0) {
+                            tvSelectedAmount.setText(String.format("%d selected", selectedUsers.size()));
+                        }
+
+                        if(previousSize == 0 && selectedUsers.size() > 0) {
+                            llSelectedUsers.setVisibility(View.VISIBLE);
+                        } else if(previousSize > 0 && selectedUsers.size() == 0) {
+                            llSelectedUsers.setVisibility(View.GONE);
+                        }
+                        adapter.notifyDataSetChanged();
                     }
-                    if (selectedUsers.size() > 0){
-                        tvSelectedAmount.setText(String.format("%d selected", selectedUsers.size()));
-                        llSelectedUsers.setVisibility(View.VISIBLE);
-                    } else {
-                        llSelectedUsers.setVisibility(View.GONE);
-                    }
-                    adapter.notifyDataSetChanged();
-                    selectedAdapter.notifyDataSetChanged();
                 }
-            }
-        });
+            });
+        } else {
+            adapter.resetData(users);
+        }
     }
 
     public static Intent getIntentToCreateChannel() {
