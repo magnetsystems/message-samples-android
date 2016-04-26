@@ -9,6 +9,8 @@ import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.mvp.api.ChooseUserContract;
+import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
+import com.magnet.magnetchat.persistence.impl.PersistenceComponentImpl;
 import com.magnet.magnetchat.ui.activities.ChatActivity;
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 import com.magnet.magnetchat.util.Logger;
@@ -18,6 +20,7 @@ import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
 import com.magnet.max.android.util.StringUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +29,7 @@ import java.util.List;
  */
 public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
     private final ChooseUserContract.View mView;
+    private final AppScopePendingStateRepository appStateRepository;
     private Chat mConversation;
     private ChooseUserContract.ChooseMode mAddmingMode;
     private List<User> mDefaultQueryResults;
@@ -37,6 +41,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
     }
 
     public ChooseUserPresenterImpl(ChooseUserContract.View view, String channelName) {
+        appStateRepository = new PersistenceComponentImpl(view.getActivity()).getApplicationPendingStateRepository();
         this.mView = view;
         if (null != channelName) {
             mConversation = ChatManager.getInstance().getConversationByName(channelName);
@@ -53,7 +58,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
 
     @Override
     public void onLoad(int offset, int limit) {
-        if(mCurrentQuery.isDefault() && ((offset + limit) < mDefaultQueryResults.size())) {
+        if (mCurrentQuery.isDefault() && ((offset + limit) < mDefaultQueryResults.size())) {
             mView.showUsers(mDefaultQueryResults.subList(offset, limit), 0 != offset);
         } else {
             queryUser(mCurrentQuery, offset, limit);
@@ -76,11 +81,13 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         mView.showUsers(mDefaultQueryResults, false);
     }
 
-    @Override public void onItemSelect(int position, User item) {
+    @Override
+    public void onItemSelect(int position, User item) {
 
     }
 
-    @Override public void onItemLongClick(int position, User item) {
+    @Override
+    public void onItemLongClick(int position, User item) {
 
     }
 
@@ -126,7 +133,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         Activity activity = mView.getActivity();
         if (activity != null) {
             activity.startActivity(ChatActivity.getIntentForNewChannel(activity, selectedUsers));
-            mView.finishSelection();
+            onChannelUpdated(true);
         }
     }
 
@@ -135,28 +142,29 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         return mDefaultQuery;
     }
 
-    @Override public BaseSortedAdapter.ItemComparator<User> getItemComparator() {
+    @Override
+    public BaseSortedAdapter.ItemComparator<User> getItemComparator() {
         return userItemComparator;
     }
 
     private void queryUser(final ChooseUserContract.UserQuery userQuery, final int offset, final int limit) {
         mView.setProgressIndicator(true);
 
-        if(0 == offset) {
+        if (0 == offset) {
             mCurrentQuery.setCurrentOffset(0);
         }
 
         User.search(userQuery.getQuery(), limit, mCurrentQuery.getCurrentOffset(), userQuery.getOrder(), new ApiCallback<List<User>>() {
             @Override
             public void success(List<User> users) {
-                if(null != users && !users.isEmpty()) {
+                if (null != users && !users.isEmpty()) {
                     mCurrentQuery.addCurrentOffset(users.size());
 
                     filterUsers(users);
                 }
 
-                if(userQuery.isDefault()) {
-                    if(0 == offset) {
+                if (userQuery.isDefault()) {
+                    if (0 == offset) {
                         mDefaultQueryResults.clear();
                         mDefaultQueryResults.addAll(users);
                     } else {
@@ -199,7 +207,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         @Override
         public void onSuccessAdded() {
             mView.setProgressIndicator(false);
-            mView.finishSelection();
+            onChannelUpdated(true);
         }
 
         @Override
@@ -211,7 +219,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         public void onWasAlreadyAdded() {
             mView.setProgressIndicator(false);
             Utils.showMessage("Contact was already added");
-            mView.finishSelection();
+            onChannelUpdated(false);
         }
 
         @Override
@@ -221,21 +229,29 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
         }
     };
 
+    private void onChannelUpdated(boolean isUpdated) {
+        appStateRepository.setNeedToUpdateChannel(isUpdated);
+        mView.finishSelection();
+    }
+
     private final BaseSortedAdapter.ItemComparator<User> userItemComparator = new BaseSortedAdapter.ItemComparator<User>() {
-        @Override public int compare(User o1, User o2) {
-            if(StringUtil.isStringValueEqual(o1.getLastName(), o2.getLastName())){
+        @Override
+        public int compare(User o1, User o2) {
+            if (StringUtil.isStringValueEqual(o1.getLastName(), o2.getLastName())) {
                 return Utils.compareString(o1.getFirstName(), o2.getFirstName());
             } else {
                 return Utils.compareString(o1.getLastName(), o2.getLastName());
             }
         }
 
-        @Override public boolean areContentsTheSame(User o1, User o2) {
+        @Override
+        public boolean areContentsTheSame(User o1, User o2) {
             return areItemsTheSame(o1, o2)
-                && o1.getDisplayName().equalsIgnoreCase(o2.getDisplayName());
+                    && o1.getDisplayName().equalsIgnoreCase(o2.getDisplayName());
         }
 
-        @Override public boolean areItemsTheSame(User item1, User item2) {
+        @Override
+        public boolean areItemsTheSame(User item1, User item2) {
             return item1 == item2 || item1.getUserIdentifier().equals(item2.getUserIdentifier());
         }
     };

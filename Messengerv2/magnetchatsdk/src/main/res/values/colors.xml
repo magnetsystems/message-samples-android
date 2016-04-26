@@ -6,14 +6,14 @@
     <!--<color name="primary_text">#517daa</color>-->
     <!--<color name="secondary_text">#8e517daa</color>-->
 
-    <color name="primary">#2196F3</color>
-    <color name="primary_dark">#1976D2</color>
+    <color name="primary">#517daa</color>
+    <color name="primary_dark">#456a91</color>
     <color name="primary_light">#BBDEFB</color>
     <color name="accent">#517daa</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
-    <color name="colorBlue">#517daa</color>
-    <color name="colorBlueDark">#456a91</color>
+    <!--<color name="colorBlue">#517daa</color>-->
+    <!--<color name="colorBlueDark">#456a91</color>-->
 
     <color name="buttonsTextColor">#517daa</color>
     <color name="itemSelected">#c3c3c3</color>
@@ -27,5 +27,5 @@
     <color name="messageBackgroundFromMe">#517daa</color>
     <color name="messageBackgroundToMe">#e6e6e6</color>
 
-    <color name="FABBackground">#00c0ff</color>
+    <color name="FABBackground">@color/accent</color>
 </resources>

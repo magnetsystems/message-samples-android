@@ -82,6 +82,10 @@ public interface ChannelsListContract extends ChannelsListContractLayer {
          */
         void deleteChannel(@NonNull final ChannelObject channelObject);
 
+        /**
+         * the method should call channel list from server right now
+         */
+        void doForceLoadAction();
     }
 
     interface Presenter extends BaseContract.BasePresenter, AdapteredRecyclerView.OnLazyLoadCallback {

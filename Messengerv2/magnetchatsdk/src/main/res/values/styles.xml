@@ -3,10 +3,13 @@
     <!-- Base application theme. -->
     <style name="MagnetChatSDKTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorBlue</item>
-        <item name="colorPrimaryDark">@color/colorBlueDark</item>
-        <item name="colorAccent">@color/colorBlue</item>
+        <!--<item name="android:windowFullscreen">true</item>-->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@android:color/white</item>
         <item name="android:textViewStyle">@style/Titles</item>
+        <item name="colorControlHighlight">@color/primary_light</item>
+        <item name="colorSwitchThumbNormal">@color/colorLightGray</item>
     </style>
 
     <style name="MagnetChatSDKTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
