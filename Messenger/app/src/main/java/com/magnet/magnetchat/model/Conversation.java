@@ -5,6 +5,8 @@ import android.location.Location;
 import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
@@ -12,6 +14,7 @@ import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import com.magnet.mmx.client.ext.poll.MMXPoll;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -119,6 +122,23 @@ public class Conversation {
     public void addMessage(Message message) {
         if (!getMessages().contains(message)) {
             messages.add(message);
+
+            //Update result if it's a poll answer
+            if(Message.TYPE_POLL_ANSWER.equals(message.getType()) && !message.getMmxMessage().getSender().getUserIdentifier().equals(User.getCurrentUserId())) {
+                final MMXPoll.MMXPollAnswer pollAnswer =
+                    (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
+                if(null != pollAnswer) {
+                    for(Message m : messages) {
+                        if(Message.TYPE_POLL.equals(m.getType())) {
+                            MMXPoll.MMXPollIdentifier pollIdentifier = (MMXPoll.MMXPollIdentifier) m.getMmxMessage().getPayload();
+                            if(null != pollIdentifier && pollIdentifier.getPollId().equals(pollAnswer.getPollId()) && null != m.getPoll()) {
+                                m.getPoll().updateResults(pollAnswer);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

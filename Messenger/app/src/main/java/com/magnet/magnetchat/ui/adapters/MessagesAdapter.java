@@ -108,9 +108,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
     }
 
     public class FeedMessageViewHolder extends AbstractMessageViewHolder {
-        @InjectView(R.id.tvUserName) TextView tvUserName;
-        @InjectView(R.id.tvAction) TextView tvAction;
-        //@InjectView(R.id.tvContent) TextView tvContent;
+        //@InjectView(R.id.tvUserName) TextView tvUserName;
+        //@InjectView(R.id.tvAction) TextView tvAction;
+        @InjectView(R.id.tvContent) TextView tvContent;
         //@InjectView(R.id.tvSubject) TextView tvSubject;
 
         public FeedMessageViewHolder(View itemView, int contentType) {
@@ -124,19 +124,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
             if(null != pollAnswer) {
                 configureDate(message, previousMessage);
-                tvUserName.setText(message.getSender().getDisplayName());
-                tvAction.setText(" voted.");
+                //tvUserName.setText(message.getSender().getDisplayName());
+                //tvAction.setText(" voted ");
                 //tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
                 //tvSubject.setText(pollAnswer.getName());
+                tvContent.setText(new StringBuilder(message.getSender().getDisplayName()).append(" voted ")
+                .append(pollAnswer.getSelectedOptionsAsString()).append(" for poll ").append(pollAnswer.getName()).toString());
             } else {
                 resetText();
             }
         }
 
         private void resetText() {
-            tvUserName.setText("");
-            tvAction.setText("");
-            //tvContent.setText("");
+            tvContent.setText("");
+            //tvUserName.setText("");
+            //tvAction.setText("");
             //tvSubject.setText("");
         }
     }
@@ -475,19 +477,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             ButterKnife.inject(this, contentView);
 
             footer = View.inflate(context, R.layout.view_poll_footer, null);
+            btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
         }
 
         @Override protected void showMessageContent() {
             message.getPoll(new ApiCallback<MMXPoll>() {
                 @Override public void success(MMXPoll poll) {
                     showPoll(poll);
-                    //if(null != poll && !poll.equals(mmxPoll)) {
-                    //    showPoll(poll);
-                    //    mmxPoll = poll;
-                    //    Log.d(TAG, "--------previous poll : " + mmxPoll + "\n------------current poll : " + poll);
-                    //} else {
-                    //    Log.d(TAG, "--------Binding the same poll " + poll);
-                    //}
                 }
 
                 @Override public void failure(ApiError error) {
@@ -528,19 +524,27 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     ivRefresh.setVisibility(View.VISIBLE);
                     ivRefresh.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
+                            ivRefresh.setEnabled(false);
                             poll.refreshResults(new MMXChannel.OnFinishedListener<Void>() {
                                 @Override public void onSuccess(Void result) {
                                     if(null != adapter) {
-                                        SnackNotificationHelper.show(itemView, "Results refreshed.");
                                         adapter.resetData(poll.getOptions());
                                     }
+                                    SnackNotificationHelper.showToast(context, "Results refreshed.");
+                                    enableRefresh();
                                 }
 
                                 @Override public void onFailure(MMXChannel.FailureCode code,
                                     Throwable throwable) {
-
+                                    Log.e(TAG, "Failed to refresh the result " + code, throwable);
+                                    SnackNotificationHelper.showToast(context, "Failed to refresh the result.");
+                                    enableRefresh();
                                 }
                             });
+                        }
+
+                        private void enableRefresh() {
+                            ivRefresh.setEnabled(true);
                         }
                     });
                 } else {
@@ -557,12 +561,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 if(poll.isAllowMultiChoices()) {
                     //rvOptions.addFooterView(footer, null, false);
                     //footer.setVisibility(View.VISIBLE);
-
-                    btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
-                            btnSubmit.setEnabled(false);
-
                             List<MMXPollOption> chosenOptions = new ArrayList<MMXPollOption>();
                             SparseBooleanArray checkedItemPositions = rvOptions.getCheckedItemPositions();
                             for(int i = 0; i< checkedItemPositions.size(); i++) {
@@ -572,20 +572,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                             }
 
                             if(isSameAnswer(poll, chosenOptions)) {
-                                SnackNotificationHelper.show(itemView, "You already voted same options.");
+                                SnackNotificationHelper.showToast(context, "You already voted same options.");
                                 return;
                             }
 
+                            btnSubmit.setEnabled(false);
                             poll.choose(chosenOptions, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
-                                    SnackNotificationHelper.show(itemView, "You voted successfully.");
+                                    SnackNotificationHelper.showToast(context, "You voted successfully.");
+
                                     addMessage(message);
+
                                     enableSubmitButton();
                                 }
 
                                 @Override public void onFailure(MMX.FailureCode failureCode,
                                     Throwable throwable) {
                                     Log.d(TAG, "Failed to choose option", throwable);
+                                    SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
                                     enableSubmitButton();
                                 }
                             });
@@ -631,24 +635,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         //} else {
                         //    rvOptions.setItemChecked(position, true);
                         //}
-
                         if(!poll.isAllowMultiChoices()) {
                             List<MMXPollOption> optionChosen = Arrays.asList(poll.getOptions().get(position));
                             if(isSameAnswer(poll, optionChosen)) {
                                 return;
                             }
+
+                            rvOptions.setEnabled(false);
                             poll.choose(optionChosen, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
-                                    SnackNotificationHelper.show(itemView, "You voted successfully.");
+                                    SnackNotificationHelper.showToast(context, "You voted successfully.");
                                     addMessage(message);
+                                    enableOptions();
                                 }
 
                                 @Override public void onFailure(MMX.FailureCode failureCode,
                                     Throwable throwable) {
+                                    enableOptions();
+                                    SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
                                     Log.d(TAG, "Failed to choose option", throwable);
                                 }
                             });
                         }
+                    }
+
+                    private void enableOptions() {
+                        rvOptions.setEnabled(true);
                     }
                 });
 
@@ -728,25 +740,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             }
 
             return true;
-        }
-    }
-
-    public class PollAnswerContentViewHolder extends MessageContentViewHolder {
-
-        public PollAnswerContentViewHolder(View itemView, int contentType) {
-            super(itemView, null, contentType);
-        }
-
-        @Override protected void showMessageContent() {
-            //text.setVisibility(View.VISIBLE);
-            //
-            //MMXPoll.MMXPollAnswer pollAnswer =
-            //    (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
-            //if(null != pollAnswer) {
-            //    text.setText(message.getSender().getDisplayName() + " chose " + pollAnswer.getSelectedOptionsAsString()  + " for poll " + pollAnswer.getName());
-            //} else {
-            //    text.setText("");
-            //}
         }
     }
 

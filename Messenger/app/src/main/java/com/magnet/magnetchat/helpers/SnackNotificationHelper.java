@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
+import android.widget.Toast;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.ui.activities.sections.splash.SplashActivity;
 
@@ -42,6 +43,10 @@ public class SnackNotificationHelper {
         }
         snackbar.show();
     }
+
+  public static void showToast(Context context, String message) {
+    Toast.makeText(context, message, Toast.LENGTH_LONG);
+  }
 
   public static void showNotification(Context context, String title, String text, String tag) {
     Log.d("NotificationHelper", "Going to show " + title);
