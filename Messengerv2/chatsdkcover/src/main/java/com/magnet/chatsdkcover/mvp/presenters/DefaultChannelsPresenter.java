@@ -43,6 +43,7 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
     @Override
     public void onActivityCreate() {
         view.setLazyLoadCallback(this);
+        repository.setNeedToUpdateChannel(false);
         startChannelReceiving(0);
     }
 
@@ -51,7 +52,8 @@ public class DefaultChannelsPresenter implements ChannelsListContract.Presenter 
      */
     @Override
     public void onActivityResume() {
-        if (repository.isNeedToUpdateChannels()) startChannelReceiving(0);
+        if (repository.isNeedToUpdateChannels())
+            startChannelReceiving(0);
 
     }
 
