@@ -626,7 +626,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         //}
 
                         if(!poll.isAllowMultiChoices()) {
-                            poll.choose(poll.getOptions().get(position), new MMX.OnFinishedListener<MMXMessage>() {
+                            MMXPollOption optionChosen = poll.getOptions().get(position);
+
+                            // Same answer
+                            if(null != poll.getMyVotes() && !poll.getMyVotes().isEmpty() && poll.getMyVotes().get(0).getOptionId().equals(optionChosen.getOptionId())) {
+                                return;
+                            }
+                            poll.choose(optionChosen, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
                                     SnackNotificationHelper.show(itemView, "You voted successfully.");
                                     addMessage(message);
