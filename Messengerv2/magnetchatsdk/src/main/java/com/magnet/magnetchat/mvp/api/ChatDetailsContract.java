@@ -22,6 +22,12 @@ public interface ChatDetailsContract {
         void showRecipients(List<UserProfile> recipients);
 
         void finishDetails();
+
+        void onMute(boolean isMuted);
+
+        void onMessage(int stringRes);
+
+        void onMessage(CharSequence message);
     }
 
     interface Presenter {
@@ -40,6 +46,15 @@ public interface ChatDetailsContract {
          */
         boolean isChannelOwner();
 
+        void changeMuteAction();
+
         BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator();
+
+        /**
+         * the method requests mutable channel state. Result will be returned to onMute method of View
+         *
+         * @see ChatDetailsContract.View.onMute(boolean isMuted)
+         */
+        void requestMuteChannelState();
     }
 }

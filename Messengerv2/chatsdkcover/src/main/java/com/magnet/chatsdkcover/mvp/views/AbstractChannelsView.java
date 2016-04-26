@@ -234,6 +234,11 @@ public abstract class AbstractChannelsView extends BasePresenterView<ChannelsLis
         }
     }
 
+    @Override
+    public void doForceLoadAction() {
+        presenter.startChannelReceiving(0);
+    }
+
     /**
      * Method which provide the UI customizing with accordance to the custom attributes
      */

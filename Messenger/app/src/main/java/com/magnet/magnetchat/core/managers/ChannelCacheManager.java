@@ -139,10 +139,10 @@ public class ChannelCacheManager {
     public void addConversation(String channelName, Conversation conversation) {
         if (isAskChannel(channelName)) {
             askConversations.put(conversation.getChannel().getOwnerId().toLowerCase(), conversation);
-            Log.d(TAG, "----add ask magnet channel " + askConversations.size() + " / " + askChannels.size());
+            //Log.d(TAG, "----add ask magnet channel " + askConversations.size() + " / " + askChannels.size());
         } else {
             conversations.put(channelName.toLowerCase(), conversation);
-            Log.d(TAG, "----add ask personal channel " + conversations.size() + " / " + personalChannels.size());
+            //Log.d(TAG, "----add ask personal channel " + conversations.size() + " / " + personalChannels.size());
         }
         isConversationListUpdated.set(true);
     }

@@ -1,6 +1,5 @@
 package com.magnet.magnetchat.ui.activities;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -39,12 +37,12 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     private static final String TAG = "ChooseUserActivity";
     public static final String TAG_ADD_USER_TO_CHANNEL = "onUsersSelected";
 
-    private RecyclerView userList;
+    private RecyclerView uiUserList;
     private RecyclerView selectedUserList;
-    private TextView tvSelectedAmount;
-    private LinearLayout llSelectedUsers;
-    private ProgressBar userSearchProgress;
-    private Toolbar toolbar;
+    private TextView uiTVSelectedAmount;
+    private LinearLayout uiLLSelectedUsers;
+    private ProgressBar uiUserSearchProgress;
+    private Toolbar uiToolbar;
 
     private UsersAdapter mAdapter;
     private SelectedUsersAdapter selectedAdapter;
@@ -60,21 +58,19 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        enableBackButton();
+        uiToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(uiToolbar);
 
-        setOnClickListeners(R.id.fabAdd);
+        findView(R.id.fabAdd).setOnClickListener(this);
+        uiTVSelectedAmount = findView(R.id.tvSelectedUsersAmount);
+        uiLLSelectedUsers = findView(R.id.llSelectedUsers);
+        uiUserSearchProgress = findView(R.id.chooseUserProgress);
+        uiUserList = findView(R.id.chooseUserList);
 
-        tvSelectedAmount = (TextView) findViewById(R.id.tvSelectedUsersAmount);
-        llSelectedUsers = (LinearLayout) findViewById(R.id.llSelectedUsers);
-        userSearchProgress = (ProgressBar) findViewById(R.id.chooseUserProgress);
-
-        userList = (RecyclerView) findViewById(R.id.chooseUserList);
         LinearLayoutManager userListLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        userList.setLayoutManager(userListLayoutManager);
-        userList.addOnScrollListener(new EndlessLinearRecyclerViewScrollListener(userListLayoutManager) {
+        uiUserList.setLayoutManager(userListLayoutManager);
+        uiUserList.addOnScrollListener(new EndlessLinearRecyclerViewScrollListener(userListLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 Log.d(TAG, "------------onLoadMore User: " + page + "/" + totalItemsCount + "\n");
@@ -141,16 +137,6 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     //MVP METHODS
 
     /**
@@ -160,8 +146,8 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
      */
     @Override
     public void setProgressIndicator(boolean active) {
-        if (userSearchProgress != null) {
-            userSearchProgress.setVisibility(active ? View.VISIBLE : View.INVISIBLE);
+        if (uiUserSearchProgress != null) {
+            uiUserSearchProgress.setVisibility(active ? View.VISIBLE : View.INVISIBLE);
         }
     }
 
@@ -175,7 +161,7 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
         if (null == mAdapter) {
             mAdapter =
                     new UsersAdapter(this, users, selectedUsers, mPresenter.getItemComparator());
-            userList.setAdapter(mAdapter);
+            uiUserList.setAdapter(mAdapter);
             mAdapter.setOnClickListener(userClickListener);
         } else {
             if (toAppend) {
@@ -191,6 +177,7 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
      */
     @Override
     public void finishSelection() {
+        setResult(RESULT_OK);
         finish();
     }
 
@@ -254,10 +241,10 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
                     selectedUsers.add(user);
                 }
                 if (selectedUsers.size() > 0) {
-                    tvSelectedAmount.setText(String.format("%d selected", selectedUsers.size()));
-                    llSelectedUsers.setVisibility(View.VISIBLE);
+                    uiTVSelectedAmount.setText(String.format("%d selected", selectedUsers.size()));
+                    uiLLSelectedUsers.setVisibility(View.VISIBLE);
                 } else {
-                    llSelectedUsers.setVisibility(View.GONE);
+                    uiLLSelectedUsers.setVisibility(View.GONE);
                 }
                 //mAdapter.notifyDataSetChanged();
                 selectedAdapter.notifyDataSetChanged();
@@ -269,21 +256,5 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
 
         }
     };
-
-    /**
-     * Method which provide to enabling of the back button
-     */
-    protected void enableBackButton() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        } else {
-            android.support.v7.app.ActionBar actionBarv7 = getSupportActionBar();
-            if (actionBarv7 != null) {
-                actionBarv7.setDisplayHomeAsUpEnabled(true);
-            }
-        }
-    }
-
 
 }

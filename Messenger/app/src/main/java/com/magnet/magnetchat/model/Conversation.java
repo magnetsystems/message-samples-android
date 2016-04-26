@@ -151,6 +151,15 @@ public class Conversation {
         }
     }
 
+    public void sendMessage(final String text, final OnSendMessageListener listener) {
+        if (channel != null) {
+            Map<String, String> content = Message.makeContent(text);
+            sendMessage(content, listener);
+        } else {
+            throw new Error();
+        }
+    }
+
     public void sendLocation(Location location, final OnSendMessageListener listener) {
         if (channel != null) {
             Map<String, String> content = Message.makeContent(location);

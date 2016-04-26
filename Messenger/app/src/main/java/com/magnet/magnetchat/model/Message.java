@@ -2,16 +2,23 @@ package com.magnet.magnetchat.model;
 
 import android.location.Location;
 
+import android.util.Log;
+import com.magnet.max.android.ApiCallback;
+import com.magnet.max.android.ApiError;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
+import com.magnet.max.android.util.StringUtil;
+import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import com.magnet.mmx.client.ext.poll.MMXPoll;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class Message {
+    private static final String TAG = "Message";
 
     public enum MessageStatus {DELIVERED, PENDING, ERROR}
 
@@ -22,6 +29,8 @@ public class Message {
     public static final String TYPE_PHOTO = "photo";
     public static final String TYPE_MAP = "location";
     public static final String TYPE_VIDEO = "video";
+    public static final String TYPE_POLL = "poll";
+    public static final String TYPE_POLL_ANSWER = "pollAnswer";
 
     private static final String TAG_TYPE = "type";
     private static final String TAG_TEXT = "message";
@@ -31,6 +40,10 @@ public class Message {
     private MMXMessage mmxMessage;
     private MessageStatus messageStatus;
     private Date creationDate;
+
+    private String type;
+
+    private MMXPoll poll;
 
     public MMXMessage getMmxMessage() {
         return mmxMessage;
@@ -67,6 +80,44 @@ public class Message {
         return mmxMessage.getContent().get(TAG_LATITUDE) + "," + mmxMessage.getContent().get(TAG_LONGITUDE);
     }
 
+    public void getPoll(final ApiCallback<MMXPoll> callback) {
+        String errorMessage = null;
+        if(TYPE_POLL.equals(getType())) {
+            if (null == poll) {
+                MMXPoll.MMXPollIdentifier pollIdentifier =
+                    (MMXPoll.MMXPollIdentifier) mmxMessage.getPayload();
+                if(null != pollIdentifier) {
+                    MMXPoll.get(pollIdentifier.getPollId(), new MMX.OnFinishedListener<MMXPoll>() {
+                        @Override public void onSuccess(MMXPoll result) {
+                            poll = result;
+                            if (null != callback) {
+                                callback.success(poll);
+                            }
+                        }
+
+                        @Override public void onFailure(MMX.FailureCode code, Throwable ex) {
+                            Log.e(TAG, "Failed to get poll by id " + code, ex);
+                        }
+                    });
+                } else {
+                    errorMessage = "MMXPollIdentifier is null";
+                }
+            } else {
+                if (null != callback) {
+                    callback.success(poll);
+                }
+            }
+        } else {
+            errorMessage = "Message type is not poll";
+        }
+
+        if(null != errorMessage) {
+            if (null != callback) {
+                callback.failure(new ApiError(errorMessage));
+            }
+        }
+    }
+
     public String getMessageId() {
         if (mmxMessage == null) {
             return null;
@@ -92,7 +143,26 @@ public class Message {
         if (mmxMessage == null) {
             return null;
         }
-        return (String) mmxMessage.getContent().get(TAG_TYPE);
+
+        if(null != type) {
+            return type;
+        }
+
+        String contentType = mmxMessage.getContentType();
+        if(StringUtil.isNotEmpty(contentType) && contentType.startsWith("object/")) {
+            String objectType = contentType.substring("object/".length());
+            if(MMXPoll.MMXPollIdentifier.TYPE.equals(objectType)) {
+                type = TYPE_POLL;
+            } else if(MMXPoll.MMXPollAnswer.TYPE.equals(objectType)){
+                type =  TYPE_POLL_ANSWER;
+            } else {
+                type =  objectType;
+            }
+        } else {
+            type =  mmxMessage.getContent().get(TAG_TYPE);
+        }
+
+        return type;
     }
 
     public String getMessageSummary() {
@@ -108,11 +178,19 @@ public class Message {
             case Message.TYPE_PHOTO:
                 return "User's photo";
             case Message.TYPE_TEXT:
-                String text = getText().replace(System.getProperty("line.separator"), " ");
-                if (text.length() > 23) {
-                    text = text.substring(0, 20) + "...";
+                if(StringUtil.isNotEmpty(getText())) {
+                    String text = getText().replace(System.getProperty("line.separator"), " ");
+                    if (text.length() > 23) {
+                        text = text.substring(0, 20) + "...";
+                    }
+                    return text;
+                } else {
+                    return "Text message";
                 }
-                return text;
+            case Message.TYPE_POLL:
+                return "Poll";
+            case Message.TYPE_POLL_ANSWER:
+                return "Poll answer";
         }
 
         return null;
@@ -150,6 +228,9 @@ public class Message {
         Message message = new Message();
         message.setMmxMessage(mmxMessage);
         message.setMessageStatus(MessageStatus.DELIVERED);
+        if(null == mmxMessage.getTimestamp()) {
+            message.creationDate = new Date();
+        }
         return message;
     }
 

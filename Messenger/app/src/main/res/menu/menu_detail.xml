@@ -6,6 +6,12 @@
         android:id="@+id/menuDetailLeave"
         android:orderInCategory="1"
         android:title="Leave"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menuDetailMute"
+        android:orderInCategory="1"
+        android:title="Mute"
+        app:showAsAction="never" />
 
 </menu>

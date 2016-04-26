@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -197,7 +199,14 @@ public abstract class BaseChannelsFragment extends BaseFragment {
                 Log.d(TAG, "----------current conversations " + adapter.getItemCount() + ", loading conversations " + conversationsToShow.size());
                 conversations.clear();
                 conversations.addAll(conversationsToShow);
-                adapter.notifyDataSetChanged();
+
+                //adapter.notifyDataSetChanged();
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
             }
         } else {
             Log.w(TAG, "Fragment is detached, won't update list");
