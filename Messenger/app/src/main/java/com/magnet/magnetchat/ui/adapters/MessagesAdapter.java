@@ -25,6 +25,7 @@ import butterknife.InjectView;
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
@@ -558,6 +559,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
+                            btnSubmit.setEnabled(false);
+
                             List<MMXPollOption> chosenOptions = new ArrayList<MMXPollOption>();
                             SparseBooleanArray checkedItemPositions = rvOptions.getCheckedItemPositions();
                             for(int i = 0; i< checkedItemPositions.size(); i++) {
@@ -568,14 +571,21 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
                             poll.choose(chosenOptions, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
+                                    SnackNotificationHelper.show(itemView, "You voted successfully.");
                                     addMessage(message);
+                                    enableSubmitButton();
                                 }
 
                                 @Override public void onFailure(MMX.FailureCode failureCode,
                                     Throwable throwable) {
                                     Log.d(TAG, "Failed to choose option", throwable);
+                                    enableSubmitButton();
                                 }
                             });
+                        }
+
+                        private void enableSubmitButton() {
+                            btnSubmit.setEnabled(true);
                         }
                     });
 
@@ -618,6 +628,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         if(!poll.isAllowMultiChoices()) {
                             poll.choose(poll.getOptions().get(position), new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
+                                    SnackNotificationHelper.show(itemView, "You voted successfully.");
                                     addMessage(message);
                                 }
 
