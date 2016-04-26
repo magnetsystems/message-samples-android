@@ -3,6 +3,7 @@ package com.magnet.magnetchat.ui.activities.sections.poll;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,6 +18,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.ui.activities.abs.BaseActivity;
 
 import butterknife.InjectView;
+import com.magnet.max.android.util.StringUtil;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +63,15 @@ public class PollEditActivity extends BaseActivity {
         setOnClickListeners(R.id.btnAdd);
     }
 
+    /**
+     * Method which provide the getting of base view ID
+     *
+     * @return
+     */
+    protected int getBaseViewID() {
+        return R.id.main_content;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -72,8 +83,26 @@ public class PollEditActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_create:
-                MMXPoll.Builder newPollBuilder = new MMXPoll.Builder().name(etName.getText().toString())
-                    .question(etQuestion.getText().toString())
+                String name = etName.getText().toString();
+                String question = etQuestion.getText().toString();
+                if(StringUtil.isEmpty(name)) {
+                    showMessage("Name is required");
+                    etName.requestFocus();
+                    return false;
+                }
+                if(StringUtil.isEmpty(question)) {
+                    showMessage("Question is required");
+                    etQuestion.requestFocus();
+                    return false;
+                }
+                if(options.size() == 0) {
+                    showMessage("At least one option is required");
+                    etOptionText.requestFocus();
+                    return false;
+                }
+
+                MMXPoll.Builder newPollBuilder = new MMXPoll.Builder().name(name)
+                    .question(question)
                     .hideResultsFromOthers(cbHideResults.isChecked())
                     .allowMultiChoice(cbMultiChoice.isChecked());
                 for(String s : options) {
@@ -110,8 +139,11 @@ public class PollEditActivity extends BaseActivity {
     @Override public void onClick(View v) {
         if(v.getId() == R.id.btnAdd) {
             //pollOptionItemAdapter.addOption(etOptionText.getText().toString());
-            options.add(etOptionText.getText().toString());
-            itemsAdapter.notifyDataSetChanged();
+            String text = etOptionText.getText().toString();
+            if(StringUtil.isNotEmpty(text)) {
+                options.add(text);
+                itemsAdapter.notifyDataSetChanged();
+            }
             etOptionText.setText("");
         }
     }
