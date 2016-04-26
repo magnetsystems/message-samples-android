@@ -68,12 +68,6 @@ public class ChatDetailsActivity extends BaseActivity implements ChatDetailsCont
 
         MMXChannel currentChannel = getIntent().getParcelableExtra(TAG_CHANNEL);
         if (currentChannel != null) {
-//            if (StringUtil.isStringValueEqual(currentChannel.getOwnerId(), User.getCurrentUserId())) {
-//                llAddRecipients.setVisibility(View.VISIBLE);
-//
-//                setOnClickListeners(llAddRecipients);
-//            }
-
             mPresenter = new ChatDetailsPresenterImpl(this, currentChannel, this);
             mPresenter.onLoadRecipients(true);
         } else {
@@ -90,12 +84,13 @@ public class ChatDetailsActivity extends BaseActivity implements ChatDetailsCont
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mPresenter.isChannelOwner()) {
-            int menuId = R.menu.menu_chat_details;
-            getMenuInflater().inflate(menuId, menu);
-            uiMute = (SwitchCompat) menu.findItem(R.id.muteAction).getActionView();
-            uiMute.setOnCheckedChangeListener(this);
-        }
+//        if (mPresenter.isChannelOwner()) {
+        int menuId = R.menu.menu_chat_details;
+        getMenuInflater().inflate(menuId, menu);
+        uiMute = (SwitchCompat) menu.findItem(R.id.muteAction).getActionView();
+        uiMute.setOnCheckedChangeListener(this);
+        mPresenter.requestMuteChannelState();
+//        }
         return true;
     }
 

@@ -86,9 +86,9 @@ public class ChatDetailsPresenterImpl implements ChatDetailsContract.Presenter {
 
     @Override
     public void changeMuteAction() {
-        if(mCurrentChannel.isMuted()){
+        if (mCurrentChannel.isMuted()) {
             unmute();
-        }else {
+        } else {
             mute();
         }
     }
@@ -126,6 +126,11 @@ public class ChatDetailsPresenterImpl implements ChatDetailsContract.Presenter {
     @Override
     public BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator() {
         return userProfileItemComparator;
+    }
+
+    @Override
+    public void requestMuteChannelState() {
+        if (mCurrentChannel != null) mView.onMute(mCurrentChannel.isMuted());
     }
 
     private final BaseSortedAdapter.ItemComparator<UserProfile> userProfileItemComparator = new BaseSortedAdapter.ItemComparator<UserProfile>() {

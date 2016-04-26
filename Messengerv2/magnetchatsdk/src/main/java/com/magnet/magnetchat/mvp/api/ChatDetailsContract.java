@@ -49,5 +49,12 @@ public interface ChatDetailsContract {
         void changeMuteAction();
 
         BaseSortedAdapter.ItemComparator<UserProfile> getItemComparator();
+
+        /**
+         * the method requests mutable channel state. Result will be returned to onMute method of View
+         *
+         * @see ChatDetailsContract.View.onMute(boolean isMuted)
+         */
+        void requestMuteChannelState();
     }
 }
