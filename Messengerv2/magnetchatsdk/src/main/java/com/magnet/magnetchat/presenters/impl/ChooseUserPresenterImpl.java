@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Chat;
-import com.magnet.magnetchat.mvp.api.ChooseUserContract;
+import com.magnet.magnetchat.presenters.ChooseUserContract;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
 import com.magnet.magnetchat.persistence.impl.PersistenceComponentImpl;
 import com.magnet.magnetchat.ui.activities.ChatActivity;

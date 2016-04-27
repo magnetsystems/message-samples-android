@@ -1,11 +1,9 @@
-package com.magnet.magnetchat.mvp.api;
+package com.magnet.magnetchat.presenters;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
-import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 import com.magnet.max.android.User;
-import com.magnet.max.android.UserProfile;
 
 import java.util.List;
 

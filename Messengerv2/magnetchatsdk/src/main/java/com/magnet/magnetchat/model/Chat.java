@@ -3,8 +3,6 @@ package com.magnet.magnetchat.model;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.MessageHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;

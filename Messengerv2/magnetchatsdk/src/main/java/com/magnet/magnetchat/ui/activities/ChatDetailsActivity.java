@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.Chat;
-import com.magnet.magnetchat.mvp.api.ChatDetailsContract;
-import com.magnet.magnetchat.mvp.presenters.ChatDetailsPresenterImpl;
+import com.magnet.magnetchat.presenters.ChatDetailsContract;
+import com.magnet.magnetchat.presenters.impl.ChatDetailsPresenterImpl;
 import com.magnet.magnetchat.ui.adapters.UserProfilesAdapter;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.MMXChannel;

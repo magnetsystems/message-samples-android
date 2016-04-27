@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.api;
+package com.magnet.magnetchat.presenters;
 
 /**
  * Copyright (c) 2012-2016 Magnet Systems. All rights reserved.

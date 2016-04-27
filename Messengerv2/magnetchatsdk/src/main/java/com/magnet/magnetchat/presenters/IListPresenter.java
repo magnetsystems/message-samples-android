@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2012-2016 Magnet Systems. All rights reserved.
  */
-package com.magnet.magnetchat.mvp.api;
+package com.magnet.magnetchat.presenters;
 
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2012-2016 Magnet Systems. All rights reserved.
  */
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.app.Activity;
 import android.location.Location;
@@ -16,7 +16,7 @@ import com.magnet.magnetchat.helpers.MessageHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.Message;
-import com.magnet.magnetchat.mvp.api.ChatContract;
+import com.magnet.magnetchat.presenters.ChatContract;
 import com.magnet.magnetchat.ui.activities.ChatDetailsActivity;
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 import com.magnet.magnetchat.util.Logger;

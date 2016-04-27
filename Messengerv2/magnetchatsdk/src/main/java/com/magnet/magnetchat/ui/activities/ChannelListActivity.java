@@ -11,8 +11,8 @@ import com.magnet.magnetchat.ui.fragments.BaseFragment;
 import com.magnet.magnetchat.ui.fragments.ChatListFragment;
 import com.magnet.max.android.User;
 
-public class ChatListActivity extends BaseActivity implements BaseActivityCallback {
-    private static final String TAG = ChatListActivity.class.getSimpleName();
+public class ChannelListActivity extends BaseActivity implements BaseActivityCallback {
+    private static final String TAG = ChannelListActivity.class.getSimpleName();
 
     Toolbar toolbar;
 

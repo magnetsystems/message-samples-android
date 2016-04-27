@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.api;
+package com.magnet.magnetchat.presenters;
 
 import java.util.List;
 

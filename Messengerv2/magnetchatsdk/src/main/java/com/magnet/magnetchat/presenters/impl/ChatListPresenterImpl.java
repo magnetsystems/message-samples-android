@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,7 +9,7 @@ import com.magnet.magnetchat.callbacks.NewMessageProcessListener;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
 import com.magnet.magnetchat.model.Chat;
-import com.magnet.magnetchat.mvp.api.ChatListContract;
+import com.magnet.magnetchat.presenters.ChatListContract;
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.Utils;
