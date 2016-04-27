@@ -56,7 +56,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:background="@mipmap/ic_attachment" />
+                android:padding="@dimen/dimen_4"
+                android:background="@drawable/ic_add_white_24dp" />
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/chatMessageField"

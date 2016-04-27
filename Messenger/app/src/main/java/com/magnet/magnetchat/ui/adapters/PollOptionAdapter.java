@@ -36,9 +36,9 @@ public class PollOptionAdapter extends ArrayAdapter<MMXPollOption> {
     // Lookup view for data population
     TextView tvText = (TextView) convertView.findViewById(R.id.tvText);
     tvText.setText(option.getText());
-
+    TextView tvCount = (TextView) convertView.findViewById(R.id.tvCount);
+    tvCount.setVisibility(showCount ? View.VISIBLE : View.GONE);
     if(showCount) {
-      TextView tvCount = (TextView) convertView.findViewById(R.id.tvCount);
       tvCount.setText(String.valueOf(option.getCount()));
     }
 
