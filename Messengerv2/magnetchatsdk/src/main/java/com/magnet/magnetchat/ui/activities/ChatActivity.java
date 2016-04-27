@@ -21,12 +21,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.EndlessLinearRecyclerViewScrollListener;
@@ -40,9 +42,11 @@ import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.presenters.ChatContract;
 import com.magnet.magnetchat.presenters.impl.ChatPresenterImpl;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
+import com.magnet.magnetchat.ui.views.poll.AbstractEditPollView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
+import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.ArrayList;
@@ -59,7 +63,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     public static final String TAG_CREATE_WITH_RECIPIENTS = "createWithRecipients";
     public static final String TAG_CREATE_NEW = "createNew";
 
-    private static final String[] ATTACHMENT_VARIANTS = {"Take photo", "Choose from gallery", "Send location", /*"Send video",*/ "Cancel"};
+    private static final String[] ATTACHMENT_VARIANTS = {"Take photo", "Choose from gallery", "Send location", /*"Send video",*/ "Create Poll", "Cancel"};
 
     public static final int INTENT_REQUEST_GET_IMAGES = 14;
     public static final int INTENT_SELECT_VIDEO = 13;
@@ -78,6 +82,8 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     AppCompatEditText editMessage;
     TextView sendMessageButton;
     Toolbar toolbar;
+    private AbstractEditPollView uiPoll;
+    private ViewGroup uiPollContainer;
 
     ChatContract.Presenter mPresenter;
 
@@ -108,6 +114,11 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
         sendMessageButton = (TextView) findViewById(R.id.chatSendBtn);
 
         chatMessageProgress = (ProgressBar) findViewById(R.id.chatMessageProgress);
+//        uiPoll = findView(R.id.mmx_poll);
+        uiPoll = ChatSDK.getViewFactory().createPolView(this);
+        uiPollContainer = findView(R.id.mmx_poll_container);
+        uiPollContainer.addView(uiPoll);
+
 
         setOnClickListeners(sendMessageButton);
         findViewById(R.id.chatAddAttachment).setOnClickListener(this);
@@ -149,6 +160,9 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
                 return;
             }
         }
+
+        MMXChannel mmxChannel = mPresenter.getCurrentConversation().getChannel();
+        uiPoll.setChannel(mmxChannel);
 
         googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(connectionCallback)
                 .addOnConnectionFailedListener(connectionFailedListener).addApi(LocationServices.API).build();
@@ -255,7 +269,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             messagesListView.setAdapter(mAdapter);
         } else {
             if (toAppend) {
-                if(!messages.isEmpty()) {
+                if (!messages.isEmpty()) {
                     mAdapter.addItem(Message.fromMMXMessages(messages));
                 }
             } else {
@@ -445,12 +459,15 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
                                 sendLocation();
                             }
                             break;
+                        case 3:
+                            showPollCreateView();
+                            break;
                         //case 2:
                         //    if (!needPermission(REQUEST_VIDEO, PermissionHelper.STORAGE_PERMISSION)) {
                         //        selectVideo();
                         //    }
                         //    break;
-                        case 3:
+                        case 4:
                             break;
                     }
                     attachmentDialog.dismiss();
@@ -460,6 +477,10 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             attachmentDialog = builder.create();
         }
         attachmentDialog.show();
+    }
+
+    private void showPollCreateView() {
+        uiPollContainer.setVisibility(View.VISIBLE);
     }
 
     private void sendLocation() {
@@ -502,6 +523,14 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
         }
         intent.putParcelableArrayListExtra(TAG_CREATE_WITH_RECIPIENTS, arrayList);
         return intent;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (uiPollContainer.getVisibility() == View.VISIBLE) {
+            uiPollContainer.setVisibility(View.GONE);
+        } else
+            super.onBackPressed();
     }
 
     /**

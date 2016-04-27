@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
-    app:theme="@style/MagnetChatSDKTheme"
     android:focusableInTouchMode="true"
+    app:theme="@style/MagnetChatSDKTheme"
     tools:context=".ui.activities.ChatActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -90,6 +89,26 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/mmx_poll_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1"
+                android:background="@android:color/darker_gray" />
+
+            <!--<com.magnet.magnetchat.ui.views.poll.DefaultEditPollView-->
+                <!--android:id="@+id/mmx_poll"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/white" />-->
+        </LinearLayout>
 
     </RelativeLayout>
 

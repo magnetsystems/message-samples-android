@@ -491,7 +491,7 @@ public interface ChannelsListContractLayer {
                 List<MMXMessage> messages = channelDetail.getMessages();
                 if (messages != null && messages.size() > 0) {
                     MMXMessage mmxMessage = messages.get(messages.size() - 1);
-                    if (mmxMessage != null) {
+                    if (mmxMessage != null && mmxMessage.getContent() != null && mmxMessage.getContent().containsKey(Message.TAG_TYPE)) {
                         Message message = Message.createMessageFrom(mmxMessage);
                         if (message != null
                                 && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {

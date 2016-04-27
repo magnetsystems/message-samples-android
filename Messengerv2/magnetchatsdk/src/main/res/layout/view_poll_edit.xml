@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dimen_7"
+    android:paddingRight="@dimen/dimen_7">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/mmx_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add poll" />
+
+        <TextView
+            android:id="@+id/mmx_create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_10"
+            android:text="Create"
+            android:textColor="@color/accent" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/mmx_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/mmx.multiple_choice"
+        android:textColor="@color/accent" />
+
+    <EditText
+        android:id="@+id/mmx_poll_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:hint="Poll question"
+        android:nextFocusDown="@+id/mmx_poll_answers"
+        android:singleLine="true"
+        android:textSize="@dimen/text_14" />
+
+    <EditText
+        android:id="@+id/mmx_poll_answers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:hint="Write answers by comma"
+        android:singleLine="true"
+        android:textSize="@dimen/text_14" />
+
+
+</LinearLayout>

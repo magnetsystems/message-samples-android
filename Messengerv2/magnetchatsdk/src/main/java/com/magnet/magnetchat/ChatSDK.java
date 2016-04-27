@@ -1,5 +1,6 @@
 package com.magnet.magnetchat;
 
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +12,10 @@ import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.presenters.core.PresenterFactory;
+import com.magnet.magnetchat.presenters.impl.DefaultPresenterFactory;
+import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
+import com.magnet.magnetchat.ui.factories.MMXViewFactory;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.*;
 import com.magnet.mmx.client.api.MMX;
@@ -23,14 +28,54 @@ import com.magnet.mmx.client.common.Log;
  */
 public class ChatSDK {
 
-    public static void init(Context context) {
+    private PresenterFactory factory;
+    private MMXViewFactory mmxViewFactory;
+
+    private static ChatSDK instance;
+
+    private ChatSDK() {
+
+    }
+
+    private MMXViewFactory getMmxViewFactory() {
+        if (mmxViewFactory == null) {
+            mmxViewFactory = new DefaultMMXViewFactory();
+        }
+        return mmxViewFactory;
+    }
+
+    private PresenterFactory getFactory() {
+        if (factory == null) {
+            factory = new DefaultPresenterFactory();
+        }
+        return factory;
+    }
+
+    public static PresenterFactory getPresenterFactory() {
+        throwMMXNotInitExcetion();
+        return instance.getFactory();
+    }
+
+    public static MMXViewFactory getViewFactory() {
+        return instance.getMmxViewFactory();
+    }
+
+    private static void throwMMXNotInitExcetion() {
+        if (instance == null) {
+            throw new RuntimeException("ChatSDK wasn't initialized. Call ChatSDK.init method in Application class");
+        }
+    }
+
+    public static void init(Application application) {
+        instance = new ChatSDK();
+
         MMX.registerListener(eventListener);
-        MMX.registerWakeupBroadcast(context, new Intent("MMX_WAKEUP_ACTION"));
+        MMX.registerWakeupBroadcast(application, new Intent("MMX_WAKEUP_ACTION"));
 
         Log.setLoggable(null, BuildConfig.DEBUG ? Log.VERBOSE : Log.ERROR);
 
-        SharedPreferenceManager.getInstance(context);
-        InternetConnectionManager.getInstance(context);
+        SharedPreferenceManager.getInstance(application);
+        InternetConnectionManager.getInstance(application);
         ChatManager.getInstance();
     }
 

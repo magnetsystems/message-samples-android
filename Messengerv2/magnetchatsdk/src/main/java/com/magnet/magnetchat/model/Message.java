@@ -1,9 +1,11 @@
 package com.magnet.magnetchat.model;
 
 import android.location.Location;
+
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXMessage;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -21,6 +23,7 @@ public class Message {
     public static final String TYPE_PHOTO = "photo";
     public static final String TYPE_MAP = "location";
     public static final String TYPE_VIDEO = "video";
+    public static final String TYPE_POLL = "poll";
 
     public static final String TAG_TYPE = "type";
     public static final String TAG_TEXT = "message";
@@ -152,15 +155,22 @@ public class Message {
         return content;
     }
 
-    @Override public String toString() {
+    public static Map<String, String> makePollContent() {
+        Map<String, String> map = new HashMap<>();
+        map.put(TAG_TYPE, TYPE_POLL);
+        return map;
+    }
+
+    @Override
+    public String toString() {
         return null != mmxMessage ? mmxMessage.toString() : "";
     }
 
     public static List<Message> fromMMXMessages(List<MMXMessage> mmxMessageList) {
         List<Message> messages = null;
-        if(null != mmxMessageList && !mmxMessageList.isEmpty()) {
+        if (null != mmxMessageList && !mmxMessageList.isEmpty()) {
             messages = new ArrayList<>(mmxMessageList.size());
-            for(MMXMessage mmxMessage : mmxMessageList) {
+            for (MMXMessage mmxMessage : mmxMessageList) {
                 messages.add(Message.createMessageFrom(mmxMessage));
             }
         } else {
