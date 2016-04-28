@@ -10,11 +10,11 @@ import com.magnet.magnetchat.ui.views.poll.DefaultEditPollView;
  * Created by aorehov on 27.04.16.
  */
 public class DefaultMMXViewFactory implements MMXViewFactory {
+
+
     @Override
-    public AbstractEditPollView createPolView(Context context, ViewGroup.LayoutParams params) {
-        AbstractEditPollView view = createPolView(context);
-        view.setLayoutParams(params);
-        return view;
+    public AbstractEditPollView createPolView(Context context, ViewGroup parent) {
+        return createPolView(context);
     }
 
     @Override

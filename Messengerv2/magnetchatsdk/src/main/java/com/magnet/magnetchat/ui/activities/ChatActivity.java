@@ -145,6 +145,8 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             if (currentConversation != null) {
                 mPresenter = new ChatPresenterImpl(this, currentConversation);
                 mPresenter.onLoad(0, Constants.MESSAGE_PAGE_SIZE);
+                MMXChannel mmxChannel = currentConversation.getChannel();
+                uiPoll.setChannel(mmxChannel);
             } else {
                 showMessage("Can load the conversation");
                 finish();
@@ -161,11 +163,13 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
             }
         }
 
-        MMXChannel mmxChannel = mPresenter.getCurrentConversation().getChannel();
-        uiPoll.setChannel(mmxChannel);
-
         googleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(connectionCallback)
                 .addOnConnectionFailedListener(connectionFailedListener).addApi(LocationServices.API).build();
+    }
+
+    @Override
+    public void onChannelCreated(MMXChannel channel) {
+        uiPoll.setChannel(channel);
     }
 
     @Override

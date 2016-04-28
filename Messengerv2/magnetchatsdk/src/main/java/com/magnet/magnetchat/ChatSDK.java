@@ -12,6 +12,8 @@ import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.helpers.UserHelper;
+import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
+import com.magnet.magnetchat.model.converters.impl.DefaultMMXObjectConverterFactory;
 import com.magnet.magnetchat.presenters.core.PresenterFactory;
 import com.magnet.magnetchat.presenters.impl.DefaultPresenterFactory;
 import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
@@ -30,11 +32,19 @@ public class ChatSDK {
 
     private PresenterFactory factory;
     private MMXViewFactory mmxViewFactory;
+    private MMXObjectConverterFactory mmxObjectConverterFactory;
 
     private static ChatSDK instance;
 
     private ChatSDK() {
 
+    }
+
+    public MMXObjectConverterFactory getObjectConverterFactory() {
+        if (mmxObjectConverterFactory == null) {
+            mmxObjectConverterFactory = new DefaultMMXObjectConverterFactory();
+        }
+        return mmxObjectConverterFactory;
     }
 
     private MMXViewFactory getMmxViewFactory() {
@@ -49,6 +59,11 @@ public class ChatSDK {
             factory = new DefaultPresenterFactory();
         }
         return factory;
+    }
+
+    public static MMXObjectConverterFactory getMmxObjectConverterFactory() {
+        throwMMXNotInitExcetion();
+        return instance.getObjectConverterFactory();
     }
 
     public static PresenterFactory getPresenterFactory() {

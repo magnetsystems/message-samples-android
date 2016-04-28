@@ -12,7 +12,9 @@ import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.Message;
 import com.magnet.max.android.UserProfile;
 
+import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
+
 import java.util.List;
 
 public interface ChatContract {
@@ -73,6 +75,8 @@ public interface ChatContract {
          */
         @NonNull
         Activity getActivity();
+
+        void onChannelCreated(MMXChannel channel);
     }
 
     interface Presenter extends IListPresenter<Message> {

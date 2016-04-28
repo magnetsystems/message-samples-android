@@ -25,4 +25,5 @@
     <string name="mmx.poll.question.empty">Question can\'t be empty</string>
     <string name="mmx.poll.create.error">Can\'t create poll</string>
     <string name="mmx.multiple_choice">Multiple choice</string>
+    <string name="err.mmx.msg.loading">Can\'t load messages</string>
 </resources>

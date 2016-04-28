@@ -1,6 +1,6 @@
 package com.magnet.magnetchat.model;
 
-import com.magnet.magnetchat.util.MMXPollUtils;
+import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 
 import java.util.List;
@@ -14,8 +14,7 @@ public class MMXPollWrapper extends MMXObjectWrapper<MMXPoll> {
 
     public MMXPollWrapper(MMXPoll obj) {
         super(obj);
-        MMXPollUtils utils = new MMXPollUtils();
-        options = utils.convert(obj.getOptions(), obj.getMyVotes());
+        options = MMXObjectsHelper.convert(obj.getOptions(), obj.getMyVotes());
     }
 
     public List<MMXPollOptionWrapper> getMMXPollOptions() {

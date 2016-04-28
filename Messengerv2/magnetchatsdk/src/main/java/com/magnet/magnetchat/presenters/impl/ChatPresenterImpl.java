@@ -51,7 +51,7 @@ public class ChatPresenterImpl implements ChatContract.Presenter {
         onReadMessage();
     }
 
-    public ChatPresenterImpl(@NonNull ChatContract.View view, @NonNull final ArrayList<UserProfile> recipients) {
+    public ChatPresenterImpl(@NonNull final ChatContract.View view, @NonNull final ArrayList<UserProfile> recipients) {
         this.mView = view;
         this.mRecipients = recipients;
 
@@ -66,6 +66,7 @@ public class ChatPresenterImpl implements ChatContract.Presenter {
             @Override
             public void onSuccessCreated(MMXChannel channel) {
                 addNewConversation(new Chat(channel, recipients, User.getCurrentUser()));
+                view.onChannelCreated(channel);
             }
 
             @Override

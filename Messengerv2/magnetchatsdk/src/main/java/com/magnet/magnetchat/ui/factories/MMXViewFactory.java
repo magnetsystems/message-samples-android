@@ -9,7 +9,7 @@ import com.magnet.magnetchat.ui.views.poll.AbstractEditPollView;
  * Created by aorehov on 27.04.16.
  */
 public interface MMXViewFactory {
-    AbstractEditPollView createPolView(Context context, ViewGroup.LayoutParams params);
+    AbstractEditPollView createPolView(Context context, ViewGroup parent);
 
     AbstractEditPollView createPolView(Context context);
 }
