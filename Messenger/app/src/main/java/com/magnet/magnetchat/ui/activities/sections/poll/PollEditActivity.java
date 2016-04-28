@@ -84,12 +84,12 @@ public class PollEditActivity extends BaseActivity {
         switch (item.getItemId()) {
             case R.id.action_create:
                 String name = etName.getText().toString();
-                String question = etQuestion.getText().toString();
                 if(StringUtil.isEmpty(name)) {
                     showMessage("Name is required");
                     etName.requestFocus();
                     return false;
                 }
+                String question = etQuestion.getText().toString();
                 if(StringUtil.isEmpty(question)) {
                     showMessage("Question is required");
                     etQuestion.requestFocus();

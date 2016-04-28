@@ -413,13 +413,22 @@ public class ChatActivity extends BaseActivity implements GoogleApiClient.Connec
     private void updateList() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();
-            messagesListView.smoothScrollToPosition(adapter.getItemCount());
+            scollToLastMessage();
+            //messagesListView.smoothScrollToPosition(adapter.getItemCount());
         }
     }
 
     private void updateInserted() {
         if (adapter != null) {
             adapter.notifyItemInserted(adapter.getItemCount() - 1);
+            scollToLastMessage();
+            //messagesListView.smoothScrollToPosition(adapter.getItemCount());
+        }
+    }
+
+    private void scollToLastMessage() {
+        Message lastMessage = adapter.getItem(adapter.getItemCount() - 1);
+        if(null != lastMessage && lastMessage.getType() != Message.TYPE_POLL_ANSWER) {
             messagesListView.smoothScrollToPosition(adapter.getItemCount());
         }
     }

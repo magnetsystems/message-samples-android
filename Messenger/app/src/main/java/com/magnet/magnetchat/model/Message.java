@@ -80,7 +80,11 @@ public class Message {
         return mmxMessage.getContent().get(TAG_LATITUDE) + "," + mmxMessage.getContent().get(TAG_LONGITUDE);
     }
 
-    public void getPoll(final ApiCallback<MMXPoll> callback) {
+  /**
+   * Get poll async. Retrieve from server if it's null
+   * @param callback
+   */
+  public void getPoll(final ApiCallback<MMXPoll> callback) {
         String errorMessage = null;
         if(TYPE_POLL.equals(getType())) {
             if (null == poll) {
@@ -116,6 +120,10 @@ public class Message {
                 callback.failure(new ApiError(errorMessage));
             }
         }
+    }
+
+    public MMXPoll getPoll() {
+        return poll;
     }
 
     public String getMessageId() {

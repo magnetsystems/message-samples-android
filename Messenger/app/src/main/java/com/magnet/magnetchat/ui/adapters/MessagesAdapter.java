@@ -25,6 +25,7 @@ import butterknife.InjectView;
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
+import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Conversation;
 import com.magnet.magnetchat.model.Message;
@@ -42,6 +43,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -106,10 +108,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
     }
 
     public class FeedMessageViewHolder extends AbstractMessageViewHolder {
-        @InjectView(R.id.tvUserName) TextView tvUserName;
-        @InjectView(R.id.tvAction) TextView tvAction;
+        //@InjectView(R.id.tvUserName) TextView tvUserName;
+        //@InjectView(R.id.tvAction) TextView tvAction;
         @InjectView(R.id.tvContent) TextView tvContent;
-        @InjectView(R.id.tvSubject) TextView tvSubject;
+        //@InjectView(R.id.tvSubject) TextView tvSubject;
 
         public FeedMessageViewHolder(View itemView, int contentType) {
             super(itemView, (TextView) itemView.findViewById(R.id.tvDate));
@@ -122,20 +124,22 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
             if(null != pollAnswer) {
                 configureDate(message, previousMessage);
-                tvUserName.setText(message.getSender().getDisplayName());
-                tvAction.setText(" chose ");
-                tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
-                tvSubject.setText(pollAnswer.getName());
+                //tvUserName.setText(message.getSender().getDisplayName());
+                //tvAction.setText(" voted ");
+                //tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
+                //tvSubject.setText(pollAnswer.getName());
+                tvContent.setText(new StringBuilder(message.getSender().getDisplayName()).append(" voted ")
+                .append(pollAnswer.getSelectedOptionsAsString()).append(" for poll ").append(pollAnswer.getName()).toString());
             } else {
                 resetText();
             }
         }
 
         private void resetText() {
-            tvUserName.setText("");
-            tvAction.setText("");
             tvContent.setText("");
-            tvSubject.setText("");
+            //tvUserName.setText("");
+            //tvAction.setText("");
+            //tvSubject.setText("");
         }
     }
 
@@ -473,19 +477,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             ButterKnife.inject(this, contentView);
 
             footer = View.inflate(context, R.layout.view_poll_footer, null);
+            btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
         }
 
         @Override protected void showMessageContent() {
             message.getPoll(new ApiCallback<MMXPoll>() {
                 @Override public void success(MMXPoll poll) {
                     showPoll(poll);
-                    //if(null != poll && !poll.equals(mmxPoll)) {
-                    //    showPoll(poll);
-                    //    mmxPoll = poll;
-                    //    Log.d(TAG, "--------previous poll : " + mmxPoll + "\n------------current poll : " + poll);
-                    //} else {
-                    //    Log.d(TAG, "--------Binding the same poll " + poll);
-                    //}
                 }
 
                 @Override public void failure(ApiError error) {
@@ -526,18 +524,27 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     ivRefresh.setVisibility(View.VISIBLE);
                     ivRefresh.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
+                            ivRefresh.setEnabled(false);
                             poll.refreshResults(new MMXChannel.OnFinishedListener<Void>() {
                                 @Override public void onSuccess(Void result) {
                                     if(null != adapter) {
                                         adapter.resetData(poll.getOptions());
                                     }
+                                    SnackNotificationHelper.showToast(context, "Results refreshed.");
+                                    enableRefresh();
                                 }
 
                                 @Override public void onFailure(MMXChannel.FailureCode code,
                                     Throwable throwable) {
-
+                                    Log.e(TAG, "Failed to refresh the result " + code, throwable);
+                                    SnackNotificationHelper.showToast(context, "Failed to refresh the result.");
+                                    enableRefresh();
                                 }
                             });
+                        }
+
+                        private void enableRefresh() {
+                            ivRefresh.setEnabled(true);
                         }
                     });
                 } else {
@@ -554,8 +561,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 if(poll.isAllowMultiChoices()) {
                     //rvOptions.addFooterView(footer, null, false);
                     //footer.setVisibility(View.VISIBLE);
-
-                    btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override public void onClick(View v) {
                             List<MMXPollOption> chosenOptions = new ArrayList<MMXPollOption>();
@@ -566,16 +571,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                                 }
                             }
 
+                            if(isSameAnswer(poll, chosenOptions)) {
+                                SnackNotificationHelper.showToast(context, "You already voted same options.");
+                                return;
+                            }
+
+                            btnSubmit.setEnabled(false);
                             poll.choose(chosenOptions, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
+                                    SnackNotificationHelper.showToast(context, "You voted successfully.");
+
                                     addMessage(message);
+
+                                    enableSubmitButton();
                                 }
 
                                 @Override public void onFailure(MMX.FailureCode failureCode,
                                     Throwable throwable) {
                                     Log.d(TAG, "Failed to choose option", throwable);
+                                    SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
+                                    enableSubmitButton();
                                 }
                             });
+                        }
+
+                        private void enableSubmitButton() {
+                            btnSubmit.setEnabled(true);
                         }
                     });
 
@@ -614,19 +635,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         //} else {
                         //    rvOptions.setItemChecked(position, true);
                         //}
-
                         if(!poll.isAllowMultiChoices()) {
-                            poll.choose(poll.getOptions().get(position), new MMX.OnFinishedListener<MMXMessage>() {
+                            List<MMXPollOption> optionChosen = Arrays.asList(poll.getOptions().get(position));
+                            if(isSameAnswer(poll, optionChosen)) {
+                                return;
+                            }
+
+                            rvOptions.setEnabled(false);
+                            poll.choose(optionChosen, new MMX.OnFinishedListener<MMXMessage>() {
                                 @Override public void onSuccess(MMXMessage message) {
+                                    SnackNotificationHelper.showToast(context, "You voted successfully.");
                                     addMessage(message);
+                                    enableOptions();
                                 }
 
                                 @Override public void onFailure(MMX.FailureCode failureCode,
                                     Throwable throwable) {
+                                    enableOptions();
+                                    SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
                                     Log.d(TAG, "Failed to choose option", throwable);
                                 }
                             });
                         }
+                    }
+
+                    private void enableOptions() {
+                        rvOptions.setEnabled(true);
                     }
                 });
 
@@ -693,24 +727,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 Log.e(TAG, "MMXMessage is null");
             }
         }
-    }
 
-    public class PollAnswerContentViewHolder extends MessageContentViewHolder {
+        private boolean isSameAnswer(MMXPoll poll, List<MMXPollOption> options) {
+            if(null == poll.getMyVotes() || poll.getMyVotes().isEmpty() || poll.getMyVotes().size() != options.size()) {
+                return false;
+            }
 
-        public PollAnswerContentViewHolder(View itemView, int contentType) {
-            super(itemView, null, contentType);
-        }
+            for(MMXPollOption option : options) {
+                if(!poll.getMyVotes().contains(option)) {
+                    return false;
+                }
+            }
 
-        @Override protected void showMessageContent() {
-            //text.setVisibility(View.VISIBLE);
-            //
-            //MMXPoll.MMXPollAnswer pollAnswer =
-            //    (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
-            //if(null != pollAnswer) {
-            //    text.setText(message.getSender().getDisplayName() + " chose " + pollAnswer.getSelectedOptionsAsString()  + " for poll " + pollAnswer.getName());
-            //} else {
-            //    text.setText("");
-            //}
+            return true;
         }
     }
 
@@ -787,7 +816,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         return messageList.size();
     }
 
-    private Message getItem(int position) {
-        return messageList.get(position);
+    public Message getItem(int position) {
+        return position < messageList.size() ? messageList.get(position) : null;
     }
 }

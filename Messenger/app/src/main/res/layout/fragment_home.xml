@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_50"
-            android:text="Create a new massage" />
+            android:text="Create a new message" />
 
     </LinearLayout>
 
