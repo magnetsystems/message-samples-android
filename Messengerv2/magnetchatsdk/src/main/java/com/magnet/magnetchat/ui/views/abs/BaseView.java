@@ -181,7 +181,6 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
      * (example: use it in activity onResume)
      */
     public void onResume() {
-
     }
 
     /**
@@ -189,7 +188,19 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
      * (example: use it in activity onPause)
      */
     public void onPause() {
+    }
 
+    /**
+     * Fragment's or Activity callback method onStart
+     */
+    public void onStart() {
+    }
+
+
+    /**
+     * Fragment's or Activity callback method onStop
+     */
+    public void onStop() {
     }
 
     /**
@@ -201,6 +212,20 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
 
     public <T extends View> T findView(int id) {
         return findView(this, id);
+    }
+
+    /**
+     * The wrappers methods which return string from resources
+     *
+     * @param resId of string from R.string.*
+     * @return
+     */
+    public String getString(int resId) {
+        return getContext().getString(resId);
+    }
+
+    public String getString(int resId, Object... objs) {
+        return getContext().getString(resId, objs);
     }
 
     /**

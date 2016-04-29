@@ -14,9 +14,11 @@ import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
 import com.magnet.magnetchat.model.converters.impl.DefaultMMXObjectConverterFactory;
-import com.magnet.magnetchat.presenters.core.PresenterFactory;
-import com.magnet.magnetchat.presenters.impl.DefaultPresenterFactory;
+import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
+import com.magnet.magnetchat.presenters.impl.DefaultMMXPresenterFactory;
+import com.magnet.magnetchat.ui.factories.DefaultMMXListItemFactory;
 import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
+import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 import com.magnet.magnetchat.ui.factories.MMXViewFactory;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.*;
@@ -30,9 +32,10 @@ import com.magnet.mmx.client.common.Log;
  */
 public class ChatSDK {
 
-    private PresenterFactory factory;
+    private MMXPresenterFactory factory;
     private MMXViewFactory mmxViewFactory;
     private MMXObjectConverterFactory mmxObjectConverterFactory;
+    private MMXListItemFactory mmxListItemFactory;
 
     private static ChatSDK instance;
 
@@ -40,7 +43,15 @@ public class ChatSDK {
 
     }
 
-    public MMXObjectConverterFactory getObjectConverterFactory() {
+    private MMXListItemFactory getPrMmxListItemFactory() {
+        if (mmxListItemFactory == null) {
+            mmxListItemFactory = new DefaultMMXListItemFactory();
+        }
+        return mmxListItemFactory;
+    }
+
+
+    private MMXObjectConverterFactory getObjectConverterFactory() {
         if (mmxObjectConverterFactory == null) {
             mmxObjectConverterFactory = new DefaultMMXObjectConverterFactory();
         }
@@ -54,11 +65,16 @@ public class ChatSDK {
         return mmxViewFactory;
     }
 
-    private PresenterFactory getFactory() {
+    private MMXPresenterFactory getFactory() {
         if (factory == null) {
-            factory = new DefaultPresenterFactory();
+            factory = new DefaultMMXPresenterFactory();
         }
         return factory;
+    }
+
+    public static MMXListItemFactory getMmxListItemFactory() {
+        throwMMXNotInitExcetion();
+        return instance.getPrMmxListItemFactory();
     }
 
     public static MMXObjectConverterFactory getMmxObjectConverterFactory() {
@@ -66,7 +82,7 @@ public class ChatSDK {
         return instance.getObjectConverterFactory();
     }
 
-    public static PresenterFactory getPresenterFactory() {
+    public static MMXPresenterFactory getPresenterFactory() {
         throwMMXNotInitExcetion();
         return instance.getFactory();
     }

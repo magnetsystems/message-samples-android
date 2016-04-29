@@ -26,6 +26,8 @@ public interface ChatContract {
         void doRefresh();
 
         void onScrolledTo(int visibleItemIndex, int size);
+
+        String getChannelName();
     }
 
     interface View extends MMXInfoView {

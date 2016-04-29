@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.magnet.magnetchat.helpers.MessageHelper;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.MMXMessageUtil;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
@@ -195,7 +196,7 @@ public class Chat extends ChannelDetail {
 
     public void sendTextMessage(final String text, final OnSendMessageListener listener) {
         if (channel != null) {
-            Map<String, String> content = Message.makeContent(text);
+            Map<String, String> content = MMXMessageUtil.makeContent(text);
             sendMessage(content, listener);
         } else {
             throw new Error();
@@ -204,7 +205,7 @@ public class Chat extends ChannelDetail {
 
     public void sendLocation(Location location, final OnSendMessageListener listener) {
         if (channel != null) {
-            Map<String, String> content = Message.makeContent(location);
+            Map<String, String> content = MMXMessageUtil.makeContent(location);
             sendMessage(content, listener);
         } else {
             throw new Error();
@@ -216,7 +217,7 @@ public class Chat extends ChannelDetail {
         if (channel != null) {
             File file = new File(filePath);
             Attachment attachment = new Attachment(file, mimeType, file.getName(), "From " + UserHelper.getDisplayName(User.getCurrentUser()));
-            Map<String, String> content = Message.makeVideoContent();
+            Map<String, String> content = MMXMessageUtil.makeVideoContent();
             sendMessage(content, attachment, listener);
         } else {
             throw new Error();
@@ -228,7 +229,7 @@ public class Chat extends ChannelDetail {
         if (channel != null) {
             File file = new File(filePath);
             Attachment attachment = new Attachment(file, mimeType, file.getName(), "From " + UserHelper.getDisplayName(User.getCurrentUser()));
-            Map<String, String> content = Message.makePhotoContent();
+            Map<String, String> content = MMXMessageUtil.makePhotoContent();
             sendMessage(content, attachment, listener);
         } else {
             throw new Error();

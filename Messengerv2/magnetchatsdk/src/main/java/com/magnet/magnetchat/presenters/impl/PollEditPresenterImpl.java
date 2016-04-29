@@ -3,8 +3,8 @@ package com.magnet.magnetchat.presenters.impl;
 import android.os.Bundle;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.presenters.PollEditContract;
+import com.magnet.magnetchat.util.MMXMessageUtil;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -59,7 +59,7 @@ class PollEditPresenterImpl implements PollEditContract.Presenter {
         }
 
         builder.allowMultiChoice(view.isMultipleChoice());
-        builder.extras(Message.makePollContent());
+        builder.extras(MMXMessageUtil.makePollContent());
 
         MMXPoll poll = builder.build();
 

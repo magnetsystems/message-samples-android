@@ -11,6 +11,7 @@ import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.magnetchat.presenters.updated.ChatContract;
+import com.magnet.magnetchat.util.LazyLoadUtil;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -21,15 +22,17 @@ import java.util.List;
 /**
  * Created by aorehov on 28.04.16.
  */
-public class NewChatPresenterImpl implements ChatContract.Presenter {
+class NewChatPresenterImpl implements ChatContract.Presenter, LazyLoadUtil.OnNeedLoadingCallback {
 
     private MMXChannelWrapper channel;
     private ChatContract.View view;
     private MMXMessageWrapperConverter converter;
+    private LazyLoadUtil lazyLoadUtil;
 
     public NewChatPresenterImpl(ChatContract.View view, MMXMessageWrapperConverter converter) {
         this.view = view;
         this.converter = converter;
+        lazyLoadUtil = new LazyLoadUtil((int) (Constants.MESSAGE_PAGE_SIZE * 0.33), this);
     }
 
     @Override
@@ -70,7 +73,12 @@ public class NewChatPresenterImpl implements ChatContract.Presenter {
 
     @Override
     public void onScrolledTo(int visibleItemIndex, int size) {
+        lazyLoadUtil.checkLazyLoad((int) channel.getMessagesAnount(), size, visibleItemIndex);
+    }
 
+    @Override
+    public String getChannelName() {
+        return channel.getObj().getName();
     }
 
     @Override
@@ -123,7 +131,8 @@ public class NewChatPresenterImpl implements ChatContract.Presenter {
     }
 
     private void updateUI() {
-
+        String name = channel.getObj().getName();
+        view.onChannelName(name);
     }
 
     private void updateAmountOfMessages(int totalCount) {
@@ -139,6 +148,7 @@ public class NewChatPresenterImpl implements ChatContract.Presenter {
             @Override
             public void call(List<MMXMessageWrapper> action) {
                 view.onPutMessage(action);
+                lazyLoadUtil.onLoadingFinished();
             }
         });
     }
@@ -152,7 +162,13 @@ public class NewChatPresenterImpl implements ChatContract.Presenter {
         @Override
         public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
             view.showMessage(R.string.err_mmx_msg_loading);
+            lazyLoadUtil.onLoadingFinished();
         }
     };
 
+    @Override
+    public void onNeedLoad(int loadFromPosition) {
+        lazyLoadUtil.onLoading();
+        loadMessages(loadFromPosition, Constants.MESSAGE_PAGE_SIZE);
+    }
 }

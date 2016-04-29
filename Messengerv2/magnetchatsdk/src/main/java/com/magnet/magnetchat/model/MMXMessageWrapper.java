@@ -1,7 +1,9 @@
 package com.magnet.magnetchat.model;
 
+import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -22,14 +24,19 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
 
     private boolean isMyMessage;
     private final int type;
+    private Date date;
 
     public MMXMessageWrapper(MMXMessage obj, int type) {
-        super(obj);
-        this.type = type;
+        this(obj, type, false, obj.getTimestamp());
     }
 
     public MMXMessageWrapper(MMXMessage obj, int type, boolean isMyMessage) {
+        this(obj, type, isMyMessage, obj.getTimestamp());
+    }
+
+    public MMXMessageWrapper(MMXMessage obj, int type, boolean isMyMessage, Date date) {
         super(obj);
+        this.date = date;
         this.type = type;
         this.isMyMessage = isMyMessage;
     }
@@ -59,4 +66,25 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
         }
         return TYPE_TEXT_ANOTHER;
     }
+
+    public Date getPublishDate() {
+        return getObj().getTimestamp();
+    }
+
+    public static final RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper> COMPARATOR = new RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper>() {
+        @Override
+        public int compare(MMXMessageWrapper o1, MMXMessageWrapper o2) {
+            return o1.getPublishDate().compareTo(o2.getPublishDate());
+        }
+
+        @Override
+        public boolean areContentsTheSame(MMXMessageWrapper o1, MMXMessageWrapper o2) {
+            return true;
+        }
+
+        @Override
+        public boolean areItemsTheSame(MMXMessageWrapper item1, MMXMessageWrapper item2) {
+            return item1.equals(item2);
+        }
+    };
 }

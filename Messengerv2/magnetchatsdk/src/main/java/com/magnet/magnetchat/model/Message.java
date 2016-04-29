@@ -128,39 +128,6 @@ public class Message {
         return message;
     }
 
-    public static Map<String, String> makeContent(String text) {
-        Map<String, String> content = new HashMap<>();
-        content.put(TAG_TYPE, TYPE_TEXT);
-        content.put(TAG_TEXT, text);
-        return content;
-    }
-
-    public static Map<String, String> makeContent(Location location) {
-        Map<String, String> content = new HashMap<>();
-        content.put(TAG_TYPE, TYPE_MAP);
-        content.put(TAG_LATITUDE, String.format(Locale.ENGLISH, "%.6f", location.getLatitude()));
-        content.put(TAG_LONGITUDE, String.format(Locale.ENGLISH, "%.6f", location.getLongitude()));
-        return content;
-    }
-
-    public static Map<String, String> makeVideoContent() {
-        Map<String, String> content = new HashMap<>();
-        content.put(TAG_TYPE, TYPE_VIDEO);
-        return content;
-    }
-
-    public static Map<String, String> makePhotoContent() {
-        Map<String, String> content = new HashMap<>();
-        content.put(TAG_TYPE, TYPE_PHOTO);
-        return content;
-    }
-
-    public static Map<String, String> makePollContent() {
-        Map<String, String> map = new HashMap<>();
-        map.put(TAG_TYPE, TYPE_POLL);
-        return map;
-    }
-
     @Override
     public String toString() {
         return null != mmxMessage ? mmxMessage.toString() : "";
