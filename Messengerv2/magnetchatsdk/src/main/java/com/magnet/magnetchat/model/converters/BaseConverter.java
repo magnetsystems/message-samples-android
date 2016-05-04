@@ -20,7 +20,7 @@ public abstract class BaseConverter<FROM, TO> {
                 List<TO> toList = convert(fromList);
                 onResult(toList, callback);
             }
-        });
+        }).start();
     }
 
     private void onResult(final List<TO> toList, final MMXAction<List<TO>> callback) {
