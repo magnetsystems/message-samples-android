@@ -225,7 +225,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menuChatOpenDetails) {
+        if (item.getItemId() == R.id.mmxchat_edit) {
             mPresenter.onChatDetails();
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();

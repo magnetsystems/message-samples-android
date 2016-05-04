@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuChatOpenDetails"
+        android:id="@+id/mmxchat_edit"
+        android:icon="@drawable/ic_edit"
         android:orderInCategory="1"
         android:title="Details"
         app:showAsAction="always" />

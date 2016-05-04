@@ -152,13 +152,12 @@ public class HomeFragment extends BaseFragment {
             final ChannelDetail channelDetail = object.getChannelDetail();
             if (channelDetail != null && channelDetail.getChannel() != null) {
                 final Chat chat = new Chat(channelDetail);
-//            if (chat != null) {
                 ChatManager.getInstance().addConversation(chat);
                 runOnMainThread(0, new OnActionPerformer() {
                     @Override
                     public void onActionPerform() {
-//                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
-                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
+                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
+//                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
                         startActivity(intent);
                     }
                 });
