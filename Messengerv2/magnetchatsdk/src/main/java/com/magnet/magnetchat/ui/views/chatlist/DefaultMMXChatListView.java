@@ -46,12 +46,17 @@ public class DefaultMMXChatListView extends MMXChatListView<MMXChatListProperty>
     }
 
     @Override
-    public void onChannelName(String name) {
+    public void onChannelCreationFailure() {
 
     }
 
     @Override
-    public void onChannelCreationFailure() {
+    public void onRefreshing() {
+
+    }
+
+    @Override
+    public void onRefreshingFinished() {
 
     }
 }

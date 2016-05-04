@@ -26,4 +26,7 @@
     <string name="mmx.poll.create.error">Can\'t create poll</string>
     <string name="mmx.multiple_choice">Multiple choice</string>
     <string name="err.mmx.msg.loading">Can\'t load messages</string>
+    <string name="mmx.message.content">Write a message...</string>
+    <string name="mmx.message.send">Send</string>
+    <string name="mmx.chat">Chat</string>
 </resources>

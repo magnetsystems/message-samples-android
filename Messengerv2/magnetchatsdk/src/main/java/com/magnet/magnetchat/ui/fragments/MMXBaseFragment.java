@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 
-public abstract class BaseFragment extends Fragment implements View.OnClickListener {
+public abstract class MMXBaseFragment extends Fragment implements View.OnClickListener {
 
     protected View containerView;
     private BaseActivityCallback baseActivityCallback;
 
-    public BaseFragment() {
+    public MMXBaseFragment() {
     }
 
     @Override
@@ -49,10 +50,10 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      */
     protected void setOnClickListeners(View... views) {
         for (View view : views) {
-            if(null != view) {
+            if (null != view) {
                 view.setOnClickListener(this);
             } else {
-                Log.e("BaseFragment", "setOnClickListeners : View is null", new Exception());
+                Log.e("ABaseFragment", "setOnClickListeners : View is null", new Exception());
             }
         }
     }
@@ -88,15 +89,21 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         this.baseActivityCallback = baseActivityCallback;
     }
 
-    @Override public void onAttach(Context context) {
+    @Override
+    public void onAttach(Context context) {
         super.onAttach(context);
 
-        Log.d("BaseFragment", "\n--------------------------------\nonAttach\n--------------------------------\n");
+        Log.d("ABaseFragment", "\n--------------------------------\nonAttach\n--------------------------------\n");
     }
 
-    @Override public void onDetach() {
+    @Override
+    public void onDetach() {
         super.onDetach();
 
-        Log.d("BaseFragment", "\n--------------------------------\nonDetach\n--------------------------------\n");
+        Log.d("ABaseFragment", "\n--------------------------------\nonDetach\n--------------------------------\n");
+    }
+
+    protected <T extends View> T findView(View uiBaseView, int resId) {
+        return (T) uiBaseView.findViewById(resId);
     }
 }

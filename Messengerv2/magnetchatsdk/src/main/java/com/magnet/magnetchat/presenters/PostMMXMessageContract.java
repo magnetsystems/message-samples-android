@@ -40,8 +40,6 @@ public interface PostMMXMessageContract {
 
         void sendCustomMessage(String type, Map<String, String> content, Attachment... attachments);
 
-        void setCustomMessage(MMXMessage.Builder builder);
-
         void setMMXChannel(MMXChannel mmxChannel);
     }
 

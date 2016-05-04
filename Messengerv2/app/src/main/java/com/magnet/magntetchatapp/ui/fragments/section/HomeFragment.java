@@ -17,11 +17,13 @@ import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.ui.activities.ChatActivity;
+import com.magnet.magnetchat.ui.activities.ChatV2Activity;
 import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.core.CurrentApplication;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
 import com.magnet.mmx.client.api.ChannelDetail;
+import com.magnet.mmx.client.api.MMXChannel;
 
 import butterknife.InjectView;
 
@@ -147,14 +149,16 @@ public class HomeFragment extends BaseFragment {
     private final ChannelsListContract.OnChannelsListCallback channelListCallback = new ChannelsListContract.OnChannelsListCallback() {
         @Override
         public void onItemClick(int index, @NonNull ChannelsListContract.ChannelObject object) {
-            ChannelDetail channelDetail = object.getChannelDetail();
-            final Chat chat = new Chat(channelDetail);
-            if (chat != null) {
+            final ChannelDetail channelDetail = object.getChannelDetail();
+            if (channelDetail != null && channelDetail.getChannel() != null) {
+                final Chat chat = new Chat(channelDetail);
+//            if (chat != null) {
                 ChatManager.getInstance().addConversation(chat);
                 runOnMainThread(0, new OnActionPerformer() {
                     @Override
                     public void onActionPerform() {
-                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
+//                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
+                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
                         startActivity(intent);
                     }
                 });

@@ -19,4 +19,10 @@ public interface Constants {
 
     int PRE_FETCHED_SUBSCRIBER_SIZE = 10;
 
+    String TAG_CHANNEL = "mmx.channel";
+
+    String TAG_CHANNEL_NAME = "mmx.channel.name";
+
+    String TAG_CREATE_WITH_RECIPIENTS = "mmx.channel.recipients";
+
 }

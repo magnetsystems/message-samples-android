@@ -6,28 +6,34 @@ import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.presenters.core.MMXInfoView;
 import com.magnet.magnetchat.presenters.core.MMXPresenter;
 import com.magnet.max.android.UserProfile;
+import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.List;
 
 /**
  * Created by aorehov on 28.04.16.
  */
-public interface ChatContract {
+public interface ChatListContract {
 
     interface Presenter extends MMXPresenter {
 
         void setChat(MMXChannelWrapper chat);
 
-        void setChat(MMXChannel channel);
+        void setChat(ChannelDetail channel);
 
         void setChat(List<UserProfile> users);
+
+        void setChat(MMXChannel channel);
 
         void doRefresh();
 
         void onScrolledTo(int visibleItemIndex, int size);
 
         String getChannelName();
+
+        void setPresenterChatReceiveListener(MMXChannelListener listener);
     }
 
     interface View extends MMXInfoView {
@@ -43,6 +49,20 @@ public interface ChatContract {
         void onChannelName(String name);
 
         void onChannelCreationFailure();
+
+        void onRefreshing();
+
+        void onRefreshingFinished();
+
+        void setChannelNameListener(ChannelNameListener channelNameListener);
+    }
+
+    interface MMXChannelListener {
+        void onChannelReceived(MMXChannelWrapper mmxChannel);
+    }
+
+    interface ChannelNameListener {
+        void onName(String name);
     }
 
 }

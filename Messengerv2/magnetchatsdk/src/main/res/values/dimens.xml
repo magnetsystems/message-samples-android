@@ -1,4 +1,9 @@
 <resources>
+
+
+    <dimen name="px_1">1px</dimen>
+
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="dimen_0">0dp</dimen>
     <dimen name="text_0">0sp</dimen>

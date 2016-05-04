@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
-import com.magnet.magnetchat.ui.fragments.BaseFragment;
+import com.magnet.magnetchat.ui.fragments.MMXBaseFragment;
 import com.magnet.magnetchat.ui.fragments.ChatListFragment;
 import com.magnet.max.android.User;
 
@@ -54,9 +54,9 @@ public class ChannelListActivity extends BaseActivity implements BaseActivityCal
      * method which provide the setting of the current fragment co container mView
      */
     private void setFragment() {
-        BaseFragment baseFragment = new ChatListFragment();
-        baseFragment.setBaseActivityCallback(this);
-        replace(baseFragment, R.id.container, "chats");
+        MMXBaseFragment MMXBaseFragment = new ChatListFragment();
+        MMXBaseFragment.setBaseActivityCallback(this);
+        replace(MMXBaseFragment, R.id.container, "chats");
     }
 
     @Override

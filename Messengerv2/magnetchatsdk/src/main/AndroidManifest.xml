@@ -44,6 +44,11 @@
             android:name="nl.changer.polypicker.ImagePickerActivity"
             android:theme="@style/MagnetChatSDKTheme" />
 
+        <activity
+            android:label="@string/mmx.chat"
+            android:name=".ui.activities.ChatV2Activity"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name="com.magnet.mmx.client.MMXGcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">

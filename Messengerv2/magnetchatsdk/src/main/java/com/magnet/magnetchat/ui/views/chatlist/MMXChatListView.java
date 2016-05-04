@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
-import com.magnet.magnetchat.presenters.updated.ChatContract;
+import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseView;
@@ -18,10 +18,11 @@ import java.util.List;
 /**
  * Created by aorehov on 29.04.16.
  */
-public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T> implements ChatContract.View {
-    private ChatContract.Presenter presenter;
+public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T> implements ChatListContract.View {
+    private ChatListContract.Presenter presenter;
     private RecyclerViewTypedAdapter<MMXMessageWrapper> adapter;
     private RecyclerView.RecyclerListener clientCallback;
+    private ChatListContract.ChannelNameListener listener;
 
 
     public MMXChatListView(Context context) {
@@ -71,7 +72,7 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
         return null;
     }
 
-    protected ChatContract.Presenter createChatPresenter(String name) {
+    protected ChatListContract.Presenter createChatPresenter(String name) {
         return null;
     }
 
@@ -153,6 +154,23 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
     public void setRecyclerListener(RecyclerView.RecyclerListener callback) {
         this.clientCallback = callback;
     }
+
+    @Override
+    public void setChannelNameListener(ChatListContract.ChannelNameListener channelNameListener) {
+        this.listener = channelNameListener;
+        onChannelName(presenter.getChannelName());
+    }
+
+    @Override
+    public void onChannelName(String name) {
+        if (listener != null)
+            listener.onName(name);
+    }
+
+    public ChatListContract.Presenter getPresenter() {
+        return presenter;
+    }
+
 
     private final RecyclerView.RecyclerListener recyclerCallback = new RecyclerView.RecyclerListener() {
         @Override

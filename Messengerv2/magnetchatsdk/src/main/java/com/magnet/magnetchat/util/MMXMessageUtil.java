@@ -39,6 +39,11 @@ public class MMXMessageUtil {
         sendMMXMessage(channel, content, listener, new Attachment(filePath, mimeType));
     }
 
+    public void sendVideoMessage(MMXChannel channel, Map<String, String> message, String filePath, String mimeType, MMXMessage.OnFinishedListener<String> listener) {
+        Map<String, String> content = merge(makePhotoContent(), message);
+        sendMMXMessage(channel, content, listener, new Attachment(filePath, mimeType));
+    }
+
     public void sendLocationMessage(MMXChannel channel, Map<String, String> message, Location location, MMXMessage.OnFinishedListener<String> listener) {
         Map<String, String> content = merge(message, makeContent(location));
         sendMMXMessage(channel, content, listener);

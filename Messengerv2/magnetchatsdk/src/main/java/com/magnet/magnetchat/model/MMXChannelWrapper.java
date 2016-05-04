@@ -1,24 +1,40 @@
 package com.magnet.magnetchat.model;
 
-import com.magnet.mmx.client.api.MMXChannel;
+import com.magnet.max.android.UserProfile;
+import com.magnet.mmx.client.api.ChannelDetail;
+
+import java.util.List;
 
 /**
  * Created by aorehov on 28.04.16.
  */
-public class MMXChannelWrapper extends MMXObjectWrapper<MMXChannel> {
+public class MMXChannelWrapper extends MMXObjectWrapper<ChannelDetail> {
 
-    private long messagesAnount;
+    private long messagesAmount;
 
-    public MMXChannelWrapper(MMXChannel obj) {
+    public MMXChannelWrapper(ChannelDetail obj) {
         super(obj);
-        messagesAnount = obj.getNumberOfMessages();
+        messagesAmount = obj.getChannel().getNumberOfMessages();
     }
 
-    public long getMessagesAnount() {
-        return messagesAnount;
+    public long getMessagesAmount() {
+        return messagesAmount;
     }
 
-    public void setMessagesAnount(long messagesAnount) {
-        this.messagesAnount = messagesAnount;
+    public void setMessagesAmount(long messagesAmount) {
+        this.messagesAmount = messagesAmount;
+    }
+
+    public String getName(String defaultName) {
+        if (obj.getTotalSubscribers() <= 2) {
+            List<UserProfile> list = obj.getSubscribers();
+            if (list == null || list.isEmpty()) {
+                return "";
+            } else {
+                UserProfile profile = list.get(0);
+                return profile.getDisplayName();
+            }
+        } else
+            return defaultName;
     }
 }

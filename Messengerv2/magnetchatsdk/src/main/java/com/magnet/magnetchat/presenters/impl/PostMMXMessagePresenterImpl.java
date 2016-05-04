@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by aorehov on 29.04.16.
  */
-public class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
+class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
 
     private PostMMXMessageContract.View view;
     private MMXMessageUtil util;
@@ -43,6 +43,7 @@ public class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Prese
     @Override
     public void sendTextMessage() {
         String text = view.getMessageText();
+        if (text == null || text.length() < 1) return;
         util.sendTextMessage(channel, text, callback);
     }
 
@@ -68,42 +69,37 @@ public class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Prese
 
     @Override
     public void sendVideoMessage(String filePath, String mimeType) {
-
+        util.sendVideoMessage(channel, filePath, mimeType, callback);
     }
 
     @Override
     public void sendVideoMessage(Map<String, String> message, String filePath, String mimeType) {
-
+        util.sendVideoMessage(channel, message, filePath, mimeType, callback);
     }
 
     @Override
     public void sendLocationMessage(Location location) {
-
+        util.sendLocationMessage(channel, location, callback);
     }
 
     @Override
     public void sendLocationMessage(Map<String, String> message, Location location) {
-
+        util.sendLocationMessage(channel, message, location, callback);
     }
 
     @Override
     public void sendCustomMessage(String type, Map<String, String> message) {
-
+        util.sendCustomMessage(channel, type, message, callback);
     }
 
     @Override
     public void sendCustomMessage(String type, Map<String, String> message, String filePath, String mimeType) {
-
+        util.sendCustomMessage(channel, type, message, filePath, mimeType, callback);
     }
 
     @Override
     public void sendCustomMessage(String type, Map<String, String> content, Attachment... attachments) {
-
-    }
-
-    @Override
-    public void setCustomMessage(MMXMessage.Builder builder) {
-
+        util.sendCustomMessage(channel, type, content, callback, attachments);
     }
 
     @Override
