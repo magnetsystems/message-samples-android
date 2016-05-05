@@ -2,6 +2,7 @@ package com.magnet.magnetchat.util;
 
 import android.location.Location;
 
+import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.max.android.Attachment;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -103,6 +104,43 @@ public class MMXMessageUtil {
         }
     }
 
+    public static String getTextMessage(Map<String, String> content) {
+        return content.get(TAG_TEXT);
+    }
+
+    public static String getTextMessage(MMXMessage mmxMessage) {
+        if (mmxMessage == null) return null;
+        Map<String, String> content = mmxMessage.getContent();
+        return content == null ? null : getTextMessage(content);
+    }
+
+    public static String getTextMessage(MMXMessageWrapper wrapper) {
+        if (wrapper == null) return null;
+        return getTextMessage(wrapper.getObj());
+    }
+
+    public static double getLat(MMXMessage mmxMessage) {
+        if (mmxMessage == null) return Double.MAX_VALUE;
+        return getLat(mmxMessage.getContent());
+    }
+
+    public static double getLon(MMXMessage mmxMessage) {
+        if (mmxMessage == null) return Double.MAX_VALUE;
+        return getLon(mmxMessage.getContent());
+    }
+
+    public static double getLat(Map<String, String> content) {
+        if (content == null) return Double.MAX_VALUE;
+        String value = content.get(TAG_LATITUDE);
+        return value == null ? Double.MAX_VALUE : Double.valueOf(value);
+    }
+
+    public static double getLon(Map<String, String> content) {
+        if (content == null) return Double.MAX_VALUE;
+        String value = content.get(TAG_LONGITUDE);
+        return value == null ? Double.MAX_VALUE : Double.valueOf(value);
+    }
+
     //    STATIC METHODS
     public static Map<String, String> makeContent(String text) {
         Map<String, String> content = new HashMap<>();
@@ -135,5 +173,24 @@ public class MMXMessageUtil {
         Map<String, String> map = new HashMap<>();
         map.put(TAG_TYPE, TYPE_POLL);
         return map;
+    }
+
+    public static String getMapPicUrl(MMXMessage mmxMessage) {
+        if (mmxMessage == null) return null;
+        return getMapPicUrl(mmxMessage.getContent());
+    }
+
+    public static String getMapPicUrl(Map<String, String> content) {
+        if (content == null) return null;
+        String lon = content.get(TAG_LONGITUDE);
+        String lat = content.get(TAG_LATITUDE);
+        if (lon == null || lat == null) return null;
+
+        return new StringBuilder()
+                .append("http://maps.google.com/maps/api/staticmap?center=")
+                .append(lat).append(',').append(lon)
+                .append("&zoom=18&size=480x300&sensor=false&markers=color:blue%7Clabel:S%7C")
+                .append(lat).append(',').append(lon)
+                .toString();
     }
 }

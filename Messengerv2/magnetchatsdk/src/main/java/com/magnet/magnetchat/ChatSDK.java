@@ -14,6 +14,7 @@ import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
 import com.magnet.magnetchat.model.converters.impl.DefaultMMXObjectConverterFactory;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 import com.magnet.magnetchat.presenters.impl.DefaultMMXPresenterFactory;
 import com.magnet.magnetchat.ui.factories.DefaultMMXListItemFactory;
@@ -32,7 +33,8 @@ import com.magnet.mmx.client.common.Log;
  */
 public class ChatSDK {
 
-    private MMXPresenterFactory factory;
+    private MMXPresenterFactory mmxPresenterFactory;
+    private MMXMessagePresenterFactory messagePresenterFactory;
     private MMXViewFactory mmxViewFactory;
     private MMXObjectConverterFactory mmxObjectConverterFactory;
     private MMXListItemFactory mmxListItemFactory;
@@ -65,11 +67,23 @@ public class ChatSDK {
         return mmxViewFactory;
     }
 
-    private MMXPresenterFactory getFactory() {
-        if (factory == null) {
-            factory = new DefaultMMXPresenterFactory();
+    private MMXPresenterFactory getMmxPresenterFactory() {
+        if (mmxPresenterFactory == null) {
+            mmxPresenterFactory = new DefaultMMXPresenterFactory();
         }
-        return factory;
+        return mmxPresenterFactory;
+    }
+
+    public MMXMessagePresenterFactory getMessagePresenterFactory() {
+        if (messagePresenterFactory == null) {
+            messagePresenterFactory = new DefaultMMXPresenterFactory();
+        }
+        return messagePresenterFactory;
+    }
+
+    public static MMXMessagePresenterFactory getMMXMessagPresenterFactory() {
+        throwMMXNotInitExcetion();
+        return instance.getMessagePresenterFactory();
     }
 
     public static MMXListItemFactory getMmxListItemFactory() {
@@ -84,7 +98,7 @@ public class ChatSDK {
 
     public static MMXPresenterFactory getPresenterFactory() {
         throwMMXNotInitExcetion();
-        return instance.getFactory();
+        return instance.getMmxPresenterFactory();
     }
 
     public static MMXViewFactory getViewFactory() {

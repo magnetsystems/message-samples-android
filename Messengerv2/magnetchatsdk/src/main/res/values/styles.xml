@@ -100,4 +100,12 @@
         <item name="android:adjustViewBounds">true</item>
     </style>
 
+    <style name="MMXDateHintText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/dimen_3</item>
+        <item name="android:textSize">@dimen/text_12</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

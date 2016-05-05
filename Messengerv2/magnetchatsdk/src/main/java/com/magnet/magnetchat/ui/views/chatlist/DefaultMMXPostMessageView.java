@@ -78,6 +78,7 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<MMXPostMessage
             onGetAttachment();
         } else if (v.getId() == R.id.mmx_send) {
             getPresenter().sendTextMessage();
+            uiMessageContent.setText(null);
         }
     }
 

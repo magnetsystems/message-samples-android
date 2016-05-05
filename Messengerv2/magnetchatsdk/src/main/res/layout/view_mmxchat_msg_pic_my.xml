@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/mmxchat.message.margin"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_msg_date"
+        style="@style/MMXDateHintText"
+        android:hint="Thu, 11:59 PM" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen_5"
+            android:paddingTop="@dimen/dimen_3">
+
+            <ImageView
+                android:id="@+id/mmx_msg_pic"
+                android:layout_width="@dimen/dimen_170"
+                android:layout_height="@dimen/dimen_120"
+                android:layout_gravity="right|center"
+                android:layout_marginRight="@dimen/dimen_5"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_msg" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="@dimen/dimen_5">
+
+            <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
+                android:id="@+id/mmx_msg_pic_letters"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mmx_msg_pic_origin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

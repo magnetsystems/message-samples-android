@@ -40,6 +40,11 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return data.get(position).getType();
+    }
+
+    @Override
     public TypedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         BaseMMXTypedView view = factory.createView(parent.getContext(), viewType);
         return new TypedViewHolder(view);
