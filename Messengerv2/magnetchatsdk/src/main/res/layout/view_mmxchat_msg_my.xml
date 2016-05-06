@@ -8,7 +8,7 @@
     <TextView
         android:id="@+id/mmx_msg_date"
         style="@style/MMXDateHintText"
-        android:hint="Thu, 11:59 PM" />
+        android:hint="NULL" />
 
     <LinearLayout
         android:layout_width="match_parent"

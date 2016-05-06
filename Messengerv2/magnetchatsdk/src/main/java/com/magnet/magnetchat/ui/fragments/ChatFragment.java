@@ -28,6 +28,30 @@ public class ChatFragment extends MMXBaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mmxChatView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        mmxChatView.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mmxChatView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mmxChatView.onPause();
+        super.onPause();
+    }
+
+    @Override
     protected void onCreateFragment(View containerView) {
         Bundle bundle = getArguments();
         MMXChannel channel = BundleHelper.readMMXChannelFromBundle(bundle);

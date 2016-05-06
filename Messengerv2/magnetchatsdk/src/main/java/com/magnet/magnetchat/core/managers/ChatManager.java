@@ -128,12 +128,12 @@ public class ChatManager {
     }
 
     public boolean isConversationListUpdated() {
-        if(hasNewChat.get()) {
+        if (hasNewChat.get()) {
             return true;
         }
 
-        for(Chat c : getConversations()) {
-            if(c.hasUpdate()) {
+        for (Chat c : getConversations()) {
+            if (c.hasUpdate()) {
                 return true;
             }
         }
@@ -144,7 +144,7 @@ public class ChatManager {
     public void resetConversationListUpdated() {
         hasNewChat.set(false);
 
-        for(Chat c : getConversations()) {
+        for (Chat c : getConversations()) {
             c.resetUpdate();
         }
     }
@@ -173,7 +173,7 @@ public class ChatManager {
         Logger.debug(TAG, "handle incoming  new message : " + mmxMessage);
         MMXChannel channel = mmxMessage.getChannel();
         if (channel != null && !StringUtil.isStringValueEqual(mmxMessage.getSender().getUserIdentifier(),
-            User.getCurrentUserId())) {
+                User.getCurrentUserId())) {
             final String channelName = channel.getName();
             Chat conversation = ChatManager.getInstance().getConversationByName(channelName);
             if (conversation != null) {
@@ -205,5 +205,17 @@ public class ChatManager {
             }
         }
     }
+
+    public static final NewMessageProcessListener MOCK = new NewMessageProcessListener() {
+        @Override
+        public void onProcessSuccess(Chat conversation, MMXMessage message, boolean isNewChat) {
+            Logger.debug(getClass().getSimpleName(), conversation, message, isNewChat);
+        }
+
+        @Override
+        public void onProcessFailure(Throwable throwable) {
+            Logger.error(getClass().getSimpleName(), throwable);
+        }
+    };
 
 }

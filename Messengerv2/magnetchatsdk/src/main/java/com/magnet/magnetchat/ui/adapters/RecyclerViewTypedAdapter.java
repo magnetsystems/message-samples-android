@@ -59,8 +59,8 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
         this.data.addAll(data);
     }
 
-    public void put(T data) {
-        this.data.add(data);
+    public int put(T data) {
+        return this.data.add(data);
     }
 
     public void delete(T data) {

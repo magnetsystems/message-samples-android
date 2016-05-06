@@ -42,7 +42,7 @@ public interface ChatListContract {
 
         void onPutMessage(List<MMXMessageWrapper> messages);
 
-        void onPutMessage(MMXMessageWrapper message);
+        void onPutMessage(MMXMessageWrapper message, boolean isNeedScroll);
 
         void onDelete(MMXMessageWrapper message);
 

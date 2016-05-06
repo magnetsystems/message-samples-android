@@ -137,7 +137,7 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
     public static final RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper> COMPARATOR = new RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper>() {
         @Override
         public int compare(MMXMessageWrapper o1, MMXMessageWrapper o2) {
-            return o1.getPublishDate().compareTo(o2.getPublishDate());
+            return o2.getPublishDate().compareTo(o1.getPublishDate());
         }
 
         @Override

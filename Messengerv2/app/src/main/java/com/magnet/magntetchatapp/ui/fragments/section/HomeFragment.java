@@ -156,8 +156,8 @@ public class HomeFragment extends BaseFragment {
                 runOnMainThread(0, new OnActionPerformer() {
                     @Override
                     public void onActionPerform() {
-                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
-//                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
+//                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
+                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
                         startActivity(intent);
                     }
                 });

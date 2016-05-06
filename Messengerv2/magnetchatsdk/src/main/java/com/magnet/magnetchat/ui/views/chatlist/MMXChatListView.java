@@ -12,6 +12,7 @@ import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
+import com.magnet.magnetchat.util.Logger;
 
 import java.util.List;
 
@@ -50,11 +51,12 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
         presenter = createChatPresenter(getMMXChatPresenterName());
         if (presenter == null) presenter = ChatSDK.getPresenterFactory().createChatPresenter(this);
 
-        uiRecyclerView.setRecyclerListener(recyclerCallback);
     }
 
     protected RecyclerView.LayoutManager createLayoutManager() {
-        return new GridLayoutManager(getContext(), 1);
+        GridLayoutManager manager = new GridLayoutManager(getContext(), 1);
+        manager.setReverseLayout(true);
+        return manager;
     }
 
     protected abstract RecyclerView getRecyclerView();
@@ -84,6 +86,7 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         presenter.onCreate();
+        getRecyclerView().setRecyclerListener(recyclerCallback);
     }
 
     @Override
@@ -132,8 +135,10 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
     }
 
     @Override
-    public void onPutMessage(MMXMessageWrapper message) {
-        adapter.put(message);
+    public void onPutMessage(MMXMessageWrapper message, boolean isNeedScroll) {
+        int position = adapter.put(message);
+        if (position == 0 && isNeedScroll)
+            getRecyclerView().scrollToPosition(position);
     }
 
     @Override
@@ -170,7 +175,6 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
     public ChatListContract.Presenter getPresenter() {
         return presenter;
     }
-
 
     private final RecyclerView.RecyclerListener recyclerCallback = new RecyclerView.RecyclerListener() {
         @Override

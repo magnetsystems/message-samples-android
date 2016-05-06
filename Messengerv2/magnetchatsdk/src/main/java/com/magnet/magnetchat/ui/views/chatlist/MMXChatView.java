@@ -51,6 +51,34 @@ public abstract class MMXChatView<T extends ViewProperty> extends BaseView<T> im
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mmxPostMessageView.onStart();
+        mmxChatListView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        mmxChatListView.onStop();
+        mmxPostMessageView.onStop();
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mmxChatListView.onResume();
+        mmxPostMessageView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mmxChatListView.onPause();
+        mmxPostMessageView.onPause();
+        super.onPause();
+    }
+
+    @Override
     public void onChannelReceived(MMXChannelWrapper mmxChannel) {
         mmxPostMessageView.getPresenter().setMMXChannel(mmxChannel.getObj().getChannel());
     }

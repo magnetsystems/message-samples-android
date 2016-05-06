@@ -14,10 +14,13 @@ import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
+import com.magnet.magnetchat.util.Logger;
+import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
+import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
@@ -38,7 +41,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     public ChatListV2PresenterImpl(ChatListContract.View view, MMXMessageWrapperConverter converter) {
         this.view = view;
         this.converter = converter;
-        lazyLoadUtil = new LazyLoadUtil((int) (Constants.MESSAGE_PAGE_SIZE * 0.33), this);
+        lazyLoadUtil = new LazyLoadUtil((int) (Constants.MESSAGE_PAGE_SIZE * 0.60), this);
     }
 
     @Override
@@ -128,12 +131,12 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
 
     @Override
     public void onStart() {
-
+        MMX.registerListener(eventListener);
     }
 
     @Override
     public void onStop() {
-
+        MMX.unregisterListener(eventListener);
     }
 
     @Override
@@ -203,6 +206,12 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         });
     }
 
+    @Override
+    public void onNeedLoad(int loadFromPosition) {
+        lazyLoadUtil.onLoading();
+        loadMessages(loadFromPosition - 2, Constants.MESSAGE_PAGE_SIZE);
+    }
+
     private final MMXChannel.OnFinishedListener<ListResult<MMXMessage>> listener = new MMXChannel.OnFinishedListener<ListResult<MMXMessage>>() {
         @Override
         public void onSuccess(ListResult<MMXMessage> mmxMessageListResult) {
@@ -217,9 +226,47 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         }
     };
 
-    @Override
-    public void onNeedLoad(int loadFromPosition) {
-        lazyLoadUtil.onLoading();
-        loadMessages(loadFromPosition, Constants.MESSAGE_PAGE_SIZE);
+    private void log(String message) {
+        Logger.debug(getClass().getSimpleName(), message);
     }
+
+    private final MMX.EventListener eventListener = new MMX.EventListener() {
+        @Override
+        public boolean onMessageReceived(MMXMessage mmxMessage) {
+            log("onMessageReceived");
+            MMXMessageWrapper wrapper = converter.convert(mmxMessage);
+            view.onPutMessage(wrapper, true);
+            if (mmxMessage != null && mmxMessage.getChannel() != null && mmxMessage.getChannel().getNumberOfMessages() != null) {
+                Integer integer = mmxMessage.getChannel().getNumberOfMessages();
+                channel.setMessagesAmount(integer);
+            }
+            ChatManager.getInstance().handleIncomingMessage(mmxMessage, ChatManager.MOCK);
+
+            return false;
+        }
+
+        @Override
+        public boolean onMessageAcknowledgementReceived(User from, String messageId) {
+            log("onMessageAcknowledgementReceived");
+            return false;
+        }
+
+        @Override
+        public boolean onInviteReceived(MMXChannel.MMXInvite invite) {
+            log("onInviteReceived");
+            return false;
+        }
+
+        @Override
+        public boolean onInviteResponseReceived(MMXChannel.MMXInviteResponse inviteResponse) {
+            log("onInviteResponseReceived");
+            return false;
+        }
+
+        @Override
+        public boolean onMessageSendError(String messageId, MMXMessage.FailureCode code, String text) {
+            log("onMessageSendError");
+            return false;
+        }
+    };
 }

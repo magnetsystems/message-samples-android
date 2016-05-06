@@ -8,6 +8,8 @@ import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXLocAnotherMessageV
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXLocMyMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXMessageAnotherView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXMessageMyView;
+import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicAnotherMessageView;
+import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicMyMessageView;
 
 /**
  * Created by aorehov on 28.04.16.
@@ -33,6 +35,10 @@ public class DefaultMMXListItemFactory implements MMXListItemFactory {
                     return new DefaultMMXMessageAnotherView(context);
                 case MMXMessageWrapper.TYPE_TEXT_MY:
                     return new DefaultMMXMessageMyView(context);
+                case MMXMessageWrapper.TYPE_PHOTO_MY:
+                    return new DefaultMMXPicMyMessageView(context);
+                case MMXMessageWrapper.TYPE_PHOTO_ANOTHER:
+                    return new DefaultMMXPicAnotherMessageView(context);
                 default: {
                     if ((MMXMessageWrapper.MY_MESSAGE_MASK & type) == MMXMessageWrapper.MY_MESSAGE_MASK) {
                         return new DefaultMMXMessageMyView(context);
