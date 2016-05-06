@@ -1,5 +1,7 @@
 package com.magnet.magnetchat.presenters.chatlist.impl;
 
+import com.magnet.magnetchat.ChatSDK;
+import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
 import com.magnet.magnetchat.presenters.chatlist.MMXLocationContract;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessageContract;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
@@ -33,7 +35,8 @@ public class DefaultMMXMessageFactory implements MMXMessagePresenterFactory {
 
     @Override
     public MMXPollContract.Presenter createPollPresenter(MMXPollContract.View view) {
-        DefaultMMXPollPresenter presenter = new DefaultMMXPollPresenter();
+        MMXPollOptionWrapperConverter converter = ChatSDK.getMmxObjectConverterFactory().createMmxPollOptionWrapperConverter();
+        DefaultMMXPollPresenter presenter = new DefaultMMXPollPresenter(converter, view);
         presenter.setView(view);
         return presenter;
     }

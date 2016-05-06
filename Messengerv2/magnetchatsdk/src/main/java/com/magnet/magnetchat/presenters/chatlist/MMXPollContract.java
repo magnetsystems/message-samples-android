@@ -1,5 +1,7 @@
 package com.magnet.magnetchat.presenters.chatlist;
 
+import com.magnet.magnetchat.model.MMXPollOptionWrapper;
+
 import java.util.List;
 
 /**
@@ -8,15 +10,17 @@ import java.util.List;
 public interface MMXPollContract {
 
     interface Presenter extends BaseMMXMessagePresenter {
-
+        void onNeedChangedState(MMXPollOptionWrapper wrapper);
     }
 
     interface View extends BaseMMXMessageView {
-        void onPollType(String type);
+        void onPollType(int resString);
 
         void onPollQuestion(String question);
 
-        void onPollAnswers(List data);
+        void onPollAnswersReceived(List<MMXPollOptionWrapper> data);
+
+        void onPollAnswersUpdate(MMXPollOptionWrapper option);
     }
 
 }

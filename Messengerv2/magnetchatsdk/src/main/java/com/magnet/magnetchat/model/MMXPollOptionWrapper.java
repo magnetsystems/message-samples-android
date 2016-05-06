@@ -7,14 +7,28 @@ import com.magnet.mmx.client.ext.poll.MMXPollOption;
  */
 public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> {
 
-    private final boolean isVoted;
+    private boolean isVoted;
+    private boolean isSelectedLocal;
 
     public MMXPollOptionWrapper(MMXPollOption obj, boolean isVoted) {
         super(obj);
         this.isVoted = isVoted;
+        this.isSelectedLocal = isVoted;
     }
 
     public boolean isVoted() {
         return isVoted;
+    }
+
+    public boolean isSelectedLocal() {
+        return isSelectedLocal;
+    }
+
+    public void setSelectedLocal(boolean selectedLocal) {
+        isSelectedLocal = selectedLocal;
+    }
+
+    public String getId() {
+        return obj.getOptionId();
     }
 }

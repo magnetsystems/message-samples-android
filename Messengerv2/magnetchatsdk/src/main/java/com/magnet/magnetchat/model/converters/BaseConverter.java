@@ -23,6 +23,25 @@ public abstract class BaseConverter<FROM, TO> {
         }).start();
     }
 
+    public void convert(final FROM from, final MMXAction<TO> callback) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                TO convert = convert(from);
+                onResult(convert, callback);
+            }
+        }).start();
+    }
+
+    private void onResult(final TO to, final MMXAction<TO> callback) {
+        AsyncHelper.UI.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.call(to);
+            }
+        });
+    }
+
     private void onResult(final List<TO> toList, final MMXAction<List<TO>> callback) {
         AsyncHelper.UI.post(new Runnable() {
             @Override

@@ -31,5 +31,6 @@
     <string name="mmx.chat">Chat</string>
     <string name="mmxchat.submit">Submit</string>
     <string name="mmxchat.poll.type.multiple">Multiple choice poll</string>
+    <string name="mmxchat.poll.type.single">Single choice poll</string>
     <string name="mmxchat.poll.subtitle">Vote for your choice</string>
 </resources>

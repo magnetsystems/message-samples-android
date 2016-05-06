@@ -46,12 +46,6 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
         this.date = date;
         this.type = type;
         this.isMyMessage = isMyMessage;
-
-        String fName = getObj().getSender().getFirstName();
-        String lName = getObj().getSender().getLastName();
-
-        fName = fName == null ? "" : fName;
-        lName = lName == null ? "" : lName;
     }
 
     @Override
@@ -65,6 +59,10 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
 
     public boolean isShowDate() {
         return isShowDate;
+    }
+
+    public boolean isMyMessage() {
+        return isMyMessage;
     }
 
     public String getSenderName() {
@@ -130,7 +128,8 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
                     return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
             }
         }
-        return TYPE_TEXT_ANOTHER;
+        return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
+
     }
 
 
