@@ -30,7 +30,6 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     LinearLayout uiPollQuestions;
     View uiSubmit;
     Map<String, AbstractMMXPollItemView> pollViews = new HashMap<>();
-    //    ArrayList<String> ids = new ArrayList<>();
     private MMXListItemFactory factory;
 
     public DefaultMMXPollMessageView(Context context) {
@@ -62,6 +61,7 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.mmx_submit) {
+            getPresenter().submitAnswers();
         } else
             super.onClick(v);
     }
@@ -92,7 +92,6 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
         }
 
         AbstractMMXPollItemView view = getView(option);
-//        ids.add(index, option.getId());
         uiPollQuestions.addView(view, index);
         view.setObject(option);
     }
@@ -153,5 +152,20 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     public void onClicked(MMXPollOptionWrapper wrapper) {
         getPresenter().onNeedChangedState(wrapper);
+    }
+
+    @Override
+    public void onEnableSubmitButton(boolean isEnable) {
+        uiSubmit.setVisibility(isEnable ? VISIBLE : INVISIBLE);
+    }
+
+    @Override
+    public void showMessage(CharSequence sequence) {
+        toast(sequence);
+    }
+
+    @Override
+    public void showMessage(int resId, Object... objects) {
+        toast(getString(resId, objects));
     }
 }

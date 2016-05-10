@@ -2,6 +2,11 @@ package com.magnet.magnetchat.model;
 
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Created by aorehov on 27.04.16.
  */
@@ -48,5 +53,32 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implem
     @Override
     public int getType() {
         return type;
+    }
+
+    /**
+     * ================================================
+     * static helpful methods
+     * ================================================
+     */
+    public static boolean isHasChangedState(Collection<MMXPollOptionWrapper> opts) {
+        Iterator<MMXPollOptionWrapper> iterator = opts.iterator();
+        while (iterator.hasNext()) {
+            MMXPollOptionWrapper next = iterator.next();
+            if (next.isVoted != next.isSelectedLocal) return true;
+        }
+        return false;
+    }
+
+    public static List<MMXPollOption> getWithChangedState(Collection<MMXPollOptionWrapper> options) {
+        if (options == null) return null;
+
+        ArrayList<MMXPollOption> selectedOpts = new ArrayList<>();
+        Iterator<MMXPollOptionWrapper> iterator = options.iterator();
+        while (iterator.hasNext()) {
+            MMXPollOptionWrapper next = iterator.next();
+            if (next.isVoted != next.isSelectedLocal) selectedOpts.add(next.getObj());
+        }
+
+        return selectedOpts;
     }
 }

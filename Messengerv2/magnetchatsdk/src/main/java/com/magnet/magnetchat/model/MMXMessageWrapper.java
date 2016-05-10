@@ -125,7 +125,7 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
             }
         }
 
-        switch (tagType) {
+        if (tagType != null) switch (tagType) {
             case Message.TYPE_PHOTO:
                 return isMine ? TYPE_PHOTO_MY : TYPE_PHOTO_ANOTHER;
             case Message.TYPE_VIDEO:
@@ -138,6 +138,8 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
             default:
                 return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
         }
+
+        return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
     }
 
 

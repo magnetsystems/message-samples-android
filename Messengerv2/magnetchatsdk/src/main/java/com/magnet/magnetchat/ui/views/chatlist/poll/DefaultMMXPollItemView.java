@@ -60,4 +60,6 @@ public abstract class DefaultMMXPollItemView extends AbstractMMXPollItemView<Pol
     protected View getClickableView() {
         return uiContainer;
     }
+
+
 }

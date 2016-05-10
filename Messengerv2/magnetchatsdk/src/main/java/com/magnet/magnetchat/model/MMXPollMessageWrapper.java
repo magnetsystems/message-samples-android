@@ -8,6 +8,7 @@ import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
 import java.util.Date;
 import java.util.List;
@@ -87,6 +88,10 @@ public class MMXPollMessageWrapper extends MMXMessageWrapper {
                 if (errorCallback != null) errorCallback.onError(apiError);
             }
         });
+    }
+
+    public List<MMXPollOption> getSelectedOptions() {
+        return MMXPollOptionWrapper.getWithChangedState(mmxPollOptions);
     }
 
     public interface PollLoadListener {
