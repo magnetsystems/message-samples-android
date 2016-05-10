@@ -11,6 +11,9 @@ import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollAnswerMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
@@ -235,7 +238,10 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             log("onMessageReceived");
             MMXMessageWrapper wrapper = converter.convert(mmxMessage);
-            view.onPutMessage(wrapper, true);
+
+            boolean isNeedScroll = wrapper.getType() != MMXMessageWrapper.TYPE_VOTE_ANSWER;
+
+            view.onPutMessage(wrapper, isNeedScroll);
             if (mmxMessage != null && mmxMessage.getChannel() != null && mmxMessage.getChannel().getNumberOfMessages() != null) {
                 Integer integer = mmxMessage.getChannel().getNumberOfMessages();
                 channel.setMessagesAmount(integer);

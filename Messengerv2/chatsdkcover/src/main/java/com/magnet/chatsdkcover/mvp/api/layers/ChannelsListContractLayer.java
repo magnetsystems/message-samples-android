@@ -21,6 +21,7 @@ import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
 import com.magnet.chatsdkcover.ui.custom.CircleNameView;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -544,16 +545,23 @@ public interface ChannelsListContractLayer {
 
                     lastTimeActive = message.getCreateTime();
 
-                    if (message != null
-                            && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
-                        lastMessage = textPhotoMessage;
-                    } else if (message != null
-                            && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
-                        lastMessage = textLocationMessage;
-                    } else if (message != null
-                            && message.getText() != null
-                            && message.getText().isEmpty() != true) {
-                        lastMessage = message.getText();
+                    /**
+                     * try-catch - is fast fix
+                     */
+                    try {
+                        if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
+                            lastMessage = textPhotoMessage;
+                        } else if (message != null
+                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
+                            lastMessage = textLocationMessage;
+                        } else if (message != null
+                                && message.getText() != null
+                                && message.getText().isEmpty() != true) {
+                            lastMessage = message.getText();
+                        }
+                    } catch (Exception ex) {
+                        Logger.error(getClass().getSimpleName(), ex);
                     }
                 }
 

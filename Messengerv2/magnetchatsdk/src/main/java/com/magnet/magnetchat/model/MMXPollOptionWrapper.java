@@ -65,7 +65,8 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implem
         Iterator<MMXPollOptionWrapper> iterator = opts.iterator();
         while (iterator.hasNext()) {
             MMXPollOptionWrapper next = iterator.next();
-            if (next.isVoted != next.isSelectedLocal) return true;
+            if (next.isVoted != next.isSelectedLocal)
+                return true;
         }
         return false;
     }
@@ -77,7 +78,7 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implem
         Iterator<MMXPollOptionWrapper> iterator = options.iterator();
         while (iterator.hasNext()) {
             MMXPollOptionWrapper next = iterator.next();
-            if (next.isVoted || next.isVoted != next.isSelectedLocal) selectedOpts.add(next.getObj());
+            if (next.isSelectedLocal) selectedOpts.add(next.getObj());
         }
 
         return selectedOpts;

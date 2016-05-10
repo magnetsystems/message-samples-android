@@ -75,7 +75,7 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
     @Override
     public void submitAnswers() {
         List<MMXPollOption> options = pollMessageWrapper.getSelectedOptions();
-        if (options == null || options.isEmpty()) return;
+        if (options == null) return;
         pollMessageWrapper.getMmxPoll().choose(options, pollCallback);
     }
 
@@ -102,6 +102,7 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
         @Override
         public void onSuccess(MMXMessage mmxMessage) {
             view.showMessage("Updated");
+            setMMXMessage(wrapper);
         }
 
         @Override
