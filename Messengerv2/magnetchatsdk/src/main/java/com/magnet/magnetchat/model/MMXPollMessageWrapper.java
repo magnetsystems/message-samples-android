@@ -91,7 +91,7 @@ public class MMXPollMessageWrapper extends MMXMessageWrapper {
     }
 
     public List<MMXPollOption> getSelectedOptions() {
-        return MMXPollOptionWrapper.getWithChangedState(mmxPollOptions);
+        return MMXPollOptionWrapper.getVotedOrWithChangedState(mmxPollOptions);
     }
 
     public interface PollLoadListener {

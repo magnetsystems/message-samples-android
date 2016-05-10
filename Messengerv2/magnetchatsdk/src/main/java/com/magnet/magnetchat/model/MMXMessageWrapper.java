@@ -25,9 +25,11 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
     public static final int TYPE_TEXT_ANOTHER = 0x7F08;
     public static final int TYPE_POLL_ANOTHER = 0x7F09;
     public static final int MY_MESSAGE_MASK = 0x8000;
+    public static final int TYPE_VOTE_ANSWER = 0x7888;
 
     public static final String TAG_QUESTION = "question";
     public static final String TYPE_POLL = "DefaultPollConfig";
+    public static final String MMX_MSG_CONTENT_TYPE_POLL_ANSWER = "object/MMXPollAnswer";
 
 
     private boolean isShowDate = false;
@@ -116,6 +118,11 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
         String tagType = null;
         Map<String, String> content = mmxMessage.getContent();
         if (content != null) {
+            String contentType = mmxMessage.getContentType();
+            if (contentType != null && contentType.equals(MMX_MSG_CONTENT_TYPE_POLL_ANSWER)) {
+                return TYPE_VOTE_ANSWER;
+            }
+
             if (content.containsKey(Message.TAG_TYPE)) {
                 tagType = content.get(Message.TAG_TYPE);
             } else if (content.containsKey(TAG_QUESTION)) {

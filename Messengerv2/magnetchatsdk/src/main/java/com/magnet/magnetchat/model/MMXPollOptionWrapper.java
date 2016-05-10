@@ -4,6 +4,7 @@ import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,16 +70,28 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implem
         return false;
     }
 
-    public static List<MMXPollOption> getWithChangedState(Collection<MMXPollOptionWrapper> options) {
+    public static List<MMXPollOption> getVotedOrWithChangedState(Collection<MMXPollOptionWrapper> options) {
         if (options == null) return null;
 
         ArrayList<MMXPollOption> selectedOpts = new ArrayList<>();
         Iterator<MMXPollOptionWrapper> iterator = options.iterator();
         while (iterator.hasNext()) {
             MMXPollOptionWrapper next = iterator.next();
-            if (next.isVoted != next.isSelectedLocal) selectedOpts.add(next.getObj());
+            if (next.isVoted || next.isVoted != next.isSelectedLocal) selectedOpts.add(next.getObj());
         }
 
         return selectedOpts;
+    }
+
+    public static List<String> getAnswersAsStringList(Collection<MMXPollOption> options) {
+        if (options == null || options.isEmpty()) return Collections.EMPTY_LIST;
+
+        ArrayList<String> strings = new ArrayList<>(options.size());
+        Iterator<MMXPollOption> iterator = options.iterator();
+        while (iterator.hasNext()) {
+            MMXPollOption next = iterator.next();
+            strings.add(next.getText());
+        }
+        return strings;
     }
 }

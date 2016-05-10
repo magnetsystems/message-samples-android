@@ -12,6 +12,7 @@ import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXMessageMyView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicAnotherMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicMyMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollAnotherMessageView;
+import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollAnswerMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollMyMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemAnotherView;
 import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemMyView;
@@ -52,6 +53,8 @@ public class DefaultMMXListItemFactory implements MMXListItemFactory {
                     return new DefaultMMXPollItemAnotherView(context);
                 case MMXPollOptionWrapper.TYPE_POLL_ITEM_MY:
                     return new DefaultMMXPollItemMyView(context);
+                case MMXMessageWrapper.TYPE_VOTE_ANSWER:
+                    return new DefaultMMXPollAnswerMessageView(context);
                 default: {
                     if ((MMXMessageWrapper.MY_MESSAGE_MASK & type) == MMXMessageWrapper.MY_MESSAGE_MASK) {
                         return new DefaultMMXMessageMyView(context);
