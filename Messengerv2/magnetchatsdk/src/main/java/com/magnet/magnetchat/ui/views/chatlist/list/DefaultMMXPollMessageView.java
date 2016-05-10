@@ -12,19 +12,26 @@ import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
+import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
+import com.magnet.magnetchat.ui.views.chatlist.poll.AbstractMMXPollItemView;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by aorehov on 06.05.16.
  */
-public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageView<MMXPollProperty> {
+public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageView<MMXPollProperty> implements AbstractMMXPollItemView.OnPollItemClickListener {
 
     TextView uiPollType;
     TextView uiPollQuestion;
     LinearLayout uiPollQuestions;
     View uiSubmit;
+    Map<String, AbstractMMXPollItemView> pollViews = new HashMap<>();
+    //    ArrayList<String> ids = new ArrayList<>();
+    private MMXListItemFactory factory;
 
     public DefaultMMXPollMessageView(Context context) {
         super(context);
@@ -41,8 +48,13 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     protected void onLinkingViews(View baseView) {
         super.onLinkingViews(baseView);
-        uiPollType = findView(R.id.mmx_poll_type);
-        uiPollQuestion = findView(R.id.mmx_poll_question);
+
+        factory = ChatSDK.getMmxListItemFactory();
+
+        uiPollType = findView(baseView, R.id.mmx_poll_type);
+        uiPollQuestion = findView(baseView, R.id.mmx_poll_question);
+        uiPollQuestions = findView(baseView, R.id.mmx_poll_answers);
+
         uiSubmit = findView(R.id.mmx_submit);
         uiSubmit.setOnClickListener(this);
     }
@@ -50,7 +62,6 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.mmx_submit) {
-
         } else
             super.onClick(v);
     }
@@ -67,12 +78,34 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
 
     @Override
     public void onPollAnswersReceived(List<MMXPollOptionWrapper> data) {
-// TODO implement ui logic for POLL items
+        uiPollQuestions.removeAllViews();
+        for (int index = 0; index < data.size(); index++) {
+            MMXPollOptionWrapper option = data.get(index);
+            updateItem(index, option);
+        }
     }
 
-    @Override
-    public void onPollAnswersUpdate(MMXPollOptionWrapper option) {
-// TODO implement ui logic for POLL items
+    private void updateItem(int index, MMXPollOptionWrapper option) {
+        if (index > 0) {
+            View childAt = uiPollQuestions.getChildAt(index);
+            if (childAt != null) uiPollQuestions.removeView(childAt);
+        }
+
+        AbstractMMXPollItemView view = getView(option);
+//        ids.add(index, option.getId());
+        uiPollQuestions.addView(view, index);
+        view.setObject(option);
+    }
+
+    private AbstractMMXPollItemView getView(MMXPollOptionWrapper opt) {
+        String id = opt.getId();
+        AbstractMMXPollItemView view = pollViews.get(id);
+        if (view == null) {
+            view = (AbstractMMXPollItemView) factory.createView(getContext(), opt.getType());
+            view.setListener(this);
+        }
+
+        return view;
     }
 
     @Override
@@ -115,5 +148,10 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     public void setProperties(MMXPollProperty property) {
 
+    }
+
+    @Override
+    public void onClicked(MMXPollOptionWrapper wrapper) {
+        getPresenter().onNeedChangedState(wrapper);
     }
 }

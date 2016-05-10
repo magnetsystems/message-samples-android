@@ -3,6 +3,7 @@ package com.magnet.magnetchat.ui.factories;
 import android.content.Context;
 
 import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXLocAnotherMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXLocMyMessageView;
@@ -12,6 +13,8 @@ import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicAnotherMessageV
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPicMyMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollAnotherMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollMyMessageView;
+import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemAnotherView;
+import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemMyView;
 
 /**
  * Created by aorehov on 28.04.16.
@@ -45,6 +48,10 @@ public class DefaultMMXListItemFactory implements MMXListItemFactory {
                     return new DefaultMMXPollAnotherMessageView(context);
                 case MMXMessageWrapper.TYPE_POLL_MY:
                     return new DefaultMMXPollMyMessageView(context);
+                case MMXPollOptionWrapper.TYPE_POLL_ITEM_ANOTHER:
+                    return new DefaultMMXPollItemAnotherView(context);
+                case MMXPollOptionWrapper.TYPE_POLL_ITEM_MY:
+                    return new DefaultMMXPollItemMyView(context);
                 default: {
                     if ((MMXMessageWrapper.MY_MESSAGE_MASK & type) == MMXMessageWrapper.MY_MESSAGE_MASK) {
                         return new DefaultMMXMessageMyView(context);

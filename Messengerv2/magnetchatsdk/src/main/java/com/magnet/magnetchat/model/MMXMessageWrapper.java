@@ -3,7 +3,6 @@ package com.magnet.magnetchat.model;
 import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 import com.magnet.magnetchat.util.MMXMessageUtil;
 import com.magnet.max.android.Attachment;
-import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.Date;
@@ -27,8 +26,11 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
     public static final int TYPE_POLL_ANOTHER = 0x7F09;
     public static final int MY_MESSAGE_MASK = 0x8000;
 
+    public static final String TAG_QUESTION = "question";
+    public static final String TYPE_POLL = "DefaultPollConfig";
 
-    private boolean isShowDate = true;
+
+    private boolean isShowDate = false;
     private boolean isMyMessage;
     private final int type;
     private Date date;
@@ -111,25 +113,31 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
      * @see com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory
      */
     public static int defineType(MMXMessage mmxMessage, boolean isMine) {
+        String tagType = null;
         Map<String, String> content = mmxMessage.getContent();
-        if (content != null && content.containsKey(Message.TAG_TYPE)) {
-            String tagType = content.get(Message.TAG_TYPE);
-            switch (tagType) {
-                case Message.TYPE_PHOTO:
-                    return isMine ? TYPE_PHOTO_MY : TYPE_PHOTO_ANOTHER;
-                case Message.TYPE_VIDEO:
-                    return isMine ? TYPE_VIDEO_MY : TYPE_VIDEO_ANOTHER;
-                case Message.TYPE_POLL:
-                    return isMine ? TYPE_POLL_MY : TYPE_POLL_ANOTHER;
-                case Message.TYPE_MAP:
-                    return isMine ? TYPE_MAP_MY : TYPE_MAP_ANOTHER;
-                case Message.TYPE_TEXT:
-                default:
-                    return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
+        if (content != null) {
+            if (content.containsKey(Message.TAG_TYPE)) {
+                tagType = content.get(Message.TAG_TYPE);
+            } else if (content.containsKey(TAG_QUESTION)) {
+                if (content.get(TAG_QUESTION).equals(TYPE_POLL)) {
+                    tagType = Message.TYPE_POLL;
+                }
             }
         }
-        return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
 
+        switch (tagType) {
+            case Message.TYPE_PHOTO:
+                return isMine ? TYPE_PHOTO_MY : TYPE_PHOTO_ANOTHER;
+            case Message.TYPE_VIDEO:
+                return isMine ? TYPE_VIDEO_MY : TYPE_VIDEO_ANOTHER;
+            case Message.TYPE_POLL:
+                return isMine ? TYPE_POLL_MY : TYPE_POLL_ANOTHER;
+            case Message.TYPE_MAP:
+                return isMine ? TYPE_MAP_MY : TYPE_MAP_ANOTHER;
+            case Message.TYPE_TEXT:
+            default:
+                return isMine ? TYPE_TEXT_MY : TYPE_TEXT_ANOTHER;
+        }
     }
 
 

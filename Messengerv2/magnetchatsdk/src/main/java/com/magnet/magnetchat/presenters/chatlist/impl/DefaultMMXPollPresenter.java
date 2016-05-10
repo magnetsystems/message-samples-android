@@ -53,19 +53,23 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
 
     @Override
     public void onNeedChangedState(MMXPollOptionWrapper wrapper) {
+        List<MMXPollOptionWrapper> options = pollMessageWrapper.getMmxPollOptions();
+        if (!options.contains(wrapper)) return;
+
         wrapper.setSelectedLocal(!wrapper.isSelectedLocal());
         if (!pollMessageWrapper.isMultipleChoice()) {
             deselectAllExcept(wrapper);
         }
 
-        view.onPollAnswersUpdate(wrapper);
+        view.onPollAnswersReceived(options);
+//        view.onPollAnswersUpdate(wrapper);
     }
 
     private void deselectAllExcept(MMXPollOptionWrapper wrapper) {
         for (MMXPollOptionWrapper option : pollMessageWrapper.getMmxPollOptions()) {
             if (!option.equals(wrapper) && option.isSelectedLocal()) {
                 option.setSelectedLocal(false);
-                view.onPollAnswersUpdate(option);
+//                view.onPollAnswersUpdate(option);
             }
         }
     }
@@ -73,7 +77,7 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
     private com.magnet.magnetchat.model.MMXPollMessageWrapper.PollLoadListener callback = new MMXPollMessageWrapper.PollLoadListener() {
         @Override
         public void onSuccess(MMXPoll poll, List<MMXPollOptionWrapper> wrappers) {
-            updateBaseUI(view, pollMessageWrapper);
+            setMMXMessage(wrapper);
         }
     };
 }

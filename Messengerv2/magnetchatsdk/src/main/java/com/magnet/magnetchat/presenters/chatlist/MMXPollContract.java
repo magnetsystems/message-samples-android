@@ -20,7 +20,7 @@ public interface MMXPollContract {
 
         void onPollAnswersReceived(List<MMXPollOptionWrapper> data);
 
-        void onPollAnswersUpdate(MMXPollOptionWrapper option);
+//        void onPollAnswersUpdate(MMXPollOptionWrapper option);
     }
 
 }

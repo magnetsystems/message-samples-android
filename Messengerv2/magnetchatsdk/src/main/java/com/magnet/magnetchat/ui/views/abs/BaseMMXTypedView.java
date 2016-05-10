@@ -28,4 +28,7 @@ public abstract class BaseMMXTypedView<V extends Typed, T extends ViewProperty> 
         this.object = object;
     }
 
+    protected V getObject() {
+        return object;
+    }
 }
