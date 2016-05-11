@@ -9,6 +9,7 @@ import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
 import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
 import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
@@ -76,7 +77,26 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
     public void submitAnswers() {
         List<MMXPollOption> options = pollMessageWrapper.getSelectedOptions();
         if (options == null) return;
+        view.onRefreshing();
         pollMessageWrapper.getMmxPoll().choose(options, pollCallback);
+    }
+
+    @Override
+    public void doRefresh() {
+        view.onRefreshing();
+        pollMessageWrapper.getMmxPoll().refreshResults(new MMXChannel.OnFinishedListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                view.onRefreshingFinished();
+                updateUI(view, pollMessageWrapper);
+            }
+
+            @Override
+            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                view.onRefreshingFinished();
+                view.showMessage("Can't update poll");
+            }
+        });
     }
 
     private void checkButton(Collection<MMXPollOptionWrapper> options) {
@@ -103,11 +123,13 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
         public void onSuccess(MMXMessage mmxMessage) {
             view.showMessage("Updated");
             setMMXMessage(wrapper);
+            view.onRefreshingFinished();
         }
 
         @Override
         public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
             view.showMessage("Can't update poll");
+            view.onRefreshingFinished();
         }
     };
 }

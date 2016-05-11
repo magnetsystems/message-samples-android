@@ -29,6 +29,9 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     TextView uiPollQuestion;
     LinearLayout uiPollQuestions;
     View uiSubmit;
+    View uiProgress;
+    View uiUpdate;
+
     Map<String, AbstractMMXPollItemView> pollViews = new HashMap<>();
     private MMXListItemFactory factory;
 
@@ -53,15 +56,20 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
         uiPollType = findView(baseView, R.id.mmx_poll_type);
         uiPollQuestion = findView(baseView, R.id.mmx_poll_question);
         uiPollQuestions = findView(baseView, R.id.mmx_poll_answers);
-
+        uiProgress = findView(baseView, R.id.mmx_progress);
+        uiUpdate = findView(baseView, R.id.mmx_update);
         uiSubmit = findView(R.id.mmx_submit);
+
         uiSubmit.setOnClickListener(this);
+        uiUpdate.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.mmx_submit) {
             getPresenter().submitAnswers();
+        } else if (v.getId() == R.id.mmx_update) {
+            getPresenter().doRefresh();
         } else
             super.onClick(v);
     }
@@ -167,5 +175,17 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     @Override
     public void showMessage(int resId, Object... objects) {
         toast(getString(resId, objects));
+    }
+
+    @Override
+    public void onRefreshingFinished() {
+        uiUpdate.setVisibility(VISIBLE);
+        uiProgress.setVisibility(GONE);
+    }
+
+    @Override
+    public void onRefreshing() {
+        uiProgress.setVisibility(VISIBLE);
+        uiUpdate.setVisibility(GONE);
     }
 }

@@ -14,6 +14,8 @@ public interface MMXPollContract {
         void onNeedChangedState(MMXPollOptionWrapper wrapper);
 
         void submitAnswers();
+
+        void doRefresh();
     }
 
     interface View extends BaseMMXMessageView, MMXInfoView {
@@ -24,6 +26,11 @@ public interface MMXPollContract {
         void onPollAnswersReceived(List<MMXPollOptionWrapper> data);
 
         void onEnableSubmitButton(boolean isEnable);
+
+        void onRefreshing();
+
+        void onRefreshingFinished();
+
 
 //        void onPollAnswersUpdate(MMXPollOptionWrapper option);
     }

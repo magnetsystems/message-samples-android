@@ -29,22 +29,60 @@
                 android:orientation="vertical"
                 android:padding="@dimen/dimen_10">
 
-                <TextView
-                    android:id="@+id/mmx_poll_type"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/mmxchat.poll.type.multiple"
-                    android:textAllCaps="true"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/mmx_poll_question"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_4"
-                    android:text="NULL"
-                    android:textColor="@android:color/white" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/mmx_poll_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mmxchat.poll.type.multiple"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/mmx_poll_question"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen_4"
+                            android:text="NULL"
+                            android:textColor="@android:color/white" />
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="@dimen/dimen_38"
+                        android:layout_height="@dimen/dimen_38">
+
+                        <ProgressBar
+                            android:id="@+id/mmx_progress"
+                            style="Theme.AppCompat.Light.NoActionBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/mmx_update"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_update_my" />
+
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
