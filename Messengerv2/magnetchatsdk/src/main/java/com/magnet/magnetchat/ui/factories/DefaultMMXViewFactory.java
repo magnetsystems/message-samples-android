@@ -3,6 +3,8 @@ package com.magnet.magnetchat.ui.factories;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
+import com.magnet.magnetchat.ui.dialogs.DefaultAttachmentDialogFragment;
 import com.magnet.magnetchat.ui.views.chatlist.DefaultMMXChatListView;
 import com.magnet.magnetchat.ui.views.chatlist.DefaultMMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.DefaultMMXPostMessageView;
@@ -55,6 +57,11 @@ public class DefaultMMXViewFactory implements MMXViewFactory {
     @Override
     public MMXChatView createMMXChatView(Context context, ViewGroup viewGroup) {
         return createMMXChatView(context);
+    }
+
+    @Override
+    public AttachmentDialogFragment createAttachmentDialogFragment(Context context) {
+        return new DefaultAttachmentDialogFragment();
     }
 
 }

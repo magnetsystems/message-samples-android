@@ -141,7 +141,7 @@ public class ChatFragment extends MMXBaseFragment {
 
     private void showAttachmentChooser() {
         dismissDialog();
-        dialogFragment = new DefaultAttachmentDialogFragment();
+        dialogFragment = ChatSDK.getViewFactory().createAttachmentDialogFragment(getContext());
         dialogFragment.setListener(attachmentTypeListener);
         dialogFragment.setAttachment(attachments);
         dialogFragment.show(getFragmentManager(), dialogFragment.getTag());

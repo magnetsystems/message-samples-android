@@ -3,6 +3,7 @@ package com.magnet.magnetchat.ui.factories;
 import android.content.Context;
 import android.view.ViewGroup;
 
+import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
 import com.magnet.magnetchat.ui.views.chatlist.MMXChatListView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;
@@ -27,4 +28,6 @@ public interface MMXViewFactory {
     MMXChatView createMMXChatView(Context context);
 
     MMXChatView createMMXChatView(Context context, ViewGroup viewGroup);
+
+    AttachmentDialogFragment createAttachmentDialogFragment(Context context);
 }
