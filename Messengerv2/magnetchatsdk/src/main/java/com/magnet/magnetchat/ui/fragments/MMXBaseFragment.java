@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.magnet.magnetchat.callbacks.BaseActivityCallback;
 
@@ -105,5 +106,26 @@ public abstract class MMXBaseFragment extends Fragment implements View.OnClickLi
 
     protected <T extends View> T findView(View uiBaseView, int resId) {
         return (T) uiBaseView.findViewById(resId);
+    }
+
+    /**
+     * the methods are wrappers for toast notification
+     *
+     * @see Toast
+     */
+    public void toast(CharSequence message, boolean isLongShow) {
+        Toast.makeText(getContext(), message, isLongShow ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+    }
+
+    public void toast(CharSequence message) {
+        toast(message, false);
+    }
+
+    public void toast(int resId, boolean isLongShow) {
+        Toast.makeText(getContext(), resId, isLongShow ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+    }
+
+    public void toast(int resId) {
+        toast(resId, false);
     }
 }

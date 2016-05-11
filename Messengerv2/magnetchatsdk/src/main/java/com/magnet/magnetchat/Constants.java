@@ -25,4 +25,5 @@ public interface Constants {
 
     String TAG_CREATE_WITH_RECIPIENTS = "mmx.channel.recipients";
 
+    int MMX_RC_TAKE_PIC = 0x00F0;
 }

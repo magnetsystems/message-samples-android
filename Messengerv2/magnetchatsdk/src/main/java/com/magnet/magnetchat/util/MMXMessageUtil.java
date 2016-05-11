@@ -7,6 +7,7 @@ import com.magnet.max.android.Attachment;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,12 +28,14 @@ public class MMXMessageUtil {
 
     public void sendPhotoMessage(MMXChannel channel, Map<String, String> message, String filePath, String mimeType, MMXMessage.OnFinishedListener<String> listener) {
         Map<String, String> content = merge(message, makePhotoContent());
-        sendMMXMessage(channel, content, listener, new Attachment(filePath, mimeType));
+        File file = new File(filePath);
+        sendMMXMessage(channel, content, listener, new Attachment(file, mimeType, file.getName(), ""));
     }
 
     public void sendPhotoMessage(MMXChannel channel, String filePath, String mimeType, MMXMessage.OnFinishedListener<String> listener) {
         Map<String, String> content = makePhotoContent();
-        sendMMXMessage(channel, content, listener, new Attachment(filePath, mimeType));
+        File file = new File(filePath);
+        sendMMXMessage(channel, content, listener, new Attachment(file, mimeType, file.getName(), ""));
     }
 
     public void sendVideoMessage(MMXChannel channel, String filePath, String mimeType, MMXMessage.OnFinishedListener<String> listener) {

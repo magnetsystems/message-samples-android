@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class ChatV2Activity extends BaseActivity implements ChatListContract.ChannelNameListener {
 
+    private ChatFragment chatFragment;
+
     @Override
     protected int getLayoutResource() {
         return R.layout.activity_mmxchat;
@@ -78,7 +80,7 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
             return;
         }
 
-        ChatFragment chatFragment = new ChatFragment();
+        chatFragment = new ChatFragment();
         chatFragment.setArguments(bundle);
         chatFragment.setChatNameListener(this);
         replace(chatFragment, R.id.mmx_chat, chatFragment.getTag());
@@ -100,6 +102,11 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
 
     void onSetName(CharSequence sequence) {
         getSupportActionBar().setTitle(sequence);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        chatFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -1,12 +1,15 @@
 package com.magnet.magnetchat.ui.views.chatlist;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
+import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
+import com.magnet.magnetchat.ui.dialogs.DefaultAttachmentDialogFragment;
 import com.magnet.magnetchat.ui.views.abs.BaseView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 import com.magnet.max.android.UserProfile;
@@ -22,6 +25,7 @@ public abstract class MMXChatView<T extends ViewProperty> extends BaseView<T> im
 
     private MMXPostMessageView mmxPostMessageView;
     private MMXChatListView mmxChatListView;
+    private MMXPostMessageView.OnAttachmentSelectListener listener = null;
 
     public MMXChatView(Context context) {
         super(context);
@@ -44,7 +48,9 @@ public abstract class MMXChatView<T extends ViewProperty> extends BaseView<T> im
         onAttachViewToParent(mmxChatListView, mmxPostMessageView);
     }
 
-    protected abstract MMXPostMessageView.OnAttachmentSelectListener getAttachmentListener();
+    protected MMXPostMessageView.OnAttachmentSelectListener getAttachmentListener() {
+        return listener;
+    }
 
     public PostMMXMessageContract.Presenter getPostPresenter() {
         return mmxPostMessageView.getPresenter();
@@ -102,6 +108,14 @@ public abstract class MMXChatView<T extends ViewProperty> extends BaseView<T> im
         mmxChatListView.getPresenter().setChat(recipients);
     }
 
+    public void setListener(MMXPostMessageView.OnAttachmentSelectListener listener) {
+        this.listener = listener;
+        if (mmxPostMessageView != null && listener != null)
+            mmxPostMessageView.setListener(listener);
+    }
 
+    public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
+        return mmxPostMessageView.onActivityResult(requestCode, resultCode, intent);
+    }
 }
 

@@ -27,11 +27,6 @@ public class DefaultMMXChatView extends MMXChatView<MMXChatProperty> {
     }
 
     @Override
-    protected MMXPostMessageView.OnAttachmentSelectListener getAttachmentListener() {
-        return null;
-    }
-
-    @Override
     protected void onAttachViewToParent(MMXChatListView mmxChatListView, MMXPostMessageView mmxPostMessageView) {
         if (uiListContainer.getChildCount() != 0) uiListContainer.removeAllViews();
         uiListContainer.addView(mmxChatListView);
