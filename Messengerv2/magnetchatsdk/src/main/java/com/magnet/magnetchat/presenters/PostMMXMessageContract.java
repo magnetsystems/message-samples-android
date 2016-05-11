@@ -41,6 +41,8 @@ public interface PostMMXMessageContract {
         void sendCustomMessage(String type, Map<String, String> content, Attachment... attachments);
 
         void setMMXChannel(MMXChannel mmxChannel);
+
+        MMXChannel getMMXChannel();
     }
 
     interface View extends MMXInfoView {

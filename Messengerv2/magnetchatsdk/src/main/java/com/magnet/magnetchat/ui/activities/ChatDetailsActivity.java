@@ -119,9 +119,14 @@ public class ChatDetailsActivity extends BaseActivity implements ChatDetailsCont
     }
 
     public static Intent createIntentForChannel(Context context, Chat conversation) {
+        return createIntentForChannel(context, conversation.getChannel());
+    }
+
+    public static Intent createIntentForChannel(Context context, MMXChannel mmxChannel) {
         Intent intent = new Intent(context, ChatDetailsActivity.class);
-        intent.putExtra(TAG_CHANNEL, conversation.getChannel());
+        intent.putExtra(TAG_CHANNEL, mmxChannel);
         return intent;
+
     }
 
 

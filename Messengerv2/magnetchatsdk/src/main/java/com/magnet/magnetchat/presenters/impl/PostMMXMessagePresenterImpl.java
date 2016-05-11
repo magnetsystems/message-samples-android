@@ -32,6 +32,11 @@ class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
         updateUI();
     }
 
+    @Override
+    public MMXChannel getMMXChannel() {
+        return channel;
+    }
+
     private void updateUI() {
         if (this.channel != null) {
             view.onChannelAvailable();

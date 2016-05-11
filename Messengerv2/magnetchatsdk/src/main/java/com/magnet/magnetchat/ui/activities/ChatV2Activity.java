@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
+import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.ui.fragments.ChatFragment;
 import com.magnet.max.android.User;
@@ -113,6 +114,17 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+
+        } else if (item.getItemId() == R.id.mmxchat_edit) {
+            PostMMXMessageContract.Presenter contract = chatFragment.getMessageContract();
+            if (contract != null) {
+                MMXChannel channel = contract.getMMXChannel();
+                if (channel != null) {
+                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
+                    startActivity(intent);
+                }
+            }
             return true;
         } else
             return super.onOptionsItemSelected(item);

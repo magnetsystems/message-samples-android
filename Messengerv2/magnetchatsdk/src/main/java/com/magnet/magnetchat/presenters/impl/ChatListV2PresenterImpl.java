@@ -11,9 +11,6 @@ import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
-import com.magnet.magnetchat.model.MMXPollAnswerMessageWrapper;
-import com.magnet.magnetchat.model.MMXPollMessageWrapper;
-import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
@@ -135,6 +132,30 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     @Override
     public void onStart() {
         MMX.registerListener(eventListener);
+        updateChannel();
+    }
+
+    /**
+     * The method call channel's update
+     * Will be changed in the future
+     */
+    private void updateChannel() {
+        if (channel != null && channel.getObj() != null) {
+            ChannelDetail obj = channel.getObj();
+            final MMXChannel channel = obj.getChannel();
+            MMXChannel.getChannelDetail(Arrays.asList(channel), new ChannelDetailOptions.Builder().numOfMessages(0).numOfSubcribers(1).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+                @Override
+                public void onSuccess(List<ChannelDetail> channelDetails) {
+                    if (channelDetails == null || channelDetails.isEmpty()) return;
+                    setChat(channelDetails.get(0));
+                }
+
+                @Override
+                public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+//                    STUB
+                }
+            });
+        }
     }
 
     @Override
