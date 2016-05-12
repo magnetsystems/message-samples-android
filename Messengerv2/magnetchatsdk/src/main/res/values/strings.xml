@@ -39,5 +39,7 @@
     <string name="text_sign_in">Sign in</string>
     <string name="text_create_account">Create account</string>
     <string name="text_add_user">Add user</string>
+    <string name="err.user.loading">Can\'t load users</string>
+    <string name="mmx.chat.details">Chat Details</string>
 
 </resources>

@@ -3,11 +3,13 @@ package com.magnet.magnetchat.model;
 /**
  * Created by aorehov on 27.04.16.
  */
-public class MMXObjectWrapper<T> {
+public class MMXObjectWrapper<T> implements Typed {
     T obj;
+    int type;
 
-    public MMXObjectWrapper(T obj) {
+    public MMXObjectWrapper(T obj, int type) {
         this.obj = obj;
+        this.type = type;
     }
 
     public T getObj() {
@@ -28,5 +30,15 @@ public class MMXObjectWrapper<T> {
     @Override
     public int hashCode() {
         return obj.hashCode();
+    }
+
+    @Override
+    public int getType() {
+        return type;
+    }
+
+    @Override
+    public String toString() {
+        return obj.toString();
     }
 }

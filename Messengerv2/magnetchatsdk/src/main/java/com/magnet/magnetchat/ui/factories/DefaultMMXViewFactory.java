@@ -1,7 +1,6 @@
 package com.magnet.magnetchat.ui.factories;
 
 import android.content.Context;
-import android.view.ViewGroup;
 
 import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
 import com.magnet.magnetchat.ui.dialogs.DefaultAttachmentDialogFragment;
@@ -13,16 +12,13 @@ import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;
 import com.magnet.magnetchat.ui.views.poll.AbstractEditPollView;
 import com.magnet.magnetchat.ui.views.poll.DefaultEditPollView;
+import com.magnet.magnetchat.ui.views.users.DefaultMMXUserListView;
+import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 
 /**
  * Created by aorehov on 27.04.16.
  */
 public class DefaultMMXViewFactory implements MMXViewFactory {
-
-    @Override
-    public AbstractEditPollView createPolView(Context context, ViewGroup parent) {
-        return createPolView(context);
-    }
 
     @Override
     public AbstractEditPollView createPolView(Context context) {
@@ -35,18 +31,8 @@ public class DefaultMMXViewFactory implements MMXViewFactory {
     }
 
     @Override
-    public MMXChatListView createMMXChatListView(Context context, ViewGroup parent) {
-        return createMMXChatListView(context);
-    }
-
-    @Override
     public MMXPostMessageView createMMXPostMessageView(Context context) {
         return new DefaultMMXPostMessageView(context);
-    }
-
-    @Override
-    public MMXPostMessageView createMMXPostMessageView(Context context, ViewGroup viewGroup) {
-        return createMMXPostMessageView(context);
     }
 
     @Override
@@ -55,13 +41,13 @@ public class DefaultMMXViewFactory implements MMXViewFactory {
     }
 
     @Override
-    public MMXChatView createMMXChatView(Context context, ViewGroup viewGroup) {
-        return createMMXChatView(context);
+    public AttachmentDialogFragment createAttachmentDialogFragment(Context context) {
+        return new DefaultAttachmentDialogFragment();
     }
 
     @Override
-    public AttachmentDialogFragment createAttachmentDialogFragment(Context context) {
-        return new DefaultAttachmentDialogFragment();
+    public MMXUserListView createMmxUserListView(Context context) {
+        return new DefaultMMXUserListView(context);
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by aorehov on 28.04.16.
  */
-public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements Typed {
+public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> {
 
     public static final int TYPE_MAP_MY = 0xFF00;
     public static final int TYPE_VIDEO_MY = 0xFF01;
@@ -34,7 +34,6 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
 
     private boolean isShowDate = false;
     private boolean isMyMessage;
-    private final int type;
     private Date date;
 
     public MMXMessageWrapper(MMXMessage obj, int type) {
@@ -46,15 +45,9 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> implements T
     }
 
     public MMXMessageWrapper(MMXMessage obj, int type, boolean isMyMessage, Date date) {
-        super(obj);
+        super(obj, type);
         this.date = date;
-        this.type = type;
         this.isMyMessage = isMyMessage;
-    }
-
-    @Override
-    public int getType() {
-        return type;
     }
 
     public Date getPublishDate() {

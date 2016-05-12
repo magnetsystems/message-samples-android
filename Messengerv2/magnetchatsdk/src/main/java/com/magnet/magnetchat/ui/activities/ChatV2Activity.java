@@ -121,7 +121,8 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
             if (contract != null) {
                 MMXChannel channel = contract.getMMXChannel();
                 if (channel != null) {
-                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
+//                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
+                    Intent intent = ChatDetailsV2Activity.createIntent(this, channel);
                     startActivity(intent);
                 }
             }

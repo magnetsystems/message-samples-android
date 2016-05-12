@@ -11,17 +11,16 @@ import java.util.List;
 /**
  * Created by aorehov on 27.04.16.
  */
-public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implements Typed {
+public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> {
 
     public static final int TYPE_POLL_ITEM_MY = 0xFF84;
     public static final int TYPE_POLL_ITEM_ANOTHER = 0x7F89;
 
     private boolean isVoted;
     private boolean isSelectedLocal;
-    private int type;
 
     public MMXPollOptionWrapper(MMXPollOption obj, boolean isVoted, int type) {
-        super(obj);
+        super(obj, type);
         this.isVoted = isVoted;
         this.isSelectedLocal = isVoted;
         this.type = type;
@@ -49,11 +48,6 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> implem
 
     public String getId() {
         return obj.getOptionId();
-    }
-
-    @Override
-    public int getType() {
-        return type;
     }
 
     /**

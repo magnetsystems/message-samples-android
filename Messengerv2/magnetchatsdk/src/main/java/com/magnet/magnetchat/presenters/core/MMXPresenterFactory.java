@@ -2,6 +2,7 @@ package com.magnet.magnetchat.presenters.core;
 
 import com.magnet.magnetchat.presenters.PollEditContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
+import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -17,4 +18,6 @@ public interface MMXPresenterFactory {
     ChatListContract.Presenter createChatPresenter(ChatListContract.View view);
 
     PostMMXMessageContract.Presenter createPostMessagePresenter(PostMMXMessageContract.View view);
+
+    UserListContract.Presenter createUserListPresenter(UserListContract.View view);
 }

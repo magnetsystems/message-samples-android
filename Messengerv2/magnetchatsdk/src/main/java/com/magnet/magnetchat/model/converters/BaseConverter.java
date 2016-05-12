@@ -55,16 +55,33 @@ public abstract class BaseConverter<FROM, TO> {
         List<TO> list;
         if (fromList != null) {
             list = new ArrayList<>(fromList.size());
-            for (FROM from : fromList) {
+            for (int index = 0; index < fromList.size(); index++) {
+                FROM from = fromList.get(index);
                 if (from != null) {
                     TO to = convert(from);
-                    if (to != null) list.add(to);
+
+                    if (to != null) {
+                        list.add(to);
+                        int indexOf = list.size() - 1;
+                        if (indexOf > -1) {
+                            TO prev = indexOf == 0 ? null : list.get(indexOf - 1);
+                            decorate(prev, to);
+                        }
+                    }
                 }
             }
         } else {
             list = new ArrayList<>(0);
         }
         return list;
+    }
+
+    protected void decorate(TO prev, TO to) {
+
+    }
+
+    public boolean isEnableDecoration() {
+        return false;
     }
 
 }

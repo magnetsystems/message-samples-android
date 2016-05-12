@@ -1,6 +1,8 @@
 package com.magnet.magnetchat.presenters;
 
-import com.magnet.magnetchat.model.Typed;
+import android.os.Bundle;
+
+import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.presenters.core.MMXInfoView;
 import com.magnet.magnetchat.presenters.core.MMXPresenter;
 
@@ -16,20 +18,30 @@ public interface UserListContract {
 
         void onCurrentPosition(int localSize, int index);
 
-        void doClickOn(Typed typed);
+        void doClickOn(MMXUserWrapper typed);
+
+        void onInit(Bundle bundle);
+
+//        void setMMXChannel(MMXChannel mmxChannel);
+//
+//        void setMMXChannelDetails(ChannelDetail details);
+//
+//        void setMMXChannelWrapper(MMXChannelWrapper mmxChannelWrapper);
+
     }
 
     interface View extends MMXInfoView {
-        void onPut(Typed wrapper);
+        void onPut(MMXUserWrapper wrapper);
 
-        void onDelete(Typed wrapper);
+        void onDelete(MMXUserWrapper wrapper);
 
-        void onSet(List<Typed> wrapper);
+        void onSet(List<MMXUserWrapper> wrapper);
 
-        void onLock();
+        void onLoading();
 
-        void onUnlock();
+        void onLoadingComplete();
 
+        void onCantLoadChannel();
     }
 
 }

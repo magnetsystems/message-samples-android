@@ -174,7 +174,7 @@ public class ChatListFragment extends MMXBaseFragment implements ChatListContrac
                 });
                 conversationsList.setAdapter(mAdapter);
             } else {
-                if(toAppend) {
+                if (toAppend) {
                     mAdapter.addItem(list);
                 } else {
                     mAdapter.swapData(list);
@@ -222,7 +222,8 @@ public class ChatListFragment extends MMXBaseFragment implements ChatListContrac
         leaveDialog.show();
     }
 
-    @Override public void setTitle(String title) {
+    @Override
+    public void setTitle(String title) {
 
     }
 

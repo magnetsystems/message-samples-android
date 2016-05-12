@@ -13,7 +13,7 @@ public class MMXChannelWrapper extends MMXObjectWrapper<ChannelDetail> {
     private long messagesAmount;
 
     public MMXChannelWrapper(ChannelDetail obj) {
-        super(obj);
+        super(obj, -1);
         messagesAmount = obj.getChannel().getNumberOfMessages();
     }
 
@@ -23,6 +23,10 @@ public class MMXChannelWrapper extends MMXObjectWrapper<ChannelDetail> {
 
     public void setMessagesAmount(long messagesAmount) {
         this.messagesAmount = messagesAmount;
+    }
+
+    public int getSubscribersAmount() {
+        return obj.getTotalSubscribers();
     }
 
     public String getName(String defaultName) {

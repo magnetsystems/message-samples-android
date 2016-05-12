@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_character"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorLightGray"
+        android:paddingBottom="@dimen/dimen_5"
+        android:paddingLeft="@dimen/dimen_15"
+        android:paddingTop="@dimen/dimen_5"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_marginBottom="@dimen/dimen_7"
+            android:layout_marginLeft="@dimen/dimen_15"
+            android:layout_marginRight="@dimen/dimen_15"
+            android:layout_marginTop="@dimen/dimen_7">
+
+            <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
+                android:id="@+id/mmx_pic_letters"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mmx_pic_origin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/mmx_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_5"
+            android:layout_marginRight="@dimen/dimen_5"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray" />
+</LinearLayout>
