@@ -72,6 +72,10 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
         this.data.addAll(data);
     }
 
+    public T getItem(int position) {
+        return data.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return data.size();
