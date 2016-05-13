@@ -60,6 +60,37 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
         MMXChannel channel = BundleHelper.readMMXChannelFromBundle(extras);
         presenter = ChatSDK.getPresenterFactory().createChannelSettingsPresenter(this);
         presenter.setMMXChannel(channel);
+        presenter.onCreate();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        presenter.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onResumed();
+    }
+
+    @Override
+    protected void onPause() {
+        presenter.onPaused();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        presenter.onStop();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroy();
+        super.onDestroy();
     }
 
     @Override

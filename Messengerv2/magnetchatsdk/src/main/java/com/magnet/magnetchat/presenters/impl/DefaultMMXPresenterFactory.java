@@ -54,7 +54,13 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
     @Override
     public UserListContract.Presenter createUserListPresenter(UserListContract.View view) {
         MMXUserConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
-        return new UserListContractPresenterImpl(view, converter);
+        return new MMXChannelUserListPresenterImpl(view, converter);
+    }
+
+    @Override
+    public UserListContract.Presenter createAllUserListPresenter(UserListContract.View view) {
+        MMXUserConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
+        return new MMXAllUserListPresenter(view, converter);
     }
 
     @Override

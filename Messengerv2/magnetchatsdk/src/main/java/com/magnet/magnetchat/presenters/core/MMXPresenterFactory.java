@@ -22,5 +22,7 @@ public interface MMXPresenterFactory {
 
     UserListContract.Presenter createUserListPresenter(UserListContract.View view);
 
+    UserListContract.Presenter createAllUserListPresenter(UserListContract.View view);
+
     MMXChannelSettingsContract.Presenter createChannelSettingsPresenter(MMXChannelSettingsContract.View view);
 }

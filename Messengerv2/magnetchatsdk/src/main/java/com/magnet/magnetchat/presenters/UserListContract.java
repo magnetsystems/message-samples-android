@@ -22,6 +22,8 @@ public interface UserListContract {
 
         void onInit(Bundle bundle);
 
+        void search(String query);
+
 //        void setMMXChannel(MMXChannel mmxChannel);
 //
 //        void setMMXChannelDetails(ChannelDetail details);

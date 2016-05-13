@@ -26,4 +26,6 @@ public interface MMXViewFactory {
 
     MMXUserListView createMmxUserListView(Context context);
 
+    MMXUserListView createMmxAllUserListView(Context context);
+
 }

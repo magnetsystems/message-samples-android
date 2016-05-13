@@ -42,5 +42,7 @@
     <string name="err.user.loading">Can\'t load users</string>
     <string name="mmx.chat.details">Chat Details</string>
     <string name="err.mmxchannel.delete">Can\'t delete channel</string>
+    <string name="mmx.users.all.title">All Contacts</string>
+    <string name="mmx.users.search.hint">Search contacts</string>
 
 </resources>

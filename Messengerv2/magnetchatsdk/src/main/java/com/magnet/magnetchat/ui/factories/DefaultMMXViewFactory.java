@@ -12,6 +12,7 @@ import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;
 import com.magnet.magnetchat.ui.views.poll.AbstractEditPollView;
 import com.magnet.magnetchat.ui.views.poll.DefaultEditPollView;
+import com.magnet.magnetchat.ui.views.users.DefaultMMXAllUserListView;
 import com.magnet.magnetchat.ui.views.users.DefaultMMXUserListView;
 import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 
@@ -48,6 +49,11 @@ public class DefaultMMXViewFactory implements MMXViewFactory {
     @Override
     public MMXUserListView createMmxUserListView(Context context) {
         return new DefaultMMXUserListView(context);
+    }
+
+    @Override
+    public MMXUserListView createMmxAllUserListView(Context context) {
+        return new DefaultMMXAllUserListView(context);
     }
 
 }

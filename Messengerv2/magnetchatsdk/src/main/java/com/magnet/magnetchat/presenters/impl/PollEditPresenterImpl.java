@@ -90,7 +90,7 @@ class PollEditPresenterImpl implements PollEditContract.Presenter {
         if (savedInstances != null) {
 //            read from saved instances
         } else if (bundle != null) {
-//            read sent data
+//            read data
         }
 
         if (answers != null && view != null) view.onAnswersList(answers);

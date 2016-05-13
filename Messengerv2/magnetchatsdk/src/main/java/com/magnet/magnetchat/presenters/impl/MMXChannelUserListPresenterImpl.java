@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by aorehov on 11.05.16.
  */
-class UserListContractPresenterImpl implements UserListContract.Presenter {
+class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
 
     private final MMXUserConverter converter;
     private UserListContract.View view;
@@ -33,7 +33,7 @@ class UserListContractPresenterImpl implements UserListContract.Presenter {
     private MMXChannelWrapper mmxChannel;
     private boolean isStarted = false;
 
-    public UserListContractPresenterImpl(UserListContract.View view, MMXUserConverter converter) {
+    public MMXChannelUserListPresenterImpl(UserListContract.View view, MMXUserConverter converter) {
         this.lazyLoadUtil = new LazyLoadUtil(40, lazyLoadingCallback);
         this.view = view;
         this.converter = converter;
@@ -48,6 +48,11 @@ class UserListContractPresenterImpl implements UserListContract.Presenter {
         } else {
             setMMXChannel(channel);
         }
+    }
+
+    @Override
+    public void search(String query) {
+
     }
 
     public void setMMXChannel(MMXChannel mmxChannel) {

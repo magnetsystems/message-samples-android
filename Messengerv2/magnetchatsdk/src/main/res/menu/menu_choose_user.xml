@@ -3,15 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menuUserSearch"
-        android:icon="@drawable/ic_search_tabbar"
+        android:id="@+id/mmx_search"
+        android:icon="@drawable/ic_mmx_search"
         android:title="Search user"
-        app:actionViewClass="com.magnet.magnetchat.ui.custom.CustomSearchView"
-        app:colorHintText="@android:color/darker_gray"
-        app:colorText="@android:color/white"
-        app:showAsAction="ifRoom"
-        app:sizeText="@dimen/text_14"
-        app:iconSearch="@drawable/ic_search_blue"
-        app:textHint="Search message" />
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <!--app:actionViewClass="com.magnet.magnetchat.ui.custom.CustomSearchView"-->
+    <!--app:colorHintText="@color/colorLightGray"-->
+    <!--app:colorText="@android:color/white"-->
+    <!--app:showAsAction="ifRoom"-->
+    <!--app:sizeText="@dimen/text_14"-->
+    <!--app:textHint="Search message" />-->
 
 </menu>

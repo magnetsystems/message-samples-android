@@ -59,7 +59,7 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        uiToolbar = (Toolbar) findViewById(R.id.toolbar);
+        uiToolbar = findView(R.id.toolbar);
         setSupportActionBar(uiToolbar);
 
         findView(R.id.fabAdd).setOnClickListener(this);
@@ -113,7 +113,7 @@ public class ChooseUserActivity extends BaseActivity implements ChooseUserContra
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_choose_user, menu);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.menuUserSearch).getActionView();
+            final CustomSearchView search = (CustomSearchView) menu.findItem(R.id.mmx_search).getActionView();
             search.setHint("Search contacts");
             search.setOnQueryTextListener(queryTextListener);
             search.setOnCloseListener(new SearchView.OnCloseListener() {

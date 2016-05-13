@@ -56,8 +56,16 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         uiRecyclerView = getRecyclerView();
         uiRecyclerView.setLayoutManager(createLayoutManager());
         uiRecyclerView.setAdapter(adapter);
+        uiRecyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
+            @Override
+            public void onViewRecycled(RecyclerView.ViewHolder holder) {
+                presenter.onCurrentPosition(adapter.getItemCount(), holder.getAdapterPosition());
+            }
+        });
 
-        presenter = ChatSDK.getPresenterFactory().createUserListPresenter(this);
+        presenter = createUserListPresenter(createUserListPresenterByName());
+        if (presenter == null)
+            presenter = ChatSDK.getPresenterFactory().createUserListPresenter(this);
     }
 
     /**
@@ -76,6 +84,14 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
      * @return instance of MMXListItemFactory
      */
     protected MMXListItemFactory createItemViewFactory(@Nullable String name) {
+        return null;
+    }
+
+    protected String createUserListPresenterByName() {
+        return null;
+    }
+
+    protected UserListContract.Presenter createUserListPresenter(String name) {
         return null;
     }
 

@@ -22,9 +22,13 @@ public class UserListFragment extends MMXBaseFragment {
     @Override
     protected void onCreateFragment(View containerView) {
         FrameLayout uiFrameLayout = findView(containerView, R.id.mmx_users);
-        userListView = ChatSDK.getViewFactory().createMmxUserListView(getContext());
+        userListView = createMMXUserListView();
         uiFrameLayout.addView(userListView);
         userListView.onInit(getArguments());
+    }
+
+    protected MMXUserListView createMMXUserListView() {
+        return ChatSDK.getViewFactory().createMmxUserListView(getContext());
     }
 
     @Override
