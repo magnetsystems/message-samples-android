@@ -8,6 +8,9 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.model.MMXUserWrapper;
+
+import java.util.List;
 
 /**
  * Created by aorehov on 12.05.16.

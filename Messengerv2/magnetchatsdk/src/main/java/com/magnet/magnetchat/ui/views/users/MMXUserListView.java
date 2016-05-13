@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -32,6 +33,7 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
     private RecyclerViewTypedAdapter<MMXUserWrapper> adapter;
     private UserListContract.Presenter presenter;
     private Handler handler = new Handler(Looper.myLooper());
+    private boolean isAddCharactersToView = true;
 
     public MMXUserListView(Context context) {
         super(context);
@@ -47,7 +49,8 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     @Override
     protected void onCreateView() {
-        MMXListItemFactory itemFactory = ChatSDK.getMmxListItemFactory();
+        MMXListItemFactory itemFactory = createItemViewFactory(getItemViewFactoryByName());
+        itemFactory = ChatSDK.getMmxListItemFactory();
         adapter = new RecyclerViewTypedAdapter(itemFactory, MMXUserWrapper.class, getItemComparator());
 
         uiRecyclerView = getRecyclerView();
@@ -55,6 +58,25 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         uiRecyclerView.setAdapter(adapter);
 
         presenter = ChatSDK.getPresenterFactory().createUserListPresenter(this);
+    }
+
+    /**
+     * return factory name here
+     *
+     * @return name of the item factory
+     */
+    protected String getItemViewFactoryByName() {
+        return null;
+    }
+
+    /**
+     * find MMXListItemFactory by name
+     *
+     * @param name of the item factory
+     * @return instance of MMXListItemFactory
+     */
+    protected MMXListItemFactory createItemViewFactory(@Nullable String name) {
+        return null;
     }
 
     public void onInit(Bundle bundle) {
@@ -119,9 +141,37 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         presenter.doRefresh();
     }
 
+    public void setAddCharactersToView(boolean addCharactersToView) {
+        if (isAddCharactersToView != addCharactersToView) doEnableCharacters();
+        isAddCharactersToView = addCharactersToView;
+    }
+
     @Override
     public void onPut(MMXUserWrapper wrapper) {
-        adapter.put(wrapper);
+        int position = adapter.put(wrapper);
+        boolean letter = wrapper.isShowLetter();
+        if (position == 0) {
+            if (!letter) {
+                wrapper.setShowLetter(true);
+                adapter.put(wrapper);
+            }
+        } else {
+            MMXUserWrapper prev = adapter.getItem(position - 1);
+            if (prev.getFirstLetter().equals(wrapper.getFirstLetter())) {
+                wrapper.setShowLetter(false);
+            } else {
+                wrapper.setShowLetter(true);
+            }
+            if (letter != wrapper.isShowLetter())
+                adapter.notifyItemChanged(position);
+        }
+    }
+
+    @Override
+    public void onPut(List<MMXUserWrapper> wrappers) {
+        adapter.put(wrappers);
+        if (isAddCharactersToView)
+            doEnableCharacters();
     }
 
     @Override
@@ -132,7 +182,15 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
     @Override
     public void onSet(List<MMXUserWrapper> wrapper) {
         adapter.set(wrapper);
+        if (isAddCharactersToView)
+            doEnableCharacters();
     }
+
+    private void doEnableCharacters() {
+        handler.removeCallbacks(ACTION);
+        handler.post(ACTION);
+    }
+
 
     @Override
     public void showMessage(CharSequence sequence) {
@@ -146,5 +204,29 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     @NonNull
     protected abstract RecyclerView getRecyclerView();
+
+    private Runnable ACTION = new Runnable() {
+        @Override
+        public void run() {
+            if (adapter.getItemCount() == 0) return;
+            for (int index = 0; index < adapter.getItemCount(); index++) {
+                MMXUserWrapper wrapper = adapter.getItem(index);
+                boolean letter = wrapper.isShowLetter();
+                if (index == 0) {
+                    wrapper.setShowLetter(true);
+                    if (letter != wrapper.isShowLetter()) adapter.notifyItemChanged(index);
+                } else {
+                    MMXUserWrapper prev = adapter.getItem(index - 1);
+                    if (prev.getFirstLetter().equals(wrapper.getFirstLetter())) {
+                        wrapper.setShowLetter(false);
+                    } else {
+                        wrapper.setShowLetter(true);
+                    }
+                    if (letter != wrapper.isShowLetter()) adapter.notifyItemChanged(index);
+                }
+            }
+        }
+    };
+
 
 }

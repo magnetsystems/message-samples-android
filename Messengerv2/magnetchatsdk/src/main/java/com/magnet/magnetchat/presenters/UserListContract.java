@@ -37,6 +37,8 @@ public interface UserListContract {
 
         void onSet(List<MMXUserWrapper> wrapper);
 
+        void onPut(List<MMXUserWrapper> wrappers);
+
         void onLoading();
 
         void onLoadingComplete();

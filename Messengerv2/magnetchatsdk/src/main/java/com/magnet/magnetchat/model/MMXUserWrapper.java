@@ -63,7 +63,7 @@ public class MMXUserWrapper extends MMXObjectWrapper<User> {
 
         @Override
         public boolean areContentsTheSame(MMXUserWrapper o1, MMXUserWrapper o2) {
-            return o1.isShowLetter == o2.isShowLetter;
+            return true;
         }
 
         @Override

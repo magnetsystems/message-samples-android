@@ -140,7 +140,7 @@ class UserListContractPresenterImpl implements UserListContract.Presenter {
             @Override
             public void call(List<MMXUserWrapper> action) {
                 userWrappers = action;
-                view.onSet(userWrappers);
+                view.onPut(userWrappers);
             }
         });
     }
