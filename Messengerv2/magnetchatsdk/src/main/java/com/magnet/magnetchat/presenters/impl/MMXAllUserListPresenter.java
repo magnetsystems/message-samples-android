@@ -29,6 +29,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     private int userAmount = Integer.MAX_VALUE;
     private int localSize;
     private String searchQuery = "";
+    private boolean isSearch = false;
 
     public MMXAllUserListPresenter(UserListContract.View view, MMXUserConverter converter) {
         this.view = view;
@@ -70,6 +71,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     @Override
     public void search(String query) {
         this.searchQuery = query;
+        this.isSearch = true;
         doSearch();
     }
 
@@ -121,15 +123,23 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         load(loadFromPosition);
     }
 
-    private void onUsersReceived(List<User> users) {
-        if (users.size() != PAGE_SIZE)
-            userAmount = localSize;
+    private void onUsersReceived(List<User> users, final boolean isReplace) {
+        if (!isReplace) {
+            if (users.size() != PAGE_SIZE)
+                userAmount = localSize;
+        } else {
+            userAmount = Integer.MAX_VALUE;
+        }
         converter.convert(users, new MMXAction<List<MMXUserWrapper>>() {
             @Override
             public void call(List<MMXUserWrapper> action) {
                 view.onLoadingComplete();
                 lazyLoadUtil.onLoadingFinished();
-                view.onPut(action);
+                if (!isReplace) {
+                    view.onPut(action);
+                } else {
+                    view.onSet(action);
+                }
             }
         });
     }
@@ -137,7 +147,8 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     private final ApiCallback<List<User>> callback = new ApiCallback<List<User>>() {
         @Override
         public void success(List<User> users) {
-            onUsersReceived(users);
+            onUsersReceived(users, isSearch);
+            isSearch = false;
         }
 
         @Override
