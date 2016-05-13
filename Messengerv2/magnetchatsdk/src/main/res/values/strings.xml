@@ -41,5 +41,6 @@
     <string name="text_add_user">Add user</string>
     <string name="err.user.loading">Can\'t load users</string>
     <string name="mmx.chat.details">Chat Details</string>
+    <string name="err.mmxchannel.delete">Can\'t delete channel</string>
 
 </resources>

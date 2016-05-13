@@ -11,18 +11,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
+import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.ui.fragments.UserListFragment;
 import com.magnet.mmx.client.api.MMXChannel;
 
 /**
  * Created by aorehov on 12.05.16.
  */
-public class ChatDetailsV2Activity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class ChatDetailsV2Activity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
 
     private UserListFragment userListFragment;
     private SwitchCompat uiMute;
+    private MMXChannelSettingsContract.Presenter presenter;
+    private Boolean muteState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +52,14 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 
+        Bundle extras = getIntent().getExtras();
         userListFragment = new UserListFragment();
-        userListFragment.setArguments(getIntent().getExtras());
+        userListFragment.setArguments(extras);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
+
+        MMXChannel channel = BundleHelper.readMMXChannelFromBundle(extras);
+        presenter = ChatSDK.getPresenterFactory().createChannelSettingsPresenter(this);
+        presenter.setMMXChannel(channel);
     }
 
     @Override
@@ -58,6 +67,10 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
         int menuId = R.menu.menu_chat_details;
         getMenuInflater().inflate(menuId, menu);
         uiMute = (SwitchCompat) menu.findItem(R.id.muteAction).getActionView();
+        if (muteState != null) {
+            uiMute.setChecked(muteState);
+            muteState = null;
+        }
         uiMute.setOnCheckedChangeListener(this);
         return true;
     }
@@ -79,7 +92,7 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+        presenter.doMute(isChecked);
     }
 
     public static Intent createIntent(Context context, MMXChannel mmxChannel) {
@@ -87,5 +100,41 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
         Intent intent = new Intent(context, ChatDetailsV2Activity.class);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    public void onMuteState(boolean isMute) {
+        if (uiMute == null) {
+            muteState = isMute;
+            return;
+        }
+        uiMute.setOnCheckedChangeListener(null);
+        uiMute.setChecked(isMute);
+        uiMute.setOnCheckedChangeListener(this);
+    }
+
+    @Override
+    public void onLoading() {
+        uiMute.setEnabled(false);
+    }
+
+    @Override
+    public void onLoadingComleated() {
+        uiMute.setEnabled(true);
+    }
+
+    @Override
+    public void onChannelDeleted() {
+        finish();
+    }
+
+    @Override
+    public void showMessage(CharSequence sequence) {
+        toast(sequence);
+    }
+
+    @Override
+    public void showMessage(int resId, Object... objects) {
+        toast(getString(resId, objects));
     }
 }

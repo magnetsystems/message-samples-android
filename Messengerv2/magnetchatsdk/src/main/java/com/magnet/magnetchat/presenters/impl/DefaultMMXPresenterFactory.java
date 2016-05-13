@@ -3,6 +3,7 @@ package com.magnet.magnetchat.presenters.impl;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.presenters.PollEditContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.UserListContract;
@@ -54,6 +55,11 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
     public UserListContract.Presenter createUserListPresenter(UserListContract.View view) {
         MMXUserConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
         return new UserListContractPresenterImpl(view, converter);
+    }
+
+    @Override
+    public MMXChannelSettingsContract.Presenter createChannelSettingsPresenter(MMXChannelSettingsContract.View view) {
+        return new MMXChannelPresenterImpl(view);
     }
 
     @Override
