@@ -41,7 +41,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     public ChatListV2PresenterImpl(ChatListContract.View view, MMXMessageWrapperConverter converter) {
         this.view = view;
         this.converter = converter;
-        lazyLoadUtil = new LazyLoadUtil((int) (Constants.MESSAGE_PAGE_SIZE * 0.60), this);
+        lazyLoadUtil = new LazyLoadUtil(Constants.MESSAGE_PAGE_SIZE, (int) (Constants.MESSAGE_PAGE_SIZE * 0.60), this);
     }
 
     @Override

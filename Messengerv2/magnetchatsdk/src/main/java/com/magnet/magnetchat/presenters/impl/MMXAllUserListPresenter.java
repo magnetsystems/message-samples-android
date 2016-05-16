@@ -21,7 +21,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     private UserListContract.View view;
     private LazyLoadUtil lazyLoadUtil;
-    private static final int PAGE_SIZE = 50;
+    private static final int PAGE_SIZE = 40;
     private MMXUserConverter converter;
 
     private final String DEFAULT_USER_ORDER = "firstName:asc";
@@ -34,7 +34,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     public MMXAllUserListPresenter(UserListContract.View view, MMXUserConverter converter) {
         this.view = view;
         this.converter = converter;
-        lazyLoadUtil = new LazyLoadUtil((int) (PAGE_SIZE * 0.33), this);
+        lazyLoadUtil = new LazyLoadUtil(PAGE_SIZE, (int) (PAGE_SIZE * 0.35), this);
     }
 
     private void load(int offset) {
@@ -54,6 +54,10 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     @Override
     public void onCurrentPosition(int localSize, int index) {
+        if (index == -1) {
+            return;
+        }
+
         this.localSize = localSize;
         lazyLoadUtil.checkLazyLoad(userAmount, localSize, index);
     }
@@ -70,12 +74,23 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     @Override
     public void search(String query) {
+        if (query == null) {
+            query = "";
+        } else {
+            query = query.trim();
+        }
+
+        if (searchQuery.equals(query)) {
+            return;
+        }
+
         this.searchQuery = query;
         this.isSearch = true;
         doSearch();
     }
 
     private void doSearch() {
+        load(0);
     }
 
     @Override

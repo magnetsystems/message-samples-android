@@ -55,4 +55,9 @@ public class UserListFragment extends MMXBaseFragment {
         super.onStop();
     }
 
+    public void search(String term) {
+        if (userListView == null) return;
+        userListView.search(term);
+    }
+
 }

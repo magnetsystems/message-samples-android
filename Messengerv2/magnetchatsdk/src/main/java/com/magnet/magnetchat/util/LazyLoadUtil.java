@@ -6,12 +6,14 @@ package com.magnet.magnetchat.util;
 public class LazyLoadUtil {
 
     private final OnNeedLoadingCallback loadingCallback;
+    private final int pageSize;
     private int offset;
     private boolean isLoading;
 
-    public LazyLoadUtil(int offset, OnNeedLoadingCallback loadingCallback) {
+    public LazyLoadUtil(int pageSize, int offset, OnNeedLoadingCallback loadingCallback) {
         this.offset = offset;
         this.loadingCallback = loadingCallback;
+        this.pageSize = pageSize;
     }
 
     public final void checkLazyLoad(int summarySize, int localSize, long localPosition) {
@@ -19,7 +21,7 @@ public class LazyLoadUtil {
             return;
         }
 
-        if (localSize >= summarySize) {
+        if (localSize >= summarySize || localSize < pageSize) {
             return;
         }
 
@@ -30,8 +32,6 @@ public class LazyLoadUtil {
         }
 
         loadingCallback.onNeedLoad(localSize);
-
-
     }
 
     public final void onLoading() {

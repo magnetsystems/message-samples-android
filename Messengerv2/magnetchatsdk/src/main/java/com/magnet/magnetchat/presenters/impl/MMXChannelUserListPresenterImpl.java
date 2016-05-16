@@ -32,9 +32,10 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     private List<MMXUserWrapper> userWrappers;
     private MMXChannelWrapper mmxChannel;
     private boolean isStarted = false;
+    private final int PAGE_SIZE = 40;
 
     public MMXChannelUserListPresenterImpl(UserListContract.View view, MMXUserConverter converter) {
-        this.lazyLoadUtil = new LazyLoadUtil(40, lazyLoadingCallback);
+        this.lazyLoadUtil = new LazyLoadUtil(PAGE_SIZE, (int) (PAGE_SIZE * 0.35), lazyLoadingCallback);
         this.view = view;
         this.converter = converter;
     }

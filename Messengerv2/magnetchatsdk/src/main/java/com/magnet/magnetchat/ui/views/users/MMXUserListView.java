@@ -56,12 +56,7 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         uiRecyclerView = getRecyclerView();
         uiRecyclerView.setLayoutManager(createLayoutManager());
         uiRecyclerView.setAdapter(adapter);
-        uiRecyclerView.setRecyclerListener(new RecyclerView.RecyclerListener() {
-            @Override
-            public void onViewRecycled(RecyclerView.ViewHolder holder) {
-                presenter.onCurrentPosition(adapter.getItemCount(), holder.getAdapterPosition());
-            }
-        });
+        uiRecyclerView.setRecyclerListener(RV_LISTENER);
 
         presenter = createUserListPresenter(createUserListPresenterByName());
         if (presenter == null)
@@ -101,6 +96,10 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     public void onInit(MMXChannel mmxChannel) {
         onInit(BundleHelper.packChannel(mmxChannel));
+    }
+
+    public void search(String term) {
+        presenter.search(term);
     }
 
     public void onInit(Chat chat) {
@@ -185,9 +184,11 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     @Override
     public void onPut(List<MMXUserWrapper> wrappers) {
+        getRecyclerView().setRecyclerListener(null);
         adapter.put(wrappers);
         if (isAddCharactersToView)
             doEnableCharacters();
+        getRecyclerView().setRecyclerListener(RV_LISTENER);
     }
 
     @Override
@@ -197,9 +198,11 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     @Override
     public void onSet(List<MMXUserWrapper> wrapper) {
+        getRecyclerView().setRecyclerListener(null);
         adapter.set(wrapper);
         if (isAddCharactersToView)
             doEnableCharacters();
+        getRecyclerView().setRecyclerListener(RV_LISTENER);
     }
 
     private void doEnableCharacters() {
@@ -244,5 +247,11 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         }
     };
 
+    private final RecyclerView.RecyclerListener RV_LISTENER = new RecyclerView.RecyclerListener() {
+        @Override
+        public void onViewRecycled(RecyclerView.ViewHolder holder) {
+            presenter.onCurrentPosition(adapter.getItemCount(), holder.getAdapterPosition());
+        }
+    };
 
 }

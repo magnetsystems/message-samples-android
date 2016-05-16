@@ -2,6 +2,7 @@ package com.magnet.magnetchat.ui.activities;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,8 @@ import com.magnet.magnetchat.ui.fragments.UserListFragment;
 public class UsersActivity extends BaseActivity {
 
     private UserListFragment userListFragment;
+    private Handler handler = new Handler();
+    private String searchText = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,7 @@ public class UsersActivity extends BaseActivity {
             return super.onOptionsItemSelected(item);
     }
 
+
     private final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(String query) {
@@ -79,7 +83,19 @@ public class UsersActivity extends BaseActivity {
 
         @Override
         public boolean onQueryTextChange(String newText) {
+            searchText = newText;
+
+            handler.removeCallbacks(DO_SEARCH);
+            handler.postDelayed(DO_SEARCH, 500);
+
             return false;
+        }
+    };
+
+    private Runnable DO_SEARCH = new Runnable() {
+        @Override
+        public void run() {
+            userListFragment.search(searchText);
         }
     };
 
