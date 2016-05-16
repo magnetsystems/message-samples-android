@@ -30,6 +30,12 @@ public interface UserListContract {
 //
 //        void setMMXChannelWrapper(MMXChannelWrapper mmxChannelWrapper);
 
+        void setSelectUserEvent(OnSelectUserEvent selectUserEvent);
+
+        void doGetAllSelectedUsers();
+
+        void setOnGetAllSelectedUsersListener(OnGetAllSelectedUsersListener onGetAllSelectedUsersListener);
+
     }
 
     interface View extends MMXInfoView {
@@ -46,6 +52,15 @@ public interface UserListContract {
         void onLoadingComplete();
 
         void onCantLoadChannel();
+
+    }
+
+    interface OnSelectUserEvent {
+        void onSelectEvent(MMXUserWrapper wrapper, boolean previousState);
+    }
+
+    interface OnGetAllSelectedUsersListener {
+        void onGetAllSelectedUsers(List<MMXUserWrapper> selectedUsers);
     }
 
 }

@@ -37,6 +37,9 @@ public abstract class MMXUserItemView<T extends ViewProperty> extends BaseMMXTyp
     }
 
     private void updateUI(MMXUserWrapper object) {
+
+        onSelected(object.isSelected());
+
         String displayName = object.getName();
         onDisplayName(displayName);
 
@@ -47,6 +50,8 @@ public abstract class MMXUserItemView<T extends ViewProperty> extends BaseMMXTyp
         String firstLetter = object.getFirstLetter();
         onShowLetter(isShowLetter, firstLetter);
     }
+
+    protected abstract void onSelected(boolean selected);
 
     protected abstract void onShowLetter(boolean selected, String firstLetter);
 

@@ -12,6 +12,7 @@ import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,17 +20,21 @@ import java.util.List;
  */
 class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUtil.OnNeedLoadingCallback {
 
-    private UserListContract.View view;
-    private LazyLoadUtil lazyLoadUtil;
-    private static final int PAGE_SIZE = 40;
-    private MMXUserConverter converter;
-
     private final String DEFAULT_USER_ORDER = "firstName:asc";
     private final String NAME_SEARCH_QUERY = "firstName:%s* OR lastName:%s*";
+    private static final int PAGE_SIZE = 40;
+
+    private UserListContract.View view;
+    private LazyLoadUtil lazyLoadUtil;
+    private MMXUserConverter converter;
+    private List<MMXUserWrapper> selected = new ArrayList<>();
     private int userAmount = Integer.MAX_VALUE;
     private int localSize;
     private String searchQuery = "";
     private boolean isSearch = false;
+
+    private UserListContract.OnSelectUserEvent selectUserEvent;
+    private UserListContract.OnGetAllSelectedUsersListener allUsersEventListener;
 
     public MMXAllUserListPresenter(UserListContract.View view, MMXUserConverter converter) {
         this.view = view;
@@ -64,7 +69,14 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     @Override
     public void doClickOn(MMXUserWrapper typed) {
+        MMXUserWrapper newWrapper = new MMXUserWrapper(typed);
+        newWrapper.setSelected(!typed.isSelected());
 
+        if (newWrapper.isSelected()) selected.add(newWrapper);
+        else selected.remove(newWrapper);
+
+        view.onPut(newWrapper);
+        if (selectUserEvent != null) selectUserEvent.onSelectEvent(newWrapper, typed.isSelected());
     }
 
     @Override
@@ -87,6 +99,21 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         this.searchQuery = query;
         this.isSearch = true;
         doSearch();
+    }
+
+    @Override
+    public void setSelectUserEvent(UserListContract.OnSelectUserEvent selectUserEvent) {
+        this.selectUserEvent = selectUserEvent;
+    }
+
+    @Override
+    public void doGetAllSelectedUsers() {
+        if (allUsersEventListener != null) allUsersEventListener.onGetAllSelectedUsers(selected);
+    }
+
+    @Override
+    public void setOnGetAllSelectedUsersListener(UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener) {
+        this.allUsersEventListener = onGetAllSelectedUsersListener;
     }
 
     private void doSearch() {
@@ -145,7 +172,12 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         } else {
             userAmount = Integer.MAX_VALUE;
         }
-        converter.convert(users, new MMXAction<List<MMXUserWrapper>>() {
+        converter.map(new MMXAction<MMXUserWrapper>() {
+            @Override
+            public void call(MMXUserWrapper action) {
+                action.setSelected(selected.contains(action));
+            }
+        }).convert(users, new MMXAction<List<MMXUserWrapper>>() {
             @Override
             public void call(List<MMXUserWrapper> action) {
                 view.onLoadingComplete();

@@ -22,6 +22,13 @@ public class MMXUserWrapper extends MMXObjectWrapper<User> {
         }
     }
 
+    public MMXUserWrapper(MMXUserWrapper wrapper) {
+        super(wrapper.obj, wrapper.type);
+        this.name = wrapper.name;
+        this.isShowLetter = wrapper.isShowLetter;
+        this.isSelected = wrapper.isSelected;
+    }
+
     public boolean isSelected() {
         return isSelected;
     }
@@ -63,7 +70,7 @@ public class MMXUserWrapper extends MMXObjectWrapper<User> {
 
         @Override
         public boolean areContentsTheSame(MMXUserWrapper o1, MMXUserWrapper o2) {
-            return true;
+            return o1.isSelected == o2.isSelected;
         }
 
         @Override

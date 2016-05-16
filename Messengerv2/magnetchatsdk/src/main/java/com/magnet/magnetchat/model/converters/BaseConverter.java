@@ -11,7 +11,14 @@ import java.util.List;
  */
 public abstract class BaseConverter<FROM, TO> {
 
+    private MMXAction<TO> mapper;
+
     public abstract TO convert(FROM from);
+
+    public <T extends BaseConverter<FROM, TO>> T map(MMXAction<TO> mapper) {
+        this.mapper = mapper;
+        return (T) this;
+    }
 
     public void convert(final List<FROM> fromList, final MMXAction<List<TO>> callback) {
         new Thread(new Runnable() {
@@ -61,6 +68,7 @@ public abstract class BaseConverter<FROM, TO> {
                     TO to = convert(from);
 
                     if (to != null) {
+                        if (mapper != null) mapper.call(to);
                         list.add(to);
                         int indexOf = list.size() - 1;
                         if (indexOf > -1) {
@@ -73,6 +81,7 @@ public abstract class BaseConverter<FROM, TO> {
         } else {
             list = new ArrayList<>(0);
         }
+        mapper = null;
         return list;
     }
 

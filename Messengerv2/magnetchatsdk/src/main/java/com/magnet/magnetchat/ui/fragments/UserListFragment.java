@@ -5,6 +5,7 @@ import android.widget.FrameLayout;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 
 /**
@@ -13,6 +14,8 @@ import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 public class UserListFragment extends MMXBaseFragment {
 
     private MMXUserListView userListView;
+    private UserListContract.OnSelectUserEvent eventListener;
+    private UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener;
 
     @Override
     protected int getLayoutId() {
@@ -25,6 +28,8 @@ public class UserListFragment extends MMXBaseFragment {
         userListView = createMMXUserListView();
         uiFrameLayout.addView(userListView);
         userListView.onInit(getArguments());
+        userListView.setOnUserSelectEventListener(eventListener);
+        userListView.setOnGetAllSelectedUsersListener(onGetAllSelectedUsersListener);
     }
 
     protected MMXUserListView createMMXUserListView() {
@@ -58,6 +63,28 @@ public class UserListFragment extends MMXBaseFragment {
     public void search(String term) {
         if (userListView == null) return;
         userListView.search(term);
+    }
+
+    public void doGetAllSelectedUsersEvent() {
+        if (userListView != null) userListView.doGetSelectedUsersEvent();
+    }
+
+    public void setOnUserSelectEventListener(UserListContract.OnSelectUserEvent eventListener) {
+        if (userListView != null) {
+            userListView.setOnUserSelectEventListener(eventListener);
+            this.eventListener = null;
+        } else {
+            this.eventListener = eventListener;
+        }
+    }
+
+    public void setOnGetAllSelectedUsersListener(UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener) {
+        if (userListView != null) {
+            userListView.setOnGetAllSelectedUsersListener(onGetAllSelectedUsersListener);
+            this.onGetAllSelectedUsersListener = null;
+        } else {
+            this.onGetAllSelectedUsersListener = onGetAllSelectedUsersListener;
+        }
     }
 
 }

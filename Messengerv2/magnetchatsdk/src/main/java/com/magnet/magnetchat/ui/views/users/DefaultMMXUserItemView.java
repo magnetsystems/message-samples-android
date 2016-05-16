@@ -108,6 +108,15 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        uiBase.setOnClickListener(l);
+        if (uiBase != this) {
+            uiBase.setOnClickListener(l);
+        } else {
+            super.setOnClickListener(l);
+        }
+    }
+
+    @Override
+    protected void onSelected(boolean selected) {
+        uiBase.setBackgroundResource(!selected ? android.R.color.white : android.R.color.darker_gray);
     }
 }

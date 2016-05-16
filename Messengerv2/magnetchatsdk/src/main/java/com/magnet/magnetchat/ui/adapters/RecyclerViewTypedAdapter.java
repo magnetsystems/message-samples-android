@@ -3,6 +3,7 @@ package com.magnet.magnetchat.ui.adapters;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.util.SortedListAdapterCallback;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.magnet.magnetchat.model.Typed;
@@ -18,6 +19,10 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
 
     private MMXListItemFactory factory;
     private SortedList<T> data;
+
+    private OnItemClickListener clickListener;
+    private OnItemLongClickListener longClickListener;
+    private OnItemCustomEventListener customEventListener;
 
     public RecyclerViewTypedAdapter(MMXListItemFactory factory, Class<T> clazz, final ItemComparator<T> comporator) {
         this.factory = factory;
@@ -47,7 +52,13 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
     @Override
     public TypedViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         BaseMMXTypedView view = factory.createView(parent.getContext(), viewType);
-        return new TypedViewHolder(view);
+
+        TypedViewHolder holder = new TypedViewHolder(view);
+        holder.setCustomEventListener(customEventListener);
+        holder.setItemClickListener(clickListener);
+        holder.setLongClickListener(longClickListener);
+
+        return holder;
     }
 
     @Override
@@ -81,14 +92,78 @@ public class RecyclerViewTypedAdapter<T extends Typed> extends RecyclerView.Adap
         return data.size();
     }
 
-    public static class TypedViewHolder extends RecyclerView.ViewHolder {
+    public void setClickListener(OnItemClickListener clickListener) {
+        if (this.clickListener == clickListener) return;
+        this.clickListener = clickListener;
+        notifyDataSetChanged();
+    }
+
+    public void setLongClickListener(OnItemLongClickListener longClickListener) {
+        if (this.longClickListener == longClickListener) return;
+        this.longClickListener = longClickListener;
+        notifyDataSetChanged();
+    }
+
+    public void setCustomEventListener(OnItemCustomEventListener customEventListener) {
+        if (this.customEventListener == customEventListener) return;
+        this.customEventListener = customEventListener;
+        notifyDataSetChanged();
+    }
+
+    public static class TypedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, BaseMMXTypedView.OnCustomEventListener {
 
         private final BaseMMXTypedView item;
+        private OnItemClickListener itemClickListener;
+        private OnItemLongClickListener longClickListener;
+        private OnItemCustomEventListener customEventListener;
 
         public TypedViewHolder(BaseMMXTypedView itemView) {
             super(itemView);
             this.item = itemView;
         }
+
+        public void setItemClickListener(OnItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+            item.setOnClickListener(this.itemClickListener != null ? this : null);
+        }
+
+        public void setLongClickListener(OnItemLongClickListener longClickListener) {
+            this.longClickListener = longClickListener;
+            item.setOnLongClickListener(this.longClickListener != null ? this : null);
+        }
+
+        public void setCustomEventListener(OnItemCustomEventListener customEventListener) {
+            this.customEventListener = customEventListener;
+            item.setCustomEventListener(this.customEventListener != null ? this : null);
+        }
+
+        @Override
+        public void onClick(View v) {
+            itemClickListener.onItemClicked(getAdapterPosition());
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            longClickListener.onItemLongClick(getAdapterPosition());
+            return true;
+        }
+
+        @Override
+        public void onEvent(int event) {
+            customEventListener.onEventHappened(getAdapterPosition(), event);
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClicked(int position);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(int position);
+    }
+
+    public interface OnItemCustomEventListener {
+        void onEventHappened(int position, int event);
     }
 
     public interface ItemComparator<T> {

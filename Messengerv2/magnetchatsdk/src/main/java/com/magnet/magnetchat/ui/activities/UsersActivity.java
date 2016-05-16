@@ -11,13 +11,17 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.model.MMXUserWrapper;
+import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.ui.fragments.AllUserListFragment;
 import com.magnet.magnetchat.ui.fragments.UserListFragment;
+
+import java.util.List;
 
 /**
  * Created by aorehov on 13.05.16.
  */
-public class UsersActivity extends BaseActivity {
+public class UsersActivity extends BaseActivity implements UserListContract.OnSelectUserEvent, UserListContract.OnGetAllSelectedUsersListener {
 
     private UserListFragment userListFragment;
     private Handler handler = new Handler();
@@ -46,6 +50,8 @@ public class UsersActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         userListFragment = new AllUserListFragment();
+        userListFragment.setOnUserSelectEventListener(this);
+        userListFragment.setOnGetAllSelectedUsersListener(this);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
     }
 
@@ -99,4 +105,13 @@ public class UsersActivity extends BaseActivity {
         }
     };
 
+    @Override
+    public void onSelectEvent(MMXUserWrapper wrapper, boolean previousState) {
+        userListFragment.doGetAllSelectedUsersEvent();
+    }
+
+    @Override
+    public void onGetAllSelectedUsers(List<MMXUserWrapper> selectedUsers) {
+        toast(selectedUsers.toString());
+    }
 }

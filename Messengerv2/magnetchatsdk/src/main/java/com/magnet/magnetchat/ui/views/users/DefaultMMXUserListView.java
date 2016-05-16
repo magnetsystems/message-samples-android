@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXUserWrapper;
+import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 
 import java.util.List;
 
@@ -73,5 +74,21 @@ public class DefaultMMXUserListView extends MMXUserListView<MMXUserListProperty>
     @Override
     public void onRefresh() {
         refresh();
+    }
+
+
+    @Override
+    protected RecyclerViewTypedAdapter.OnItemCustomEventListener getCustomEventClickListener() {
+        return null;
+    }
+
+    @Override
+    protected RecyclerViewTypedAdapter.OnItemLongClickListener getLongClickListener() {
+        return null;
+    }
+
+    @Override
+    protected RecyclerViewTypedAdapter.OnItemClickListener getItemClickListener() {
+        return null;
     }
 }

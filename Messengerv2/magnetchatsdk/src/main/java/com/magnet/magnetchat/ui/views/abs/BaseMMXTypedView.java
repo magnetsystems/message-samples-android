@@ -12,6 +12,8 @@ public abstract class BaseMMXTypedView<V extends Typed, T extends ViewProperty> 
 
     private V object;
 
+    private OnCustomEventListener customEventListener;
+
     public BaseMMXTypedView(Context context) {
         super(context);
     }
@@ -30,5 +32,17 @@ public abstract class BaseMMXTypedView<V extends Typed, T extends ViewProperty> 
 
     protected V getObject() {
         return object;
+    }
+
+    public void setCustomEventListener(OnCustomEventListener customEventListener) {
+        this.customEventListener = customEventListener;
+    }
+
+    protected OnCustomEventListener getCustomEventListener() {
+        return customEventListener;
+    }
+
+    public interface OnCustomEventListener {
+        void onEvent(int event);
     }
 }

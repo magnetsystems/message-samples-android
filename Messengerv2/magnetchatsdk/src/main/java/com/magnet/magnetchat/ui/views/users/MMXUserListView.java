@@ -53,6 +53,10 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         itemFactory = ChatSDK.getMmxListItemFactory();
         adapter = new RecyclerViewTypedAdapter(itemFactory, MMXUserWrapper.class, getItemComparator());
 
+        adapter.setClickListener(getItemClickListener());
+        adapter.setLongClickListener(getLongClickListener());
+        adapter.setCustomEventListener(getCustomEventClickListener());
+
         uiRecyclerView = getRecyclerView();
         uiRecyclerView.setLayoutManager(createLayoutManager());
         uiRecyclerView.setAdapter(adapter);
@@ -62,6 +66,12 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         if (presenter == null)
             presenter = ChatSDK.getPresenterFactory().createUserListPresenter(this);
     }
+
+    protected abstract RecyclerViewTypedAdapter.OnItemCustomEventListener getCustomEventClickListener();
+
+    protected abstract RecyclerViewTypedAdapter.OnItemLongClickListener getLongClickListener();
+
+    protected abstract RecyclerViewTypedAdapter.OnItemClickListener getItemClickListener();
 
     /**
      * return factory name here
@@ -100,6 +110,14 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
 
     public void search(String term) {
         presenter.search(term);
+    }
+
+    protected RecyclerViewTypedAdapter<MMXUserWrapper> getAdapter() {
+        return adapter;
+    }
+
+    protected UserListContract.Presenter getPresenter() {
+        return presenter;
     }
 
     public void onInit(Chat chat) {
@@ -146,6 +164,18 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         super.onStop();
     }
 
+    public void setOnUserSelectEventListener(UserListContract.OnSelectUserEvent eventListener) {
+        presenter.setSelectUserEvent(eventListener);
+    }
+
+    public void setOnGetAllSelectedUsersListener(UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener) {
+        presenter.setOnGetAllSelectedUsersListener(onGetAllSelectedUsersListener);
+    }
+
+    public void doGetSelectedUsersEvent() {
+        presenter.doGetAllSelectedUsers();
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         presenter.onDestroy();
@@ -168,7 +198,7 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         if (position == 0) {
             if (!letter) {
                 wrapper.setShowLetter(true);
-                adapter.put(wrapper);
+                adapter.notifyItemChanged(position);
             }
         } else {
             MMXUserWrapper prev = adapter.getItem(position - 1);
@@ -177,9 +207,11 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
             } else {
                 wrapper.setShowLetter(true);
             }
-            if (letter != wrapper.isShowLetter())
+            if (letter != wrapper.isShowLetter()) {
                 adapter.notifyItemChanged(position);
+            }
         }
+
     }
 
     @Override

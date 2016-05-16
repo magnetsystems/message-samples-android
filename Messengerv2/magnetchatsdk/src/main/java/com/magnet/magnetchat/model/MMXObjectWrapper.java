@@ -23,6 +23,7 @@ public class MMXObjectWrapper<T> implements Typed {
 
         MMXObjectWrapper<?> that = (MMXObjectWrapper<?>) o;
 
+        if (type != that.type) return false;
         return obj.equals(that.obj);
 
     }

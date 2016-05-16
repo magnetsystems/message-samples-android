@@ -56,6 +56,21 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
 
     }
 
+    @Override
+    public void setSelectUserEvent(UserListContract.OnSelectUserEvent selectUserEvent) {
+//        STUB
+    }
+
+    @Override
+    public void doGetAllSelectedUsers() {
+//        STUB
+    }
+
+    @Override
+    public void setOnGetAllSelectedUsersListener(UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener) {
+// STUB
+    }
+
     public void setMMXChannel(MMXChannel mmxChannel) {
         Chat chat = ChatManager.getInstance().getConversationByName(mmxChannel.getName());
         if (chat != null) {
