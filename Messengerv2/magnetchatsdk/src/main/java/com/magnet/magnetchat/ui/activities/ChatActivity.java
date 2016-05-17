@@ -42,7 +42,7 @@ import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.presenters.ChatContract;
 import com.magnet.magnetchat.presenters.impl.ChatPresenterImpl;
 import com.magnet.magnetchat.ui.adapters.MessagesAdapter;
-import com.magnet.magnetchat.ui.views.poll.AbstractEditPollView;
+import com.magnet.magnetchat.ui.views.poll.MMXEditPollView;
 import com.magnet.magnetchat.util.Utils;
 import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
@@ -82,7 +82,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View {
     AppCompatEditText editMessage;
     TextView sendMessageButton;
     Toolbar toolbar;
-    private AbstractEditPollView uiPoll;
+    private MMXEditPollView uiPoll;
     private ViewGroup uiPollContainer;
 
     ChatContract.Presenter mPresenter;

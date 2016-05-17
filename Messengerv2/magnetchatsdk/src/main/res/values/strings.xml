@@ -47,5 +47,13 @@
     <string name="common.create">Create</string>
     <string name="err.users.channel">Can\'t add users to channel</string>
     <string name="err.channel.open">Can\'t open chat</string>
+    <string name="err.poll.question.empty">Question can\'t be empty</string>
+    <string name="err.poll.answers.less">Amount of answers should be more than 1</string>
+    <string name="common.name">Name</string>
+    <string name="common.question">Question</string>
+    <string name="poll.multiple_choice">Multiple choice</string>
+    <string name="poll.hide_result">Hide result</string>
+    <string name="common.add">Add</string>
+    <string name="common.answer">Answer</string>
 
 </resources>

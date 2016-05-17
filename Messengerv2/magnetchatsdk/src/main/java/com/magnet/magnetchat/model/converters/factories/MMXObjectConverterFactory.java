@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.model.converters.factories;
 
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
+import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
 import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
 import com.magnet.magnetchat.model.converters.MMXUserConverter;
 
@@ -14,4 +15,6 @@ public interface MMXObjectConverterFactory {
     MMXPollOptionWrapperConverter createMmxPollOptionWrapperConverter();
 
     MMXUserConverter createMMXUserConverter();
+
+    MMXPollOptionStringConverter createMMXPollOptionStringConverter();
 }

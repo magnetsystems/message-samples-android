@@ -2,9 +2,10 @@ package com.magnet.magnetchat.presenters.impl;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
+import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
 import com.magnet.magnetchat.model.converters.MMXUserConverter;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
-import com.magnet.magnetchat.presenters.PollEditContract;
+import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.presenters.chatlist.MMXLocationContract;
@@ -15,7 +16,6 @@ import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
 import com.magnet.magnetchat.presenters.chatlist.impl.DefaultMMXMessageFactory;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
-import com.magnet.mmx.client.api.MMXChannel;
 
 /**
  * Created by aorehov on 27.04.16.
@@ -26,18 +26,6 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
 
     public DefaultMMXPresenterFactory() {
         messagePresenterFactory = new DefaultMMXMessageFactory();
-    }
-
-    @Override
-    public PollEditContract.Presenter createPollEditPresenter(PollEditContract.View view, MMXChannel channel) {
-        return new PollEditPresenterImpl(view, channel);
-    }
-
-    @Override
-    public PollEditContract.Presenter createPollEditPresenter(PollEditContract.View view) {
-        PollEditContract.Presenter presenter = new PollEditPresenterImpl();
-        presenter.setView(view);
-        return presenter;
     }
 
     @Override
@@ -66,6 +54,12 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
     @Override
     public MMXChannelSettingsContract.Presenter createChannelSettingsPresenter(MMXChannelSettingsContract.View view) {
         return new MMXChannelPresenterImpl(view);
+    }
+
+    @Override
+    public MMXCreatePollContract.Presenter createMMXCreatePollPresenter(MMXCreatePollContract.View view) {
+        MMXPollOptionStringConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXPollOptionStringConverter();
+        return new MMXCreatePollPresenter(view, converter);
     }
 
     @Override

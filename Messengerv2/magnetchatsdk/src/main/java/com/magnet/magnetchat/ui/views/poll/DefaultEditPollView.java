@@ -1,7 +1,6 @@
 package com.magnet.magnetchat.ui.views.poll;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,7 +15,7 @@ import java.util.List;
 /**
  * Created by aorehov on 27.04.16.
  */
-public class DefaultEditPollView extends AbstractEditPollView<EditPollProperty> {
+public class DefaultEditPollView extends MMXEditPollView<EditPollProperty> {
 
     private View uiCreateBtn;
     private CheckBox uiCheckBox;
@@ -64,15 +63,8 @@ public class DefaultEditPollView extends AbstractEditPollView<EditPollProperty> 
     }
 
     @Override
-    public void onAnswersList(List<String> answers) {
-        String join = TextUtils.join(",", answers.toArray());
-        uiAnswers.setText(join);
-    }
-
-    @Override
-    public List<String> getAnswersList() {
-        String[] strings = uiAnswers.getText().toString().split(",");
-        return Arrays.asList(strings);
+    public String getName() {
+        return "";
     }
 
     @Override
@@ -81,17 +73,28 @@ public class DefaultEditPollView extends AbstractEditPollView<EditPollProperty> 
     }
 
     @Override
-    public boolean isMultipleChoice() {
+    public List<String> getAnswers() {
+        String[] strings = uiAnswers.getText().toString().split(",");
+        return Arrays.asList(strings);
+    }
+
+    @Override
+    public boolean isAllowMultipleChoice() {
         return uiCheckBox.isChecked();
     }
 
     @Override
-    public void onLockScreen() {
+    public boolean isHiderResult() {
+        return false;
+    }
+
+    @Override
+    public void onLock() {
         uiCreateBtn.setOnClickListener(null);
     }
 
     @Override
-    public void onUnlockScreen() {
+    public void onUnlock() {
         uiCreateBtn.setOnClickListener(this);
     }
 

@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.model.converters.impl;
 
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
+import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
 import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
 import com.magnet.magnetchat.model.converters.MMXUserConverter;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
@@ -23,5 +24,10 @@ public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFacto
     @Override
     public MMXUserConverter createMMXUserConverter() {
         return new DefaultMMXUserConverter();
+    }
+
+    @Override
+    public MMXPollOptionStringConverter createMMXPollOptionStringConverter() {
+        return new DefaultMMXPollOptionStringConverter();
     }
 }

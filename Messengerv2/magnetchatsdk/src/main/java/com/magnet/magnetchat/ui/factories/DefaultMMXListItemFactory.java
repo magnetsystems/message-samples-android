@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
+import com.magnet.magnetchat.model.MMXStringWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXLocAnotherMessageView;
@@ -17,6 +18,7 @@ import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollAnswerMessageV
 import com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollMyMessageView;
 import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemAnotherView;
 import com.magnet.magnetchat.ui.views.chatlist.poll.DefaultMMXPollItemMyView;
+import com.magnet.magnetchat.ui.views.poll.DefaultMMXEditAnswerView;
 import com.magnet.magnetchat.ui.views.users.DefaultMMXUserItemView;
 
 /**
@@ -59,6 +61,8 @@ public class DefaultMMXListItemFactory implements MMXListItemFactory {
                     return new DefaultMMXPollAnswerMessageView(context);
                 case MMXUserWrapper.TYPE_USER:
                     return new DefaultMMXUserItemView(context);
+                case MMXStringWrapper.TYPE_STRING_EDITABLE:
+                    return new DefaultMMXEditAnswerView(context);
                 default: {
                     if ((MMXMessageWrapper.MY_MESSAGE_MASK & type) == MMXMessageWrapper.MY_MESSAGE_MASK) {
                         return new DefaultMMXMessageMyView(context);
