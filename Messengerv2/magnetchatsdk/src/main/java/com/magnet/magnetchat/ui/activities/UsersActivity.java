@@ -1,5 +1,6 @@
 package com.magnet.magnetchat.ui.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,11 +12,18 @@ import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.BundleHelper;
+import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.ui.fragments.AllUserListFragment;
 import com.magnet.magnetchat.ui.fragments.UserListFragment;
+import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMXChannel;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -26,6 +34,7 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
     private UserListFragment userListFragment;
     private Handler handler = new Handler();
     private String searchText = "";
+    private MMXChannel mmxChannel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +57,8 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
         }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        mmxChannel = BundleHelper.readMMXChannelFromBundle(getIntent().getExtras());
 
         userListFragment = new AllUserListFragment();
         userListFragment.setOnUserSelectEventListener(this);
@@ -76,10 +87,16 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
+        } else if (item.getItemId() == R.id.mmx_create) {
+            doCreateAction();
+            return true;
         } else
             return super.onOptionsItemSelected(item);
     }
 
+    private void doCreateAction() {
+        userListFragment.doGetAllSelectedUsersEvent();
+    }
 
     private final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
@@ -106,12 +123,37 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
     };
 
     @Override
-    public void onSelectEvent(MMXUserWrapper wrapper, boolean previousState) {
-        userListFragment.doGetAllSelectedUsersEvent();
+    public void onSelectEvent(MMXUserWrapper wrapper) {
     }
 
     @Override
     public void onGetAllSelectedUsers(List<MMXUserWrapper> selectedUsers) {
-        toast(selectedUsers.toString());
+        List<User> users = new ArrayList<>(selectedUsers.size());
+        Iterator<MMXUserWrapper> iterator = selectedUsers.iterator();
+        while (iterator.hasNext()) {
+            MMXUserWrapper next = iterator.next();
+            if (next.isSelected()) users.add(next.getObj());
+        }
+
+        if (!users.isEmpty()) {
+            if (mmxChannel != null) {
+                mmxChannel.addSubscribers(new HashSet<>(users), new MMXChannel.OnFinishedListener<List<String>>() {
+                    @Override
+                    public void onSuccess(List<String> strings) {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+                        toast(R.string.err_users_channel);
+                    }
+                });
+            } else {
+                Intent intent = IntentHelper.chatActivity(this, users, ChatV2Activity.class);
+                finish();
+                startActivity(intent);
+            }
+        }
     }
 }

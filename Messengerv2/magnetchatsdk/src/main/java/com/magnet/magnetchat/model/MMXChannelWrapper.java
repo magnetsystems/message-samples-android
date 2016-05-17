@@ -1,5 +1,6 @@
 package com.magnet.magnetchat.model;
 
+import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 
@@ -33,10 +34,17 @@ public class MMXChannelWrapper extends MMXObjectWrapper<ChannelDetail> {
         if (obj.getTotalSubscribers() <= 2) {
             List<UserProfile> list = obj.getSubscribers();
             if (list == null || list.isEmpty()) {
-                return "";
-            } else {
+                return "Chat";
+            } else if (list.size() == 1) {
                 UserProfile profile = list.get(0);
                 return profile.getDisplayName();
+            } else {
+                UserProfile profile = list.get(0);
+                if (profile.getUserIdentifier().equals(User.getCurrentUserId())) {
+                    return list.get(1).getDisplayName();
+                } else {
+                    return profile.getDisplayName();
+                }
             }
         } else
             return defaultName;

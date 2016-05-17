@@ -74,6 +74,8 @@ public class MMXMessageUtil {
     }
 
     public void sendMMXMessage(MMXChannel channel, Map<String, String> content, MMXMessage.OnFinishedListener<String> listener, Attachment... attachment) {
+        if (channel == null) return;
+
         MMXMessage message = new MMXMessage.Builder()
                 .metaData(content)
                 .attachments(attachment)

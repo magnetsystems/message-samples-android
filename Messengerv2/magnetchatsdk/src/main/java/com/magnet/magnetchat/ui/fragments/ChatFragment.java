@@ -100,9 +100,11 @@ public class ChatFragment extends MMXBaseFragment {
         uiContainer.addView(mmxChatView);
         mmxChatView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mmxChatView != null) {
-            mmxChatView.setMMXChannel(channel);
-        } else if (recipients != null) {
-            mmxChatView.setRecipients(recipients);
+            if (channel != null) {
+                mmxChatView.setMMXChannel(channel);
+            } else if (recipients != null) {
+                mmxChatView.setRecipients(recipients);
+            }
         }
 
         setChatNameListener(listener);

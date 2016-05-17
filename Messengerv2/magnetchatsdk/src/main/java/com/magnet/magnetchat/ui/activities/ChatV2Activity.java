@@ -72,7 +72,7 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
         }
 
         if (bundle == null) {
-            ArrayList<User> list = IntentHelper.getRecepientsFromIntent(getIntent());
+            ArrayList<User> list = IntentHelper.getRecipientsFromIntent(getIntent());
             bundle = BundleHelper.packRecipients(list);
         }
 

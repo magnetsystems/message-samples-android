@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.MMXAction;
+import com.magnet.magnetchat.callbacks.MMXAction2;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.model.converters.MMXUserConverter;
 import com.magnet.magnetchat.presenters.UserListContract;
@@ -76,7 +77,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         else selected.remove(newWrapper);
 
         view.onPut(newWrapper);
-        if (selectUserEvent != null) selectUserEvent.onSelectEvent(newWrapper, typed.isSelected());
+        if (selectUserEvent != null) selectUserEvent.onSelectEvent(newWrapper);
     }
 
     @Override
@@ -172,12 +173,19 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         } else {
             userAmount = Integer.MAX_VALUE;
         }
-        converter.map(new MMXAction<MMXUserWrapper>() {
-            @Override
-            public void call(MMXUserWrapper action) {
-                action.setSelected(selected.contains(action));
-            }
-        }).convert(users, new MMXAction<List<MMXUserWrapper>>() {
+        converter
+                .filtre(new MMXAction2<User, Boolean>() {
+                    @Override
+                    public Boolean call(User action) {
+                        return !action.getUserIdentifier().equals(User.getCurrentUserId());
+                    }
+                })
+                .map(new MMXAction<MMXUserWrapper>() {
+                    @Override
+                    public void call(MMXUserWrapper action) {
+                        action.setSelected(selected.contains(action));
+                    }
+                }).convert(users, new MMXAction<List<MMXUserWrapper>>() {
             @Override
             public void call(List<MMXUserWrapper> action) {
                 view.onLoadingComplete();

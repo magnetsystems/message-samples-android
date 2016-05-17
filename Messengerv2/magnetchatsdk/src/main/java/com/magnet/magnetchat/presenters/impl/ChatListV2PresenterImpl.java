@@ -57,6 +57,10 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     @Override
     public void setChat(List<UserProfile> users) {
         List<String> list = MMXObjectsHelper.convertToIdList(users);
+        String currentUserId = User.getCurrentUserId();
+        if (currentUserId != null && !list.contains(User.getCurrentUserId()))
+            list.add(currentUserId);
+
         view.onRefreshing();
         ChannelHelper.createChannelForUsers(list, new ChannelHelper.OnCreateChannelListener() {
             @Override
@@ -82,24 +86,30 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         loadDetails(channel);
     }
 
-    private void loadDetails(MMXChannel channel) {
+    private void loadDetails(final MMXChannel channel) {
         Chat chat = ChatManager.getInstance().getConversationByName(channel.getName());
         if (chat != null) {
             view.onRefreshingFinished();
             setChat(chat);
+            doRefresh();
             return;
         }
 
         ChannelDetailOptions options = new ChannelDetailOptions.Builder()
-                .numOfMessages(0).numOfSubcribers(1).build();
+                .numOfMessages(0).numOfSubcribers(2).build();
         view.onRefreshing();
-        MMXChannel.getChannelDetail(Arrays.asList(channel), options, new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+        List<MMXChannel> list = Arrays.asList(channel);
+        MMXChannel.getChannelDetail(list, options, new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
             @Override
             public void onSuccess(List<ChannelDetail> channelDetails) {
                 view.onRefreshingFinished();
-                ChannelDetail detail = channelDetails.get(0);
-                setChat(detail);
-                doRefresh();
+                if (channelDetails != null && !channelDetails.isEmpty()) {
+                    ChannelDetail detail = channelDetails.get(0);
+                    setChat(detail);
+                    doRefresh();
+                } else {
+                    view.onChannelCreationFailure();
+                }
             }
 
             @Override
@@ -143,7 +153,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         if (channel != null && channel.getObj() != null) {
             ChannelDetail obj = channel.getObj();
             final MMXChannel channel = obj.getChannel();
-            MMXChannel.getChannelDetail(Arrays.asList(channel), new ChannelDetailOptions.Builder().numOfMessages(0).numOfSubcribers(1).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
+            MMXChannel.getChannelDetail(Arrays.asList(channel), new ChannelDetailOptions.Builder().numOfMessages(0).numOfSubcribers(2).build(), new MMXChannel.OnFinishedListener<List<ChannelDetail>>() {
                 @Override
                 public void onSuccess(List<ChannelDetail> channelDetails) {
                     if (channelDetails == null || channelDetails.isEmpty()) return;

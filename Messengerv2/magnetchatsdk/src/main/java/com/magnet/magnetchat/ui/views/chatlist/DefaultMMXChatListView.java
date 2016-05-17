@@ -1,5 +1,6 @@
 package com.magnet.magnetchat.ui.views.chatlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -47,7 +48,11 @@ public class DefaultMMXChatListView extends MMXChatListView<MMXChatListProperty>
 
     @Override
     public void onChannelCreationFailure() {
-
+        Context context = getContext();
+        if (context instanceof Activity) {
+            ((Activity) context).finish();
+        }
+        toast(R.string.err_channel_open);
     }
 
     @Override

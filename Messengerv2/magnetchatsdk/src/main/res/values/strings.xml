@@ -44,5 +44,8 @@
     <string name="err.mmxchannel.delete">Can\'t delete channel</string>
     <string name="mmx.users.all.title">All Contacts</string>
     <string name="mmx.users.search.hint">Search contacts</string>
+    <string name="common.create">Create</string>
+    <string name="err.users.channel">Can\'t add users to channel</string>
+    <string name="err.channel.open">Can\'t open chat</string>
 
 </resources>

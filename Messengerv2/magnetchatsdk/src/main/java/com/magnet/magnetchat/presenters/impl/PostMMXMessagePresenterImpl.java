@@ -48,7 +48,7 @@ class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
     @Override
     public void sendTextMessage() {
         String text = view.getMessageText();
-        if (text == null || text.length() < 1) return;
+        if (text == null || text.length() < 1 || channel == null) return;
         util.sendTextMessage(channel, text, callback);
     }
 
@@ -109,7 +109,7 @@ class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
 
     @Override
     public void onStart() {
-
+        updateUI();
     }
 
     @Override

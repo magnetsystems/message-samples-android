@@ -15,4 +15,10 @@
     <!--app:sizeText="@dimen/text_14"-->
     <!--app:textHint="Search message" />-->
 
+    <item
+        android:id="@+id/mmx_create"
+        android:icon="@drawable/ic_add_message_floater"
+        android:title="@string/common.create"
+        app:showAsAction="always" />
+
 </menu>

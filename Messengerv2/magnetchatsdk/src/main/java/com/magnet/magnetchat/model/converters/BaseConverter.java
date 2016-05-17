@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.model.converters;
 
 import com.magnet.magnetchat.callbacks.MMXAction;
+import com.magnet.magnetchat.callbacks.MMXAction2;
 import com.magnet.magnetchat.helpers.AsyncHelper;
 
 import java.util.ArrayList;
@@ -12,11 +13,17 @@ import java.util.List;
 public abstract class BaseConverter<FROM, TO> {
 
     private MMXAction<TO> mapper;
+    private MMXAction2<FROM, Boolean> filter;
 
     public abstract TO convert(FROM from);
 
     public <T extends BaseConverter<FROM, TO>> T map(MMXAction<TO> mapper) {
         this.mapper = mapper;
+        return (T) this;
+    }
+
+    public <T extends BaseConverter<FROM, TO>> T filtre(MMXAction2<FROM, Boolean> filter) {
+        this.filter = filter;
         return (T) this;
     }
 
@@ -65,6 +72,8 @@ public abstract class BaseConverter<FROM, TO> {
             for (int index = 0; index < fromList.size(); index++) {
                 FROM from = fromList.get(index);
                 if (from != null) {
+                    if (filter != null && !filter.call(from)) continue;
+
                     TO to = convert(from);
 
                     if (to != null) {

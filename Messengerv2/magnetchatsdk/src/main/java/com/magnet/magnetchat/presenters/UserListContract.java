@@ -56,7 +56,7 @@ public interface UserListContract {
     }
 
     interface OnSelectUserEvent {
-        void onSelectEvent(MMXUserWrapper wrapper, boolean previousState);
+        void onSelectEvent(MMXUserWrapper wrapper);
     }
 
     interface OnGetAllSelectedUsersListener {
