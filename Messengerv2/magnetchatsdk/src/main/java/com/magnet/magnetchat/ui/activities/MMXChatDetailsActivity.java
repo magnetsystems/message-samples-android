@@ -169,7 +169,7 @@ public class MMXChatDetailsActivity extends BaseActivity implements CompoundButt
     }
 
     @Override
-    public void onLoadingComleated() {
+    public void onLoadingCompleted() {
         uiMute.setEnabled(true);
     }
 

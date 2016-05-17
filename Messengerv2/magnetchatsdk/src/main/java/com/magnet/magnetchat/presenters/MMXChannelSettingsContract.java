@@ -28,7 +28,7 @@ public interface MMXChannelSettingsContract {
 
         void onLoading();
 
-        void onLoadingComleated();
+        void onLoadingCompleted();
 
         void onChannelDeleted();
 

@@ -37,13 +37,13 @@ class MMXChannelPresenterImpl implements MMXChannelSettingsContract.Presenter {
             @Override
             public void onSuccess(Void aVoid) {
                 view.onChannelDeleted();
-                view.onLoadingComleated();
+                view.onLoadingCompleted();
             }
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
                 view.showMessage(R.string.err_mmxchannel_delete);
-                view.onLoadingComleated();
+                view.onLoadingCompleted();
             }
         });
     }
@@ -100,13 +100,13 @@ class MMXChannelPresenterImpl implements MMXChannelSettingsContract.Presenter {
             @Override
             public void onSuccess(MMXChannel mmxChannel) {
                 setMMXChannel(mmxChannel);
-                view.onLoadingComleated();
+                view.onLoadingCompleted();
                 if (action != null) action.call(mmxChannel);
             }
 
             @Override
             public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
-                view.onLoadingComleated();
+                view.onLoadingCompleted();
             }
         });
     }
