@@ -87,4 +87,7 @@ public class MMXUserListFragment extends MMXBaseFragment {
         }
     }
 
+    public void refresh() {
+        if (userListView != null) userListView.refresh();
+    }
 }

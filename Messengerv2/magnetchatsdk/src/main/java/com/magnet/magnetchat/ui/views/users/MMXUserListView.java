@@ -182,7 +182,7 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         super.onDetachedFromWindow();
     }
 
-    protected void refresh() {
+    public void refresh() {
         presenter.doRefresh();
     }
 

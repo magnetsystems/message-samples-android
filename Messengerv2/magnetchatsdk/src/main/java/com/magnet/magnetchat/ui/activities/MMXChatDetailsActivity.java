@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.magnet.magnetchat.ChatSDK;
+import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
@@ -23,10 +24,12 @@ import com.magnet.mmx.client.api.MMXChannel;
  */
 public class MMXChatDetailsActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
 
+    private static final int RC_ADD_USERS = 0xFC00;
     private MMXUserListFragment userListFragment;
     private SwitchCompat uiMute;
     private MMXChannelSettingsContract.Presenter presenter;
     private Boolean muteState;
+    private MMXChannel channel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +60,7 @@ public class MMXChatDetailsActivity extends BaseActivity implements CompoundButt
         userListFragment.setArguments(extras);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
 
-        MMXChannel channel = BundleHelper.readMMXChannelFromBundle(extras);
+        channel = BundleHelper.readMMXChannelFromBundle(extras);
         presenter = ChatSDK.getPresenterFactory().createChannelSettingsPresenter(this);
         presenter.setMMXChannel(channel);
         presenter.onCreate();
@@ -97,7 +100,7 @@ public class MMXChatDetailsActivity extends BaseActivity implements CompoundButt
     public boolean onCreateOptionsMenu(Menu menu) {
         int menuId = R.menu.menu_chat_details;
         getMenuInflater().inflate(menuId, menu);
-        uiMute = (SwitchCompat) menu.findItem(R.id.muteAction).getActionView();
+        uiMute = (SwitchCompat) menu.findItem(R.id.mmx_mute).getActionView();
         if (muteState != null) {
             uiMute.setChecked(muteState);
             muteState = null;
@@ -111,6 +114,14 @@ public class MMXChatDetailsActivity extends BaseActivity implements CompoundButt
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
+            return true;
+        } else if (item.getItemId() == R.id.mmx_add) {
+            if (channel != null) {
+                Bundle bundle = BundleHelper.packChannel(channel);
+                Intent intent = new Intent(this, MMXUsersActivity.class);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, RC_ADD_USERS);
+            }
             return true;
         } else
             return super.onOptionsItemSelected(item);
@@ -131,6 +142,14 @@ public class MMXChatDetailsActivity extends BaseActivity implements CompoundButt
         Intent intent = new Intent(context, MMXChatDetailsActivity.class);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RC_ADD_USERS && resultCode == RESULT_OK) {
+            userListFragment.refresh();
+        } else
+            super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

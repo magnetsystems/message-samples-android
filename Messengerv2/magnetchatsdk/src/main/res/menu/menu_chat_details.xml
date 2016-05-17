@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/muteAction"
+        android:id="@+id/mmx_mute"
         android:title="@string/common.mute"
         app:actionLayout="@layout/view_switch"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menuItemAddUser"
+        android:id="@+id/mmx_add"
         android:icon="@drawable/ic_add_user_navbar"
         android:title="@string/text_add_user"
         app:showAsAction="ifRoom" />

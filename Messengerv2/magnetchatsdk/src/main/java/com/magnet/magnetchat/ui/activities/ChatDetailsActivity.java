@@ -87,7 +87,7 @@ public class ChatDetailsActivity extends BaseActivity implements ChatDetailsCont
 //        if (mPresenter.isChannelOwner()) {
         int menuId = R.menu.menu_chat_details;
         getMenuInflater().inflate(menuId, menu);
-        uiMute = (SwitchCompat) menu.findItem(R.id.muteAction).getActionView();
+        uiMute = (SwitchCompat) menu.findItem(R.id.mmx_mute).getActionView();
         uiMute.setOnCheckedChangeListener(this);
         mPresenter.requestMuteChannelState();
 //        }
@@ -100,7 +100,7 @@ public class ChatDetailsActivity extends BaseActivity implements ChatDetailsCont
         int itemID = item.getItemId();
         if (itemID == android.R.id.home) {
             finish();
-        } else if (itemID == R.id.menuItemAddUser) {
+        } else if (itemID == R.id.mmx_add) {
             mPresenter.onAddRecipients();
         }
 
