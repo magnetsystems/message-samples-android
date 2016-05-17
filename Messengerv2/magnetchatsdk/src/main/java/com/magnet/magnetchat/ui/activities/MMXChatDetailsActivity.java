@@ -15,15 +15,15 @@ import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
-import com.magnet.magnetchat.ui.fragments.UserListFragment;
+import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
 import com.magnet.mmx.client.api.MMXChannel;
 
 /**
  * Created by aorehov on 12.05.16.
  */
-public class ChatDetailsV2Activity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
+public class MMXChatDetailsActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
 
-    private UserListFragment userListFragment;
+    private MMXUserListFragment userListFragment;
     private SwitchCompat uiMute;
     private MMXChannelSettingsContract.Presenter presenter;
     private Boolean muteState;
@@ -53,7 +53,7 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
 
 
         Bundle extras = getIntent().getExtras();
-        userListFragment = new UserListFragment();
+        userListFragment = new MMXUserListFragment();
         userListFragment.setArguments(extras);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
 
@@ -128,7 +128,7 @@ public class ChatDetailsV2Activity extends BaseActivity implements CompoundButto
 
     public static Intent createIntent(Context context, MMXChannel mmxChannel) {
         Bundle bundle = BundleHelper.packChannel(mmxChannel);
-        Intent intent = new Intent(context, ChatDetailsV2Activity.class);
+        Intent intent = new Intent(context, MMXChatDetailsActivity.class);
         intent.putExtras(bundle);
         return intent;
     }

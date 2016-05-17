@@ -45,17 +45,17 @@
             android:theme="@style/MagnetChatSDKTheme" />
 
         <activity
-            android:name=".ui.activities.ChatV2Activity"
+            android:name=".ui.activities.MMXChatActivity"
             android:label="@string/mmx.chat"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activities.ChatDetailsV2Activity"
+            android:name=".ui.activities.MMXChatDetailsActivity"
             android:label="@string/mmx.chat.details"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.activities.UsersActivity"
+            android:name=".ui.activities.MMXUsersActivity"
             android:label="@string/mmx.users.all.title"
             android:screenOrientation="portrait" />
 

@@ -15,7 +15,7 @@ import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
-import com.magnet.magnetchat.ui.fragments.ChatFragment;
+import com.magnet.magnetchat.ui.fragments.MMXChatFragment;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -25,9 +25,9 @@ import java.util.List;
 /**
  * Created by aorehov on 04.05.16.
  */
-public class ChatV2Activity extends BaseActivity implements ChatListContract.ChannelNameListener {
+public class MMXChatActivity extends BaseActivity implements ChatListContract.ChannelNameListener {
 
-    private ChatFragment chatFragment;
+    private MMXChatFragment chatFragment;
 
     @Override
     protected int getLayoutResource() {
@@ -81,7 +81,7 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
             return;
         }
 
-        chatFragment = new ChatFragment();
+        chatFragment = new MMXChatFragment();
         chatFragment.setArguments(bundle);
         chatFragment.setChatNameListener(this);
         replace(chatFragment, R.id.mmx_chat, chatFragment.getTag());
@@ -94,11 +94,11 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
     }
 
     public static Intent createIntent(Context context, @NonNull MMXChannel mmxChannel) {
-        return IntentHelper.chatActivity(context, mmxChannel, ChatV2Activity.class);
+        return IntentHelper.chatActivity(context, mmxChannel, MMXChatActivity.class);
     }
 
     public static Intent createIntent(Context context, @NonNull List<User> recipients) {
-        return IntentHelper.chatActivity(context, recipients, ChatV2Activity.class);
+        return IntentHelper.chatActivity(context, recipients, MMXChatActivity.class);
     }
 
     void onSetName(CharSequence sequence) {
@@ -122,7 +122,7 @@ public class ChatV2Activity extends BaseActivity implements ChatListContract.Cha
                 MMXChannel channel = contract.getMMXChannel();
                 if (channel != null) {
 //                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
-                    Intent intent = ChatDetailsV2Activity.createIntent(this, channel);
+                    Intent intent = MMXChatDetailsActivity.createIntent(this, channel);
                     startActivity(intent);
                 }
             }

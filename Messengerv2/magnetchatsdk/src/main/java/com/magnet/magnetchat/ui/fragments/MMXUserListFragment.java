@@ -11,7 +11,7 @@ import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 /**
  * Created by aorehov on 12.05.16.
  */
-public class UserListFragment extends MMXBaseFragment {
+public class MMXUserListFragment extends MMXBaseFragment {
 
     private MMXUserListView userListView;
     private UserListContract.OnSelectUserEvent eventListener;

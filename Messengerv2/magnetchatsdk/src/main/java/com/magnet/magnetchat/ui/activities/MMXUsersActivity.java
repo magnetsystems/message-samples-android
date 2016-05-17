@@ -16,8 +16,8 @@ import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.presenters.UserListContract;
-import com.magnet.magnetchat.ui.fragments.AllUserListFragment;
-import com.magnet.magnetchat.ui.fragments.UserListFragment;
+import com.magnet.magnetchat.ui.fragments.MMXAllUserListFragment;
+import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -29,9 +29,9 @@ import java.util.List;
 /**
  * Created by aorehov on 13.05.16.
  */
-public class UsersActivity extends BaseActivity implements UserListContract.OnSelectUserEvent, UserListContract.OnGetAllSelectedUsersListener {
+public class MMXUsersActivity extends BaseActivity implements UserListContract.OnSelectUserEvent, UserListContract.OnGetAllSelectedUsersListener {
 
-    private UserListFragment userListFragment;
+    private MMXUserListFragment userListFragment;
     private Handler handler = new Handler();
     private String searchText = "";
     private MMXChannel mmxChannel;
@@ -60,7 +60,7 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
 
         mmxChannel = BundleHelper.readMMXChannelFromBundle(getIntent().getExtras());
 
-        userListFragment = new AllUserListFragment();
+        userListFragment = new MMXAllUserListFragment();
         userListFragment.setOnUserSelectEventListener(this);
         userListFragment.setOnGetAllSelectedUsersListener(this);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
@@ -150,7 +150,7 @@ public class UsersActivity extends BaseActivity implements UserListContract.OnSe
                     }
                 });
             } else {
-                Intent intent = IntentHelper.chatActivity(this, users, ChatV2Activity.class);
+                Intent intent = IntentHelper.chatActivity(this, users, MMXChatActivity.class);
                 finish();
                 startActivity(intent);
             }

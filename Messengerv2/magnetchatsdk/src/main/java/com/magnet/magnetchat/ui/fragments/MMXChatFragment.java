@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Created by aorehov on 04.05.16.
  */
-public class ChatFragment extends MMXBaseFragment {
+public class MMXChatFragment extends MMXBaseFragment {
     private MMXChatView mmxChatView;
     private ChatListContract.ChannelNameListener listener;
     private AttachmentDialogFragment dialogFragment;

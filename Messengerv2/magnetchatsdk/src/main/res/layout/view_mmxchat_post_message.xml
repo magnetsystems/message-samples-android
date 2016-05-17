@@ -23,6 +23,7 @@
         android:layout_weight="1"
         android:background="@drawable/backgrounf_edit_text"
         android:hint="@string/mmx.message.content"
+        android:singleLine="true"
         android:textSize="@dimen/text_15" />
 
     <TextView

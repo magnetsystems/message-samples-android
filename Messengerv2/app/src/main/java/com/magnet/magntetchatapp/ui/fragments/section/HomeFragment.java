@@ -16,15 +16,11 @@ import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
 import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.model.Chat;
-import com.magnet.magnetchat.ui.activities.ChatActivity;
-import com.magnet.magnetchat.ui.activities.ChatV2Activity;
-import com.magnet.magnetchat.ui.activities.ChooseUserActivity;
-import com.magnet.magnetchat.ui.activities.UsersActivity;
+import com.magnet.magnetchat.ui.activities.MMXChatActivity;
+import com.magnet.magnetchat.ui.activities.MMXUsersActivity;
 import com.magnet.magntetchatapp.R;
-import com.magnet.magntetchatapp.core.CurrentApplication;
 import com.magnet.magntetchatapp.ui.fragments.abs.BaseFragment;
 import com.magnet.mmx.client.api.ChannelDetail;
-import com.magnet.mmx.client.api.MMXChannel;
 
 import butterknife.InjectView;
 
@@ -91,7 +87,7 @@ public class HomeFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_create_channel) {
-            startActivity(UsersActivity.class, false);
+            startActivity(MMXUsersActivity.class, false);
 //            startActivity(ChooseUserActivity.class, false);
             return true;
         }
@@ -154,7 +150,7 @@ public class HomeFragment extends BaseFragment {
                     @Override
                     public void onActionPerform() {
 //                        Intent intent = ChatActivity.getIntentWithChannel(CurrentApplication.getInstance().getApplicationContext(), chat);
-                        Intent intent = ChatV2Activity.createIntent(getContext(), channelDetail.getChannel());
+                        Intent intent = MMXChatActivity.createIntent(getContext(), channelDetail.getChannel());
                         startActivity(intent);
                     }
                 });
