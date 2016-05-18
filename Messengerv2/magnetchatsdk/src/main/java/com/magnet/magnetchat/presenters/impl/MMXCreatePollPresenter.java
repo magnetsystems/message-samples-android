@@ -40,6 +40,13 @@ public class MMXCreatePollPresenter implements MMXCreatePollContract.Presenter {
             return;
         }
 
+        for (String answer : answers) {
+            if (answer.isEmpty()) {
+                view.showMessage(R.string.err_poll_answer_empty);
+                return;
+            }
+        }
+
         String name = view.getName();
         MMXPoll.Builder builder = new MMXPoll.Builder()
                 .question(question)
