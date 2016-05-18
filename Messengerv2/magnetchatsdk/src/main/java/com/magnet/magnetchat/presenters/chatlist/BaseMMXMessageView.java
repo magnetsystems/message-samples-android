@@ -10,9 +10,7 @@ public interface BaseMMXMessageView {
 
     void onSetPostDate(Date date);
 
-    void onShowUserLetters(String letters);
-
-    void onShowUserPicture(String url);
+    void onShowUserPicture(String url, String name);
 
     void onSenderName(String name);
 }

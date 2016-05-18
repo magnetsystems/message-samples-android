@@ -67,13 +67,8 @@ public class DefaultMMXPollAnswerMessageView extends AbstractMMXPollAnswerMessag
     }
 
     @Override
-    public void onShowUserLetters(String letters) {
-//STUB
-    }
-
-    @Override
-    public void onShowUserPicture(String url) {
-//STUB
+    public void onShowUserPicture(String url, String name) {
+//        STUB
     }
 
     @Override

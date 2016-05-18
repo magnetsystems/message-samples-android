@@ -30,9 +30,6 @@ public interface MMXPollContract {
         void onRefreshing();
 
         void onRefreshingFinished();
-
-
-//        void onPollAnswersUpdate(MMXPollOptionWrapper option);
     }
 
 }

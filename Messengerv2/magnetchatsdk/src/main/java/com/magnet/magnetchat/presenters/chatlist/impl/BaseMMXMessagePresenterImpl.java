@@ -33,16 +33,19 @@ abstract class BaseMMXMessagePresenterImpl<T extends BaseMMXMessageView> {
     abstract void updateUI(@NonNull T view, @NonNull MMXMessageWrapper wrapper);
 
     void updateBaseUI(@NonNull BaseMMXMessageView view, @NonNull MMXMessageWrapper wrapper) {
-        view.onSenderName(wrapper.getSenderName());
+        String picture = wrapper.getSenderPicture();
+        String name = wrapper.getSenderName();
+        view.onShowUserPicture(picture, name);
+//        if (picture != null)
+//            view.onShowUserPicture(picture);
+//        else
+//            view.onShowUserLetters(wrapper.getSenderName());
+
         if (wrapper.isShowDate()) {
             view.onSetPostDate(wrapper.getPublishDate());
         }
         view.isNeedShowDate(wrapper.isShowDate());
 
-        String picture = wrapper.getSenderPicture();
-        if (picture != null)
-            view.onShowUserPicture(picture);
-        else
-            view.onShowUserLetters(wrapper.getSenderName());
+
     }
 }

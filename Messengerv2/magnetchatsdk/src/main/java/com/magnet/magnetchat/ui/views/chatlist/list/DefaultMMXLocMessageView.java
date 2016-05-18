@@ -76,21 +76,8 @@ public abstract class DefaultMMXLocMessageView extends AbstractMMXLocationMessag
     }
 
     @Override
-    public void onShowUserLetters(String letters) {
-        uiLettersView.setVisibility(VISIBLE);
-        uiUserPicView.setVisibility(GONE);
-        uiLettersView.setUserName(letters);
-    }
-
-    @Override
-    public void onShowUserPicture(String url) {
-        uiLettersView.setVisibility(GONE);
-        uiUserPicView.setVisibility(VISIBLE);
-
-        Glide.with(getContext())
-                .load(Uri.parse(url))
-                .placeholder(R.drawable.add_user_icon)
-                .into(uiUserPicView);
+    public void onShowUserPicture(String url, String name) {
+        onSetUserPicOrLetters(url, name);
     }
 
     @Override

@@ -78,32 +78,8 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
     }
 
     @Override
-    public void onShowUserLetters(String letters) {
-        uiLettersView.setUserName(letters);
-        uiLettersView.setVisibility(VISIBLE);
-        uiUserPicView.setVisibility(GONE);
-    }
-
-    @Override
-    public void onShowUserPicture(String url) {
-        uiLettersView.setVisibility(GONE);
-        uiUserPicView.setVisibility(VISIBLE);
-
-        Glide.with(getContext())
-                .load(Uri.parse(url))
-                .listener(new RequestListener<Uri, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, Uri model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        uiLettersView.setVisibility(VISIBLE);
-                        uiUserPicView.setVisibility(GONE);
-                        return true;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, Uri model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        return false;
-                    }
-                }).into(uiUserPicView);
+    public void onShowUserPicture(String url, String name) {
+        onSetUserPicOrLetters(url, name);
     }
 
     @Override
