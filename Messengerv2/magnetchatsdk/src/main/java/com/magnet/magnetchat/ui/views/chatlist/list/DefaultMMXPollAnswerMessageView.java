@@ -8,6 +8,8 @@ import android.widget.TextView;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessageContract;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
+import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 
 import java.util.Date;
 
@@ -37,8 +39,8 @@ public class DefaultMMXPollAnswerMessageView extends AbstractMMXPollAnswerMessag
     }
 
     @Override
-    protected MMXMessageContract.Presenter readPresenter() {
-        return ChatSDK.getMMXMessagPresenterFactory().createMessagePresenter(this);
+    protected MMXMessageContract.Presenter readPresenter(MMXMessagePresenterFactory factory) {
+        return factory.createMessagePresenter(this);
     }
 
     @Override

@@ -28,6 +28,9 @@ import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.common.Log;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class which provide to management of the MMX functional
  */
@@ -39,11 +42,67 @@ public class ChatSDK {
     private MMXObjectConverterFactory mmxObjectConverterFactory;
     private MMXListItemFactory mmxListItemFactory;
 
+//    private Map<String, MMXPresenterFactory> mmxNamedPresenterFactories = new HashMap<>();
+//    private Map<String, MMXMessagePresenterFactory> mmxNamedMessagePresenterFactories = new HashMap<>();
+//    private Map<String, MMXViewFactory> mmxNameViewFactories = new HashMap<>();
+//    private Map<String, MMXObjectConverterFactory> mmxNamedObjectConverterFactories = new HashMap<>();
+//    private Map<String, MMXListItemFactory> mmxNamedListItemFactories = new HashMap<>();
+
+    private Map<String, Object> namedFactories = new HashMap<>();
+
     private static ChatSDK instance;
 
     private ChatSDK() {
 
     }
+
+    public class Builder {
+        private ChatSDK sdk;
+
+        public Builder() {
+            sdk = new ChatSDK();
+        }
+
+
+        public Builder setDefaultMMXPresenterFactory(MMXPresenterFactory mmxPresenterFactory) {
+            sdk.mmxPresenterFactory = mmxPresenterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXMessagePresenterFactory(MMXMessagePresenterFactory messagePresenterFactory) {
+            sdk.messagePresenterFactory = messagePresenterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXViewFactory(MMXViewFactory mmxViewFactory) {
+            sdk.mmxViewFactory = mmxViewFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXObjectConverterFactory(MMXObjectConverterFactory mmxObjectConverterFactory) {
+            sdk.mmxObjectConverterFactory = mmxObjectConverterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXListItemFactory(MMXListItemFactory mmxListItemFactory) {
+            sdk.mmxListItemFactory = mmxListItemFactory;
+            return this;
+        }
+
+        public Builder registerNamedPresenterFactory(String key, MMXPresenterFactory factory) {
+            if (key == null || key.isEmpty()) {
+                throw new IllegalArgumentException("Key cannot be empty or null");
+            }
+
+            namedFactories.put(key, factory);
+            return this;
+        }
+
+        public void init(Application application) {
+            ChatSDK.init(sdk, application);
+        }
+    }
+
 
     private MMXListItemFactory getPrMmxListItemFactory() {
         if (mmxListItemFactory == null) {
@@ -81,23 +140,41 @@ public class ChatSDK {
         return messagePresenterFactory;
     }
 
+    public Object getFactoryByName(String name) {
+        return namedFactories.get(name);
+    }
+
+    public static <T> T getMMXFactotyByName(String name) {
+        throwMMXNotInitException();
+        Object byName = instance.getFactoryByName(name);
+        if (byName != null) {
+            try {
+                return (T) byName;
+            } catch (ClassCastException ex) {
+                Logger.debug(ChatSDK.class.getSimpleName(), ex);
+                return null;
+            }
+        }
+        return null;
+    }
+
     public static MMXMessagePresenterFactory getMMXMessagPresenterFactory() {
-        throwMMXNotInitExcetion();
+        throwMMXNotInitException();
         return instance.getMessagePresenterFactory();
     }
 
     public static MMXListItemFactory getMmxListItemFactory() {
-        throwMMXNotInitExcetion();
+        throwMMXNotInitException();
         return instance.getPrMmxListItemFactory();
     }
 
     public static MMXObjectConverterFactory getMmxObjectConverterFactory() {
-        throwMMXNotInitExcetion();
+        throwMMXNotInitException();
         return instance.getObjectConverterFactory();
     }
 
     public static MMXPresenterFactory getPresenterFactory() {
-        throwMMXNotInitExcetion();
+        throwMMXNotInitException();
         return instance.getMmxPresenterFactory();
     }
 
@@ -105,14 +182,18 @@ public class ChatSDK {
         return instance.getMmxViewFactory();
     }
 
-    private static void throwMMXNotInitExcetion() {
+    private static void throwMMXNotInitException() {
         if (instance == null) {
             throw new RuntimeException("ChatSDK wasn't initialized. Call ChatSDK.init method in Application class");
         }
     }
 
     public static void init(Application application) {
-        instance = new ChatSDK();
+        init(new ChatSDK(), application);
+    }
+
+    private static void init(ChatSDK chatSDK, Application application) {
+        instance = chatSDK;
 
         MMX.registerListener(eventListener);
         MMX.registerWakeupBroadcast(application, new Intent("MMX_WAKEUP_ACTION"));

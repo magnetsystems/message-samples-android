@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
 import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 import com.magnet.magnetchat.ui.views.chatlist.poll.AbstractMMXPollItemView;
@@ -136,8 +137,8 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     }
 
     @Override
-    protected MMXPollContract.Presenter readPresenter() {
-        return ChatSDK.getMMXMessagPresenterFactory().createPollPresenter(this);
+    protected MMXPollContract.Presenter readPresenter(MMXMessagePresenterFactory factory) {
+        return factory.createPollPresenter(this);
     }
 
     @Override

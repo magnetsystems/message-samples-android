@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessageContract;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 
 import java.util.Date;
 
@@ -64,8 +65,8 @@ public abstract class DefaultMMXMessageView extends AbstractMMXTextMessageView<M
     }
 
     @Override
-    protected MMXMessageContract.Presenter readPresenter() {
-        return ChatSDK.getMMXMessagPresenterFactory().createMessagePresenter(this);
+    protected MMXMessageContract.Presenter readPresenter(MMXMessagePresenterFactory factory) {
+        return factory.createMessagePresenter(this);
     }
 
     @Override

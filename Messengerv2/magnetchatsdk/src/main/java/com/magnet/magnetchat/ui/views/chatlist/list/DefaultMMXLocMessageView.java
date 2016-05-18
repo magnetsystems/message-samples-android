@@ -14,6 +14,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.presenters.chatlist.MMXLocationContract;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.util.Logger;
 
 import java.util.Date;
@@ -86,8 +87,8 @@ public abstract class DefaultMMXLocMessageView extends AbstractMMXLocationMessag
     }
 
     @Override
-    protected MMXLocationContract.Presenter readPresenter() {
-        return ChatSDK.getMMXMessagPresenterFactory().createLocationPresenter(this);
+    protected MMXLocationContract.Presenter readPresenter(MMXMessagePresenterFactory factory) {
+        return factory.createLocationPresenter(this);
     }
 
     @Override

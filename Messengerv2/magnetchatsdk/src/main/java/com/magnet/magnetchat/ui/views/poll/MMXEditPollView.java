@@ -76,8 +76,12 @@ public abstract class MMXEditPollView<T extends ViewProperty> extends BaseView<T
 
     protected MMXListItemFactory createMMXListItemFactory() {
         String name = itemFactoryName();
-//        TODO find factory by name here
-        return ChatSDK.getMmxListItemFactory();
+        MMXListItemFactory factory = ChatSDK.getMMXFactotyByName(name);
+        if (factory == null) {
+            factory = ChatSDK.getMmxListItemFactory();
+        }
+
+        return factory;
     }
 
     public void doCreatePoll() {

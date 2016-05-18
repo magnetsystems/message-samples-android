@@ -14,6 +14,7 @@ import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.IntentHelper;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.presenters.chatlist.MMXPicMessageContract;
 
 import java.util.Date;
@@ -63,8 +64,8 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
     }
 
     @Override
-    protected MMXPicMessageContract.Presenter readPresenter() {
-        return ChatSDK.getMMXMessagPresenterFactory().createPicMessagePresenter(this);
+    protected MMXPicMessageContract.Presenter readPresenter(MMXMessagePresenterFactory factory) {
+        return factory.createPicMessagePresenter(this);
     }
 
     @Override

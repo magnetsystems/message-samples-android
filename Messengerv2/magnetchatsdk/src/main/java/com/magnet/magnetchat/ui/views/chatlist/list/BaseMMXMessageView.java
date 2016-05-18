@@ -9,9 +9,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.presenters.chatlist.BaseMMXMessagePresenter;
+import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
@@ -82,7 +84,7 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
     @Override
     protected void onCreateView() {
-        presenter = readPresenter();
+        presenter = readPresenter(getMessagePresenterFactory(getPresenterFactoryName()));
     }
 
     public P getPresenter() {
@@ -95,5 +97,17 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
         presenter.setMMXMessage(object);
     }
 
-    protected abstract P readPresenter();
+    protected abstract P readPresenter(MMXMessagePresenterFactory factory);
+
+    protected String getPresenterFactoryName() {
+        return null;
+    }
+
+    protected MMXMessagePresenterFactory getMessagePresenterFactory(String name) {
+        Object byName = ChatSDK.getMMXFactotyByName(name);
+        if (byName != null) {
+            return (MMXMessagePresenterFactory) byName;
+        }
+        return ChatSDK.getMMXMessagPresenterFactory();
+    }
 }

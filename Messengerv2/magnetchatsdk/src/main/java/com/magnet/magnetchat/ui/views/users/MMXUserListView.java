@@ -50,7 +50,8 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
     @Override
     protected void onCreateView() {
         MMXListItemFactory itemFactory = createItemViewFactory(getItemViewFactoryByName());
-        itemFactory = ChatSDK.getMmxListItemFactory();
+        if (itemFactory == null)
+            itemFactory = ChatSDK.getMmxListItemFactory();
         adapter = new RecyclerViewTypedAdapter(itemFactory, MMXUserWrapper.class, getItemComparator());
 
         adapter.setClickListener(getItemClickListener());
@@ -89,7 +90,7 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
      * @return instance of MMXListItemFactory
      */
     protected MMXListItemFactory createItemViewFactory(@Nullable String name) {
-        return null;
+        return ChatSDK.getMMXFactotyByName(name);
     }
 
     protected String createUserListPresenterByName() {
