@@ -7,7 +7,7 @@ public interface Constants {
 
     int CONVERSATION_PAGE_SIZE = 20;
 
-    int MESSAGE_PAGE_SIZE = 25;
+    int MESSAGE_PAGE_SIZE = 30;
 
     int MESSAGE_LOADING_OFFSET = 7;
 
