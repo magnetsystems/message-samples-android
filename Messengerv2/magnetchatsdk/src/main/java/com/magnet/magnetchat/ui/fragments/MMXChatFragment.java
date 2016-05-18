@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.ui.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -20,6 +21,7 @@ import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
+import com.magnet.magnetchat.ui.activities.MMXEditPollActivity;
 import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
 import com.magnet.magnetchat.ui.dialogs.DefaultAttachmentDialogFragment;
 import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
@@ -36,6 +38,7 @@ import java.util.List;
  * Created by aorehov on 04.05.16.
  */
 public class MMXChatFragment extends MMXBaseFragment {
+
     private MMXChatView mmxChatView;
     private ChatListContract.ChannelNameListener listener;
     private AttachmentDialogFragment dialogFragment;
@@ -130,8 +133,9 @@ public class MMXChatFragment extends MMXBaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mmxChatView.onActivityResult(requestCode, resultCode, data))
+        if (!mmxChatView.onActivityResult(requestCode, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void dismissDialog() {
@@ -166,11 +170,16 @@ public class MMXChatFragment extends MMXBaseFragment {
         }
     }
 
-    private void openPollCreator() {
-        toast("show poll create view or activity here");
+    protected void openPollCreator() {
+        MMXChannel mmxChannel = mmxChatView.getPostPresenter().getMMXChannel();
+        Bundle bundle = BundleHelper.packChannel(mmxChannel);
+        Intent intent = new Intent(getContext(), MMXEditPollActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivityForResult(intent, Constants.MMX_RC_CREATE_POLL);
+
     }
 
-    private void readLocation() {
+    protected void readLocation() {
         if (!Utils.isGooglePlayServiceInstalled()) {
             showMessage("It seems Google play services is not available, can't use location API");
             return;
@@ -185,7 +194,7 @@ public class MMXChatFragment extends MMXBaseFragment {
         if (currentLocation != null) {
             mmxChatView.getPostPresenter().sendLocationMessage(currentLocation);
         } else {
-            showMessage("Can't get location");
+            showMessage(getString(R.string.err_location_cant_get));
         }
     }
 
@@ -193,7 +202,7 @@ public class MMXChatFragment extends MMXBaseFragment {
         toast(s);
     }
 
-    private void openChoosePicture() {
+    protected void openChoosePicture() {
         Intent intent = IntentHelper.photoCapture();
         getActivity().startActivityForResult(intent, Constants.MMX_RC_TAKE_PIC);
     }

@@ -183,4 +183,8 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
             if (clientCallback != null) clientCallback.onViewRecycled(holder);
         }
     };
+
+    public void onCreatePoll() {
+        presenter.onCreatedPoll();
+    }
 }

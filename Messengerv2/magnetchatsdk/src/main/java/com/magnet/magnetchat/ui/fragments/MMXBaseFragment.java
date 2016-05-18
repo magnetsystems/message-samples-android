@@ -75,7 +75,14 @@ public abstract class MMXBaseFragment extends Fragment implements View.OnClickLi
      * @param activtyClass activity which should be starting
      */
     protected void startActivity(Class activtyClass) {
-        getActivity().startActivity(new Intent(getActivity(), activtyClass));
+        startActivity(activtyClass, null);
+    }
+
+    protected void startActivity(Class activtyClass, Bundle bundle) {
+        Intent intent = new Intent(getActivity(), activtyClass);
+        if (bundle != null) intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+
     }
 
     /**

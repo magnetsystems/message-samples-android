@@ -34,6 +34,8 @@ public interface ChatListContract {
         String getChannelName();
 
         void setPresenterChatReceiveListener(MMXChannelListener listener);
+
+        void onCreatedPoll();
     }
 
     interface View extends MMXInfoView {

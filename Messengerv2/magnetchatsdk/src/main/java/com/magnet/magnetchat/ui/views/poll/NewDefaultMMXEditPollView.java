@@ -8,14 +8,11 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXObjectWrapper;
 import com.magnet.magnetchat.model.MMXStringWrapper;
-import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.ui.adapters.RecyclerViewTypedAdapter;
 import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
-import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +66,7 @@ public class NewDefaultMMXEditPollView extends MMXEditPollView<EditPollProperty>
         adapter = new RecyclerViewTypedAdapter<>(factory, MMXStringWrapper.class, new RecyclerViewTypedAdapter.ItemComparator<MMXStringWrapper>() {
             @Override
             public int compare(MMXStringWrapper o1, MMXStringWrapper o2) {
-                return 0;
+                return -1;
             }
 
             @Override
@@ -97,10 +94,12 @@ public class NewDefaultMMXEditPollView extends MMXEditPollView<EditPollProperty>
 
     private void addAnswer() {
         String answer = uiAddAnswer.getText().toString().trim();
+        uiAddAnswer.setText("");
         if (answer.length() == 0) {
             return;
         }
-        adapter.put(new MMXStringWrapper(answer));
+        int put = adapter.put(new MMXStringWrapper(answer));
+        uiRecyclerView.scrollToPosition(put);
     }
 
     @Override

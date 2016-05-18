@@ -1,10 +1,12 @@
 package com.magnet.magnetchat.ui.views.chatlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
 
 import com.magnet.magnetchat.ChatSDK;
+import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
@@ -115,7 +117,12 @@ public abstract class MMXChatView<T extends ViewProperty> extends BaseView<T> im
     }
 
     public boolean onActivityResult(int requestCode, int resultCode, Intent intent) {
-        return mmxPostMessageView.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == Constants.MMX_RC_CREATE_POLL && resultCode == Activity.RESULT_OK) {
+            mmxChatListView.onCreatePoll();
+            return true;
+        } else {
+            return mmxPostMessageView.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }
 

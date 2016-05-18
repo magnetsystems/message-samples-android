@@ -101,7 +101,7 @@ public class DefaultEditPollView extends MMXEditPollView<EditPollProperty> {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.mmx_create) {
-            doSaveAction();
+            doCreatePoll();
         } else
             super.onClick(v);
     }

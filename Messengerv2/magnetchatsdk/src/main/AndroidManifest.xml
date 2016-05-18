@@ -59,6 +59,11 @@
             android:label="@string/mmx.users.all.title"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.activities.MMXEditPollActivity"
+            android:label="@string/mmx.poll.create"
+            android:screenOrientation="portrait" />
+
         <receiver
             android:name="com.magnet.mmx.client.MMXGcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">

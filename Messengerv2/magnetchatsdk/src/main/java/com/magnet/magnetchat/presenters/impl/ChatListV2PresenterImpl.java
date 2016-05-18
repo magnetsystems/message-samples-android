@@ -55,6 +55,11 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     }
 
     @Override
+    public void onCreatedPoll() {
+        loadMessages(0, 3);
+    }
+
+    @Override
     public void setChat(List<UserProfile> users) {
         List<String> list = MMXObjectsHelper.convertToIdList(users);
         String currentUserId = User.getCurrentUserId();

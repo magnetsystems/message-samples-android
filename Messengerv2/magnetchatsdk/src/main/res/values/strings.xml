@@ -55,5 +55,7 @@
     <string name="poll.hide_result">Hide result</string>
     <string name="common.add">Add</string>
     <string name="common.answer">Answer</string>
+    <string name="err.location.cant_get">Can\'t get location</string>
+    <string name="mmx.poll.create">Create Poll</string>
 
 </resources>

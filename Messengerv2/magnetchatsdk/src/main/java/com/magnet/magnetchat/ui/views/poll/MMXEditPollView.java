@@ -32,7 +32,7 @@ public abstract class MMXEditPollView<T extends ViewProperty> extends BaseView<T
         super(context, attrs, defStyleAttr);
     }
 
-    public void setListener(OnPollCreatedListener listener) {
+    public void setOnPollCreateListener(OnPollCreatedListener listener) {
         this.listener = listener;
     }
 
@@ -60,10 +60,6 @@ public abstract class MMXEditPollView<T extends ViewProperty> extends BaseView<T
         toast(getString(resId, objects));
     }
 
-    protected void doSaveAction() {
-        presenter.doCreate();
-    }
-
     @Override
     public void onLock() {
         if (listener != null) listener.onLocked();
@@ -82,6 +78,10 @@ public abstract class MMXEditPollView<T extends ViewProperty> extends BaseView<T
         String name = itemFactoryName();
 //        TODO find factory by name here
         return ChatSDK.getMmxListItemFactory();
+    }
+
+    public void doCreatePoll() {
+        presenter.doCreate();
     }
 
     public interface OnPollCreatedListener {
