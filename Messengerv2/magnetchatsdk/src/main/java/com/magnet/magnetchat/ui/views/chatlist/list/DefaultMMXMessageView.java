@@ -66,8 +66,7 @@ public abstract class DefaultMMXMessageView extends AbstractMMXTextMessageView<M
         uiUserPicView.setVisibility(VISIBLE);
         Glide.with(getContext())
                 .load(Uri.parse(url))
-                .centerCrop()
-                .placeholder(R.drawable.add_user_icon)
+                .error(R.drawable.add_user_icon)
                 .into(uiUserPicView);
 
 

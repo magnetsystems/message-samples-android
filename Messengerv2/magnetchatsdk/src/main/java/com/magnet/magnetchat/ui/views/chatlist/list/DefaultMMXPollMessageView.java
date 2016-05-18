@@ -138,7 +138,7 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
         uiUserPicView.setVisibility(VISIBLE);
         Glide.with(getContext())
                 .load(Uri.parse(url))
-                .placeholder(R.drawable.add_user_icon)
+                .error(R.drawable.add_user_icon)
                 .into(uiUserPicView);
     }
 

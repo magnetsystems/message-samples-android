@@ -112,7 +112,7 @@ public abstract class DefaultMMXLocMessageView extends AbstractMMXLocationMessag
     public void onLocation(String mapUrl) {
         Glide.with(getContext())
                 .load(Uri.parse(mapUrl))
-                .placeholder(R.drawable.map_msg)
+                .error(R.drawable.map_msg)
                 .into(uiPic);
     }
 
