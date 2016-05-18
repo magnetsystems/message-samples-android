@@ -93,6 +93,10 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
         getContext().startActivity(new Intent(getContext(), activtyClass));
     }
 
+    protected void startActivity(Intent intent) {
+        getContext().startActivity(intent);
+    }
+
     /**
      * Method which provide the setting of the OnClickListener
      *

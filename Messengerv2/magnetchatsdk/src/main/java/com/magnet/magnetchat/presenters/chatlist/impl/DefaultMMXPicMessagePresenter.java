@@ -28,4 +28,13 @@ class DefaultMMXPicMessagePresenter extends BaseMMXMessagePresenterImpl<MMXPicMe
     public void setMMXMessage(MMXMessageWrapper wrapper) {
         setWrapper(wrapper);
     }
+
+    @Override
+    public String getImageURL() {
+        Attachment attachment = wrapper.getAttachment();
+        if (attachment != null) {
+            return attachment.getDownloadUrl();
+        }
+        return null;
+    }
 }

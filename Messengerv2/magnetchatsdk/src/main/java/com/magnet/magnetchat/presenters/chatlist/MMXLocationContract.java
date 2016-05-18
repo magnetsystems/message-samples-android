@@ -6,13 +6,15 @@ package com.magnet.magnetchat.presenters.chatlist;
 public interface MMXLocationContract {
 
     interface Presenter extends BaseMMXMessagePresenter {
-
+        void onGetLocation();
     }
 
     interface View extends BaseMMXMessageView {
         void onLocation(String locationUrl);
 
         void onCantGetLocation();
+
+        void onLocation(double latitude, double longitude);
     }
 
 }

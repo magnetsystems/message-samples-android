@@ -3,6 +3,7 @@ package com.magnet.magnetchat.helpers;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
@@ -66,6 +67,11 @@ public class MMXObjectsHelper {
                 callback.failure(new ApiError(code.getDescription(), ex));
             }
         });
+    }
+
+
+    public static String getGoogleMapsUrl(double lat, double lon, int zoom) {
+        return String.format(Constants.MAP_URL, lat, lon, zoom);
     }
 
 }

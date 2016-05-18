@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.ui.views.chatlist.list;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.IntentHelper;
 import com.magnet.magnetchat.presenters.chatlist.MMXPicMessageContract;
 
 import java.util.Date;
@@ -44,6 +46,20 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
     protected void onLinkingViews(View baseView) {
         super.onLinkingViews(baseView);
         uiPic = findView(R.id.mmx_msg_pic);
+
+        uiPic.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.mmx_msg_pic) {
+            String url = getPresenter().getImageURL();
+            if (url != null) {
+                Intent intent = IntentHelper.openImage(Uri.parse(url));
+                startActivity(intent);
+            }
+        } else
+            super.onClick(v);
     }
 
     @Override

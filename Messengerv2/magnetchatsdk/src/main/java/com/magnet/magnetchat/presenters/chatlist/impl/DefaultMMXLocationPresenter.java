@@ -25,4 +25,11 @@ class DefaultMMXLocationPresenter extends BaseMMXMessagePresenterImpl<MMXLocatio
             view.onCantGetLocation();
         }
     }
+
+    @Override
+    public void onGetLocation() {
+        double lat = wrapper.getLat();
+        double lon = wrapper.getLon();
+        view.onLocation(lat, lon);
+    }
 }

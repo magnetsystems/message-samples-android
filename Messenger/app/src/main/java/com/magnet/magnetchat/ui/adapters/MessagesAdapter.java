@@ -20,8 +20,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+
 import com.bumptech.glide.Glide;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.DateHelper;
@@ -42,6 +44,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -73,11 +76,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
         /**
          * Returns true if current message and previous have the same date
+         *
          * @param previous
          * @return
          */
         protected boolean configureDate(Message message, Message previous) {
-            if(null != tvDate) {
+            if (null != tvDate) {
                 Date date;
                 Date previousDate = null;
                 if (message.getCreateTime() == null) {
@@ -87,7 +91,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 }
                 if (previous != null) {
                     previousDate = DateHelper.utcToLocal(
-                        null != previous.getCreateTime() ? previous.getCreateTime() : new Date());
+                            null != previous.getCreateTime() ? previous.getCreateTime() : new Date());
                 }
                 String msgDate = DateHelper.getMessageDateTime(date);
                 String previousMsgDate = null;
@@ -110,7 +114,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
     public class FeedMessageViewHolder extends AbstractMessageViewHolder {
         //@InjectView(R.id.tvUserName) TextView tvUserName;
         //@InjectView(R.id.tvAction) TextView tvAction;
-        @InjectView(R.id.tvContent) TextView tvContent;
+        @InjectView(R.id.tvContent)
+        TextView tvContent;
         //@InjectView(R.id.tvSubject) TextView tvSubject;
 
         public FeedMessageViewHolder(View itemView, int contentType) {
@@ -121,15 +126,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         @Override
         public void showMessage(Message message, Message previousMessage, Message nextMessage) {
             MMXPoll.MMXPollAnswer pollAnswer =
-                (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
-            if(null != pollAnswer) {
+                    (MMXPoll.MMXPollAnswer) message.getMmxMessage().getPayload();
+            if (null != pollAnswer) {
                 configureDate(message, previousMessage);
                 //tvUserName.setText(message.getSender().getDisplayName());
                 //tvAction.setText(" voted ");
                 //tvContent.setText(pollAnswer.getSelectedOptionsAsString()  + " for poll ");
                 //tvSubject.setText(pollAnswer.getName());
                 tvContent.setText(new StringBuilder(message.getSender().getDisplayName()).append(" voted ")
-                .append(pollAnswer.getSelectedOptionsAsString()).append(" for poll ").append(pollAnswer.getName()).toString());
+                        .append(pollAnswer.getSelectedOptionsAsString()).append(" for poll ").append(pollAnswer.getName()).toString());
             } else {
                 resetText();
             }
@@ -170,9 +175,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             this.viewOtherAvatar = (CircleNameView) itemView.findViewById(R.id.viewOtherAvatar);
 
             this.flContent = (FrameLayout) itemView.findViewById(R.id.flContent);
-            if(null != contentView) {
+            if (null != contentView) {
                 FrameLayout.LayoutParams layoutParams =
-                    new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                        new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                 flContent.addView(contentView, layoutParams);
             } else {
                 flContent.setVisibility(View.GONE);
@@ -182,19 +187,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         abstract protected void showMessageContent();
 
         protected void setupContentToMe() {
-            if(null != this.flContent) {
+            if (null != this.flContent) {
                 this.flContent.setBackgroundResource(R.drawable.bubble_odd);
             }
         }
 
         protected void setupContentFromMe() {
-            if(null != this.flContent) {
+            if (null != this.flContent) {
                 this.flContent.setBackgroundResource(R.drawable.bubble2);
             }
         }
 
         public void showMessage(Message message, Message previousMessage, Message nextMessage) {
-            if(null != this.message && this.message.equals(message)) {
+            if (null != this.message && this.message.equals(message)) {
                 return;
             }
 
@@ -237,9 +242,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 }
                 if (null != message.getSender().getAvatarUrl()) {
                     Glide.with(context)
-                        .load(message.getSender().getAvatarUrl())
-                        .fitCenter()
-                        .into(imageOtherAvatar);
+                            .load(message.getSender().getAvatarUrl())
+                            .fitCenter()
+                            .into(imageOtherAvatar);
                 }
             }
         }
@@ -290,9 +295,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 viewMyAvatar.setText(UserHelper.getInitialName(userName));
                 if ((null != user.getAvatarUrl())) {
                     Glide.with(context)
-                        .load(user.getAvatarUrl())
-                        .fitCenter()
-                        .into(imageMyAvatar);
+                            .load(user.getAvatarUrl())
+                            .fitCenter()
+                            .into(imageMyAvatar);
                 }
             }
         }
@@ -307,7 +312,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         }
 
         protected void showMessageContent() {
-            if(Message.TYPE_TEXT.equals(message.getType())) {
+            if (Message.TYPE_TEXT.equals(message.getType())) {
                 text.setText(message.getText());
                 text.setVisibility(View.VISIBLE);
             }
@@ -368,15 +373,15 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 }
                 if (null != attachmentId) {
                     Glide.with(context)
-                        .load(Uri.parse(attachmentId))
-                        .centerCrop()
-                        .placeholder(R.drawable.photo_msg)
-                        .into(imageView);
+                            .load(Uri.parse(attachmentId))
+                            .centerCrop()
+                            .placeholder(R.drawable.photo_msg)
+                            .into(imageView);
                 } else {
                     Glide.with(context)
-                        .load(R.drawable.photo_msg)
-                        .centerCrop()
-                        .into(imageView);
+                            .load(R.drawable.photo_msg)
+                            .centerCrop()
+                            .into(imageView);
                 }
             }
         }
@@ -458,12 +463,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
     public class PollContentViewHolder extends MessageContentViewHolder {
 
-        @InjectView(R.id.rvOptions) ListView rvOptions;
+        @InjectView(R.id.rvOptions)
+        ListView rvOptions;
         AppCompatTextView btnSubmit;
-        @InjectView(R.id.tvName) TextView tvName;
-        @InjectView(R.id.tvVote) TextView tvVote;
-        @InjectView(R.id.tvQuestion) TextView tvQuestion;
-        @InjectView(R.id.ivRefresh) ImageView ivRefresh;
+        @InjectView(R.id.tvName)
+        TextView tvName;
+        @InjectView(R.id.tvVote)
+        TextView tvVote;
+        @InjectView(R.id.tvQuestion)
+        TextView tvQuestion;
+        @InjectView(R.id.ivRefresh)
+        ImageView ivRefresh;
 
         View footer;
 
@@ -480,25 +490,28 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
             btnSubmit = (AppCompatTextView) footer.findViewById(R.id.btnSubmit);
         }
 
-        @Override protected void showMessageContent() {
+        @Override
+        protected void showMessageContent() {
             message.getPoll(new ApiCallback<MMXPoll>() {
-                @Override public void success(MMXPoll poll) {
+                @Override
+                public void success(MMXPoll poll) {
                     showPoll(poll);
                 }
 
-                @Override public void failure(ApiError error) {
+                @Override
+                public void failure(ApiError error) {
                     Log.e(TAG, "Failed to get poll " + error.toString());
                     //FIXME testing
                     MMXPoll testPoll = new MMXPoll.Builder().name("Favorite Color").question("What's your favorite color ?")
-                        .option("Red").option("Blue").option("Yellow").allowMultiChoice(false).build();
+                            .option("Red").option("Blue").option("Yellow").allowMultiChoice(false).build();
                     showPoll(testPoll);
                 }
             });
         }
 
         private void showPoll(final MMXPoll poll) {
-            if(null != poll) {
-                if(poll.equals(mmxPoll)) {
+            if (null != poll) {
+                if (poll.equals(mmxPoll)) {
                     Log.d(TAG, "Same poll binding, just refresh, --------previous poll : " + mmxPoll + "\n------------current poll : " + poll);
                     adapter.notifyDataSetChanged();
                     return;
@@ -513,30 +526,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 rvOptions.setChoiceMode(poll.isAllowMultiChoices() ? ListView.CHOICE_MODE_MULTIPLE : ListView.CHOICE_MODE_SINGLE);
 
                 // http://stackoverflow.com/questions/24700588/i-am-using-the-listview-add-remove-footer-for-listview-cross-app-in-android-vers
-                if(poll.isAllowMultiChoices() && rvOptions.getFooterViewsCount() == 0) {
+                if (poll.isAllowMultiChoices() && rvOptions.getFooterViewsCount() == 0) {
                     rvOptions.addFooterView(footer, null, false);
                 }
 
                 boolean showCount = !poll.shouldHideResultsFromOthers() || (poll.shouldHideResultsFromOthers()
-                    && poll.getOwnerId().equals(User.getCurrentUserId()));
+                        && poll.getOwnerId().equals(User.getCurrentUserId()));
 
-                if(showCount) {
+                if (showCount) {
                     ivRefresh.setVisibility(View.VISIBLE);
                     ivRefresh.setOnClickListener(new View.OnClickListener() {
-                        @Override public void onClick(View v) {
+                        @Override
+                        public void onClick(View v) {
                             ivRefresh.setEnabled(false);
-                            poll.refreshResults(new MMXChannel.OnFinishedListener<Void>() {
-                                @Override public void onSuccess(Void result) {
-                                    if(null != adapter) {
+                            poll.refreshResults(new MMX.OnFinishedListener<Void>() {
+                                @Override
+                                public void onSuccess(Void result) {
+                                    if (null != adapter) {
                                         adapter.resetData(poll.getOptions());
                                     }
                                     SnackNotificationHelper.showToast(context, "Results refreshed.");
                                     enableRefresh();
                                 }
 
-                                @Override public void onFailure(MMXChannel.FailureCode code,
-                                    Throwable throwable) {
-                                    Log.e(TAG, "Failed to refresh the result " + code, throwable);
+                                @Override
+                                public void onFailure(MMX.FailureCode code, Throwable ex) {
+                                    Log.e(TAG, "Failed to refresh the result " + code, ex);
                                     SnackNotificationHelper.showToast(context, "Failed to refresh the result.");
                                     enableRefresh();
                                 }
@@ -551,34 +566,36 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                     ivRefresh.setVisibility(View.GONE);
                 }
 
-                if(null != adapter) {
+                if (null != adapter) {
                     adapter.setShowCount(showCount);
                     adapter.resetData(poll.getOptions());
                 } else {
-                    adapter = new PollOptionAdapter(context, poll.getOptions(),showCount);
+                    adapter = new PollOptionAdapter(context, poll.getOptions(), showCount);
                     rvOptions.setAdapter(adapter);
                 }
-                if(poll.isAllowMultiChoices()) {
+                if (poll.isAllowMultiChoices()) {
                     //rvOptions.addFooterView(footer, null, false);
                     //footer.setVisibility(View.VISIBLE);
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
-                        @Override public void onClick(View v) {
+                        @Override
+                        public void onClick(View v) {
                             List<MMXPollOption> chosenOptions = new ArrayList<MMXPollOption>();
                             SparseBooleanArray checkedItemPositions = rvOptions.getCheckedItemPositions();
-                            for(int i = 0; i< checkedItemPositions.size(); i++) {
-                                if(checkedItemPositions.valueAt(i)){
+                            for (int i = 0; i < checkedItemPositions.size(); i++) {
+                                if (checkedItemPositions.valueAt(i)) {
                                     chosenOptions.add(poll.getOptions().get(checkedItemPositions.keyAt(i)));
                                 }
                             }
 
-                            if(isSameAnswer(poll, chosenOptions)) {
+                            if (isSameAnswer(poll, chosenOptions)) {
                                 SnackNotificationHelper.showToast(context, "You already voted same options.");
                                 return;
                             }
 
                             btnSubmit.setEnabled(false);
                             poll.choose(chosenOptions, new MMX.OnFinishedListener<MMXMessage>() {
-                                @Override public void onSuccess(MMXMessage message) {
+                                @Override
+                                public void onSuccess(MMXMessage message) {
                                     SnackNotificationHelper.showToast(context, "You voted successfully.");
 
                                     addMessage(message);
@@ -586,8 +603,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                                     enableSubmitButton();
                                 }
 
-                                @Override public void onFailure(MMX.FailureCode failureCode,
-                                    Throwable throwable) {
+                                @Override
+                                public void onFailure(MMX.FailureCode failureCode,
+                                                      Throwable throwable) {
                                     Log.d(TAG, "Failed to choose option", throwable);
                                     SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
                                     enableSubmitButton();
@@ -604,7 +622,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 } else {
                     tvVote.setText("Vote for your choice");
                     Log.d(TAG, "-----removing footer");
-                    if(rvOptions.getFooterViewsCount() > 0) {
+                    if (rvOptions.getFooterViewsCount() > 0) {
                         Log.d(TAG, "-----removed footer : " + rvOptions.getFooterViewsCount());
                         //footer.setVisibility(View.GONE);
                         rvOptions.removeFooterView(footer);
@@ -612,10 +630,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 }
 
                 rvOptions.clearChoices();
-                if(null != poll.getMyVotes() && !poll.getMyVotes().isEmpty()) {
-                    for(MMXPollOption option : poll.getMyVotes()) {
+                if (null != poll.getMyVotes() && !poll.getMyVotes().isEmpty()) {
+                    for (MMXPollOption option : poll.getMyVotes()) {
                         int index = poll.getOptions().indexOf(option);
-                        if(index > -1) {
+                        if (index > -1) {
                             rvOptions.setItemChecked(index, true);
                         }
                     }
@@ -623,7 +641,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
                 rvOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position,long arg3) {
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long arg3) {
                         //view.setSelected(false);
                         //boolean isSelected = view.isSelected();
                         //boolean isItemChecked = rvOptions.isItemChecked(position);
@@ -635,22 +653,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                         //} else {
                         //    rvOptions.setItemChecked(position, true);
                         //}
-                        if(!poll.isAllowMultiChoices()) {
+                        if (!poll.isAllowMultiChoices()) {
                             List<MMXPollOption> optionChosen = Arrays.asList(poll.getOptions().get(position));
-                            if(isSameAnswer(poll, optionChosen)) {
+                            if (isSameAnswer(poll, optionChosen)) {
                                 return;
                             }
 
                             rvOptions.setEnabled(false);
                             poll.choose(optionChosen, new MMX.OnFinishedListener<MMXMessage>() {
-                                @Override public void onSuccess(MMXMessage message) {
+                                @Override
+                                public void onSuccess(MMXMessage message) {
                                     SnackNotificationHelper.showToast(context, "You voted successfully.");
                                     addMessage(message);
                                     enableOptions();
                                 }
 
-                                @Override public void onFailure(MMX.FailureCode failureCode,
-                                    Throwable throwable) {
+                                @Override
+                                public void onFailure(MMX.FailureCode failureCode,
+                                                      Throwable throwable) {
                                     enableOptions();
                                     SnackNotificationHelper.showToast(context, "Failed to vote. Try late.");
                                     Log.d(TAG, "Failed to choose option", throwable);
@@ -721,7 +741,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         }
 
         private void addMessage(MMXMessage mmxMessage) {
-            if(null != mmxMessage) {
+            if (null != mmxMessage) {
                 currentConversation.addMessage(Message.createMessageFrom(mmxMessage));
             } else {
                 Log.e(TAG, "MMXMessage is null");
@@ -729,12 +749,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         }
 
         private boolean isSameAnswer(MMXPoll poll, List<MMXPollOption> options) {
-            if(null == poll.getMyVotes() || poll.getMyVotes().isEmpty() || poll.getMyVotes().size() != options.size()) {
+            if (null == poll.getMyVotes() || poll.getMyVotes().isEmpty() || poll.getMyVotes().size() != options.size()) {
                 return false;
             }
 
-            for(MMXPollOption option : options) {
-                if(!poll.getMyVotes().contains(option)) {
+            for (MMXPollOption option : options) {
+                if (!poll.getMyVotes().contains(option)) {
                     return false;
                 }
             }
@@ -750,7 +770,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
         this.currentConversation = currentConversation;
     }
 
-    @Override public int getItemViewType(int position) {
+    @Override
+    public int getItemViewType(int position) {
         Message message = getItem(position);
         if (message.getType() != null) {
             switch (message.getType()) {
@@ -774,11 +795,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
 
     @Override
     public AbstractMessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == CONTENT_TYPE_TEXT || viewType == CONTENT_TYPE_IMAGE || viewType == CONTENT_TYPE_POLL) {
+        if (viewType == CONTENT_TYPE_TEXT || viewType == CONTENT_TYPE_IMAGE || viewType == CONTENT_TYPE_POLL) {
             View view = inflater.inflate(R.layout.item_message, parent, false);
             if (viewType == CONTENT_TYPE_TEXT) {
                 return new TextContentViewHolder(view,
-                    inflater.inflate(R.layout.view_text_content, parent, false), viewType);
+                        inflater.inflate(R.layout.view_text_content, parent, false), viewType);
             } else if (viewType == CONTENT_TYPE_IMAGE) {
                 View contentView = inflater.inflate(R.layout.view_image_content, parent, false);
                 return new ImageContentViewHolder(view, contentView, viewType);
@@ -786,7 +807,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Abstra
                 View contentView = inflater.inflate(R.layout.view_poll, parent, false);
                 return new PollContentViewHolder(view, contentView, viewType);
             }
-        } else if(viewType == CONTENT_TYPE_POLL_ANSWER) {
+        } else if (viewType == CONTENT_TYPE_POLL_ANSWER) {
             View view = inflater.inflate(R.layout.item_message_poll_update, parent, false);
             return new FeedMessageViewHolder(view, viewType);
         }
