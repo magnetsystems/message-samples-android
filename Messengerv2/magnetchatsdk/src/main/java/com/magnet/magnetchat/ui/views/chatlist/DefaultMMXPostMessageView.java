@@ -49,11 +49,6 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<MMXPostMessage
     }
 
     @Override
-    public void setProperties(MMXPostMessageProperty property) {
-
-    }
-
-    @Override
     public String getMessageText() {
         return uiMessageContent.getText().toString();
     }

@@ -42,11 +42,6 @@ public class DefaultMMXChatListView extends MMXChatListView<MMXChatListProperty>
     }
 
     @Override
-    public void setProperties(MMXChatListProperty property) {
-
-    }
-
-    @Override
     public void onChannelCreationFailure() {
         Context context = getContext();
         if (context instanceof Activity) {

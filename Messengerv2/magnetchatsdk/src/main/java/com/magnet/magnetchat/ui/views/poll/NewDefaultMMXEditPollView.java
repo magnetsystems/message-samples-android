@@ -102,11 +102,6 @@ public class NewDefaultMMXEditPollView extends MMXEditPollView<EditPollProperty>
     }
 
     @Override
-    public void setProperties(EditPollProperty property) {
-
-    }
-
-    @Override
     public String getName() {
         return uiName.getText().toString();
     }

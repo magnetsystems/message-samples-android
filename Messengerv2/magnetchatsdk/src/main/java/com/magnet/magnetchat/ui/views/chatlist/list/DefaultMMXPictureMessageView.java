@@ -39,11 +39,6 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
     }
 
     @Override
-    public void setProperties(MMXPictureProperty property) {
-
-    }
-
-    @Override
     protected void onLinkingViews(View baseView) {
         super.onLinkingViews(baseView);
         uiPic = findView(R.id.mmx_msg_pic);

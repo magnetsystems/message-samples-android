@@ -52,11 +52,6 @@ public class DefaultMMXUserListView extends MMXUserListView<MMXUserListProperty>
     }
 
     @Override
-    public void setProperties(MMXUserListProperty property) {
-
-    }
-
-    @Override
     public void onLoading() {
         uiRefresher.setRefreshing(true);
     }

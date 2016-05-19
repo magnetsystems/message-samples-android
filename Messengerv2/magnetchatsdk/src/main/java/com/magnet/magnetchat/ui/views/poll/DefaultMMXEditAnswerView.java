@@ -47,9 +47,4 @@ public class DefaultMMXEditAnswerView extends MMXEditAnswerView<EditPollAnswerPr
         uiAnswer = findView(baseView, R.id.mmx_answer);
     }
 
-
-    @Override
-    public void setProperties(EditPollAnswerProperty property) {
-
-    }
 }

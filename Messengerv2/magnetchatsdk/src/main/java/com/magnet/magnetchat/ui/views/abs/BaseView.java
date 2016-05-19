@@ -178,7 +178,7 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
      *
      * @param property current property
      */
-    public abstract void setProperties(T property);
+//    public abstract void setProperties(T property);
 
     /**
      * Method which do some action when activity/fragment resume their functional

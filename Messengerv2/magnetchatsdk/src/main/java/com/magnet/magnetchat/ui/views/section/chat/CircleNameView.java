@@ -47,28 +47,28 @@ public class CircleNameView extends BaseView<CircleNameViewProperties> {
 
     }
 
-    @Override
-    public void setProperties(CircleNameViewProperties property) {
-        if (property != null) {
-            //Get property
-            Typeface typeface = property.getTypeface();
-            int textColor = property.getTextColor();
-            int textDimmension = property.getTextDimension();
-            //Set property
-            if (typeface != null) {
-                labelUserName.setTypeface(typeface);
-            }
-
-            if (isNotDefaultID(textColor)) {
-                labelUserName.setTextColor(textColor);
-            }
-
-            if (isNotDefaultID(textDimmension)) {
-                UserInterfaceHelper.setControlsTextDimension(getContext(), textDimmension, labelUserName);
-            }
-
-        }
-    }
+//    @Override
+//    public void setProperties(CircleNameViewProperties property) {
+//        if (property != null) {
+//            //Get property
+//            Typeface typeface = property.getTypeface();
+//            int textColor = property.getTextColor();
+//            int textDimmension = property.getTextDimension();
+//            //Set property
+//            if (typeface != null) {
+//                labelUserName.setTypeface(typeface);
+//            }
+//
+//            if (isNotDefaultID(textColor)) {
+//                labelUserName.setTextColor(textColor);
+//            }
+//
+//            if (isNotDefaultID(textDimmension)) {
+//                UserInterfaceHelper.setControlsTextDimension(getContext(), textDimmension, labelUserName);
+//            }
+//
+//        }
+//    }
 
     /**
      * Method which provide the setting of the user name

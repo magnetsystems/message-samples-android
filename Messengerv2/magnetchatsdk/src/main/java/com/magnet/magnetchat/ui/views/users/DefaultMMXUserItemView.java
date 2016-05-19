@@ -103,10 +103,6 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
     }
 
     @Override
-    public void setProperties(MMXUserItemProperty property) {
-    }
-
-    @Override
     public void setOnClickListener(OnClickListener l) {
         if (uiBase != this) {
             uiBase.setOnClickListener(l);

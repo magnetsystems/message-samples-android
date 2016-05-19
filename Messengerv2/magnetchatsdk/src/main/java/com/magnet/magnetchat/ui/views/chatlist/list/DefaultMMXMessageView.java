@@ -69,8 +69,4 @@ public abstract class DefaultMMXMessageView extends AbstractMMXTextMessageView<M
         return factory.createMessagePresenter(this);
     }
 
-    @Override
-    public void setProperties(MMXTextProperty property) {
-
-    }
 }

@@ -92,11 +92,6 @@ public abstract class DefaultMMXLocMessageView extends AbstractMMXLocationMessag
     }
 
     @Override
-    public void setProperties(MMXLocationProperty property) {
-
-    }
-
-    @Override
     public void onLocation(String mapUrl) {
         Glide.with(getContext())
                 .load(Uri.parse(mapUrl))

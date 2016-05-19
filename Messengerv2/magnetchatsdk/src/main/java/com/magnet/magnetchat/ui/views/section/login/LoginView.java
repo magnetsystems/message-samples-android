@@ -243,20 +243,20 @@ public class LoginView extends BaseView<LoginViewProperties> {
 
     //PROPERTIES
 
-    @Override
-    public void setProperties(LoginViewProperties property) {
-        if (property != null) {
-
-            //Typeface
-            if (property.getTypeface() != null) {
-                labelAdditionalInformation.setTypeface(property.getTypeface());
-                editEmail.setTypeface(property.getTypeface());
-                editPassword.setTypeface(property.getTypeface());
-                checkBoxRememberMe.setTypeface(property.getTypeface());
-                buttonSignIn.setTypeface(property.getTypeface());
-                buttonCreateAccount.setTypeface(property.getTypeface());
-            }
-
-        }
-    }
+//    @Override
+//    public void setProperties(LoginViewProperties property) {
+//        if (property != null) {
+//
+//            //Typeface
+//            if (property.getTypeface() != null) {
+//                labelAdditionalInformation.setTypeface(property.getTypeface());
+//                editEmail.setTypeface(property.getTypeface());
+//                editPassword.setTypeface(property.getTypeface());
+//                checkBoxRememberMe.setTypeface(property.getTypeface());
+//                buttonSignIn.setTypeface(property.getTypeface());
+//                buttonCreateAccount.setTypeface(property.getTypeface());
+//            }
+//
+//        }
+//    }
 }

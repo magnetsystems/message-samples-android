@@ -45,9 +45,4 @@ public class DefaultMMXChatView extends MMXChatView<MMXChatProperty> {
         uiListContainer = findView(baseView, R.id.mmx_chat_list);
         uiPostContainer = findView(baseView, R.id.mmx_chat_post);
     }
-
-    @Override
-    public void setProperties(MMXChatProperty property) {
-
-    }
 }

@@ -142,11 +142,6 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     }
 
     @Override
-    public void setProperties(MMXPollProperty property) {
-
-    }
-
-    @Override
     public void onClicked(MMXPollOptionWrapper wrapper) {
         getPresenter().onNeedChangedState(wrapper);
     }

@@ -49,11 +49,6 @@ public class DefaultMMXPollAnswerMessageView extends AbstractMMXPollAnswerMessag
     }
 
     @Override
-    public void setProperties(MMXPollAnswerProperty property) {
-
-    }
-
-    @Override
     public void onShowTextMessage(String message) {
         uiText.setText(message);
     }

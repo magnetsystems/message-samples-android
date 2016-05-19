@@ -58,11 +58,6 @@ public class DefaultEditPollView extends MMXEditPollView<EditPollProperty> {
     }
 
     @Override
-    public void setProperties(EditPollProperty property) {
-// TODO set properties here
-    }
-
-    @Override
     public String getName() {
         return "";
     }

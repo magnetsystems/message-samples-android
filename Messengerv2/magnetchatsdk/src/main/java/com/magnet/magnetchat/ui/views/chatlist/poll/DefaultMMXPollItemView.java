@@ -52,11 +52,6 @@ public abstract class DefaultMMXPollItemView extends AbstractMMXPollItemView<Pol
     }
 
     @Override
-    public void setProperties(PollItemProperty property) {
-
-    }
-
-    @Override
     protected View getClickableView() {
         return uiContainer;
     }
