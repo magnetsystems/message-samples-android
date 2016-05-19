@@ -1,2 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <declare-styleable name="DefaultMMXPostMessageView">
+
+        <attr name="text_marginLeft" format="dimension" />
+        <attr name="text_marginRight" format="dimension" />
+        <attr name="text_marginTop" format="dimension" />
+        <attr name="text_marginBottom" format="dimension" />
+        <attr name="text_background" format="reference" />
+        <attr name="text_hint" format="string" />
+        <attr name="text_textSize" format="dimension" />
+
+    </declare-styleable>
+
+</resources>
