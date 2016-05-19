@@ -87,6 +87,10 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> {
         return list == null || list.isEmpty() ? null : list.get(0);
     }
 
+    public void setShowDate(boolean showDate) {
+        isShowDate = showDate;
+    }
+
     public String getMapLocationUrl() {
         return MMXMessageUtil.getMapPicUrl(getObj());
     }

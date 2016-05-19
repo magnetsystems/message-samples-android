@@ -1,5 +1,6 @@
 package com.magnet.magnetchat.model.converters.impl;
 
+import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollAnswerMessageWrapper;
@@ -8,6 +9,9 @@ import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
+
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by aorehov on 28.04.16.
@@ -45,5 +49,21 @@ public class DefaultMMXMessageWrapperConverter extends MMXMessageWrapperConverte
 
     private int defineType(MMXMessage mmxMessage, boolean isMy) {
         return MMXMessageWrapper.defineType(mmxMessage, isMy);
+    }
+
+    @Override
+    protected void decorate(MMXMessageWrapper prev, MMXMessageWrapper mmxMessageWrapper) {
+        if (prev != null && mmxMessageWrapper != null) {
+            Date date1 = prev.getPublishDate();
+            Date date2 = mmxMessageWrapper.getPublishDate();
+            if (date1 != null && date2 != null) {
+                //half of hour
+                mmxMessageWrapper.setShowDate(date2.getTime() - date1.getTime() > 1800000);
+            } else {
+                mmxMessageWrapper.setShowDate(true);
+            }
+        } else if (prev == null && mmxMessageWrapper != null) {
+            mmxMessageWrapper.setShowDate(true);
+        }
     }
 }
