@@ -13,6 +13,20 @@
         <attr name="text_textSize" format="dimension" />
         <attr name="text_maxLines" format="integer" />
 
+        <attr name="attach_padding" format="dimension" />
+        <attr name="attach_marginLeft" format="dimension" />
+        <attr name="attach_marginRight" format="dimension" />
+        <attr name="attach_marginTop" format="dimension" />
+        <attr name="attach_marginBottom" format="dimension" />
+        <attr name="attach_src" format="reference" />
+        <attr name="attach_background" format="reference" />
+
+        <attr name="send_padding" format="dimension" />
+        <attr name="send_textColor" format="color" />
+        <attr name="send_textSize" format="dimension" />
+        <attr name="send_text" format="string" />
+        <attr name="send_background" format="reference" />
+
     </declare-styleable>
 
 </resources>

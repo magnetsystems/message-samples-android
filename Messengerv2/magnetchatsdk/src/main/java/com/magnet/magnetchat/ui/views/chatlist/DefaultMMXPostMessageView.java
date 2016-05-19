@@ -1,24 +1,53 @@
 package com.magnet.magnetchat.ui.views.chatlist;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 
 /**
+ * CUSTOMIZATION EXAMPLE:
+ * <p/>
+ * app:attach_background="@android:color/holo_red_light"
+ * app:attach_marginBottom="0dp"
+ * app:attach_marginLeft="0dp"
+ * app:attach_marginRight="0dp"
+ * app:attach_marginTop="0dp"
+ * app:attach_padding="7dp"
+ * app:attach_src="@drawable/user_group"
+ * app:send_background="@android:color/holo_green_light"
+ * app:send_padding="7dp"
+ * app:send_text="Post"
+ * app:send_textColor="@android:color/holo_red_dark"
+ * app:send_textSize="20sp"
+ * app:text_background="@android:color/transparent"
+ * app:text_hint="Hint text"
+ * app:text_marginLeft="@dimen/dimen_7"
+ * app:text_marginTop="@dimen/dimen_2"
+ * app:text_maxLines="2"
+ * app:text_textColor="@android:color/holo_red_dark"
+ * app:text_textSize="@dimen/text_14" />
+ * <p/>
+ * <p/>
+ * ======================================================
+ * <p/>
  * Created by aorehov on 04.05.16.
  */
 public class DefaultMMXPostMessageView extends MMXPostMessageView<DefaultMMXPostMessageView.MMXPostMessageProperty> {
-    private View uiAttachment;
+    private ImageView uiAttachment;
     private EditText uiMessageContent;
-    private View uiSendMessage;
+    private TextView uiSendMessage;
 
     public DefaultMMXPostMessageView(Context context) {
         super(context);
@@ -67,6 +96,23 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<DefaultMMXPost
             property.text_textSize = typed.getDimension(R.styleable.DefaultMMXPostMessageView_text_textSize, getResources().getDimension(R.dimen.text_15));
             property.text_color = typed.getColor(R.styleable.DefaultMMXPostMessageView_text_textColor, -1);
             property.text_lines = typed.getInt(R.styleable.DefaultMMXPostMessageView_text_maxLines, 1);
+
+            int dimen10 = getResources().getDimensionPixelSize(R.dimen.dimen_10);
+
+            property.attach_padding = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_attach_padding, dimen10);
+            property.attach_marginLeft = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_attach_marginLeft, 0);
+            property.attach_marginRight = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_attach_marginRight, 0);
+            property.attach_marginTop = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_attach_marginTop, 0);
+            property.attach_marginBottom = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_attach_marginBottom, 0);
+            property.attach_src = typed.getDrawable(R.styleable.DefaultMMXPostMessageView_attach_src);
+            property.attach_background = typed.getDrawable(R.styleable.DefaultMMXPostMessageView_attach_background);
+
+            property.send_padding = typed.getDimensionPixelSize(R.styleable.DefaultMMXPostMessageView_send_padding, dimen10);
+            property.send_textColor = typed.getColorStateList(R.styleable.DefaultMMXPostMessageView_send_textColor);
+            property.send_textSize = typed.getDimension(R.styleable.DefaultMMXPostMessageView_send_textSize, -1);
+            property.send_text = typed.getString(R.styleable.DefaultMMXPostMessageView_send_text);
+            property.send_background = typed.getDrawable(R.styleable.DefaultMMXPostMessageView_send_background);
+
             return property;
         } finally {
             typed.recycle();
@@ -81,10 +127,8 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<DefaultMMXPost
                 prop.text_marginTop,
                 prop.text_marginRight,
                 prop.text_marginBottom);
-
         uiMessageContent.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.text_textSize);
         uiMessageContent.setHint(prop.text_hint);
-
         if (prop.text_color != -1) uiMessageContent.setTextColor(prop.text_color);
         if (prop.text_background != null) uiMessageContent.setBackground(prop.text_background);
         if (prop.text_lines > 1) {
@@ -94,6 +138,28 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<DefaultMMXPost
             uiMessageContent.setMaxLines(1);
             uiMessageContent.setSingleLine(true);
         }
+
+//        setup attachment view properties
+        int padding = prop.attach_padding;
+        uiAttachment.setPadding(padding, padding, padding, padding);
+        params = (LinearLayout.LayoutParams) uiAttachment.getLayoutParams();
+        params.setMargins(
+                prop.attach_marginLeft,
+                prop.attach_marginTop,
+                prop.attach_marginRight,
+                prop.attach_marginBottom);
+        if (prop.attach_src != null) uiAttachment.setImageDrawable(prop.attach_src);
+        if (prop.attach_background != null) uiAttachment.setBackground(prop.attach_background);
+
+//        setup SEND properties
+        padding = prop.send_padding;
+        uiSendMessage.setPadding(padding, padding, padding, padding);
+        if (prop.send_textColor != null) uiSendMessage.setTextColor(prop.send_textColor);
+        if (prop.send_text != null) uiSendMessage.setText(prop.send_text);
+        if (prop.send_textSize != -1)
+            uiSendMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.send_textSize);
+        if (prop.send_background != null) uiSendMessage.setBackground(prop.send_background);
+
     }
 
     @Override
@@ -138,7 +204,19 @@ public class DefaultMMXPostMessageView extends MMXPostMessageView<DefaultMMXPost
         float text_textSize;
         int text_color;
         int text_lines;
+
+        int attach_padding;
+        int attach_marginLeft;
+        int attach_marginRight;
+        int attach_marginTop;
+        int attach_marginBottom;
+        Drawable attach_src;
+        Drawable attach_background;
+
+        int send_padding;
+        ColorStateList send_textColor;
+        float send_textSize;
+        String send_text;
+        Drawable send_background;
     }
-
-
 }
