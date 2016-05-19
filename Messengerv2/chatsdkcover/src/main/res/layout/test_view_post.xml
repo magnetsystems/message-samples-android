@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.magnet.magnetchat.ui.views.chatlist.DefaultMMXPostMessageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    app:text_background="@android:color/transparent"
+    app:text_hint="Hint text"
+    app:text_marginLeft="@dimen/dimen_3"
+    app:text_marginTop="@dimen/dimen_2"
+    app:text_maxLines="2"
+    app:text_textColor="@android:color/holo_red_dark"
+    app:text_textSize="@dimen/text_14" />

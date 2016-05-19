@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,17 +23,17 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
 
     public BaseView(Context context) {
         super(context);
-        onInitializeView(context);
+        onInitializeView(context, null);
     }
 
     public BaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        onInitializeView(context);
+        onInitializeView(context, attrs);
     }
 
     public BaseView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        onInitializeView(context);
+        onInitializeView(context, attrs);
     }
 
     /**
@@ -40,7 +41,7 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
      *
      * @param context current context
      */
-    private void onInitializeView(Context context) {
+    private void onInitializeView(Context context, AttributeSet attrs) {
 
         if (isInEditMode()) {
             return;
@@ -49,8 +50,32 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
         inflateView(context, getLayoutId());
         if (baseView != null) {
             onLinkingViews(baseView);
+            if (attrs != null) {
+                readAttributes(attrs);
+            }
         }
         onCreateView();
+    }
+
+    private void readAttributes(AttributeSet attrs) {
+        T prop = onReadAttributes(attrs);
+        onApplyAttributes(prop);
+    }
+
+    protected void onApplyAttributes(T prop) {
+
+    }
+
+    protected TypedArray readTypedArray(AttributeSet attrs, int... stylableRes) {
+        return readTypedArray(attrs, stylableRes, 0, 0);
+    }
+
+    protected TypedArray readTypedArray(AttributeSet attrs, int[] stylableRes, int defStyleAttr, int defStyleRes) {
+        return getContext().getTheme().obtainStyledAttributes(attrs, stylableRes, defStyleAttr, defStyleRes);
+    }
+
+    protected T onReadAttributes(AttributeSet attrs) {
+        return null;
     }
 
 

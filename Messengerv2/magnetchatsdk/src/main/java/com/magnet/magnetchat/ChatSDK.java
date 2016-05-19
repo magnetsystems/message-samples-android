@@ -56,7 +56,7 @@ public class ChatSDK {
 
     }
 
-    public class Builder {
+    public static class Builder {
         private ChatSDK sdk;
 
         public Builder() {
@@ -94,7 +94,7 @@ public class ChatSDK {
                 throw new IllegalArgumentException("Key cannot be empty or null");
             }
 
-            namedFactories.put(key, factory);
+            sdk.namedFactories.put(key, factory);
             return this;
         }
 
@@ -179,6 +179,7 @@ public class ChatSDK {
     }
 
     public static MMXViewFactory getViewFactory() {
+        throwMMXNotInitException();
         return instance.getMmxViewFactory();
     }
 

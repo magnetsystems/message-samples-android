@@ -9,7 +9,9 @@
         <attr name="text_marginBottom" format="dimension" />
         <attr name="text_background" format="reference" />
         <attr name="text_hint" format="string" />
+        <attr name="text_textColor" format="color" />
         <attr name="text_textSize" format="dimension" />
+        <attr name="text_maxLines" format="integer" />
 
     </declare-styleable>
 
