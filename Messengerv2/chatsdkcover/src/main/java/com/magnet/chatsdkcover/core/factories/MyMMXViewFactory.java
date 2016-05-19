@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 
 import com.magnet.chatsdkcover.R;
 import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
+import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;
 
 /**
@@ -15,5 +16,11 @@ public class MyMMXViewFactory extends DefaultMMXViewFactory {
 //    @Override
 //    public MMXPostMessageView createMMXPostMessageView(Context context) {
 //        return (MMXPostMessageView) LayoutInflater.from(context).inflate(R.layout.test_view_post, null, false);
+//    }
+//
+//
+//    @Override
+//    public MMXChatView createMMXChatView(Context context) {
+//        return (MMXChatView) LayoutInflater.from(context).inflate(R.layout.test_view_chatlist, null, false);
 //    }
 }

@@ -59,7 +59,8 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
 
     private void readAttributes(AttributeSet attrs) {
         T prop = onReadAttributes(attrs);
-        onApplyAttributes(prop);
+        if (prop != null)
+            onApplyAttributes(prop);
     }
 
     protected void onApplyAttributes(T prop) {
