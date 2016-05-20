@@ -31,4 +31,5 @@ public interface Constants {
 
     int MMX_RC_TAKE_PIC = 0x00F0;
     int MMX_RC_CREATE_POLL = 0x00F1;
+    String NA = "NA";
 }

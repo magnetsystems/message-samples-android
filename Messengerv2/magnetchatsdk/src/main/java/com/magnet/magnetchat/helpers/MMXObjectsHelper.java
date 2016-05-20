@@ -69,6 +69,26 @@ public class MMXObjectsHelper {
         });
     }
 
+    /**
+     * Method which provide the setting of the user name
+     *
+     * @param userName current user name
+     */
+    public static String getLettersFromName(String userName) {
+        String name;
+        if (userName != null && !userName.isEmpty()) {
+            String[] arr = userName.split("\\s");
+            if (arr.length > 1) {
+                name = String.valueOf(arr[0].charAt(0)) + String.valueOf(arr[1].charAt(0));
+            } else {
+                name = String.valueOf(arr[0].charAt(0));
+            }
+        } else {
+            name = Constants.NA;
+        }
+        return name;
+    }
+
 
     public static String getGoogleMapsUrl(double lat, double lon, int zoom) {
         return String.format(Constants.MAP_URL, lat, lon, zoom);

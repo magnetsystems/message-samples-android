@@ -1,12 +1,12 @@
 package com.magnet.magnetchat.ui.views.section.chat;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
+
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.helpers.UserInterfaceHelper;
+import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.ui.views.abs.BaseView;
 
 
@@ -15,10 +15,7 @@ import com.magnet.magnetchat.ui.views.abs.BaseView;
  */
 public class CircleNameView extends BaseView<CircleNameViewProperties> {
 
-    //Using if user name is not available
-    static final String K_NOT_AVAILABLE_VALUE = "NA";
-
-    private AppCompatTextView labelUserName;
+    private TextView labelUserName;
 
     public CircleNameView(Context context) {
         super(context);
@@ -39,7 +36,7 @@ public class CircleNameView extends BaseView<CircleNameViewProperties> {
 
     @Override
     protected void onLinkingViews(View baseView) {
-        labelUserName = (AppCompatTextView) baseView.findViewById(R.id.textUserName);
+        labelUserName = findView(baseView, R.id.textUserName);
     }
 
     @Override
@@ -47,49 +44,13 @@ public class CircleNameView extends BaseView<CircleNameViewProperties> {
 
     }
 
-//    @Override
-//    public void setProperties(CircleNameViewProperties property) {
-//        if (property != null) {
-//            //Get property
-//            Typeface typeface = property.getTypeface();
-//            int textColor = property.getTextColor();
-//            int textDimmension = property.getTextDimension();
-//            //Set property
-//            if (typeface != null) {
-//                labelUserName.setTypeface(typeface);
-//            }
-//
-//            if (isNotDefaultID(textColor)) {
-//                labelUserName.setTextColor(textColor);
-//            }
-//
-//            if (isNotDefaultID(textDimmension)) {
-//                UserInterfaceHelper.setControlsTextDimension(getContext(), textDimmension, labelUserName);
-//            }
-//
-//        }
-//    }
-
     /**
      * Method which provide the setting of the user name
      *
      * @param userName current user name
      */
     public void setUserName(String userName) {
-        StringBuilder builder = new StringBuilder();
-        if ((userName != null) && (userName.isEmpty() == false)) {
-            userName.trim();
-            String[] nameArray = userName.split(" ");
-            for (String name : nameArray) {
-                if (name.length() > 0) {
-                    builder.append(name.charAt(0));
-                }
-            }
-        }
-        if (builder.toString().isEmpty() == true) {
-            labelUserName.setText(K_NOT_AVAILABLE_VALUE);
-        } else {
-            labelUserName.setText(builder.toString().trim());
-        }
+        String name = MMXObjectsHelper.getLettersFromName(userName);
+        labelUserName.setText(name);
     }
 }
