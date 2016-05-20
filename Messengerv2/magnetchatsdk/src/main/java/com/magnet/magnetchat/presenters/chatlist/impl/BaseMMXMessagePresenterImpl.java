@@ -36,10 +36,7 @@ abstract class BaseMMXMessagePresenterImpl<T extends BaseMMXMessageView> {
         String picture = wrapper.getSenderPicture();
         String name = wrapper.getSenderName();
         view.onShowUserPicture(picture, name);
-//        if (picture != null)
-//            view.onShowUserPicture(picture);
-//        else
-//            view.onShowUserLetters(wrapper.getSenderName());
+        view.onSenderName(name);
 
         if (wrapper.isShowDate()) {
             view.onSetPostDate(wrapper.getPublishDate());

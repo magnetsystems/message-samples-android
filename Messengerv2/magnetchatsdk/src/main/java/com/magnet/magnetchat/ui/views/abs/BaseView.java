@@ -262,6 +262,10 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
         return getResources().getColor(resId);
     }
 
+    protected int getDimensAsPixel(int resId) {
+        return getResources().getDimensionPixelSize(resId);
+    }
+
     /**
      * the methods are wrappers for toast notification
      *

@@ -2,6 +2,7 @@ package com.magnet.chatsdkcover.core;
 
 import android.support.multidex.MultiDexApplication;
 
+import com.magnet.chatsdkcover.core.factories.MyMMXListItemFactory;
 import com.magnet.chatsdkcover.core.factories.MyMMXViewFactory;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.max.android.Max;
@@ -27,6 +28,7 @@ public abstract class MagnetMaxApplication extends MultiDexApplication {
         Max.init(this, new MaxAndroidPropertiesConfig(this, getPropertyFile()));
 
         new ChatSDK.Builder()
+                .setDefaultMMXListItemFactory(new MyMMXListItemFactory())
                 .setDefaultMMXViewFactory(new MyMMXViewFactory())
                 .init(this);
 

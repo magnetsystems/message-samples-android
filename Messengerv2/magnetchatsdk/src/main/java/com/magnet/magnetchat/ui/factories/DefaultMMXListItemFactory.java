@@ -32,9 +32,13 @@ public class DefaultMMXListItemFactory implements MMXListItemFactory {
         this.factory = factory;
     }
 
+    protected BaseMMXTypedView createMyCustomView(Context context, int type) {
+        return factory == null ? null : factory.createView(context, type);
+    }
+
     @Override
     final public BaseMMXTypedView createView(Context context, int type) {
-        BaseMMXTypedView view = factory == null ? null : factory.createView(context, type);
+        BaseMMXTypedView view = createMyCustomView(context, type);
         if (view == null)
             switch (type) {
                 case MMXMessageWrapper.TYPE_MAP_ANOTHER:
