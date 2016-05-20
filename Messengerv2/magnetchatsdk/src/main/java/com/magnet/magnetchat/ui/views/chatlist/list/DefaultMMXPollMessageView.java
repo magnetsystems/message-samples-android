@@ -127,11 +127,6 @@ public abstract class DefaultMMXPollMessageView extends AbstractMMXPollMessageVi
     }
 
     @Override
-    public void onSetPostDate(Date date) {
-        uiDate.setText(date.toString());
-    }
-
-    @Override
     public void onSenderName(String name) {
         if (uiSenderName != null) uiSenderName.setText(name);
     }

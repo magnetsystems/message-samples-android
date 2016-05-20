@@ -27,6 +27,8 @@ public interface Constants {
 
     String MAP_URL = "https://www.google.com.ua/maps/@%f,%f,%dz?hl=en";
 
+    String MMX_DATE_FORMAT = "MMM d, h:mm a";
+
     int MMX_RC_TAKE_PIC = 0x00F0;
     int MMX_RC_CREATE_POLL = 0x00F1;
 }

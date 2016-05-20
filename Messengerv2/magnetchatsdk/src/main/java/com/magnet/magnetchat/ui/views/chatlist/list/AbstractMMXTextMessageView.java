@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessageContract;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 
+import java.util.Date;
+
 /**
  * Created by aorehov on 05.05.16.
  */
@@ -20,5 +22,10 @@ public abstract class AbstractMMXTextMessageView<T extends ViewProperty> extends
 
     public AbstractMMXTextMessageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    public void onSetPostDate(Date date) {
+        setDate(date);
     }
 }

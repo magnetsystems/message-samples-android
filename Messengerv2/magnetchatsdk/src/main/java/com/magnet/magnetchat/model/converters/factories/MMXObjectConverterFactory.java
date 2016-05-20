@@ -9,6 +9,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,4 +24,6 @@ public interface MMXObjectConverterFactory {
     BaseConverter<User, MMXUserWrapper> createMMXUserConverter();
 
     BaseConverter<String, MMXPollOption> createMMXPollOptionStringConverter();
+
+    BaseConverter<Date, String> createMessageDateConverterFactory();
 }

@@ -4,9 +4,11 @@ import android.util.Log;
 
 public class Logger {
 
+    private static final String TAG = "MMX-CHATKIT";
+
     private static final String APP_TAG = "mMessage";
 
-    public static void debug (Object... args) {
+    public static void debug(Object... args) {
         debug(null, args);
     }
 
@@ -20,7 +22,7 @@ public class Logger {
 
     private static String makeMessage(Object... args) {
         String msg = "---------";
-        if(null != args) {
+        if (null != args) {
             for (int i = 0; i < args.length - 1; i++) {
                 msg += args[i] + " ";
             }
@@ -37,19 +39,27 @@ public class Logger {
         Log.d(fullTag, msg);
     }
 
-    public static void error (String tag, Throwable throwable, Object... args) {
+    public static void error(Throwable throwable, Object... args) {
+        error(TAG, throwable, args);
+    }
+
+    public static void error(Object... args) {
+        error(TAG, args);
+    }
+
+    public static void error(String tag, Throwable throwable, Object... args) {
         String fullTag = makeTag(tag);
         String msg = makeMessage(args);
         Log.e(fullTag, msg, throwable);
     }
 
-    public static void error (String tag, Object... args) {
+    public static void error(String tag, Object... args) {
         String fullTag = makeTag(tag);
         String msg = makeMessage(args);
         Log.e(fullTag, msg);
     }
 
-    public static void error (String tag, Throwable throwable) {
+    public static void error(String tag, Throwable throwable) {
         String fullTag = makeTag(tag);
         Log.e(fullTag, "ERROR", throwable);
     }

@@ -10,12 +10,19 @@ import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by aorehov on 28.04.16.
  */
 public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFactory {
+
+    private BaseConverter<Date, String> mmxMessageDateConverter;
+
+    public DefaultMMXObjectConverterFactory() {
+    }
+
     @Override
     public BaseConverter<MMXMessage, MMXMessageWrapper> createMMXMessageConverter() {
         return new DefaultMMXMessageWrapperConverter(User.getCurrentUserId());
@@ -34,5 +41,13 @@ public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFacto
     @Override
     public BaseConverter<String, MMXPollOption> createMMXPollOptionStringConverter() {
         return new DefaultMMXPollOptionStringConverter();
+    }
+
+    @Override
+    public BaseConverter<Date, String> createMessageDateConverterFactory() {
+        if (mmxMessageDateConverter == null) {
+            mmxMessageDateConverter = new DefaultMMXMessageDateConverter();
+        }
+        return mmxMessageDateConverter;
     }
 }

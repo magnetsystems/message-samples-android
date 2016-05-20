@@ -69,11 +69,6 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
     }
 
     @Override
-    public void onSetPostDate(Date date) {
-        uiDate.setText(date.toString());
-    }
-
-    @Override
     public void onShowUserPicture(String url, String name) {
         onSetUserPicOrLetters(url, name);
     }

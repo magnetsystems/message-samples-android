@@ -59,11 +59,6 @@ public abstract class DefaultMMXLocMessageView extends AbstractMMXLocationMessag
     }
 
     @Override
-    public void onSetPostDate(Date date) {
-        uiDate.setText(date.toString());
-    }
-
-    @Override
     public void onLocation(double latitude, double longitude) {
         try {
             Intent intent = IntentHelper.showLocation((float) latitude, (float) longitude, 15);

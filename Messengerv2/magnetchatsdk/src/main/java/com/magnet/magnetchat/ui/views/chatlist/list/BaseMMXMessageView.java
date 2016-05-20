@@ -12,12 +12,15 @@ import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.chatlist.BaseMMXMessagePresenter;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
 import com.magnet.magnetchat.util.Logger;
+
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -31,6 +34,8 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
     TextView uiDate;
     TextView uiSenderName;
 
+    private BaseConverter<Date, String> dateConverter;
+
     private P presenter;
 
     public BaseMMXMessageView(Context context) {
@@ -43,6 +48,17 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
     public BaseMMXMessageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public void setDateConverter(BaseConverter<Date, String> dateConverter) {
+        this.dateConverter = dateConverter;
+    }
+
+    public BaseConverter<Date, String> getDateConverter() {
+        if (this.dateConverter == null) {
+            this.dateConverter = ChatSDK.getMmxObjectConverterFactory().createMessageDateConverterFactory();
+        }
+        return dateConverter;
     }
 
     @Override
@@ -82,6 +98,22 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
         uiLettersView.setVisibility(VISIBLE);
     }
 
+    protected void setDate(Date date) {
+        if (date == null) {
+            uiDate.setVisibility(GONE);
+            Logger.error("Message", "empty date");
+        } else {
+            String dateText = getDateConverter().convert(date);
+            if (dateText == null) {
+                uiDate.setVisibility(GONE);
+                Logger.error("Message", "can't convert date");
+            } else {
+                uiDate.setText(dateText);
+                uiDate.setVisibility(VISIBLE);
+            }
+        }
+    }
+
     @Override
     protected void onCreateView() {
         presenter = readPresenter(getMessagePresenterFactory(getPresenterFactoryName()));
@@ -105,7 +137,7 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
     protected MMXMessagePresenterFactory getMessagePresenterFactory(String name) {
         Object byName = ChatSDK.getMMXFactotyByName(name);
-        if (byName != null) {
+        if (byName != null && byName instanceof MMXMessagePresenterFactory) {
             return (MMXMessagePresenterFactory) byName;
         }
         return ChatSDK.getMMXMessagPresenterFactory();

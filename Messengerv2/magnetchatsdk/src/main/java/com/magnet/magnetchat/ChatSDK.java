@@ -6,8 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Vibrator;
 
+import com.magnet.magnetchat.beans.DefaultMMXBeanFactory;
+import com.magnet.magnetchat.beans.MMXBeanFactory;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
@@ -41,6 +44,7 @@ public class ChatSDK {
     private MMXViewFactory mmxViewFactory;
     private MMXObjectConverterFactory mmxObjectConverterFactory;
     private MMXListItemFactory mmxListItemFactory;
+    private MMXBeanFactory mmxBeanFactory;
 
 //    private Map<String, MMXPresenterFactory> mmxNamedPresenterFactories = new HashMap<>();
 //    private Map<String, MMXMessagePresenterFactory> mmxNamedMessagePresenterFactories = new HashMap<>();
@@ -55,54 +59,6 @@ public class ChatSDK {
     private ChatSDK() {
 
     }
-
-    public static class Builder {
-        private ChatSDK sdk;
-
-        public Builder() {
-            sdk = new ChatSDK();
-        }
-
-
-        public Builder setDefaultMMXPresenterFactory(MMXPresenterFactory mmxPresenterFactory) {
-            sdk.mmxPresenterFactory = mmxPresenterFactory;
-            return this;
-        }
-
-        public Builder setDefaultMMXMessagePresenterFactory(MMXMessagePresenterFactory messagePresenterFactory) {
-            sdk.messagePresenterFactory = messagePresenterFactory;
-            return this;
-        }
-
-        public Builder setDefaultMMXViewFactory(MMXViewFactory mmxViewFactory) {
-            sdk.mmxViewFactory = mmxViewFactory;
-            return this;
-        }
-
-        public Builder setDefaultMMXObjectConverterFactory(MMXObjectConverterFactory mmxObjectConverterFactory) {
-            sdk.mmxObjectConverterFactory = mmxObjectConverterFactory;
-            return this;
-        }
-
-        public Builder setDefaultMMXListItemFactory(MMXListItemFactory mmxListItemFactory) {
-            sdk.mmxListItemFactory = mmxListItemFactory;
-            return this;
-        }
-
-        public Builder registerNamedPresenterFactory(String key, MMXPresenterFactory factory) {
-            if (key == null || key.isEmpty()) {
-                throw new IllegalArgumentException("Key cannot be empty or null");
-            }
-
-            sdk.namedFactories.put(key, factory);
-            return this;
-        }
-
-        public void init(Application application) {
-            ChatSDK.init(sdk, application);
-        }
-    }
-
 
     private MMXListItemFactory getPrMmxListItemFactory() {
         if (mmxListItemFactory == null) {
@@ -133,11 +89,18 @@ public class ChatSDK {
         return mmxPresenterFactory;
     }
 
-    public MMXMessagePresenterFactory getMessagePresenterFactory() {
+    private MMXMessagePresenterFactory getMessagePresenterFactory() {
         if (messagePresenterFactory == null) {
             messagePresenterFactory = new DefaultMMXPresenterFactory();
         }
         return messagePresenterFactory;
+    }
+
+    private MMXBeanFactory getMmxBeanFactory() {
+        if (mmxBeanFactory == null) {
+            mmxBeanFactory = new DefaultMMXBeanFactory();
+        }
+        return mmxBeanFactory;
     }
 
     public Object getFactoryByName(String name) {
@@ -181,6 +144,11 @@ public class ChatSDK {
     public static MMXViewFactory getViewFactory() {
         throwMMXNotInitException();
         return instance.getMmxViewFactory();
+    }
+
+    public static MMXBeanFactory getMMXBeanFactory() {
+        throwMMXNotInitException();
+        return instance.getMmxBeanFactory();
     }
 
     private static void throwMMXNotInitException() {
@@ -259,4 +227,57 @@ public class ChatSDK {
             return false;
         }
     };
+
+    public static class Builder {
+        private ChatSDK sdk;
+
+        public Builder() {
+            sdk = new ChatSDK();
+        }
+
+
+        public Builder setDefaultMMXPresenterFactory(MMXPresenterFactory mmxPresenterFactory) {
+            sdk.mmxPresenterFactory = mmxPresenterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXMessagePresenterFactory(MMXMessagePresenterFactory messagePresenterFactory) {
+            sdk.messagePresenterFactory = messagePresenterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXViewFactory(MMXViewFactory mmxViewFactory) {
+            sdk.mmxViewFactory = mmxViewFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXObjectConverterFactory(MMXObjectConverterFactory mmxObjectConverterFactory) {
+            sdk.mmxObjectConverterFactory = mmxObjectConverterFactory;
+            return this;
+        }
+
+        public Builder setDefaultMMXListItemFactory(MMXListItemFactory mmxListItemFactory) {
+            sdk.mmxListItemFactory = mmxListItemFactory;
+            return this;
+        }
+
+        public Builder setMMXBeanFactory(MMXBeanFactory beanFactory) {
+            sdk.mmxBeanFactory = beanFactory;
+            return this;
+        }
+
+        public Builder registerNamedPresenterFactory(String key, MMXPresenterFactory factory) {
+            if (key == null || key.isEmpty()) {
+                throw new IllegalArgumentException("Key cannot be empty or null");
+            }
+
+            sdk.namedFactories.put(key, factory);
+            return this;
+        }
+
+        public void init(Application application) {
+            ChatSDK.init(sdk, application);
+        }
+    }
+
 }
