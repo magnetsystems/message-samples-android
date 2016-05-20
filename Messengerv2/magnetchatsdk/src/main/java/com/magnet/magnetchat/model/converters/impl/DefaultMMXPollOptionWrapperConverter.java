@@ -1,9 +1,7 @@
 package com.magnet.magnetchat.model.converters.impl;
 
-import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
-import com.magnet.magnetchat.model.Message;
-import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
@@ -13,7 +11,7 @@ import java.util.List;
 /**
  * Created by aorehov on 06.05.16.
  */
-public class DefaultMMXPollOptionWrapperConverter extends MMXPollOptionWrapperConverter {
+public class DefaultMMXPollOptionWrapperConverter extends BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> {
 
     private boolean isMine;
 

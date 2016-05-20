@@ -6,7 +6,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
-import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -22,11 +22,11 @@ import java.util.List;
  */
 class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContract.View> implements MMXPollContract.Presenter {
 
-    private final MMXPollOptionWrapperConverter converter;
+    private final BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> converter;
     private MMXPollMessageWrapper pollMessageWrapper;
 
 
-    public DefaultMMXPollPresenter(MMXPollOptionWrapperConverter converter, MMXPollContract.View view) {
+    public DefaultMMXPollPresenter(BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> converter, MMXPollContract.View view) {
         this.converter = converter;
         this.view = view;
     }

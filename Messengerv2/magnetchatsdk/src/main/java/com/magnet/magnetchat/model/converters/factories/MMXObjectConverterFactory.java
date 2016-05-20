@@ -1,20 +1,26 @@
 package com.magnet.magnetchat.model.converters.factories;
 
-import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
-import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
-import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
-import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollOptionWrapper;
+import com.magnet.magnetchat.model.MMXUserWrapper;
+import com.magnet.magnetchat.model.converters.BaseConverter;
+import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.ext.poll.MMXPoll;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
+
+import java.util.List;
 
 /**
  * Created by aorehov on 28.04.16.
  */
 public interface MMXObjectConverterFactory {
 
-    MMXMessageWrapperConverter createMMXMessageConverter();
+    BaseConverter<MMXMessage, MMXMessageWrapper> createMMXMessageConverter();
 
-    MMXPollOptionWrapperConverter createMmxPollOptionWrapperConverter();
+    BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> createMmxPollOptionWrapperConverter();
 
-    MMXUserConverter createMMXUserConverter();
+    BaseConverter<User, MMXUserWrapper> createMMXUserConverter();
 
-    MMXPollOptionStringConverter createMMXPollOptionStringConverter();
+    BaseConverter<String, MMXPollOption> createMMXPollOptionStringConverter();
 }

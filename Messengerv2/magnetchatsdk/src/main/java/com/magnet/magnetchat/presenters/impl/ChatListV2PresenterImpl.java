@@ -11,7 +11,7 @@ import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
-import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
 import com.magnet.magnetchat.util.Logger;
@@ -34,11 +34,11 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
 
     private MMXChannelWrapper channel;
     private ChatListContract.View view;
-    private MMXMessageWrapperConverter converter;
+    private BaseConverter<MMXMessage, MMXMessageWrapper> converter;
     private LazyLoadUtil lazyLoadUtil;
     private ChatListContract.MMXChannelListener channelListener;
 
-    public ChatListV2PresenterImpl(ChatListContract.View view, MMXMessageWrapperConverter converter) {
+    public ChatListV2PresenterImpl(ChatListContract.View view, BaseConverter<MMXMessage, MMXMessageWrapper> converter) {
         this.view = view;
         this.converter = converter;
         lazyLoadUtil = new LazyLoadUtil(Constants.MESSAGE_PAGE_SIZE, (int) (Constants.MESSAGE_PAGE_SIZE * 0.60), this);

@@ -1,9 +1,9 @@
 package com.magnet.magnetchat.presenters.impl;
 
 import com.magnet.magnetchat.ChatSDK;
-import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
-import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
-import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.MMXUserWrapper;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
@@ -16,6 +16,9 @@ import com.magnet.magnetchat.presenters.chatlist.MMXPollContract;
 import com.magnet.magnetchat.presenters.chatlist.impl.DefaultMMXMessageFactory;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
+import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
 /**
  * Created by aorehov on 27.04.16.
@@ -30,7 +33,7 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
 
     @Override
     public ChatListContract.Presenter createChatPresenter(ChatListContract.View view) {
-        MMXMessageWrapperConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXMessageConverter();
+        BaseConverter<MMXMessage, MMXMessageWrapper> converter = ChatSDK.getMmxObjectConverterFactory().createMMXMessageConverter();
         return new ChatListV2PresenterImpl(view, converter);
     }
 
@@ -41,13 +44,13 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
 
     @Override
     public UserListContract.Presenter createUserListPresenter(UserListContract.View view) {
-        MMXUserConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
+        BaseConverter<User, MMXUserWrapper> converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
         return new MMXChannelUserListPresenterImpl(view, converter);
     }
 
     @Override
     public UserListContract.Presenter createAllUserListPresenter(UserListContract.View view) {
-        MMXUserConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
+        BaseConverter<User, MMXUserWrapper> converter = ChatSDK.getMmxObjectConverterFactory().createMMXUserConverter();
         return new MMXAllUserListPresenter(view, converter);
     }
 
@@ -58,7 +61,7 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
 
     @Override
     public MMXCreatePollContract.Presenter createMMXCreatePollPresenter(MMXCreatePollContract.View view) {
-        MMXPollOptionStringConverter converter = ChatSDK.getMmxObjectConverterFactory().createMMXPollOptionStringConverter();
+        BaseConverter<String, MMXPollOption> converter = ChatSDK.getMmxObjectConverterFactory().createMMXPollOptionStringConverter();
         return new MMXCreatePollPresenter(view, converter);
     }
 

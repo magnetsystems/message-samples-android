@@ -3,7 +3,7 @@ package com.magnet.magnetchat.model;
 import android.support.annotation.NonNull;
 
 import com.magnet.magnetchat.helpers.MMXObjectsHelper;
-import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -65,15 +65,15 @@ public class MMXPollMessageWrapper extends MMXMessageWrapper {
         return mmxPoll == null ? null : mmxPoll.getName();
     }
 
-    public void loadPoll(MMXPollOptionWrapperConverter converter) {
+    public void loadPoll(BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> converter) {
         loadPoll(converter, null, null);
     }
 
-    public void loadPoll(MMXPollOptionWrapperConverter converter, PollLoadListener callback) {
+    public void loadPoll(BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> converter, PollLoadListener callback) {
         loadPoll(converter, callback, null);
     }
 
-    public void loadPoll(@NonNull final MMXPollOptionWrapperConverter converter, final PollLoadListener callback, final PollLoadErrorListener errorCallback) {
+    public void loadPoll(@NonNull final BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> converter, final PollLoadListener callback, final PollLoadErrorListener errorCallback) {
         MMXObjectsHelper.loadPollFromMessage(getObj(), new ApiCallback<MMXPoll>() {
             @Override
             public void success(MMXPoll poll) {

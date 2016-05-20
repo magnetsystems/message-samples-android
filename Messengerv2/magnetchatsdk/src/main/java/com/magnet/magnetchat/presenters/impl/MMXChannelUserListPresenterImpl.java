@@ -9,7 +9,7 @@ import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
-import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
 import com.magnet.max.android.User;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
 
-    private final MMXUserConverter converter;
+    private final BaseConverter<User, MMXUserWrapper> converter;
     private UserListContract.View view;
     private LazyLoadUtil lazyLoadUtil;
     private List<MMXUserWrapper> userWrappers;
@@ -34,7 +34,7 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     private boolean isStarted = false;
     private final int PAGE_SIZE = 40;
 
-    public MMXChannelUserListPresenterImpl(UserListContract.View view, MMXUserConverter converter) {
+    public MMXChannelUserListPresenterImpl(UserListContract.View view, BaseConverter<User, MMXUserWrapper> converter) {
         this.lazyLoadUtil = new LazyLoadUtil(PAGE_SIZE, (int) (PAGE_SIZE * 0.35), lazyLoadingCallback);
         this.view = view;
         this.converter = converter;

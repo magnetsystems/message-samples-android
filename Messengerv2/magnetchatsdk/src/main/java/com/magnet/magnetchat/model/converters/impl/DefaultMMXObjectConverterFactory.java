@@ -1,33 +1,38 @@
 package com.magnet.magnetchat.model.converters.impl;
 
-import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
-import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
-import com.magnet.magnetchat.model.converters.MMXPollOptionWrapperConverter;
-import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.model.MMXMessageWrapper;
+import com.magnet.magnetchat.model.MMXPollOptionWrapper;
+import com.magnet.magnetchat.model.MMXUserWrapper;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.ext.poll.MMXPoll;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
+
+import java.util.List;
 
 /**
  * Created by aorehov on 28.04.16.
  */
 public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFactory {
     @Override
-    public MMXMessageWrapperConverter createMMXMessageConverter() {
+    public BaseConverter<MMXMessage, MMXMessageWrapper> createMMXMessageConverter() {
         return new DefaultMMXMessageWrapperConverter(User.getCurrentUserId());
     }
 
     @Override
-    public MMXPollOptionWrapperConverter createMmxPollOptionWrapperConverter() {
+    public BaseConverter<MMXPoll, List<MMXPollOptionWrapper>> createMmxPollOptionWrapperConverter() {
         return new DefaultMMXPollOptionWrapperConverter();
     }
 
     @Override
-    public MMXUserConverter createMMXUserConverter() {
+    public BaseConverter<User, MMXUserWrapper> createMMXUserConverter() {
         return new DefaultMMXUserConverter();
     }
 
     @Override
-    public MMXPollOptionStringConverter createMMXPollOptionStringConverter() {
+    public BaseConverter<String, MMXPollOption> createMMXPollOptionStringConverter() {
         return new DefaultMMXPollOptionStringConverter();
     }
 }

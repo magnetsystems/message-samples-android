@@ -1,22 +1,20 @@
 package com.magnet.magnetchat.model.converters.impl;
 
-import com.magnet.magnetchat.helpers.DateHelper;
 import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollAnswerMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
-import com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 
-import java.util.Calendar;
 import java.util.Date;
 
 /**
  * Created by aorehov on 28.04.16.
  */
-public class DefaultMMXMessageWrapperConverter extends MMXMessageWrapperConverter {
+public class DefaultMMXMessageWrapperConverter extends BaseConverter<MMXMessage, MMXMessageWrapper> {
 
     private final String userId;
 

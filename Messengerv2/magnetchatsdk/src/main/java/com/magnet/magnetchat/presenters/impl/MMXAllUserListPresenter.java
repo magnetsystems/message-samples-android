@@ -6,7 +6,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.MMXAction;
 import com.magnet.magnetchat.callbacks.MMXAction2;
 import com.magnet.magnetchat.model.MMXUserWrapper;
-import com.magnet.magnetchat.model.converters.MMXUserConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
 import com.magnet.max.android.ApiCallback;
@@ -27,7 +27,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     private UserListContract.View view;
     private LazyLoadUtil lazyLoadUtil;
-    private MMXUserConverter converter;
+    private BaseConverter<User, MMXUserWrapper> converter;
     private List<MMXUserWrapper> selected = new ArrayList<>();
     private int userAmount = Integer.MAX_VALUE;
     private int localSize;
@@ -37,7 +37,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     private UserListContract.OnSelectUserEvent selectUserEvent;
     private UserListContract.OnGetAllSelectedUsersListener allUsersEventListener;
 
-    public MMXAllUserListPresenter(UserListContract.View view, MMXUserConverter converter) {
+    public MMXAllUserListPresenter(UserListContract.View view, BaseConverter<User, MMXUserWrapper> converter) {
         this.view = view;
         this.converter = converter;
         lazyLoadUtil = new LazyLoadUtil(PAGE_SIZE, (int) (PAGE_SIZE * 0.35), this);

@@ -3,12 +3,13 @@ package com.magnet.magnetchat.presenters.impl;
 import android.os.Bundle;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.model.converters.MMXPollOptionStringConverter;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
+import com.magnet.mmx.client.ext.poll.MMXPollOption;
 
 import java.util.List;
 
@@ -19,9 +20,9 @@ public class MMXCreatePollPresenter implements MMXCreatePollContract.Presenter {
 
     private MMXCreatePollContract.View view;
     private MMXChannel mmxChannel;
-    private MMXPollOptionStringConverter converter;
+    private BaseConverter<String, MMXPollOption> converter;
 
-    public MMXCreatePollPresenter(MMXCreatePollContract.View view, MMXPollOptionStringConverter converter) {
+    public MMXCreatePollPresenter(MMXCreatePollContract.View view, BaseConverter<String, MMXPollOption> converter) {
         this.view = view;
         this.converter = converter;
     }

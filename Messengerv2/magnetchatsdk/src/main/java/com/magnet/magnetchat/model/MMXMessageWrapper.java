@@ -108,7 +108,7 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> {
      * @param isMine     true if message belong to current user
      * @return type which using in MMXListItemFactory
      * @see com.magnet.magnetchat.ui.factories.MMXListItemFactory
-     * @see com.magnet.magnetchat.model.converters.MMXMessageWrapperConverter
+     * @see com.magnet.magnetchat.model.converters.BaseConverter
      * @see com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory
      */
     public static int defineType(MMXMessage mmxMessage, boolean isMine) {
