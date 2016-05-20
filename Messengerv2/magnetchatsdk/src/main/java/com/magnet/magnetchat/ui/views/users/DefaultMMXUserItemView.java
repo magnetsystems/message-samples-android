@@ -14,7 +14,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
+import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -26,8 +26,10 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
     TextView uiLetter;
     TextView uiUserName;
     CircleImageView uiUserPic;
-    CircleNameView uiUserLetters;
+    TextView uiLetters;
     private View uiBase;
+
+    private int colorRes;
 
     public DefaultMMXUserItemView(Context context) {
         super(context);
@@ -43,11 +45,12 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
 
     @Override
     protected void onLinkingViews(View baseView) {
+        colorRes = R.color.accent;
         uiBase = baseView;
         uiLetter = findView(baseView, R.id.mmx_character);
         uiUserName = findView(baseView, R.id.mmx_name);
-        uiUserPic = findView(baseView, R.id.mmx_pic_origin);
-        uiUserLetters = findView(baseView, R.id.mmx_pic_letters);
+        uiUserPic = findView(baseView, R.id.mmx_msg_pic_origin);
+        uiLetters = findView(baseView, R.id.mmx_user_name_letters);
     }
 
     @Override
@@ -58,29 +61,32 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
 
     @Override
     protected void onUserPic(String url, final String displayName) {
-        if (url == null) {
-            uiUserPic.setVisibility(INVISIBLE);
-            uiUserLetters.setVisibility(VISIBLE);
-            uiUserLetters.setUserName(displayName);
-        } else {
-            uiUserPic.setVisibility(VISIBLE);
-            uiUserLetters.setVisibility(INVISIBLE);
+        setUserLetters(displayName);
+        if (url != null) {
             Glide.with(getContext())
                     .load(url)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            onUserPic(null, displayName);
+                            setUserLetters(displayName);
                             return true;
                         }
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            uiLetters.setVisibility(GONE);
                             return false;
                         }
                     }).into(uiUserPic);
         }
     }
+
+    private void setUserLetters(String userName) {
+        uiUserPic.setImageResource(colorRes);
+        uiLetters.setText(MMXObjectsHelper.getLettersFromName(userName));
+        uiLetters.setVisibility(VISIBLE);
+    }
+
 
     @Override
     protected void onDisplayName(String displayName) {

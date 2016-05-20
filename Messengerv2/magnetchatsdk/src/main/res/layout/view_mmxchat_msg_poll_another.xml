@@ -25,24 +25,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <FrameLayout
+        <include
+            layout="@layout/part_view_profile_pic"
             android:layout_width="@dimen/dimen_40"
             android:layout_height="@dimen/dimen_40"
             android:layout_gravity="bottom"
-            android:layout_marginRight="@dimen/dimen_5">
-
-            <com.magnet.magnetchat.ui.views.section.chat.CircleNameView
-                android:id="@+id/mmx_msg_pic_letters"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/mmx_msg_pic_origin"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" />
-        </FrameLayout>
+            android:layout_marginLeft="@dimen/dimen_5"
+            android:layout_marginRight="@dimen/dimen_5" />
 
         <FrameLayout
             android:layout_width="0dp"

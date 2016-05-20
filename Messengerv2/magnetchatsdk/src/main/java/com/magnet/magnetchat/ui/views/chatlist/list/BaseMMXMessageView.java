@@ -11,13 +11,13 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.helpers.MMXObjectsHelper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.presenters.chatlist.BaseMMXMessagePresenter;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
-import com.magnet.magnetchat.ui.views.section.chat.CircleNameView;
 import com.magnet.magnetchat.util.Logger;
 
 import java.util.Date;
@@ -29,10 +29,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseMMXMessagePresenter> extends BaseMMXTypedView<MMXMessageWrapper, T> {
 
-    CircleNameView uiLettersView;
+    TextView uiUserLetters;
     CircleImageView uiUserPicView;
     TextView uiDate;
     TextView uiSenderName;
+
+    private int defColorUserPic;
 
     private BaseConverter<Date, String> dateConverter;
 
@@ -63,7 +65,8 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
     @Override
     protected void onLinkingViews(View baseView) {
-        uiLettersView = findView(baseView, R.id.mmx_msg_pic_letters);
+        defColorUserPic = R.color.accent;
+        uiUserLetters = findView(baseView, R.id.mmx_user_name_letters);
         uiUserPicView = findView(baseView, R.id.mmx_msg_pic_origin);
         uiDate = findView(baseView, R.id.mmx_msg_date);
         uiSenderName = findView(baseView, R.id.mmx_sender);
@@ -84,8 +87,7 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            uiLettersView.setVisibility(GONE);
-                            uiUserPicView.setVisibility(VISIBLE);
+                            uiUserLetters.setVisibility(GONE);
                             return false;
                         }
                     }).into(uiUserPicView);
@@ -93,9 +95,10 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
     }
 
     private void setLetters(String name) {
-        uiLettersView.setUserName(name);
-        uiUserPicView.setVisibility(INVISIBLE);
-        uiLettersView.setVisibility(VISIBLE);
+        String lettersFromName = MMXObjectsHelper.getLettersFromName(name);
+        uiUserPicView.setImageResource(defColorUserPic);
+        uiUserLetters.setText(lettersFromName);
+        uiUserLetters.setVisibility(VISIBLE);
     }
 
     protected void setDate(Date date) {

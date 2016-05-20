@@ -258,6 +258,10 @@ public abstract class BaseView<T extends ViewProperty> extends FrameLayout imple
         return getContext().getString(resId, objs);
     }
 
+    protected int getColor(int resId) {
+        return getResources().getColor(resId);
+    }
+
     /**
      * the methods are wrappers for toast notification
      *
