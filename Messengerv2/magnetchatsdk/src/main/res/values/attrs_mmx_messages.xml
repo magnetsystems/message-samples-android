@@ -29,6 +29,55 @@
     <attr name="pic_height" format="dimension" />
     <attr name="pic_width" format="dimension" />
 
+    <declare-styleable name="DefaultMMXPollMessageView">
+        <attr name="letters_textSize" />
+        <attr name="letters_textColor" />
+
+        <attr name="upic_src" />
+        <attr name="upic_height" />
+        <attr name="upic_width" />
+        <attr name="upic_borderSize" />
+        <attr name="upic_borderColor" />
+        <attr name="upic_marginLeft" />
+        <attr name="upic_marginRight" />
+        <attr name="upic_marginTop" />
+        <attr name="upic_marginBottom" />
+
+        <attr name="date_textColor" />
+        <attr name="date_textSize" />
+
+        <attr name="uname_textSize" />
+        <attr name="uname_textColor" />
+        <attr name="uname_marginLeft" />
+        <attr name="uname_marginRight" />
+        <attr name="uname_marginTop" />
+        <attr name="uname_marginBottom" />
+
+        <attr name="common_background" />
+
+        <attr name="poll_background" format="reference" />
+        <attr name="poll_padding" format="dimension" />
+        <attr name="poll_margin" format="dimension" />
+        <attr name="poll_width" format="dimension" />
+        <attr name="poll_factoryName" format="string" />
+
+        <attr name="poll_text_color" format="color" />
+        <attr name="poll_text_type_size" format="dimension" />
+        <attr name="poll_text_question_size" format="dimension" />
+        <attr name="poll_text_submit_size" format="dimension" />
+        <attr name="poll_text_submit_text" format="string" />
+        <attr name="poll_text_subtitle_size" format="dimension" />
+        <attr name="poll_text_subtitle_text" format="string" />
+
+        <attr name="poll_divider_color" format="color" />
+        <attr name="poll_divider_height" format="dimension" />
+
+        <attr name="poll_refresh_src" format="reference" />
+        <attr name="poll_refresh_size" format="dimension" />
+        <attr name="poll_refresh_padding" format="dimension" />
+
+    </declare-styleable>
+
     <declare-styleable name="DefaultMMXPictureMessageView">
         <attr name="letters_textSize" />
         <attr name="letters_textColor" />
