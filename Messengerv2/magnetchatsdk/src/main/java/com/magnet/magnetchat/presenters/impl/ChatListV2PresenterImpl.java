@@ -272,6 +272,9 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     private final MMX.EventListener eventListener = new MMX.EventListener() {
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
+            MMXChannel mmxChannel = mmxMessage.getChannel();
+            if (channel == null || !channel.getObj().getChannel().equals(mmxChannel)) return false;
+
             log("onMessageReceived");
             MMXMessageWrapper wrapper = converter.convert(mmxMessage);
 
@@ -280,7 +283,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
             view.onPutMessage(wrapper, isNeedScroll);
             if (mmxMessage != null && mmxMessage.getChannel() != null && mmxMessage.getChannel().getNumberOfMessages() != null) {
                 Integer integer = mmxMessage.getChannel().getNumberOfMessages();
-                channel.setMessagesAmount(integer);
+                ChatListV2PresenterImpl.this.channel.setMessagesAmount(integer);
             }
             ChatManager.getInstance().handleIncomingMessage(mmxMessage, ChatManager.MOCK);
 
