@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by aorehov on 05.05.16.
  */
-public abstract class AbstractMMXTextMessageView<T extends ViewProperty> extends BaseMMXMessageView<T, MMXMessageContract.Presenter> implements MMXMessageContract.View {
+public abstract class AbstractMMXTextMessageView<T extends MMXMessageBaseProperty> extends BaseMMXMessageView<T, MMXMessageContract.Presenter> implements MMXMessageContract.View {
     public AbstractMMXTextMessageView(Context context) {
         super(context);
     }

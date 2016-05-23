@@ -15,12 +15,14 @@ import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
 public class MyMMXListItemFactory extends DefaultMMXListItemFactory {
     @Override
     protected BaseMMXTypedView createMyCustomView(Context context, int type) {
-//        switch (type) {
-//            case MMXMessageWrapper.TYPE_TEXT_ANOTHER:
-//                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.text_view_cutom_msg_another, null, false);
-//            case MMXMessageWrapper.TYPE_TEXT_MY:
-//                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.text_view_cutom_msg_my, null, false);
-//        }
+        switch (type) {
+            case MMXMessageWrapper.TYPE_TEXT_ANOTHER:
+                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_cutom_msg_another, null, false);
+            case MMXMessageWrapper.TYPE_TEXT_MY:
+                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_cutom_msg_my, null, false);
+//            case MMXMessageWrapper.TYPE_PHOTO_ANOTHER:
+//                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_custom_msg_pic_another, null, false);
+        }
         return super.createMyCustomView(context, type);
     }
 }

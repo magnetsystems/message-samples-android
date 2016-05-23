@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by aorehov on 05.05.16.
  */
-public abstract class AbstractMMXLocationMessageView<T extends ViewProperty>
+public abstract class AbstractMMXLocationMessageView<T extends MMXMessageBaseProperty>
         extends BaseMMXMessageView<T, MMXLocationContract.Presenter> implements MMXLocationContract.View {
     public AbstractMMXLocationMessageView(Context context) {
         super(context);

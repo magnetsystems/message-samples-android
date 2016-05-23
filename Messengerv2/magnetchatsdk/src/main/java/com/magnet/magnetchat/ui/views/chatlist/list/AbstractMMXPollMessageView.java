@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by aorehov on 05.05.16.
  */
-public abstract class AbstractMMXPollMessageView<T extends ViewProperty> extends BaseMMXMessageView<T, MMXPollContract.Presenter> implements MMXPollContract.View {
+public abstract class AbstractMMXPollMessageView<T extends MMXMessageBaseProperty> extends BaseMMXMessageView<T, MMXPollContract.Presenter> implements MMXPollContract.View {
     public AbstractMMXPollMessageView(Context context) {
         super(context);
     }
@@ -23,6 +23,7 @@ public abstract class AbstractMMXPollMessageView<T extends ViewProperty> extends
     public AbstractMMXPollMessageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
+
     @Override
     public void onSetPostDate(Date date) {
         setDate(date);

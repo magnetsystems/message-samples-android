@@ -42,40 +42,7 @@ public abstract class DefaultMMXMessageView extends AbstractMMXTextMessageView<M
 
     @Override
     protected void onApplyAttributes(MMXTextProperty prop) {
-        uiUserLetters.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.letters_textSize);
-        uiUserLetters.setTextColor(prop.letters_textColor);
-
-        FrameLayout.LayoutParams params = (LayoutParams) uiUserPicView.getLayoutParams();
-        if (prop.upic_height != -1) params.height = prop.upic_height;
-        if (prop.upic_width != -1) params.width = prop.upic_width;
-        if (prop.upic_src != null) setDefColorUserPic(prop.upic_src);
-        params.setMargins(
-                prop.upic_marginLeft,
-                prop.upic_marginTop,
-                prop.upic_marginRight,
-                prop.upic_marginBottom);
-        if (prop.upic_borderSize != -1) {
-            uiUserPicView.setBorderWidth(prop.upic_borderSize);
-            if (prop.upic_borderColor != -1) uiUserPicView.setBorderColor(prop.upic_borderColor);
-        }
-
-        if (prop.date_textColor != -1) uiDate.setTextColor(prop.date_textColor);
-        if (prop.date_textSize != -1)
-            uiDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.date_textSize);
-
-        if (uiSenderName != null) {
-            if (prop.uname_textSize != -1)
-                uiSenderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.uname_textSize);
-            if (prop.uname_textColor != -1) uiSenderName.setTextColor(prop.uname_textColor);
-            LinearLayout.LayoutParams sparams = (LinearLayout.LayoutParams) uiSenderName.getLayoutParams();
-            sparams.setMargins(
-                    prop.uname_marginLeft,
-                    prop.uname_marginTop,
-                    prop.uname_marginRight,
-                    prop.uname_marginBottom);
-        }
-
-        if (prop.common_background != null) baseView.setBackground(prop.common_background);
+        super.onApplyAttributes(prop);
         if (prop.msg_bubble != null) uiMessageText.setBackground(prop.msg_bubble);
         if (prop.msg_maxWidth != -1) uiMessageText.setMaxWidth(prop.msg_maxWidth);
         if (prop.msg_textColor != -1) uiMessageText.setTextColor(prop.msg_textColor);

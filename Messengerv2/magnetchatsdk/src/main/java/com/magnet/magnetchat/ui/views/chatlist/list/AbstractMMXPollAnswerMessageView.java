@@ -9,7 +9,7 @@ import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 /**
  * Created by aorehov on 10.05.16.
  */
-public abstract class AbstractMMXPollAnswerMessageView<T extends ViewProperty> extends BaseMMXMessageView<T, MMXMessageContract.Presenter> {
+public abstract class AbstractMMXPollAnswerMessageView<T extends MMXMessageBaseProperty> extends BaseMMXMessageView<T, MMXMessageContract.Presenter> {
     public AbstractMMXPollAnswerMessageView(Context context) {
         super(context);
     }

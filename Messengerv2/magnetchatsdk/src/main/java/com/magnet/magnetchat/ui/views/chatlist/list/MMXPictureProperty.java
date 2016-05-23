@@ -1,9 +1,9 @@
 package com.magnet.magnetchat.ui.views.chatlist.list;
 
-import com.magnet.magnetchat.ui.views.abs.ViewProperty;
-
 /**
  * Created by aorehov on 05.05.16.
  */
-public class MMXPictureProperty extends ViewProperty {
+public class MMXPictureProperty extends MMXMessageBaseProperty {
+    int pic_height;
+    int pic_width;
 }

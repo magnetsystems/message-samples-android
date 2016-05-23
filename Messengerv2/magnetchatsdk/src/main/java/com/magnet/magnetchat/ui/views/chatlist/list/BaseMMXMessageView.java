@@ -4,7 +4,10 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -29,7 +32,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by aorehov on 05.05.16.
  */
-public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseMMXMessagePresenter> extends BaseMMXTypedView<MMXMessageWrapper, T> {
+public abstract class BaseMMXMessageView<T extends MMXMessageBaseProperty, P extends BaseMMXMessagePresenter> extends BaseMMXTypedView<MMXMessageWrapper, T> {
 
     TextView uiUserLetters;
     CircleImageView uiUserPicView;
@@ -77,6 +80,45 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
         uiUserPicView = findView(baseView, R.id.mmx_msg_pic_origin);
         uiDate = findView(baseView, R.id.mmx_msg_date);
         uiSenderName = findView(baseView, R.id.mmx_sender);
+    }
+
+    @Override
+    protected void onApplyAttributes(T prop) {
+        super.onApplyAttributes(prop);
+        uiUserLetters.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.letters_textSize);
+        uiUserLetters.setTextColor(prop.letters_textColor);
+
+        FrameLayout.LayoutParams params = (LayoutParams) uiUserPicView.getLayoutParams();
+        if (prop.upic_height != -1) params.height = prop.upic_height;
+        if (prop.upic_width != -1) params.width = prop.upic_width;
+        if (prop.upic_src != null) setDefColorUserPic(prop.upic_src);
+        params.setMargins(
+                prop.upic_marginLeft,
+                prop.upic_marginTop,
+                prop.upic_marginRight,
+                prop.upic_marginBottom);
+        if (prop.upic_borderSize != -1) {
+            uiUserPicView.setBorderWidth(prop.upic_borderSize);
+            if (prop.upic_borderColor != -1) uiUserPicView.setBorderColor(prop.upic_borderColor);
+        }
+
+        if (prop.date_textColor != -1) uiDate.setTextColor(prop.date_textColor);
+        if (prop.date_textSize != -1)
+            uiDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.date_textSize);
+
+        if (uiSenderName != null) {
+            if (prop.uname_textSize != -1)
+                uiSenderName.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.uname_textSize);
+            if (prop.uname_textColor != -1) uiSenderName.setTextColor(prop.uname_textColor);
+            LinearLayout.LayoutParams sparams = (LinearLayout.LayoutParams) uiSenderName.getLayoutParams();
+            sparams.setMargins(
+                    prop.uname_marginLeft,
+                    prop.uname_marginTop,
+                    prop.uname_marginRight,
+                    prop.uname_marginBottom);
+        }
+
+        if (prop.common_background != null) baseView.setBackground(prop.common_background);
     }
 
     protected void onSetUserPicOrLetters(final String picUrl, final String name) {

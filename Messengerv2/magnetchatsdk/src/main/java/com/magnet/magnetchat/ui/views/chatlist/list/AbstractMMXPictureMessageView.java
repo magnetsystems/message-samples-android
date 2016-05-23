@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Created by aorehov on 05.05.16.
  */
-public abstract class AbstractMMXPictureMessageView<T extends ViewProperty> extends BaseMMXMessageView<T, MMXPicMessageContract.Presenter> implements MMXPicMessageContract.View {
+public abstract class AbstractMMXPictureMessageView<T extends MMXMessageBaseProperty> extends BaseMMXMessageView<T, MMXPicMessageContract.Presenter> implements MMXPicMessageContract.View {
     public AbstractMMXPictureMessageView(Context context) {
         super(context);
     }
