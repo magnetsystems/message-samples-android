@@ -92,7 +92,6 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
         ViewGroup.LayoutParams params = uiPic.getLayoutParams();
         if (prop.pic_height != -1) params.height = prop.pic_height;
         if (prop.pic_width != -1) params.width = prop.pic_width;
-        uiPic.setLayoutParams(params);
     }
 
     @Override

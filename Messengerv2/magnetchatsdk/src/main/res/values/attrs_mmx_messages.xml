@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="letters_textSize" format="dimension" />
+    <attr name="letters_textColor" format="color" />
+
+    <attr name="upic_src" format="reference" />
+    <attr name="upic_height" format="dimension" />
+    <attr name="upic_width" format="dimension" />
+    <attr name="upic_borderSize" format="dimension" />
+    <attr name="upic_borderColor" format="color" />
+    <attr name="upic_marginLeft" format="dimension" />
+    <attr name="upic_marginRight" format="dimension" />
+    <attr name="upic_marginTop" format="dimension" />
+    <attr name="upic_marginBottom" format="dimension" />
+
+    <attr name="date_textColor" format="color" />
+    <attr name="date_textSize" format="dimension" />
+
+    <attr name="uname_textSize" format="dimension" />
+    <attr name="uname_textColor" format="color" />
+    <attr name="uname_marginLeft" format="dimension" />
+    <attr name="uname_marginRight" format="dimension" />
+    <attr name="uname_marginTop" format="dimension" />
+    <attr name="uname_marginBottom" format="dimension" />
+
+    <attr name="common_background" format="reference" />
+
+    <attr name="pic_height" format="dimension" />
+    <attr name="pic_width" format="dimension" />
+
+    <declare-styleable name="DefaultMMXPictureMessageView">
+        <attr name="letters_textSize" />
+        <attr name="letters_textColor" />
+
+        <attr name="upic_src" />
+        <attr name="upic_height" />
+        <attr name="upic_width" />
+        <attr name="upic_borderSize" />
+        <attr name="upic_borderColor" />
+        <attr name="upic_marginLeft" />
+        <attr name="upic_marginRight" />
+        <attr name="upic_marginTop" />
+        <attr name="upic_marginBottom" />
+
+        <attr name="date_textColor" />
+        <attr name="date_textSize" />
+
+        <attr name="uname_textSize" />
+        <attr name="uname_textColor" />
+        <attr name="uname_marginLeft" />
+        <attr name="uname_marginRight" />
+        <attr name="uname_marginTop" />
+        <attr name="uname_marginBottom" />
+
+        <attr name="common_background" />
+
+        <attr name="pic_height" />
+        <attr name="pic_width" />
+
+    </declare-styleable>
+
+    <declare-styleable name="DefaultMMXLocMessageView">
+        <attr name="letters_textSize" />
+        <attr name="letters_textColor" />
+
+        <attr name="upic_src" />
+        <attr name="upic_height" />
+        <attr name="upic_width" />
+        <attr name="upic_borderSize" />
+        <attr name="upic_borderColor" />
+        <attr name="upic_marginLeft" />
+        <attr name="upic_marginRight" />
+        <attr name="upic_marginTop" />
+        <attr name="upic_marginBottom" />
+
+        <attr name="date_textColor" />
+        <attr name="date_textSize" />
+
+        <attr name="uname_textSize" />
+        <attr name="uname_textColor" />
+        <attr name="uname_marginLeft" />
+        <attr name="uname_marginRight" />
+        <attr name="uname_marginTop" />
+        <attr name="uname_marginBottom" />
+
+        <attr name="common_background" />
+
+        <attr name="pic_height" />
+        <attr name="pic_width" />
+
+    </declare-styleable>
+
+    <declare-styleable name="DefaultMMXMessageView">
+        <attr name="letters_textSize" />
+        <attr name="letters_textColor" />
+
+        <attr name="upic_src" />
+        <attr name="upic_height" />
+        <attr name="upic_width" />
+        <attr name="upic_borderSize" />
+        <attr name="upic_borderColor" />
+        <attr name="upic_marginLeft" />
+        <attr name="upic_marginRight" />
+        <attr name="upic_marginTop" />
+        <attr name="upic_marginBottom" />
+
+        <attr name="date_textColor" />
+        <attr name="date_textSize" />
+
+        <attr name="uname_textSize" />
+        <attr name="uname_textColor" />
+        <attr name="uname_marginLeft" />
+        <attr name="uname_marginRight" />
+        <attr name="uname_marginTop" />
+        <attr name="uname_marginBottom" />
+
+        <attr name="common_background" />
+
+        <attr name="msg_bubble" format="reference" />
+        <attr name="msg_maxWidth" format="dimension" />
+        <attr name="msg_textColor" format="color" />
+        <attr name="msg_paddingLeft" format="dimension" />
+        <attr name="msg_paddingTop" format="dimension" />
+        <attr name="msg_paddingRight" format="dimension" />
+        <attr name="msg_paddingBottom" format="dimension" />
+    </declare-styleable>
+
+</resources>

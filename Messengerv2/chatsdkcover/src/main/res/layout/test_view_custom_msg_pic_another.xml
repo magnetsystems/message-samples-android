@@ -8,7 +8,7 @@
     app:date_textSize="@dimen/text_10"
     app:letters_textColor="@android:color/holo_red_dark"
     app:letters_textSize="@dimen/text_12"
-    app:pic_height="@dimen/dimen_300"
+    app:pic_height="300dp"
     app:pic_width="@dimen/dimen_300"
     app:uname_textColor="@android:color/holo_red_dark"
     app:uname_textSize="@dimen/text_12"
