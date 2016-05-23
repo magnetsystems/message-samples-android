@@ -1,6 +1,8 @@
 package com.magnet.magnetchat.ui.views.chatlist.list;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
@@ -34,7 +36,7 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
     TextView uiDate;
     TextView uiSenderName;
 
-    private int defColorUserPic;
+    private Drawable defColorUserPic;
 
     private BaseConverter<Date, String> dateConverter;
 
@@ -63,9 +65,14 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
         return dateConverter;
     }
 
+    public void setDefColorUserPic(Drawable defColorUserPic) {
+        this.defColorUserPic = defColorUserPic;
+        uiUserPicView.setImageDrawable(defColorUserPic);
+    }
+
     @Override
     protected void onLinkingViews(View baseView) {
-        defColorUserPic = R.color.accent;
+        defColorUserPic = new ColorDrawable(getColor(R.color.accent));
         uiUserLetters = findView(baseView, R.id.mmx_user_name_letters);
         uiUserPicView = findView(baseView, R.id.mmx_msg_pic_origin);
         uiDate = findView(baseView, R.id.mmx_msg_date);
@@ -96,7 +103,7 @@ public abstract class BaseMMXMessageView<T extends ViewProperty, P extends BaseM
 
     private void setLetters(String name) {
         String lettersFromName = MMXObjectsHelper.getLettersFromName(name);
-        uiUserPicView.setImageResource(defColorUserPic);
+        uiUserPicView.setImageDrawable(defColorUserPic);
         uiUserLetters.setText(lettersFromName);
         uiUserLetters.setVisibility(VISIBLE);
     }

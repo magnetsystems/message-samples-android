@@ -48,7 +48,7 @@ public abstract class DefaultMMXMessageView extends AbstractMMXTextMessageView<M
         FrameLayout.LayoutParams params = (LayoutParams) uiUserPicView.getLayoutParams();
         if (prop.upic_height != -1) params.height = prop.upic_height;
         if (prop.upic_width != -1) params.width = prop.upic_width;
-        if (prop.upic_src != null) uiUserPicView.setImageDrawable(prop.upic_src);
+        if (prop.upic_src != null) setDefColorUserPic(prop.upic_src);
         params.setMargins(
                 prop.upic_marginLeft,
                 prop.upic_marginTop,
