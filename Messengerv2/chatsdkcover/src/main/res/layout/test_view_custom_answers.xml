@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.magnet.magnetchat.ui.views.chatlist.list.DefaultMMXPollAnswerMessageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:common_background="@android:color/white"
+    app:date_textColor="@android:color/holo_green_dark"
+    app:date_textSize="@dimen/text_10"
+    app:text_color="@android:color/holo_red_dark"
+    app:text_size="@dimen/text_10" />

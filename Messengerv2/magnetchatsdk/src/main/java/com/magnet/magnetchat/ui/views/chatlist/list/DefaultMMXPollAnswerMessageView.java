@@ -1,15 +1,15 @@
 package com.magnet.magnetchat.ui.views.chatlist.list;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
-import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessageContract;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
-import com.magnet.magnetchat.ui.factories.MMXListItemFactory;
 
 import java.util.Date;
 
@@ -44,6 +44,32 @@ public class DefaultMMXPollAnswerMessageView extends AbstractMMXPollAnswerMessag
     }
 
     @Override
+    protected MMXPollAnswerProperty onReadAttributes(AttributeSet attrs) {
+        TypedArray arr = readTypedArray(attrs, R.styleable.DefaultMMXPollAnswerMessageView);
+        try {
+            MMXPollAnswerProperty props = new MMXPollAnswerProperty();
+            props.date_textColor = arr.getColor(R.styleable.DefaultMMXPollAnswerMessageView_date_textColor, -1);
+            props.date_textSize = arr.getDimensionPixelSize(R.styleable.DefaultMMXPollAnswerMessageView_date_textSize, -1);
+            props.common_background = arr.getDrawable(R.styleable.DefaultMMXPollAnswerMessageView_common_background);
+            props.text_color = arr.getColor(R.styleable.DefaultMMXPollAnswerMessageView_text_color, -1);
+            props.text_size = arr.getDimensionPixelSize(R.styleable.DefaultMMXPollAnswerMessageView_text_size, -1);
+            return props;
+        } finally {
+            arr.recycle();
+        }
+    }
+
+    @Override
+    protected void onApplyAttributes(MMXPollAnswerProperty prop) {
+        if (prop.date_textColor != -1) uiDate.setTextColor(prop.date_textColor);
+        if (prop.date_textSize != -1)
+            uiDate.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.date_textSize);
+        if (prop.common_background != null) setBackground(prop.common_background);
+        if (prop.text_color != -1) uiText.setTextColor(prop.text_color);
+        if (prop.text_size != -1) uiText.setTextSize(TypedValue.COMPLEX_UNIT_PX, prop.text_size);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.view_mmxchat_msg_poll_answers;
     }
@@ -60,7 +86,7 @@ public class DefaultMMXPollAnswerMessageView extends AbstractMMXPollAnswerMessag
 
     @Override
     public void onSetPostDate(Date date) {
-        if (uiDate != null) uiDate.setText(date.toString());
+        if (uiDate != null) setDate(date);
     }
 
     @Override

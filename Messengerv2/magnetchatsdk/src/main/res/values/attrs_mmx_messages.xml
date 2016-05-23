@@ -29,6 +29,16 @@
     <attr name="pic_height" format="dimension" />
     <attr name="pic_width" format="dimension" />
 
+    <declare-styleable name="DefaultMMXPollAnswerMessageView">
+        <attr name="date_textColor" />
+        <attr name="date_textSize" />
+
+        <attr name="common_background" />
+
+        <attr name="text_color" format="color" />
+        <attr name="text_size" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="DefaultMMXPollMessageView">
         <attr name="letters_textSize" />
         <attr name="letters_textColor" />
