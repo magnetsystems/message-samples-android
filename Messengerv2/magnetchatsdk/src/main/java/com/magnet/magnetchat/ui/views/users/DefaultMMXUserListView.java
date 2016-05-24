@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.ui.views.users;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
@@ -20,6 +21,7 @@ public class DefaultMMXUserListView extends MMXUserListView<MMXUserListProperty>
 
     private SwipeRefreshLayout uiRefresher;
     private RecyclerView uiRecyclerView;
+    private String factoryName;
 
     public DefaultMMXUserListView(Context context) {
         super(context);
@@ -31,6 +33,30 @@ public class DefaultMMXUserListView extends MMXUserListView<MMXUserListProperty>
 
     public DefaultMMXUserListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected MMXUserListProperty onReadAttributes(AttributeSet attrs) {
+        TypedArray arr = readTypedArray(attrs, R.styleable.DefaultMMXUserListView);
+        try {
+            MMXUserListProperty prop = new MMXUserListProperty();
+
+            prop.factory_name = arr.getString(R.styleable.DefaultMMXUserListView_factory_name);
+
+            return prop;
+        } finally {
+            arr.recycle();
+        }
+    }
+
+    @Override
+    protected void onApplyAttributes(MMXUserListProperty prop) {
+        factoryName = prop.factory_name;
+    }
+
+    @Override
+    protected String getItemViewFactoryByName() {
+        return factoryName;
     }
 
     @NonNull

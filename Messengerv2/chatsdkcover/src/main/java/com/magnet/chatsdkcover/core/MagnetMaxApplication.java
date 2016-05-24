@@ -28,8 +28,9 @@ public abstract class MagnetMaxApplication extends MultiDexApplication {
         Max.init(this, new MaxAndroidPropertiesConfig(this, getPropertyFile()));
 
         new ChatSDK.Builder()
-                .setDefaultMMXListItemFactory(new MyMMXListItemFactory())
+//                .setDefaultMMXListItemFactory(new MyMMXListItemFactory())
                 .setDefaultMMXViewFactory(new MyMMXViewFactory())
+                .registerNamedFactory("custom", new MyMMXListItemFactory())
                 .init(this);
 
 //        ChatSDK.init(this);

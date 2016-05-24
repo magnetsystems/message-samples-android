@@ -28,8 +28,8 @@ public class MyMMXListItemFactory extends DefaultMMXListItemFactory {
 //                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_custom_msg_poll_my, null, false);
 //            case MMXMessageWrapper.TYPE_VOTE_ANSWER:
 //                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_custom_answers, null, false);
-//            case MMXUserWrapper.TYPE_USER:
-//                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_user_item, null, false);
+            case MMXUserWrapper.TYPE_USER:
+                return (BaseMMXTypedView) LayoutInflater.from(context).inflate(R.layout.test_view_user_item, null, false);
         }
         return super.createMyCustomView(context, type);
     }

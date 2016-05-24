@@ -114,7 +114,7 @@ public class ChatSDK {
             try {
                 return (T) byName;
             } catch (ClassCastException ex) {
-                Logger.debug(ChatSDK.class.getSimpleName(), ex);
+                Logger.debug(ex);
                 return null;
             }
         }
@@ -266,7 +266,7 @@ public class ChatSDK {
             return this;
         }
 
-        public Builder registerNamedPresenterFactory(String key, MMXPresenterFactory factory) {
+        public Builder registerNamedFactory(String key, Object factory) {
             if (key == null || key.isEmpty()) {
                 throw new IllegalArgumentException("Key cannot be empty or null");
             }

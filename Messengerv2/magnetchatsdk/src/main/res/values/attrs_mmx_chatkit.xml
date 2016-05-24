@@ -29,6 +29,12 @@
     <attr name="pic_height" format="dimension" />
     <attr name="pic_width" format="dimension" />
 
+    <attr name="factory_name" format="string" />
+
+    <declare-styleable name="DefaultMMXUserListView">
+        <attr name="factory_name" />
+    </declare-styleable>
+
     <declare-styleable name="DefaultMMXUserItemView">
         <attr name="header_letter_background" format="color" />
         <attr name="header_letter_textColor" format="color" />
@@ -49,7 +55,7 @@
         <attr name="upic_marginBottom" />
 
         <attr name="common_background" />
-        <attr name="common_backgroundSelected" format="reference"/>
+        <attr name="common_backgroundSelected" format="reference" />
         <attr name="common_height" format="dimension" />
 
         <attr name="uname_textColor" />
