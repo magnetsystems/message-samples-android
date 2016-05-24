@@ -29,6 +29,37 @@
     <attr name="pic_height" format="dimension" />
     <attr name="pic_width" format="dimension" />
 
+    <declare-styleable name="DefaultMMXUserItemView">
+        <attr name="header_letter_background" format="color" />
+        <attr name="header_letter_textColor" format="color" />
+        <attr name="header_letter_textSize" format="dimension" />
+        <attr name="header_letter_padding" format="dimension" />
+
+        <attr name="letters_textSize" />
+        <attr name="letters_textColor" />
+
+        <attr name="upic_src" />
+        <attr name="upic_height" />
+        <attr name="upic_width" />
+        <attr name="upic_borderSize" />
+        <attr name="upic_borderColor" />
+        <attr name="upic_marginLeft" />
+        <attr name="upic_marginRight" />
+        <attr name="upic_marginTop" />
+        <attr name="upic_marginBottom" />
+
+        <attr name="common_background" />
+        <attr name="common_backgroundSelected" format="reference"/>
+        <attr name="common_height" format="dimension" />
+
+        <attr name="uname_textColor" />
+        <attr name="uname_textSize" />
+        <attr name="uname_padding" format="dimension" />
+
+        <attr name="divider_color" format="color" />
+        <attr name="divider_height" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="DefaultMMXPollAnswerMessageView">
         <attr name="date_textColor" />
         <attr name="date_textSize" />
