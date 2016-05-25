@@ -22,6 +22,7 @@ import java.net.SocketTimeoutException;
 /**
  * Created by dlernatovich on 2/29/16.
  */
+@Deprecated
 public class LoginView extends BaseView<LoginViewProperties> {
 
     private ImageView imageLogo;

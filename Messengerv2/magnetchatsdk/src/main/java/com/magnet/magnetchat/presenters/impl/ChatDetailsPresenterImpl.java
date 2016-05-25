@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Deprecated
 public class ChatDetailsPresenterImpl implements ChatDetailsContract.Presenter {
     private static final String TAG = "ChatDetailsPresenter";
 

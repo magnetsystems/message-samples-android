@@ -15,6 +15,7 @@ import com.magnet.max.android.UserProfile;
 import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.List;
 
+@Deprecated
 public class SelectedUsersAdapter extends RecyclerView.Adapter<SelectedUsersAdapter.AvatarViewHolder> {
 
     private LayoutInflater inflater;

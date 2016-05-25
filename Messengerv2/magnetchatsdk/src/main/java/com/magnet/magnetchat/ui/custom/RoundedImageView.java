@@ -16,6 +16,7 @@ import android.widget.ImageView;
 /**
  * Created by dlernatovich on 12/10/15.
  */
+@Deprecated
 public class RoundedImageView extends ImageView {
 
     public RoundedImageView(Context context) {

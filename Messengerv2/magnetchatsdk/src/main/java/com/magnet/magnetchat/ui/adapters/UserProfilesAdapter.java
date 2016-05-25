@@ -13,6 +13,7 @@ import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import java.util.List;
 
+@Deprecated
 public class UserProfilesAdapter extends BaseUsersAdapter<BaseUsersAdapter.UserViewHolder, UserProfile> {
 
     public UserProfilesAdapter(Context context, List<UserProfile> users, ItemComparator<UserProfile> comparator) {

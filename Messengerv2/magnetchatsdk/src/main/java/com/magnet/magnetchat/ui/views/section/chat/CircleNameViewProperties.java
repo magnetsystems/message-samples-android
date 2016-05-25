@@ -6,6 +6,7 @@ import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 /**
  * Created by dlernatovich on 2/29/16.
  */
+@Deprecated
 public class CircleNameViewProperties extends ViewProperty {
     private Typeface typeface;
     private int textDimension;

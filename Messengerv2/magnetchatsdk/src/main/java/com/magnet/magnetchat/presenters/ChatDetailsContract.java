@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Copyright (c) 2012-2016 Magnet Systems. All rights reserved.
  */
+@Deprecated
 public interface ChatDetailsContract {
 
     interface View {

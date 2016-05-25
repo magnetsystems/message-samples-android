@@ -13,6 +13,7 @@ import com.magnet.magnetchat.ui.views.abs.BaseView;
 /**
  * Created by dlernatovich on 2/12/16.
  */
+@Deprecated
 public class CircleNameView extends BaseView<CircleNameViewProperties> {
 
     private TextView labelUserName;

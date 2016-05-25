@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Created by dlernatovich on 3/1/16.
  */
+@Deprecated
 public class ChatListPresenterImpl implements ChatListContract.Presenter {
     protected static final String TAG = "ChatListPresenter";
 

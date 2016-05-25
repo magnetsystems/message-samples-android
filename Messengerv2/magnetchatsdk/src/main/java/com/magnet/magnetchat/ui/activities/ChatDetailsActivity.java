@@ -24,7 +24,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 
 import java.util.List;
 
-
+@Deprecated
 public class ChatDetailsActivity extends BaseActivity implements ChatDetailsContract.View, CompoundButton.OnCheckedChangeListener {
 
     public static final String TAG_CHANNEL = "channel";

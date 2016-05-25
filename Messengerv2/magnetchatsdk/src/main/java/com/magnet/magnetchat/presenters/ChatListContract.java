@@ -5,6 +5,7 @@ import com.magnet.magnetchat.model.Chat;
 /**
  * Copyright (c) 2012-2016 Magnet Systems. All rights reserved.
  */
+@Deprecated
 public interface ChatListContract {
 
     interface View extends IListView<Chat> {

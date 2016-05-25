@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by aorehov on 17.05.16.
  */
-public class MMXCreatePollPresenter implements MMXCreatePollContract.Presenter {
+class MMXCreatePollPresenter implements MMXCreatePollContract.Presenter {
 
     private MMXCreatePollContract.View view;
     private MMXChannel mmxChannel;

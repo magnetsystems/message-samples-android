@@ -19,6 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class UsersAdapter extends BaseUsersAdapter<BaseUsersAdapter.UserViewHolder, User> {
     private List<User> selectedUsers;
 

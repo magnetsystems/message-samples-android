@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import com.magnet.magnetchat.callbacks.OnRecyclerViewItemClickListener;
 import java.util.List;
 
+@Deprecated
 public abstract class BaseAdapter<V extends RecyclerView.ViewHolder, T> extends RecyclerView.Adapter<V> {
 
     protected LayoutInflater mInflater;

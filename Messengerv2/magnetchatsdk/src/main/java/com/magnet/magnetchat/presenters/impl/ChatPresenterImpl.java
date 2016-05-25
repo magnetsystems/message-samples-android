@@ -33,6 +33,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class ChatPresenterImpl implements ChatContract.Presenter {
     protected static final String TAG = "ChatPresenterImpl";
 

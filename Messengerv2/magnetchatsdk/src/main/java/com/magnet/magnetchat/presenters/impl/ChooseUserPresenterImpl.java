@@ -27,6 +27,7 @@ import java.util.List;
 /**
  * Created by dlernatovich on 3/2/16.
  */
+@Deprecated
 public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
     private final ChooseUserContract.View mView;
     private final AppScopePendingStateRepository appStateRepository;

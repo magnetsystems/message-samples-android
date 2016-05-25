@@ -16,6 +16,7 @@ import com.magnet.magnetchat.R;
 /**
  * Created by dlernatovich on 2/10/16.
  */
+@Deprecated
 public class CustomSearchView extends SearchView {
 
     private static final String K_SEARCH_PLATE_IDENTIFIER = "android:id/search_src_text";

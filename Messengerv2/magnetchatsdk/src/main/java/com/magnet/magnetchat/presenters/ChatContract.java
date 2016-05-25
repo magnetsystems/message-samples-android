@@ -17,6 +17,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 
 import java.util.List;
 
+@Deprecated
 public interface ChatContract {
 
     interface View extends IListView<MMXMessage> {

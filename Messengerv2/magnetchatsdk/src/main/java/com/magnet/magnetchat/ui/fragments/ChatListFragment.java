@@ -30,6 +30,7 @@ import com.magnet.magnetchat.ui.views.DividerItemDecoration;
 
 import java.util.List;
 
+@Deprecated
 public class ChatListFragment extends MMXBaseFragment implements ChatListContract.View {
     private final static String TAG = "ChatListFragment";
 

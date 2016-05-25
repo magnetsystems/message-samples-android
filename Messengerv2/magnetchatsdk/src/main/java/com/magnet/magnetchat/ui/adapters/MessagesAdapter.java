@@ -25,6 +25,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 import java.util.Date;
 import java.util.List;
 
+@Deprecated
 public class MessagesAdapter extends BaseSortedAdapter<MessagesAdapter.ViewHolder, Message> {
     private final static String TAG = MessagesAdapter.class.getSimpleName();
 

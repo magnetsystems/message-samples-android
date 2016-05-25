@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.magnet.magnetchat.helpers.SnackNotificationHelper;
-import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.util.StringUtil;
 
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
@@ -268,7 +268,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
      * @param data current intent
      */
     protected void onActivityResult(int requestCode, Intent data) {
-        AppLogger.info(this, String.format("%d", requestCode), data.toString());
+        Logger.debug(getClass().getSimpleName(), this, String.format("%d", requestCode), data.toString());
     }
 
     /**
@@ -367,7 +367,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         try {
             imageView.setImageBitmap(BitmapFactory.decodeFile(path));
         } catch (Exception ex) {
-            AppLogger.error(this, ex.toString());
+            Logger.error(ex);
         }
     }
 

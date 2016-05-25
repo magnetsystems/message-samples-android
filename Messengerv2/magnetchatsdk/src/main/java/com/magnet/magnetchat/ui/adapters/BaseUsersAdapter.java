@@ -20,6 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.List;
 
+@Deprecated
 public abstract class BaseUsersAdapter<V extends BaseUsersAdapter.UserViewHolder, T extends UserProfile> extends BaseSortedAdapter<V, T> {
 
     public BaseUsersAdapter(Context context, List<T> data, Class<T> clazz,

@@ -5,6 +5,7 @@ package com.magnet.magnetchat.presenters;
 
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 
+@Deprecated
 public interface IListPresenter<T> {
 
   void onLoad(int offset, int limit);

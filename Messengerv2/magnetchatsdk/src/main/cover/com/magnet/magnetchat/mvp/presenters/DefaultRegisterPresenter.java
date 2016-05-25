@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
 import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
-import com.magnet.magnetchat.util.AppLogger;
+import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiError;
 
 /**
@@ -100,7 +100,7 @@ public class DefaultRegisterPresenter implements RegisterContract.Presenter {
                         message = error.getErrorMessage();
                     }
                 } catch (Exception ex) {
-                    AppLogger.error(this, ex.toString());
+                    Logger.error(ex);
                 }
             }
 

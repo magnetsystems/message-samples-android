@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by dlernatovich on 3/2/16.
  */
+@Deprecated
 public interface ChooseUserContract {
 
     enum ChooseMode {MODE_NEW_CHAT, MODE_ADD_USER}

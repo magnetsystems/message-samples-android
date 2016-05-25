@@ -26,6 +26,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 public class ChatsAdapter extends BaseSortedAdapter<ChatsAdapter.ConversationViewHolder, Chat> {
     private static final String TAG = "ChatsAdapter";
     /**

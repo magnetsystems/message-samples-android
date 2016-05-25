@@ -53,6 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+@Deprecated
 public class ChatActivity extends BaseActivity implements ChatContract.View {
 
     public static final String TAG = ChatActivity.class.getSimpleName();
