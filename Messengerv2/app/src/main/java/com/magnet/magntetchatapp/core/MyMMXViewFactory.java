@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.core.factories;
+package com.magnet.magntetchatapp.core;
 
 import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
 

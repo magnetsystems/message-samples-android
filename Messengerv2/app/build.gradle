@@ -25,4 +25,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.jakewharton:butterknife:5.1.1'
     compile project(':magnetchatsdk')
+    compile 'com.android.support:multidex:1.0.0'
 }

@@ -1,12 +1,12 @@
-package com.magnet.magnetchat.core.factories;
+package com.magnet.magntetchatapp.core;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 
-import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.ui.factories.DefaultMMXListItemFactory;
 import com.magnet.magnetchat.ui.views.abs.BaseMMXTypedView;
+import com.magnet.magntetchatapp.R;
 
 
 /**
