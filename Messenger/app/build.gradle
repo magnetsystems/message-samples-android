@@ -11,6 +11,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
+    mavenCentral()
     maven {
         url "https://repo.commonsware.com.s3.amazonaws.com"
     }
@@ -22,11 +23,11 @@ repositories {
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId 'com.magnet.magnetchat'
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 20
         versionCode 112
         versionName "0.1.2"
         // Enabling multidex support.
@@ -66,7 +67,7 @@ dependencies {
     }
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
-    compile 'com.github.jaydeepw:poly-picker:v1.0.22'
+    compile 'net.the4thdimension:poly-picker:1.0.14'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.android.gms:play-services-base:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
