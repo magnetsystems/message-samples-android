@@ -7,12 +7,16 @@ import android.util.AttributeSet;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.mvp.abs.BasePresenterView;
 import com.magnet.magnetchat.mvp.api.abs.LoginContract;
+import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 
 /**
  * Created by dlernatovich on 3/11/16.
  */
 public abstract class AbstractLoginView extends BasePresenterView<LoginContract.Presenter> implements LoginContract.View {
+
+    //VARIABLES
+    private RegisterContract.OnRegisterActionCallback registerActionCallback;
 
     private LoginContract.Presenter presenter;
 
@@ -34,7 +38,8 @@ public abstract class AbstractLoginView extends BasePresenterView<LoginContract.
     @Override
     protected void onCreateView() {
         presenter = createPresenterByName(getPresenterName());
-        presenter = ChatSDK.getPresenterFactory().createLoginPresenter(this);
+        if (presenter == null)
+            presenter = ChatSDK.getPresenterFactory().createLoginPresenter(this);
     }
 
     protected abstract String getPresenterName();

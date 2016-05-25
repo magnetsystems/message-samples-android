@@ -11,7 +11,7 @@ import com.magnet.magnetchat.ui.views.abs.BaseCoverView;
  */
 public abstract class BasePresenterView<T extends BaseContract.BasePresenter> extends BaseCoverView {
 
-    protected final T presenter;
+    protected T presenter;
 
     public BasePresenterView(Context context) {
         super(context);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="AbstractRegisterView">
+    <declare-styleable name="DefaultRegisterView">
 
         <attr name="backgroundRegEdits" format="reference" />
         <attr name="backgroundRegButton" format="reference" />

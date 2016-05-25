@@ -1,6 +1,8 @@
 package com.magnet.magnetchat.presenters.core;
 
 import com.magnet.magnetchat.mvp.api.abs.LoginContract;
+import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
+import com.magnet.magnetchat.mvp.views.AbstractRegisterView;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
@@ -25,4 +27,6 @@ public interface MMXPresenterFactory {
     MMXCreatePollContract.Presenter createMMXCreatePollPresenter(MMXCreatePollContract.View view);
 
     LoginContract.Presenter createLoginPresenter(LoginContract.View view);
+
+    RegisterContract.Presenter createRegisterPresenter(RegisterContract.View view);
 }
