@@ -1,11 +1,11 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.magnet.magnetchat.Constants;
-import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
+import com.magnet.magnetchat.presenters.ChannelsListContract;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
 import com.magnet.magnetchat.persistence.impl.PersistenceComponentImpl;
 import com.magnet.mmx.client.api.ChannelDetail;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Artli_000 on 18.03.2016.
  */
-public class DefaultChannelsPresenter implements ChannelsListContract.Presenter {
+class DefaultChannelsPresenter implements ChannelsListContract.Presenter {
 
     private static final String TAG = "DefaultChannelsPresenter";
     private static int K_PAGE_SIZE = 10;

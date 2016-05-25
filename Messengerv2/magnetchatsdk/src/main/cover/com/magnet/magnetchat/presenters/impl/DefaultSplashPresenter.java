@@ -1,8 +1,8 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.util.Log;
 
-import com.magnet.magnetchat.mvp.api.abs.SplashContract;
+import com.magnet.magnetchat.presenters.SplashContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;

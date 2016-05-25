@@ -1,18 +1,18 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
-import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
+import com.magnet.magnetchat.presenters.RegisterContract;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.ApiError;
 
 /**
  * Created by dlernatovich on 3/15/16.
  */
-public class DefaultRegisterPresenter implements RegisterContract.Presenter {
+class DefaultRegisterPresenter implements RegisterContract.Presenter {
 
     private final RegisterContract.View view;
 

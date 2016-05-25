@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.views;
+package com.magnet.magnetchat.ui.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.mvp.abs.BasePresenterView;
-import com.magnet.magnetchat.mvp.api.abs.UsersListContract;
-import com.magnet.magnetchat.mvp.presenters.DefaultUsersListPresenter;
+import com.magnet.magnetchat.ui.views.abs.BasePresenterView;
+import com.magnet.magnetchat.presenters.UsersListContract;
+import com.magnet.magnetchat.presenters.impl.DefaultUsersListPresenter;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.max.android.User;
 

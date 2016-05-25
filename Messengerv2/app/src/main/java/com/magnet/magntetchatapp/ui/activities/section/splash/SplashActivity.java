@@ -1,7 +1,7 @@
 package com.magnet.magntetchatapp.ui.activities.section.splash;
 
-import com.magnet.magnetchat.mvp.api.abs.SplashContract;
-import com.magnet.magnetchat.mvp.presenters.DefaultSplashPresenter;
+import com.magnet.magnetchat.presenters.SplashContract;
+import com.magnet.magnetchat.presenters.impl.DefaultSplashPresenter;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;

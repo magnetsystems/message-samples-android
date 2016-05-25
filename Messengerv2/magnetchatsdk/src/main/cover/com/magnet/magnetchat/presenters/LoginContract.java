@@ -1,9 +1,9 @@
-package com.magnet.magnetchat.mvp.api.abs;
+package com.magnet.magnetchat.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.magnet.magnetchat.mvp.abs.BaseContract;
+import com.magnet.magnetchat.presenters.core.BaseContract;
 
 /**
  * Created by dlernatovich on 3/11/16.

@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.abs;
+package com.magnet.magnetchat.presenters.core;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

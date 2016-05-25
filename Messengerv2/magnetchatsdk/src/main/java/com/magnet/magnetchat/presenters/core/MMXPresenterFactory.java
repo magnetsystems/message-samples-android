@@ -1,12 +1,9 @@
 package com.magnet.magnetchat.presenters.core;
 
-import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
-import com.magnet.magnetchat.mvp.api.abs.EditProfileContract;
-import com.magnet.magnetchat.mvp.api.abs.LoginContract;
-import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
-import com.magnet.magnetchat.mvp.views.AbstractChannelsView;
-import com.magnet.magnetchat.mvp.views.AbstractEditProfileView;
-import com.magnet.magnetchat.mvp.views.AbstractRegisterView;
+import com.magnet.magnetchat.presenters.ChannelsListContract;
+import com.magnet.magnetchat.presenters.EditProfileContract;
+import com.magnet.magnetchat.presenters.LoginContract;
+import com.magnet.magnetchat.presenters.RegisterContract;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;

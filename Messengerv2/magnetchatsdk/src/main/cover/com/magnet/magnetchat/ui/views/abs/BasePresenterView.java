@@ -1,10 +1,10 @@
-package com.magnet.magnetchat.mvp.abs;
+package com.magnet.magnetchat.ui.views.abs;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
-import com.magnet.magnetchat.ui.views.abs.BaseCoverView;
+import com.magnet.magnetchat.presenters.core.BaseContract;
 
 /**
  * Created by dlernatovich on 3/11/16.

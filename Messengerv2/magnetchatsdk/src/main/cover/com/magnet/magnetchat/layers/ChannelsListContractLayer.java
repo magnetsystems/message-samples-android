@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.api.layers;
+package com.magnet.magnetchat.layers;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.Message;
-import com.magnet.magnetchat.mvp.views.AbstractChannelsView;
+import com.magnet.magnetchat.ui.views.AbstractChannelsView;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.magnetchat.ui.custom.CircleNameView;
 import com.magnet.magnetchat.ui.views.section.channels.DefaultChannelsView;

@@ -19,8 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.mvp.api.abs.LoginContract;
-import com.magnet.magnetchat.mvp.views.AbstractLoginView;
+import com.magnet.magnetchat.presenters.LoginContract;
+import com.magnet.magnetchat.ui.views.AbstractLoginView;
 
 /**
  * Created by dlernatovich on 3/11/16.

@@ -1,11 +1,11 @@
-package com.magnet.magnetchat.mvp.api.abs;
+package com.magnet.magnetchat.presenters;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.magnet.magnetchat.mvp.abs.BaseContract;
+import com.magnet.magnetchat.presenters.core.BaseContract;
 import com.magnet.max.android.User;
 
 /**

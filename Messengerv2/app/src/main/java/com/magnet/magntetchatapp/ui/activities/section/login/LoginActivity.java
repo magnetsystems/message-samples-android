@@ -3,7 +3,7 @@ package com.magnet.magntetchatapp.ui.activities.section.login;
 import android.support.annotation.NonNull;
 
 import com.magnet.magntetchatapp.R;
-import com.magnet.magnetchat.mvp.api.abs.LoginContract;
+import com.magnet.magnetchat.presenters.LoginContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
 import com.magnet.magntetchatapp.ui.activities.section.register.RegisterActivity;

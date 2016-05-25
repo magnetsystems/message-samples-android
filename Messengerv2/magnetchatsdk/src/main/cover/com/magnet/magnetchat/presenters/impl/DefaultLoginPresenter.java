@@ -1,11 +1,11 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.magnet.magnetchat.core.managers.InternetConnectionManager;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.mvp.api.abs.LoginContract;
+import com.magnet.magnetchat.presenters.LoginContract;
 import com.magnet.max.android.ApiError;
 import com.magnet.mmx.client.api.MMX;
 
@@ -14,7 +14,7 @@ import java.net.SocketTimeoutException;
 /**
  * Created by dlernatovich on 3/11/16.
  */
-public class DefaultLoginPresenter implements LoginContract.Presenter {
+class DefaultLoginPresenter implements LoginContract.Presenter {
 
     private static final String TAG = "DefaultLoginPresenter";
 

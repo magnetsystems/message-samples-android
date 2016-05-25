@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.magnet.magnetchat.R;
-import com.magnet.magnetchat.mvp.api.abs.UsersListContract;
+import com.magnet.magnetchat.presenters.UsersListContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;

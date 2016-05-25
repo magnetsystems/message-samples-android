@@ -1,12 +1,12 @@
-package com.magnet.magnetchat.mvp.views;
+package com.magnet.magnetchat.ui.views;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 import com.magnet.magnetchat.ChatSDK;
-import com.magnet.magnetchat.mvp.abs.BasePresenterView;
-import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
+import com.magnet.magnetchat.ui.views.abs.BasePresenterView;
+import com.magnet.magnetchat.presenters.ChannelsListContract;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 
 /**

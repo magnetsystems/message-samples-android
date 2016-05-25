@@ -1,11 +1,11 @@
-package com.magnet.magnetchat.mvp.presenters;
+package com.magnet.magnetchat.presenters.impl;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.magnet.magnetchat.mvp.api.abs.EditProfileContract;
+import com.magnet.magnetchat.presenters.EditProfileContract;
 import com.magnet.max.android.ApiCallback;
 import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
@@ -14,7 +14,7 @@ import com.magnet.max.android.auth.model.UpdateProfileRequest;
 /**
  * Created by dlernatovich on 3/16/16.
  */
-public class DefaultEditProfilePresenter implements EditProfileContract.Presenter {
+class DefaultEditProfilePresenter implements EditProfileContract.Presenter {
 
     private static final String TAG = "DefaultEditProfilePresenter";
 

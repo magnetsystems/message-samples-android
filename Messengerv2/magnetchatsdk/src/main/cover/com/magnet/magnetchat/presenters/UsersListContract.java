@@ -1,10 +1,10 @@
-package com.magnet.magnetchat.mvp.api.abs;
+package com.magnet.magnetchat.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.magnet.magnetchat.mvp.abs.BaseContract;
-import com.magnet.magnetchat.mvp.api.layers.UserListContractLayer;
+import com.magnet.magnetchat.layers.UserListContractLayer;
+import com.magnet.magnetchat.presenters.core.BaseContract;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.max.android.User;
 

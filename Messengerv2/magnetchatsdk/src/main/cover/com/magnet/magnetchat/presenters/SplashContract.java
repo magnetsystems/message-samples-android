@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.api.abs;
+package com.magnet.magnetchat.presenters;
 
 /**
  * Created by dlernatovich on 3/11/16.

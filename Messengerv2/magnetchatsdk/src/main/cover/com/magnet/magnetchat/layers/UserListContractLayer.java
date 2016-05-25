@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.mvp.api.layers;
+package com.magnet.magnetchat.layers;
 
 import android.content.Context;
 import android.content.res.ColorStateList;

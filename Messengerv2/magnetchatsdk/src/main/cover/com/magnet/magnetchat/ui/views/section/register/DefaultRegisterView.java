@@ -18,8 +18,8 @@ import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
-import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
-import com.magnet.magnetchat.mvp.views.AbstractRegisterView;
+import com.magnet.magnetchat.presenters.RegisterContract;
+import com.magnet.magnetchat.ui.views.AbstractRegisterView;
 
 /**
  * Created by dlernatovich on 3/15/16.
