@@ -6,9 +6,9 @@ import android.support.annotation.Nullable;
 import android.view.MenuItem;
 
 import com.magnet.magntetchatapp.R;
-import com.magnet.chatsdkcover.mvp.api.abs.EditProfileContract;
+import com.magnet.magnetchat.mvp.api.abs.EditProfileContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
-import com.magnet.chatsdkcover.ui.views.section.edit.DefaultEditProfileView;
+import com.magnet.magnetchat.ui.views.section.edit.DefaultEditProfileView;
 
 import butterknife.InjectView;
 

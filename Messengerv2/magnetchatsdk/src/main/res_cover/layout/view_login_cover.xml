@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_enter_email_here"
+            android:inputType="textEmailAddress"
+            android:typeface="normal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_enter_password_here_cover"
+            android:inputType="textPassword"
+            android:typeface="normal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/checkBoxRememberMe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/text_remember_me_cover" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:text="@string/text_login_cover" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:text="@string/text_register_cover" />
+
+    </LinearLayout>
+
+    <!--PROGRESS-->
+    <FrameLayout
+        android:id="@+id/viewProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:foregroundGravity="bottom"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/viewProgressInside"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/background_accent_square"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_5">
+
+            <ProgressBar
+                android:id="@+id/progressLoading"
+                style="@android:style/Widget.Holo.ProgressBar.Small"
+                android:layout_width="@dimen/dimen_25"
+                android:layout_height="@dimen/dimen_25"
+                android:layout_gravity="center_vertical" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/labelLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_10"
+                android:paddingLeft="@dimen/dimen_5"
+                android:paddingRight="@dimen/dimen_10"
+                android:paddingTop="@dimen/dimen_10"
+                android:text="@string/text_authorization_cover"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

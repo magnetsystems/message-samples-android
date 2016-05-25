@@ -1,10 +1,10 @@
-package com.magnet.chatsdkcover.mvp.presenters;
+package com.magnet.magnetchat.mvp.presenters;
 
 import android.annotation.SuppressLint;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
+import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
 import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
 import com.magnet.magnetchat.persistence.PendingStateRepository;

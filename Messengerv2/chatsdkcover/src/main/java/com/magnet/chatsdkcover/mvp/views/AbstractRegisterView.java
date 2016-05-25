@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.views;
+package com.magnet.magnetchat.mvp.views;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -16,9 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.magnet.chatsdkcover.R;
-import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
+import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.mvp.abs.BasePresenterView;
+import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
 import com.magnet.magnetchat.helpers.UserHelper;
 
 //import com.magnet.magntetchatapp.R;
@@ -414,7 +414,7 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 
     //EXAMPLE TO CUSTOMIZE
 
-//    <com.magnet.chatsdkcover.ui.views.section.register.DefaultRegisterView
+//    <com.magnet.magnetchat.ui.views.section.register.DefaultRegisterView
 //    android:id="@+id/viewRegister"
 //    android:layout_width="match_parent"
 //    android:layout_height="wrap_content"

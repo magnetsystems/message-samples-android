@@ -1,9 +1,9 @@
-package com.magnet.chatsdkcover.core.factories;
+package com.magnet.magnetchat.core.factories;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 
-import com.magnet.chatsdkcover.R;
+import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.ui.factories.DefaultMMXViewFactory;
 import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;

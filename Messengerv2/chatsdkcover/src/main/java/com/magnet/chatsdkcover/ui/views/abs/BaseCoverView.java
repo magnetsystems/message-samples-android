@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.ui.views.abs;
+package com.magnet.magnetchat.ui.views.abs;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 /**
  * Created by dlernatovich on 3/11/16.
  */
-public abstract class BaseView extends FrameLayout implements View.OnClickListener {
+public abstract class BaseCoverView extends FrameLayout implements View.OnClickListener {
 
     /**
      * Interface which provide the doing some action inside the Handler thread
@@ -32,17 +32,17 @@ public abstract class BaseView extends FrameLayout implements View.OnClickListen
 
     protected View baseView;
 
-    public BaseView(Context context) {
+    public BaseCoverView(Context context) {
         super(context);
         onInitializeView(context, null);
     }
 
-    public BaseView(Context context, AttributeSet attrs) {
+    public BaseCoverView(Context context, AttributeSet attrs) {
         super(context, attrs);
         onInitializeView(context, attrs);
     }
 
-    public BaseView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public BaseCoverView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         onInitializeView(context, attrs);
     }

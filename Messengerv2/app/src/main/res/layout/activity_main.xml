@@ -29,7 +29,7 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/text_18" />
 
-        <com.magnet.chatsdkcover.ui.views.section.login.DefaultLoginView
+        <com.magnet.magnetchat.ui.views.section.login.DefaultLoginView
             android:id="@+id/viewLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

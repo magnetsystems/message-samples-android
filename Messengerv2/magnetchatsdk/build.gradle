@@ -20,6 +20,16 @@ android {
     }
     productFlavors {
     }
+
+    sourceSets{
+        main {
+            java.srcDirs += 'src/main/cover'
+            res.srcDirs = ['src/main/res', 'src/main/res_cover']
+        }
+
+    }
+
+
 }
 
 dependencies {
@@ -37,4 +47,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:8.4.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.android.support:multidex:1.0.0'
 }

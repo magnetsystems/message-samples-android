@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/itemContent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_5"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/viewNewMessage"
+            android:layout_width="@dimen/dimen_10"
+            android:layout_height="@dimen/dimen_45"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imageNewMessage"
+                style="@style/styleCropImageCenter"
+                android:layout_width="@dimen/dimen_10"
+                android:layout_height="@dimen/dimen_10"
+                android:layout_gravity="center"
+                android:src="@drawable/new_message"
+                android:tint="#57a7ff"
+                android:tintMode="src_in" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_5"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:id="@+id/viewImages"
+            android:layout_width="@dimen/dimen_45"
+            android:layout_height="@dimen/dimen_45"
+            android:visibility="gone">
+
+            <com.magnet.magnetchat.ui.custom.CircleNameView
+                android:id="@+id/viewCircleName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageChannel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="@dimen/dimen_5"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelChannelName"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/text_18"
+                    android:textStyle="bold" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelDate"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textSize="@dimen/text_13" />
+
+                <ImageView
+                    android:id="@+id/imagePointer"
+                    style="@style/styleCropImageCenter"
+                    android:layout_width="@dimen/dimen_20"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dimen_5"
+                    android:src="@drawable/ic_arrow_right" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_5" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/labelLatestMessage"
+                    android:layout_width="@dimen/dimen_0"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="8"
+                    android:text=""
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="@dimen/text_16" />
+
+                <View
+                    android:layout_width="@dimen/dimen_20"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_5" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/viewDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_gravity="bottom"
+        android:background="@android:color/darker_gray" />
+
+</FrameLayout>

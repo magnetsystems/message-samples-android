@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.api.layers;
+package com.magnet.magnetchat.mvp.api.layers;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -12,9 +12,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.magnet.chatsdkcover.R;
-import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
-import com.magnet.chatsdkcover.ui.custom.CircleNameView;
+import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
+import com.magnet.magnetchat.ui.custom.CircleNameView;
 import com.magnet.max.android.User;
 
 import java.lang.ref.WeakReference;

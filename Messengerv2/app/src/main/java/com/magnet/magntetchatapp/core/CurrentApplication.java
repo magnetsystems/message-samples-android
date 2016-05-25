@@ -1,6 +1,6 @@
 package com.magnet.magntetchatapp.core;
 
-import com.magnet.chatsdkcover.core.MagnetMaxApplication;
+import com.magnet.magnetchat.core.MagnetMaxApplication;
 import com.magnet.magntetchatapp.R;
 
 /**

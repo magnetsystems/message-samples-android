@@ -1,9 +1,9 @@
-package com.magnet.chatsdkcover.core;
+package com.magnet.magnetchat.core;
 
 import android.support.multidex.MultiDexApplication;
 
-import com.magnet.chatsdkcover.core.factories.MyMMXListItemFactory;
-import com.magnet.chatsdkcover.core.factories.MyMMXViewFactory;
+import com.magnet.magnetchat.core.factories.MyMMXListItemFactory;
+import com.magnet.magnetchat.core.factories.MyMMXViewFactory;
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.max.android.Max;
 import com.magnet.max.android.config.MaxAndroidPropertiesConfig;

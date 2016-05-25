@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
-import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
-import com.magnet.chatsdkcover.mvp.views.AbstractChannelsView;
+import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
+import com.magnet.magnetchat.mvp.views.AbstractChannelsView;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.ui.activities.MMXChatActivity;
@@ -137,7 +137,7 @@ public class HomeFragment extends BaseFragment {
     /**
      * Method which provide the listening actions inside the channel list view
      *
-     * @see com.magnet.chatsdkcover.mvp.views.AbstractChannelsView
+     * @see com.magnet.magnetchat.mvp.views.AbstractChannelsView
      */
     private final ChannelsListContract.OnChannelsListCallback channelListCallback = new ChannelsListContract.OnChannelsListCallback() {
         @Override

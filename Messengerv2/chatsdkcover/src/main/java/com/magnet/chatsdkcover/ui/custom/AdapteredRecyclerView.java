@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.ui.custom;
+package com.magnet.magnetchat.ui.custom;
 
 import android.app.Activity;
 import android.content.Context;

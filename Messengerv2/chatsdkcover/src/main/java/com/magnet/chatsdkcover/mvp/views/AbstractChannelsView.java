@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.views;
+package com.magnet.magnetchat.mvp.views;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -15,11 +15,11 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.magnet.chatsdkcover.R;
-import com.magnet.chatsdkcover.filters.ArrayFilter;
-import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.abs.ChannelsListContract;
-import com.magnet.chatsdkcover.ui.custom.AdapteredRecyclerView;
+import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.filters.ArrayFilter;
+import com.magnet.magnetchat.mvp.abs.BasePresenterView;
+import com.magnet.magnetchat.mvp.api.abs.ChannelsListContract;
+import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;

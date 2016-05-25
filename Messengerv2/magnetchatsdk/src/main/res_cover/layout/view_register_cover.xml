@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/labelEnterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/text_enter_your_name_cover"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_first_name_cover"
+            android:singleLine="true"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_last_name_cover"
+            android:singleLine="true"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/labelEnterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dimen_5"
+            android:singleLine="true"
+            android:text="@string/text_enter_your_email_cover"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_email_cover"
+            android:inputType="textEmailAddress"
+            android:singleLine="true"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/labelEnterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:singleLine="true"
+            android:text="@string/text_enter_your_password_cover"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_password_cover"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/editPasswordAgain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/text_password_again_cover"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="@dimen/text_18" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_10" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/buttonRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:text="@string/text_register_cover"
+            android:textSize="@dimen/text_18" />
+    </LinearLayout>
+
+    <!--PROGRESS VIEW-->
+    <FrameLayout
+        android:id="@+id/viewProgress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:foregroundGravity="bottom"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/viewProgressInside"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:background="@drawable/background_accent_square"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_5">
+
+            <ProgressBar
+                android:id="@+id/progressLoading"
+                style="@android:style/Widget.Holo.ProgressBar.Small"
+                android:layout_width="@dimen/dimen_25"
+                android:layout_height="@dimen/dimen_25"
+                android:layout_gravity="center_vertical" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/labelLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingBottom="@dimen/dimen_10"
+                android:paddingLeft="@dimen/dimen_5"
+                android:paddingRight="@dimen/dimen_10"
+                android:paddingTop="@dimen/dimen_10"
+                android:text="@string/text_creating_user_cover"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

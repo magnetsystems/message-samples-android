@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.views;
+package com.magnet.magnetchat.mvp.views;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,9 +26,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.magnet.chatsdkcover.R;
-import com.magnet.chatsdkcover.mvp.abs.BasePresenterView;
-import com.magnet.chatsdkcover.mvp.api.abs.EditProfileContract;
+import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.mvp.abs.BasePresenterView;
+import com.magnet.magnetchat.mvp.api.abs.EditProfileContract;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;

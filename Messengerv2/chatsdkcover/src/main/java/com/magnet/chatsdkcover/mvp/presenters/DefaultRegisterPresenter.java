@@ -1,4 +1,4 @@
-package com.magnet.chatsdkcover.mvp.presenters;
+package com.magnet.magnetchat.mvp.presenters;
 
 import android.support.annotation.Nullable;
 
@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.MagnetError;
 import com.magnet.magnetchat.util.AppLogger;
-import com.magnet.chatsdkcover.mvp.api.abs.RegisterContract;
+import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
 import com.magnet.max.android.ApiError;
 
 /**
