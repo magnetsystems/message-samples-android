@@ -273,7 +273,8 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         @Override
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             MMXChannel mmxChannel = mmxMessage.getChannel();
-            if (channel == null || !channel.getObj().getChannel().equals(mmxChannel)) return false;
+            if (channel == null || !channel.getObj().getChannel().getName().equals(mmxChannel.getName()))
+                return false;
 
             log("onMessageReceived");
             MMXMessageWrapper wrapper = converter.convert(mmxMessage);

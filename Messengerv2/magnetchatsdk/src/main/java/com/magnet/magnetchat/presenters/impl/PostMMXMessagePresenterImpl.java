@@ -4,10 +4,12 @@ import android.location.Location;
 import android.os.Bundle;
 
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
+import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.MMXMessageUtil;
 import com.magnet.max.android.Attachment;
 import com.magnet.mmx.client.api.MMXChannel;
 import com.magnet.mmx.client.api.MMXMessage;
+import com.magnet.mmx.client.common.Log;
 
 import java.util.Map;
 
@@ -150,12 +152,12 @@ class PostMMXMessagePresenterImpl implements PostMMXMessageContract.Presenter {
     private MMXMessage.OnFinishedListener<String> callback = new MMXMessage.OnFinishedListener<String>() {
         @Override
         public void onSuccess(String s) {
-
+            Logger.debug(getClass().getSimpleName(), s);
         }
 
         @Override
         public void onFailure(MMXMessage.FailureCode failureCode, Throwable throwable) {
-
+            Logger.error(getClass().getSimpleName(), throwable, failureCode);
         }
     };
 
