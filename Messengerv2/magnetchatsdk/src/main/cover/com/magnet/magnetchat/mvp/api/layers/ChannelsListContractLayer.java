@@ -22,6 +22,7 @@ import com.magnet.magnetchat.model.Message;
 import com.magnet.magnetchat.mvp.views.AbstractChannelsView;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.magnetchat.ui.custom.CircleNameView;
+import com.magnet.magnetchat.ui.views.section.channels.DefaultChannelsView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
@@ -113,7 +114,7 @@ public interface ChannelsListContractLayer {
          */
         private void setUpUi() {
 
-            final AbstractChannelsView.Attributes attr = AbstractChannelsView.Attributes.getInstance();
+            final DefaultChannelsView.Attributes attr = DefaultChannelsView.Attributes.getInstance();
 
             textNoMessages = K_DEFAULT_NO_MESSAGES;
             textLocationMessage = K_DEFAULT_LOCATION_MESSAGE;
