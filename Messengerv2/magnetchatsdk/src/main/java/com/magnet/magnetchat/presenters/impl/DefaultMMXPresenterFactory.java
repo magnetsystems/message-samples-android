@@ -4,8 +4,10 @@ import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
+import com.magnet.magnetchat.mvp.api.abs.EditProfileContract;
 import com.magnet.magnetchat.mvp.api.abs.LoginContract;
 import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
+import com.magnet.magnetchat.mvp.presenters.DefaultEditProfilePresenter;
 import com.magnet.magnetchat.mvp.presenters.DefaultLoginPresenter;
 import com.magnet.magnetchat.mvp.presenters.DefaultRegisterPresenter;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
@@ -77,6 +79,11 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
     @Override
     public RegisterContract.Presenter createRegisterPresenter(RegisterContract.View view) {
         return new DefaultRegisterPresenter(view);
+    }
+
+    @Override
+    public EditProfileContract.Presenter createEditProfilePresenter(EditProfileContract.View view) {
+        return new DefaultEditProfilePresenter(view);
     }
 
     @Override

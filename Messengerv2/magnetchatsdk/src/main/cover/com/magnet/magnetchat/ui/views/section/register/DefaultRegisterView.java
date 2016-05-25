@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.mvp.api.abs.RegisterContract;
-import com.magnet.magnetchat.mvp.presenters.DefaultRegisterPresenter;
 import com.magnet.magnetchat.mvp.views.AbstractRegisterView;
 
 /**
@@ -238,17 +237,6 @@ public class DefaultRegisterView extends AbstractRegisterView {
         labelEnterEmail.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenLabelsText);
         labelEnterPassword.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenLabelsText);
         buttonRegister.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimenButtonsText);
-    }
-
-    /**
-     * Method which provide the getting of the current presenter
-     *
-     * @return current view presenter
-     */
-    @NonNull
-    @Override
-    public RegisterContract.Presenter getPresenter() {
-        return new DefaultRegisterPresenter(this);
     }
 
     /**

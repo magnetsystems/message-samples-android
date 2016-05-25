@@ -41,6 +41,12 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 
     protected abstract String getFactoryPresenterName();
 
+    @NonNull
+    @Override
+    public RegisterContract.Presenter getPresenter() {
+        return presenter;
+    }
+
     /**
      * Method which provide to getting of the context inside the View/Activity/Fragment
      *

@@ -20,7 +20,6 @@ import android.widget.ProgressBar;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.mvp.api.abs.LoginContract;
-import com.magnet.magnetchat.mvp.presenters.DefaultLoginPresenter;
 import com.magnet.magnetchat.mvp.views.AbstractLoginView;
 
 /**
@@ -72,12 +71,6 @@ public class DefaultLoginView extends AbstractLoginView {
 
     public DefaultLoginView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @NonNull
-    @Override
-    public LoginContract.Presenter getPresenter() {
-        return new DefaultLoginPresenter(this);
     }
 
     /**
