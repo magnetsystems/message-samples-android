@@ -44,6 +44,7 @@ public abstract class BaseMMXMessageView<T extends MMXMessageBaseProperty, P ext
     private BaseConverter<Date, String> dateConverter;
 
     private P presenter;
+    private boolean isLoadPicture;
 
     public BaseMMXMessageView(Context context) {
         super(context);
@@ -122,8 +123,10 @@ public abstract class BaseMMXMessageView<T extends MMXMessageBaseProperty, P ext
     }
 
     protected void onSetUserPicOrLetters(final String picUrl, final String name) {
+        isLoadPicture = false;
         setLetters(name);
         if (picUrl != null && picUrl.length() > 5) {
+            isLoadPicture = true;
             Glide.with(getContext())
                     .load(picUrl)
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -136,10 +139,15 @@ public abstract class BaseMMXMessageView<T extends MMXMessageBaseProperty, P ext
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            uiUserLetters.setVisibility(GONE);
-                            return false;
+                            if (isLoadPicture) {
+                                uiUserLetters.setVisibility(GONE);
+                                uiUserPicView.setImageDrawable(resource);
+                                isLoadPicture = false;
+                            }
+                            return true;
                         }
-                    }).into(uiUserPicView);
+                    }).preload();
+//                    .into(uiUserPicView);
         }
     }
 

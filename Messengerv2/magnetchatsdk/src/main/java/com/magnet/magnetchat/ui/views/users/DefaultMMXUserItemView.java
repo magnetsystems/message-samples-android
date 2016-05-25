@@ -42,6 +42,7 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
     private Drawable colorUserCircle;
     private Drawable colorDefault;
     private Drawable colorSelected;
+    private boolean isLoading;
 
     public DefaultMMXUserItemView(Context context) {
         super(context);
@@ -78,8 +79,10 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
 
     @Override
     protected void onUserPic(String url, final String displayName) {
+        isLoading = false;
         setUserLetters(displayName);
         if (url != null) {
+            isLoading = true;
             Glide.with(getContext())
                     .load(url)
                     .listener(new RequestListener<String, GlideDrawable>() {
@@ -91,10 +94,14 @@ public class DefaultMMXUserItemView extends MMXUserItemView<MMXUserItemProperty>
 
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            uiLetters.setVisibility(GONE);
-                            return false;
+                            if (isLoading) {
+                                uiLetters.setVisibility(GONE);
+                                uiUserPic.setImageDrawable(resource);
+                                isLoading = false;
+                            }
+                            return true;
                         }
-                    }).into(uiUserPic);
+                    }).preload();
         }
     }
 
