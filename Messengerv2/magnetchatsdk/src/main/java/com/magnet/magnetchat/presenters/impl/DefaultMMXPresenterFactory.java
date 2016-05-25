@@ -4,6 +4,8 @@ import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
+import com.magnet.magnetchat.mvp.api.abs.LoginContract;
+import com.magnet.magnetchat.mvp.presenters.DefaultLoginPresenter;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.presenters.MMXCreatePollContract;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
@@ -63,6 +65,11 @@ public class DefaultMMXPresenterFactory implements MMXPresenterFactory, MMXMessa
     public MMXCreatePollContract.Presenter createMMXCreatePollPresenter(MMXCreatePollContract.View view) {
         BaseConverter<String, MMXPollOption> converter = ChatSDK.getMmxObjectConverterFactory().createMMXPollOptionStringConverter();
         return new MMXCreatePollPresenter(view, converter);
+    }
+
+    @Override
+    public LoginContract.Presenter createLoginPresenter(LoginContract.View view) {
+        return new DefaultLoginPresenter(view);
     }
 
     @Override
