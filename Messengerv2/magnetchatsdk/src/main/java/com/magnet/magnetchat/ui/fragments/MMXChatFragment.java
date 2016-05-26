@@ -23,7 +23,6 @@ import com.magnet.magnetchat.presenters.PostMMXMessageContract;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.ui.activities.MMXEditPollActivity;
 import com.magnet.magnetchat.ui.dialogs.AttachmentDialogFragment;
-import com.magnet.magnetchat.ui.dialogs.DefaultAttachmentDialogFragment;
 import com.magnet.magnetchat.ui.views.chatlist.MMXChatView;
 import com.magnet.magnetchat.ui.views.chatlist.MMXPostMessageView;
 import com.magnet.magnetchat.util.Utils;
@@ -172,11 +171,9 @@ public class MMXChatFragment extends MMXBaseFragment {
 
     protected void openPollCreator() {
         MMXChannel mmxChannel = mmxChatView.getPostPresenter().getMMXChannel();
-        Bundle bundle = BundleHelper.packChannel(mmxChannel);
-        Intent intent = new Intent(getContext(), MMXEditPollActivity.class);
-        intent.putExtras(bundle);
+        Intent intent = MMXEditPollActivity.createIntent(getContext(), mmxChannel);
+        if (intent == null) return;
         getActivity().startActivityForResult(intent, Constants.MMX_RC_CREATE_POLL);
-
     }
 
     protected void readLocation() {

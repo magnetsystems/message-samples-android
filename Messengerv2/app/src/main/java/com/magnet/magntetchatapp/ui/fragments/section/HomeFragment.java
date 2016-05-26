@@ -87,7 +87,9 @@ public class HomeFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_create_channel) {
-            startActivity(MMXUsersActivity.class, false);
+            startActivity(MMXUsersActivity.createActivityIntent(getContext()));
+
+//            startActivity(MMXUsersActivity.class, false);
 //            startActivity(ChooseUserActivity.class, false);
             return true;
         }
