@@ -71,6 +71,8 @@ public class DefaultEditProfileView extends AbstractEditProfileView {
     private int dimenEditsText;
     private int dimenButtonsText;
 
+    private String factory_name;
+
     public DefaultEditProfileView(Context context) {
         super(context);
     }
@@ -94,7 +96,7 @@ public class DefaultEditProfileView extends AbstractEditProfileView {
 
     @Override
     protected String getPresenterName() {
-        return null;
+        return factory_name;
     }
 
     /**
@@ -122,6 +124,8 @@ public class DefaultEditProfileView extends AbstractEditProfileView {
 
             colorTextLoading = attributes.getColorStateList(R.styleable.DefaultEditProfileView_colorEditUserLoadingMessage);
             colorBackgroundLoading = attributes.getColorStateList(R.styleable.DefaultEditProfileView_colorEditUserLoadingBackground);
+
+            factory_name = attributes.getString(R.styleable.DefaultEditProfileView_factory_name);
         } finally {
             attributes.recycle();
             onApplyAttributes();

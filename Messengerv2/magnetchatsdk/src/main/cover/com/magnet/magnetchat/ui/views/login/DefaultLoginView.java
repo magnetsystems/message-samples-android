@@ -59,6 +59,7 @@ public class DefaultLoginView extends AbstractLoginView {
     private int dimenButtonsText;
     private ColorStateList colorTextLoading;
     private ColorStateList colorBackgroundLoading;
+    private String factory_name;
 
     public DefaultLoginView(Context context) {
         super(context);
@@ -136,6 +137,8 @@ public class DefaultLoginView extends AbstractLoginView {
 
             colorTextLoading = attributes.getColorStateList(R.styleable.DefaultLoginView_colorLogLoadingMessage);
             colorBackgroundLoading = attributes.getColorStateList(R.styleable.DefaultLoginView_colorLogLoadingBackground);
+
+            factory_name = attributes.getString(R.styleable.DefaultLoginView_colorLogLoadingBackground);
         } finally {
             attributes.recycle();
             onApplyAttributes();
@@ -230,7 +233,7 @@ public class DefaultLoginView extends AbstractLoginView {
     }
 
     protected String getPresenterName() {
-        return null;
+        return factory_name;
     }
 
     /**

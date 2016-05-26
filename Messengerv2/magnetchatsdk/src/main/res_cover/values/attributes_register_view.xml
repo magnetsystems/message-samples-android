@@ -18,5 +18,7 @@
 
         <attr name="minimumRegPassLength" format="integer" />
 
+        <attr name="factory_name" />
+
     </declare-styleable>
 </resources>

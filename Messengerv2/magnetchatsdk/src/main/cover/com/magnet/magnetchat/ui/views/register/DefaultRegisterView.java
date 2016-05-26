@@ -67,6 +67,8 @@ public class DefaultRegisterView extends AbstractRegisterView {
 
     private int minimumPasswordLength;
 
+    private String factory_name;
+
     public DefaultRegisterView(Context context) {
         super(context);
     }
@@ -122,7 +124,7 @@ public class DefaultRegisterView extends AbstractRegisterView {
 
     @Override
     protected String getFactoryPresenterName() {
-        return null;
+        return factory_name;
     }
 
 
@@ -155,6 +157,8 @@ public class DefaultRegisterView extends AbstractRegisterView {
             dimenButtonsText = attributes.getDimensionPixelSize(R.styleable.DefaultRegisterView_dimenRegButton, R.dimen.text_18);
 
             minimumPasswordLength = attributes.getInt(R.styleable.DefaultRegisterView_minimumRegPassLength, 6);
+
+            factory_name = attributes.getString(R.styleable.DefaultRegisterView_minimumRegPassLength);
         } finally {
             attributes.recycle();
             onApplyAttributes();

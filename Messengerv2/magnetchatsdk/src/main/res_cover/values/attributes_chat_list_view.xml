@@ -23,6 +23,8 @@
         <attr name="dimenTextChatsMessage" format="dimension" />
         <attr name="dimenTextChatsTime" format="dimension" />
 
+        <attr name="factory_name" />
+
     </declare-styleable>
 
 </resources>

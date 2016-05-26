@@ -25,6 +25,7 @@
         <attr name="colorLogLoadingBackground" format="color" />
         <attr name="colorLogLoadingMessage" format="color" />
 
+        <attr name="factory_name" />
 
         <!--<attr name="showText" format="boolean" />-->
         <!--<attr name="labelPosition" format="enum">-->

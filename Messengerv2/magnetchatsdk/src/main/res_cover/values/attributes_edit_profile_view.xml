@@ -16,5 +16,7 @@
         <attr name="colorEditUserLoadingBackground" format="color" />
         <attr name="colorEditUserLoadingMessage" format="color" />
 
+        <attr name="factory_name" />
+
     </declare-styleable>
 </resources>
