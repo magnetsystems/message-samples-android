@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
 import com.magnet.magnetchat.ChatSDK;
-import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
@@ -22,7 +21,7 @@ import com.magnet.mmx.client.api.MMXChannel;
 /**
  * Created by aorehov on 12.05.16.
  */
-public class MMXChatDetailsActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
+public class MMXChatDetailsActivity extends MMXBaseActivity implements CompoundButton.OnCheckedChangeListener, MMXChannelSettingsContract.View {
 
     private static final int RC_ADD_USERS = 0xFC00;
     private MMXUserListFragment userListFragment;

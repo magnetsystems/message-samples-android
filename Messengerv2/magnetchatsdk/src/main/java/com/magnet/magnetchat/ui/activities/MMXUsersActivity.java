@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Created by aorehov on 13.05.16.
  */
-public class MMXUsersActivity extends BaseActivity implements UserListContract.OnSelectUserEvent, UserListContract.OnGetAllSelectedUsersListener {
+public class MMXUsersActivity extends MMXBaseActivity implements UserListContract.OnSelectUserEvent, UserListContract.OnGetAllSelectedUsersListener {
 
     private MMXUserListFragment userListFragment;
     private Handler handler = new Handler();
@@ -150,7 +150,13 @@ public class MMXUsersActivity extends BaseActivity implements UserListContract.O
                     }
                 });
             } else {
-                Intent intent = IntentHelper.chatActivity(this, users, MMXChatActivity.class);
+                Intent intent = MMXChatActivity.createIntent(this, users);
+
+                if (intent == null) {
+                    showMessage("Can't open chat. The list of users is empty!");
+                    return;
+                }
+
                 finish();
                 startActivity(intent);
             }

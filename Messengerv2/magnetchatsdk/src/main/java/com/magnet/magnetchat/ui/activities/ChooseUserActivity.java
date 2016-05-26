@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class ChooseUserActivity extends BaseActivity implements ChooseUserContract.View {
+public class ChooseUserActivity extends MMXBaseActivity implements ChooseUserContract.View {
     private static final String TAG = "ChooseUserActivity";
     public static final String TAG_ADD_USER_TO_CHANNEL = "onUsersSelected";
 

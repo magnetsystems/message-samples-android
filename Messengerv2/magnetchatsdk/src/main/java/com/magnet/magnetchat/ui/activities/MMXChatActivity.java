@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by aorehov on 04.05.16.
  */
-public class MMXChatActivity extends BaseActivity implements ChatListContract.ChannelNameListener {
+public class MMXChatActivity extends MMXBaseActivity implements ChatListContract.ChannelNameListener {
 
     private MMXChatFragment chatFragment;
 
@@ -65,24 +65,26 @@ public class MMXChatActivity extends BaseActivity implements ChatListContract.Ch
             }
         });
 
-        Bundle bundle = null;
-        MMXChannel channel = IntentHelper.getMMXChannelFromIntent(getIntent());
+        Bundle extras = getIntent().getExtras();
+        Bundle fragmentBundle = null;
+
+        MMXChannel channel = BundleHelper.readMMXChannelFromBundle(extras);
         if (channel != null) {
-            bundle = BundleHelper.packChannel(channel);
+            fragmentBundle = BundleHelper.packChannel(channel);
         }
 
-        if (bundle == null) {
-            ArrayList<User> list = IntentHelper.getRecipientsFromIntent(getIntent());
-            bundle = BundleHelper.packRecipients(list);
+        if (fragmentBundle == null) {
+            ArrayList<User> list = BundleHelper.readRecipients(extras);
+            fragmentBundle = BundleHelper.packRecipients(list);
         }
 
-        if (bundle == null) {
+        if (fragmentBundle == null) {
             finish();
             return;
         }
 
         chatFragment = new MMXChatFragment();
-        chatFragment.setArguments(bundle);
+        chatFragment.setArguments(fragmentBundle);
         chatFragment.setChatNameListener(this);
         replace(chatFragment, R.id.mmx_chat, chatFragment.getTag());
     }
@@ -93,12 +95,34 @@ public class MMXChatActivity extends BaseActivity implements ChatListContract.Ch
         return true;
     }
 
+    /**
+     * The method creates MMXChatActivity intent for channel
+     *
+     * @param mmxChannel instance of mmxChannel
+     * @return activity intent or null if channel is null
+     */
     public static Intent createIntent(Context context, @NonNull MMXChannel mmxChannel) {
-        return IntentHelper.chatActivity(context, mmxChannel, MMXChatActivity.class);
+        if (mmxChannel == null) return null;
+
+        Bundle bundle = BundleHelper.packChannel(mmxChannel);
+        Intent intent = new Intent(context, MMXChatActivity.class);
+        intent.putExtras(bundle);
+
+        return intent;
     }
 
+    /**
+     * The method creates MMXChatActivity intent for channel
+     *
+     * @param recipients
+     * @return activity intent or null if channel is null
+     */
     public static Intent createIntent(Context context, @NonNull List<User> recipients) {
-        return IntentHelper.chatActivity(context, recipients, MMXChatActivity.class);
+        Bundle bundle = BundleHelper.packRecipients(recipients);
+        if (bundle == null) return null;
+        Intent intent = new Intent(context, MMXChatActivity.class);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     void onSetName(CharSequence sequence) {

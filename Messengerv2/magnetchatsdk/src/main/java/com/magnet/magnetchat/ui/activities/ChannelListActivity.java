@@ -12,7 +12,7 @@ import com.magnet.magnetchat.ui.fragments.ChatListFragment;
 import com.magnet.max.android.User;
 
 @Deprecated
-public class ChannelListActivity extends BaseActivity implements BaseActivityCallback {
+public class ChannelListActivity extends MMXBaseActivity implements BaseActivityCallback {
     private static final String TAG = ChannelListActivity.class.getSimpleName();
 
     Toolbar toolbar;

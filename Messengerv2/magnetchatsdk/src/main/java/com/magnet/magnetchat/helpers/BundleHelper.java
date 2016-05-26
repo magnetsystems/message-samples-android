@@ -48,7 +48,7 @@ public class BundleHelper {
     }
 
     public static Bundle packRecipients(Collection<User> recipients) {
-        if (recipients == null) return null;
+        if (recipients == null || recipients.isEmpty()) return null;
         Bundle bundle = new Bundle();
         packRecipients(bundle, recipients);
         return bundle;

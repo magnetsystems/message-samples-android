@@ -21,7 +21,7 @@ import com.magnet.magnetchat.helpers.SnackNotificationHelper;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.max.android.util.StringUtil;
 
-public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
+public abstract class MMXBaseActivity extends AppCompatActivity implements View.OnClickListener {
 
     protected static final int ON_BASE_ACTIVITY_RESULTS = 0x1;
     protected static final String ON_RESULT_EXTRA_KEY = "ON_RESULT_EXTRA_KEY";

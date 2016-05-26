@@ -17,7 +17,7 @@ import com.magnet.mmx.client.api.MMXMessage;
 /**
  * Created by aorehov on 18.05.16.
  */
-public class MMXEditPollActivity extends BaseActivity implements MMXEditPollView.OnPollCreatedListener {
+public class MMXEditPollActivity extends MMXBaseActivity implements MMXEditPollView.OnPollCreatedListener {
 
     private MMXEditPollFragment mmxEditPollFragment;
     private MenuItem uiCreate;
