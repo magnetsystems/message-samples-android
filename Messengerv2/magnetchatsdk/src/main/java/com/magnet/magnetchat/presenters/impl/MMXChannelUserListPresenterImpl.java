@@ -177,6 +177,7 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     }
 
     private void loadUsers(int offset, int pageSize) {
+        if(mmxChannel == null) return;
         view.onLoading();
         mmxChannel.getObj().getChannel().getAllSubscribers(pageSize, offset, new MMXChannel.OnFinishedListener<ListResult<User>>() {
             @Override

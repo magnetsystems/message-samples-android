@@ -12,6 +12,17 @@
         <item name="colorSwitchThumbNormal">@color/colorLightGray</item>
     </style>
 
+    <style name="DefaultChatSDKToolbar">
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="selectableItemBackground">?android:selectableItemBackground</item>
+        <item name="selectableItemBackgroundBorderless">?android:selectableItemBackground</item>
+        <item name="colorControlHighlight">?attr/colorPrimary</item>
+    </style>
+
     <style name="MagnetChatSDKTheme.Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">
         <!-- Customize color of navigation drawer icon and back arrow -->
         <item name="colorControlNormal">@android:color/white</item>

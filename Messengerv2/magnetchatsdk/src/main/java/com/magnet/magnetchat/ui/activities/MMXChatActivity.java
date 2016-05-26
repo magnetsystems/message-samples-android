@@ -122,7 +122,8 @@ public class MMXChatActivity extends MMXBaseActivity implements ChatListContract
                 if (channel != null) {
 //                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
                     Intent intent = MMXChatDetailsActivity.createIntent(this, channel);
-                    startActivity(intent);
+                    if (intent != null)
+                        startActivity(intent);
                 }
             }
             return true;
@@ -146,9 +147,8 @@ public class MMXChatActivity extends MMXBaseActivity implements ChatListContract
      * @return activity intent or null if channel is null
      */
     public static Intent createIntent(Context context, @NonNull MMXChannel mmxChannel) {
-        if (mmxChannel == null) return null;
-
         Bundle bundle = BundleHelper.packChannel(mmxChannel);
+        if (bundle == null) return null;
         Intent intent = new Intent(context, MMXChatActivity.class);
         intent.putExtras(bundle);
 

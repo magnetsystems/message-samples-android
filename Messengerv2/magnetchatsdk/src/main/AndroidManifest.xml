@@ -15,8 +15,7 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:supportsRtl="true"
-        android:theme="@style/MagnetChatSDKTheme">
+        android:supportsRtl="true">
         <activity
             android:name=".ui.activities.ChannelListActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale"

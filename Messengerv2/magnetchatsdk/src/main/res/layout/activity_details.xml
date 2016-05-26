@@ -9,13 +9,9 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/DefaultChatSDKToolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/MagnetChatSDKTheme.PopupOverlay"
-        app:theme="@style/MagnetChatSDKTheme.Toolbar"
-        app:titleTextAppearance="@style/MagnetChatSDKTheme.Toolbar.Title" />
+        android:layout_height="?attr/actionBarSize" />
 
     <LinearLayout
         android:id="@+id/llAddRecipients"

@@ -25,19 +25,9 @@
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
+                style="@style/DefaultChatSDKToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                android:gravity="center"
-                app:popupTheme="@style/MagnetChatSDKTheme.PopupOverlay"
-                app:titleTextAppearance="@style/MagnetChatSDKTheme.Toolbar.Title">
-
-                <!--<android.support.v7.widget.AppCompatTextView-->
-                <!--style="@style/style_textview_h1"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--android:text="All contacts" />-->
-
-            </android.support.v7.widget.Toolbar>
+                android:layout_height="?attr/actionBarSize" />
 
             <LinearLayout
                 android:layout_width="match_parent"
