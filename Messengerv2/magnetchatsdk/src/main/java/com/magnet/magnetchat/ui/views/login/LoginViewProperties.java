@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.login;
+package com.magnet.magnetchat.ui.views.login;
 
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 

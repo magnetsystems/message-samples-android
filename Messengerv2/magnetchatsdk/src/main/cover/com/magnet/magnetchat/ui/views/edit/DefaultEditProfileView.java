@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.edit;
+package com.magnet.magnetchat.ui.views.edit;
 
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +29,6 @@ import com.bumptech.glide.request.target.Target;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.FileHelper;
 import com.magnet.magnetchat.presenters.EditProfileContract;
-import com.magnet.magnetchat.ui.views.AbstractEditProfileView;
 import com.magnet.max.android.Attachment;
 import com.magnet.max.android.User;
 

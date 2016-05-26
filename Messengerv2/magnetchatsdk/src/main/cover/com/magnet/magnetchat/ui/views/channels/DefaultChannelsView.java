@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.channels;
+package com.magnet.magnetchat.ui.views.channels;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,7 +18,6 @@ import android.widget.ProgressBar;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.filters.ArrayFilter;
 import com.magnet.magnetchat.presenters.ChannelsListContract;
-import com.magnet.magnetchat.ui.views.AbstractChannelsView;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXChannel;

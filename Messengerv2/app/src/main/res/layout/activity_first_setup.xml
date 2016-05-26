@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.magnet.magntetchatapp.ui.activities.section.edit.FirstSetupActivity">
 
-    <com.magnet.magnetchat.ui.views.section.edit.DefaultEditProfileView
+    <com.magnet.magnetchat.ui.views.edit.DefaultEditProfileView
         android:id="@+id/viewEditProfile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

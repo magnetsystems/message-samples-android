@@ -7,7 +7,7 @@ import com.magnet.magnetchat.presenters.LoginContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.home.HomeActivity;
 import com.magnet.magntetchatapp.ui.activities.section.register.RegisterActivity;
-import com.magnet.magnetchat.ui.views.section.login.DefaultLoginView;
+import com.magnet.magnetchat.ui.views.login.DefaultLoginView;
 
 import butterknife.InjectView;
 

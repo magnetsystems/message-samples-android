@@ -2,7 +2,7 @@ package com.magnet.magntetchatapp.ui.activities.section.users;
 
 import android.view.MenuItem;
 
-import com.magnet.magnetchat.ui.views.section.users.DefaultUsersListView;
+import com.magnet.magnetchat.ui.views.users.DefaultUsersListView;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 

@@ -414,7 +414,7 @@ public abstract class AbstractRegisterView extends BasePresenterView<RegisterCon
 
     //EXAMPLE TO CUSTOMIZE
 
-//    <com.magnet.magnetchat.ui.views.section.register.DefaultRegisterView
+//    <com.magnet.magnetchat.ui.views.register.DefaultRegisterView
 //    android:id="@+id/viewRegister"
 //    android:layout_width="match_parent"
 //    android:layout_height="wrap_content"

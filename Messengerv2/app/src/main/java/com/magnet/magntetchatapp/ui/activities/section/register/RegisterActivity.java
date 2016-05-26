@@ -5,7 +5,7 @@ import android.view.MenuItem;
 
 import com.magnet.magntetchatapp.R;
 import com.magnet.magnetchat.presenters.RegisterContract;
-import com.magnet.magnetchat.ui.views.AbstractRegisterView;
+import com.magnet.magnetchat.ui.views.register.AbstractRegisterView;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.edit.FirstSetupActivity;
 

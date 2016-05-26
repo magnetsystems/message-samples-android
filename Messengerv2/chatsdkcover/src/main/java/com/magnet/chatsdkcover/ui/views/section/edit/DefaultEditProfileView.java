@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.edit;
+package com.magnet.magnetchat.ui.views.edit;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.channels;
+package com.magnet.magnetchat.ui.views.channels;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

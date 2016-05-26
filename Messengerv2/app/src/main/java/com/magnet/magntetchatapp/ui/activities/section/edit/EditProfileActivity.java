@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magnetchat.presenters.EditProfileContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
-import com.magnet.magnetchat.ui.views.section.edit.DefaultEditProfileView;
+import com.magnet.magnetchat.ui.views.edit.DefaultEditProfileView;
 
 import butterknife.InjectView;
 

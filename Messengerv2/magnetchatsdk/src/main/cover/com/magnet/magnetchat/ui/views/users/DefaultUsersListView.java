@@ -1,9 +1,7 @@
-package com.magnet.magnetchat.ui.views.section.users;
+package com.magnet.magnetchat.ui.views.users;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
-import com.magnet.magnetchat.ui.views.AbstractUsersListView;
 
 /**
  * Created by dlernatovich on 3/30/16.

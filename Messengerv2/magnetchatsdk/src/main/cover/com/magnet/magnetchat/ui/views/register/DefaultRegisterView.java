@@ -1,4 +1,4 @@
-package com.magnet.magnetchat.ui.views.section.register;
+package com.magnet.magnetchat.ui.views.register;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.presenters.RegisterContract;
-import com.magnet.magnetchat.ui.views.AbstractRegisterView;
 
 /**
  * Created by dlernatovich on 3/15/16.
@@ -405,7 +404,7 @@ public class DefaultRegisterView extends AbstractRegisterView {
 
     //EXAMPLE TO CUSTOMIZE
 
-//    <com.magnet.magnetchat.ui.views.section.register.DefaultRegisterView
+//    <com.magnet.magnetchat.ui.views.register.DefaultRegisterView
 //    android:id="@+id/viewRegister"
 //    android:layout_width="match_parent"
 //    android:layout_height="wrap_content"

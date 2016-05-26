@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <com.magnet.magnetchat.ui.views.section.channels.DefaultChannelsView
+    <com.magnet.magnetchat.ui.views.channels.DefaultChannelsView
         android:id="@+id/viewChannels"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

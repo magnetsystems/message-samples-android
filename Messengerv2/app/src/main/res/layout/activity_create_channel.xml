@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.magnet.magntetchatapp.ui.activities.section.users.CreateChannelActivity">
 
-    <com.magnet.magnetchat.ui.views.section.users.DefaultUsersListView
+    <com.magnet.magnetchat.ui.views.users.DefaultUsersListView
         android:id="@+id/viewUsers"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
