@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewProgress"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:clickable="true"
+    android:foregroundGravity="bottom"
+    android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/background_white_square"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_5">
+
+        <ProgressBar
+            style="@android:style/Widget.Holo.ProgressBar.Large"
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/dimen_5" />
+
+        <android.support.v7.widget.AppCompatTextView
+            style="@style/style_text_default"
+            android:gravity="center"
+            android:text="Please wait..."
+            android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/text_14" />
+    </LinearLayout>
+
+</FrameLayout>

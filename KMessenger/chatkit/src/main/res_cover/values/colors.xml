@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimaryCover">#e0e0e0</color>
+    <color name="colorPrimaryDarkCover">#bdbdbd</color>
+    <color name="colorAccentCover">#64b5f6</color>
+    <color name="colorMagnetRedCover">#d32f2f</color>
+    <color name="colorMagnetRedDarkCover">#b71c1c</color>
+    <color name="colorWhiteCover">#ffffff</color>
+    <color name="colorWhiteDarkCover">#fafafa</color>
+    <color name="colorBlueCover">#517daa</color>
+    <color name="colorBlueDarkCover">#456a91</color>
+</resources>

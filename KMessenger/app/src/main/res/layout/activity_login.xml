@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.magnet.magnetchat.ui.views.login.DefaultLoginView
+        android:id="@+id/login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dimen_40"
+        app:colorButtonRemember="@android:color/black"
+        app:colorLogLoadingBackground="@android:color/black"
+        app:colorLogLoadingMessage="@android:color/white"
+        app:colorTextButtons="@android:color/black"
+        app:colorTextRemember="@android:color/black"
+        app:dimenButtonsText="@dimen/text_14"
+        app:dimenEditsText="@dimen/text_14"
+        app:dimenRememberText="@dimen/text_14"
+        app:hintEmail="Enter email here"
+        app:hintPassword="Enter password here"
+        app:textButtonLogin="Sign in"
+        app:textButtonRegister="Create account"
+        app:textColorEdits="@android:color/black"
+        app:textHintColorEdits="@android:color/darker_gray"
+        app:textRemember="Remember me" />
+
+</FrameLayout>

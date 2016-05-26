@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/mmxchat.message.margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_msg_date"
+        style="@style/MMXDateHintText"
+        android:hint="NULL" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/mmx_msg_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/dimen_5"
+                android:background="@drawable/in_message_bg"
+                android:maxWidth="@dimen/dimen_250"
+                android:padding="@dimen/dimen_7"
+                android:textColor="@android:color/white" />
+
+        </FrameLayout>
+
+        <include
+            layout="@layout/part_view_profile_pic"
+            android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="@dimen/dimen_5" />
+
+    </LinearLayout>
+
+</LinearLayout>

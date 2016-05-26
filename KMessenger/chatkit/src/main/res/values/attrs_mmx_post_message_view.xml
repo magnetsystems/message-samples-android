@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="DefaultMMXPostMessageView">
+
+        <attr name="text_marginLeft" format="dimension" />
+        <attr name="text_marginRight" format="dimension" />
+        <attr name="text_marginTop" format="dimension" />
+        <attr name="text_marginBottom" format="dimension" />
+        <attr name="text_background" format="reference" />
+        <attr name="text_hint" format="string" />
+        <attr name="text_textColor" format="color" />
+        <attr name="text_textSize" format="dimension" />
+        <attr name="text_maxLines" format="integer" />
+
+        <attr name="attach_padding" format="dimension" />
+        <attr name="attach_marginLeft" format="dimension" />
+        <attr name="attach_marginRight" format="dimension" />
+        <attr name="attach_marginTop" format="dimension" />
+        <attr name="attach_marginBottom" format="dimension" />
+        <attr name="attach_src" format="reference" />
+        <attr name="attach_background" format="reference" />
+
+        <attr name="send_padding" format="dimension" />
+        <attr name="send_textColor" format="color" />
+        <attr name="send_textSize" format="dimension" />
+        <attr name="send_text" format="string" />
+        <attr name="send_background" format="reference" />
+
+    </declare-styleable>
+
+</resources>

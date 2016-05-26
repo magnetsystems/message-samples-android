@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_character"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorLightGray"
+        android:paddingBottom="@dimen/dimen_5"
+        android:paddingLeft="@dimen/dimen_15"
+        android:paddingTop="@dimen/dimen_5"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/mmx_user_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_70"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <include
+            android:id="@+id/mmx_user_pic"
+            layout="@layout/part_view_profile_pic"
+            android:layout_width="@dimen/dimen_50"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_marginBottom="@dimen/dimen_7"
+            android:layout_marginLeft="@dimen/dimen_15"
+            android:layout_marginRight="@dimen/dimen_15"
+            android:layout_marginTop="@dimen/dimen_7" />
+
+        <TextView
+            android:id="@+id/mmx_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/dimen_5"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/text_15" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/mmx_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@android:color/darker_gray" />
+</LinearLayout>

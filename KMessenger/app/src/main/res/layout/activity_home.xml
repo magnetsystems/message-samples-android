@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        style="@style/DefaultToolbar" />
+
+
+    <com.magnet.magnetchat.ui.views.channels.DefaultChannelsView
+        android:id="@+id/channels"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:colorChatsBackground="@android:color/white"
+        app:colorChatsBackgroundLoading="@android:color/black"
+        app:colorChatsDivider="@android:color/darker_gray"
+        app:colorChatsHeaderText="@android:color/black"
+        app:colorChatsMessageText="@android:color/darker_gray"
+        app:colorChatsTextLoading="@android:color/white"
+        app:colorChatsTimeText="@android:color/darker_gray"
+        app:colorChatsUnreadTint="@android:color/black"
+        app:dimenTextChatsHeader="@dimen/text_18"
+        app:dimenTextChatsMessage="@dimen/text_16"
+        app:dimenTextChatsTime="@dimen/dimen_14"
+        app:isNeedBoldHeader="false"
+        app:isNeedChatsImage="true"
+        app:textChatsDateFormat="MMM, dd"
+        app:textChatsLocationMessage="Location message"
+        app:textChatsNoMessage="No messages"
+        app:textChatsPhotoMessage="Photo message" />
+
+</LinearLayout>

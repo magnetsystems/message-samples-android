@@ -2,6 +2,7 @@ package com.magnet.magntetchatapp.ui.activities.section.login;
 
 import android.support.annotation.NonNull;
 
+import com.magnet.magnetchat.ui.views.login.AbstractLoginView;
 import com.magnet.magntetchatapp.R;
 import com.magnet.magnetchat.presenters.LoginContract;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
@@ -14,7 +15,7 @@ import butterknife.InjectView;
 public class LoginActivity extends BaseActivity {
 
     @InjectView(R.id.viewLogin)
-    DefaultLoginView loginView;
+    AbstractLoginView loginView;
 
     @Override
     protected int getLayoutId() {

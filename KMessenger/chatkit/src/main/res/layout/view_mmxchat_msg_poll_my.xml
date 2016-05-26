@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/mmxchat.message.margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_msg_date"
+        style="@style/MMXDateHintText"
+        android:hint="Thu, 11:59 PM" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/mmx_poll_root"
+                android:layout_width="@dimen/dimen_270"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/dimen_5"
+                android:background="@drawable/shape_mmx_poll_my"
+                android:orientation="vertical"
+                android:padding="@dimen/dimen_10">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/mmx_poll_type"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/mmxchat.poll.type.multiple"
+                            android:textAllCaps="true"
+                            android:textColor="@android:color/white"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/mmx_poll_question"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen_4"
+                            android:text="NULL"
+                            android:textColor="@android:color/white" />
+
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="@dimen/dimen_38"
+                        android:layout_height="@dimen/dimen_38">
+
+                        <ProgressBar
+                            android:id="@+id/mmx_progress"
+                            style="Theme.AppCompat.Light.NoActionBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                        <ImageView
+                            android:id="@+id/mmx_update"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_update_my" />
+
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+
+                <View
+                    android:id="@+id/mmx_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_2"
+                    android:layout_marginBottom="@dimen/dimen_3"
+                    android:layout_marginTop="@dimen/dimen_3"
+                    android:background="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/mmx_poll_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3"
+                    android:text="@string/mmxchat.poll.subtitle"
+                    android:textColor="@android:color/white" />
+
+                <LinearLayout
+                    android:id="@+id/mmx_poll_answers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_7"
+                    android:layout_marginTop="@dimen/dimen_7"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/mmx_submit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:padding="@dimen/dimen_7"
+                        android:text="@string/mmxchat.submit"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/white"
+                        android:textStyle="bold" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
+        <include
+            layout="@layout/part_view_profile_pic"
+            android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
+            android:layout_gravity="bottom"
+            android:layout_marginRight="@dimen/dimen_5" />
+
+    </LinearLayout>
+
+</LinearLayout>

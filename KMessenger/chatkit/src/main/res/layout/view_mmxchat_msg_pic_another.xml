@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="@dimen/mmxchat.message.margin"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/mmx_msg_date"
+        style="@style/MMXDateHintText"
+        android:hint="Thu, 11:59 PM" />
+
+    <TextView
+        android:id="@+id/mmx_sender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_10"
+        android:padding="@dimen/dimen_3"
+        android:textColor="@color/colorDarkTransparent"
+        android:textSize="@dimen/text_12"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/part_view_profile_pic"
+            android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="@dimen/dimen_5" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/dimen_5"
+            android:paddingTop="@dimen/dimen_3">
+
+            <ImageView
+                android:id="@+id/mmx_msg_pic"
+                android:layout_width="@dimen/dimen_170"
+                android:layout_height="@dimen/dimen_120"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="@dimen/dimen_5"
+                android:scaleType="centerCrop"
+                android:src="@drawable/photo_msg" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

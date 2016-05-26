@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/mmx_attachments"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/dimen_5"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:padding="@dimen/dimen_7"
+        android:src="@drawable/ic_attach" />
+
+    <EditText
+        android:id="@+id/mmx_message_field"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimen_7"
+        android:layout_marginBottom="@dimen/dimen_7"
+        android:layout_marginLeft="@dimen/dimen_3"
+        android:layout_weight="1"
+        android:background="@drawable/backgrounf_edit_text"
+        android:hint="@string/mmx.message.content"
+        android:singleLine="true"
+        android:textSize="@dimen/text_15" />
+
+    <TextView
+        android:id="@+id/mmx_send"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/dimen_10"
+        android:text="@string/mmx.message.send"
+        android:textColor="@color/buttonsTextColor"
+        android:textSize="@dimen/text_16"
+        android:textStyle="bold" />
+
+</LinearLayout>
