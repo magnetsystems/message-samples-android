@@ -523,42 +523,4 @@ public class IntentHelper {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR;
     }
 
-
-    public static Intent chatActivity(Context context, MMXChannel mmxChannel, Class<? extends Activity> clazz) {
-        Intent intent = null;
-        if (mmxChannel != null) {
-            intent = new Intent(context, clazz);
-            intent.putExtra(Constants.TAG_CHANNEL, mmxChannel);
-        }
-        return intent;
-    }
-
-    public static MMXChannel getMMXChannelFromIntent(Intent intent) {
-        if (intent == null) {
-            return null;
-        }
-
-        MMXChannel mmxChannel = intent.getParcelableExtra(Constants.TAG_CHANNEL);
-        return mmxChannel;
-    }
-
-    public static Intent chatActivity(Context context, Collection<User> recipients, Class<? extends Activity> clazz) {
-        Intent intent = new Intent(context, clazz);
-        ArrayList<User> arrayList;
-        if (recipients instanceof ArrayList) {
-            arrayList = (ArrayList<User>) recipients;
-        } else {
-            arrayList = new ArrayList<>(recipients);
-        }
-        intent.putParcelableArrayListExtra(Constants.TAG_CREATE_WITH_RECIPIENTS, arrayList);
-        return intent;
-    }
-
-    public static ArrayList<User> getRecipientsFromIntent(Intent intent) {
-        if (intent == null) return null;
-
-        ArrayList<User> list = intent.getParcelableArrayListExtra(Constants.TAG_CREATE_WITH_RECIPIENTS);
-        return list;
-    }
-
 }
