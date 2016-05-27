@@ -20,7 +20,8 @@
     <string name="mmxchat.poll.subtitle">Vote for your choice</string>
     <string name="mmx.attachments">Attachments</string>
 
-    <string name="mmx.attachment.pic">Picture</string>
+    <string name="mmx.attachment.pic.take">Take photo</string>
+    <string name="mmx.attachment.pic.get">Gallery</string>
     <string name="mmx.attachment.location">Location</string>
     <string name="mmx.attachment.poll">Poll</string>
 

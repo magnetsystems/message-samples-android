@@ -1,7 +1,6 @@
 package com.magnet.magnetchat.ui.fragments;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -92,7 +91,8 @@ public class MMXChatFragment extends MMXBaseFragment {
         }
 
         attachments = Arrays.asList(
-                getString(R.string.mmx_attachment_pic),
+                getString(R.string.mmx_attachment_pic_take),
+                getString(R.string.mmx_attachment_pic_get),
                 getString(R.string.mmx_attachment_location),
                 getString(R.string.mmx_attachment_poll)
         );
@@ -132,7 +132,7 @@ public class MMXChatFragment extends MMXBaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!mmxChatView.onActivityResult(requestCode, resultCode, data)) {
+        if (!mmxChatView.onActivityResult(requestCode & 0xFF, resultCode, data)) {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -160,13 +160,21 @@ public class MMXChatFragment extends MMXBaseFragment {
                 openChoosePicture();
                 break;
             case 1:
-                readLocation();
+                openGallery();
                 break;
             case 2:
+                readLocation();
+                break;
+            case 3:
                 openPollCreator();
                 break;
 
         }
+    }
+
+    private void openGallery() {
+        Intent intent = IntentHelper.pickImage();
+        startActivityForResult(intent, Constants.MMX_RC_GET_PIC);
     }
 
     protected void openPollCreator() {
