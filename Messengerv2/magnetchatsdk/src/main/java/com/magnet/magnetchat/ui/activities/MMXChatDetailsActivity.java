@@ -17,6 +17,7 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
+import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXChannel;
 
 /**
@@ -109,9 +110,14 @@ public class MMXChatDetailsActivity extends MMXBaseActivity implements CompoundB
             uiMute.setChecked(muteState);
             muteState = null;
         }
+
+        MenuItem item = menu.findItem(R.id.mmx_add);
+        item.setVisible(channel != null && channel.getOwnerId().equals(User.getCurrentUserId()));
+
         uiMute.setOnCheckedChangeListener(this);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
