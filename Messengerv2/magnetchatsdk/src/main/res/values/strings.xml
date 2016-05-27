@@ -58,5 +58,6 @@
     <string name="err.location.cant_get">Can\'t get location</string>
     <string name="mmx.poll.create">Create Poll</string>
     <string name="err.poll.answer.empty">Answer can\'t be empty</string>
+    <string name="err.channels.get">Can\'t load channels</string>
 
 </resources>

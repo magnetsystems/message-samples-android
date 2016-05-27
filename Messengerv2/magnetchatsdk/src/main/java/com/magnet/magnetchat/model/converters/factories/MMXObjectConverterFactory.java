@@ -1,10 +1,12 @@
 package com.magnet.magnetchat.model.converters.factories;
 
+import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
@@ -26,4 +28,6 @@ public interface MMXObjectConverterFactory {
     BaseConverter<String, MMXPollOption> createMMXPollOptionStringConverter();
 
     BaseConverter<Date, String> createMessageDateConverterFactory();
+
+    BaseConverter<ChannelDetail, MMXChannelWrapper> createMMXChannelWrapper();
 }

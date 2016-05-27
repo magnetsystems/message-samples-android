@@ -1,11 +1,13 @@
 package com.magnet.magnetchat.model.converters.impl;
 
+import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.MMXPollOptionWrapper;
 import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXMessage;
 import com.magnet.mmx.client.ext.poll.MMXPoll;
 import com.magnet.mmx.client.ext.poll.MMXPollOption;
@@ -19,6 +21,7 @@ import java.util.List;
 public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFactory {
 
     private BaseConverter<Date, String> mmxMessageDateConverter;
+    private BaseConverter<ChannelDetail, MMXChannelWrapper> mmxChannelWrapperBaseConverter;
 
     public DefaultMMXObjectConverterFactory() {
     }
@@ -49,5 +52,13 @@ public class DefaultMMXObjectConverterFactory implements MMXObjectConverterFacto
             mmxMessageDateConverter = new DefaultMMXMessageDateConverter();
         }
         return mmxMessageDateConverter;
+    }
+
+    @Override
+    public BaseConverter<ChannelDetail, MMXChannelWrapper> createMMXChannelWrapper() {
+        if (mmxChannelWrapperBaseConverter == null) {
+            mmxChannelWrapperBaseConverter = new DefaultMMXChannelWrapperConverter();
+        }
+        return mmxChannelWrapperBaseConverter;
     }
 }

@@ -11,11 +11,18 @@ import java.util.List;
  */
 public class MMXChannelWrapper extends MMXObjectWrapper<ChannelDetail> {
 
+    public static final int TYPE_CHANNEL = 0xFC01;
+
     private long messagesAmount;
 
     public MMXChannelWrapper(ChannelDetail obj) {
-        super(obj, -1);
+        super(obj, TYPE_CHANNEL);
         messagesAmount = obj.getChannel().getNumberOfMessages();
+    }
+
+    public MMXChannelWrapper(ChannelDetail obj, int type) {
+        super(obj, type);
+        this.messagesAmount = obj.getChannel().getNumberOfMessages();
     }
 
     public long getMessagesAmount() {
