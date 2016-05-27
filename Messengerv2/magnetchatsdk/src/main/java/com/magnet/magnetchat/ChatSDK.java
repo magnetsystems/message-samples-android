@@ -173,8 +173,10 @@ public class ChatSDK {
         ChatManager.getInstance();
     }
 
-    public static void messageNotification(String channelName, String fromUserName) {
-        PendingIntent intent = PendingIntent.getActivity(Max.getApplicationContext(), 0, new Intent(Intent.ACTION_MAIN)
+    public static void messageNotification(MMXChannel channelName, String fromUserName) {
+        Intent chatIntent = ChatSDK.getMMXBeanFactory().getMagnetChatIntent(Max.getApplicationContext(), channelName);
+
+        PendingIntent intent = PendingIntent.getActivity(Max.getApplicationContext(), 0, chatIntent
                         .addCategory(Intent.CATEGORY_DEFAULT)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         .setPackage(Max.getApplicationContext().getPackageName()),
@@ -186,7 +188,8 @@ public class ChatSDK {
                 .setContentInfo(fromUserName)
                 .setContentIntent(intent).build();
         NotificationManager manager = (NotificationManager) Max.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(channelName, 12345, notification);
+        String name = channelName.getName();
+        manager.notify(name, 12345, notification);
         Vibrator v = (Vibrator) Max.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(500);
     }
@@ -212,9 +215,9 @@ public class ChatSDK {
             if ((mmxMessage.getSender() != null)
                     && (!mmxMessage.getSender().getUserIdentifier().equals(User.getCurrentUserId()))) {
                 if (mmxMessage.getChannel() != null) {
-                    messageNotification(mmxMessage.getChannel().getName(), mmxMessage.getSender().getDisplayName());
+                    messageNotification(mmxMessage.getChannel(), mmxMessage.getSender().getDisplayName());
                 } else {
-                    messageNotification("", mmxMessage.getSender().getDisplayName());
+//                    messageNotification("", mmxMessage.getSender().getDisplayName());
                 }
             }
             return false;

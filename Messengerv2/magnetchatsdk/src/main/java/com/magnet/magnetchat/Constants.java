@@ -5,6 +5,8 @@ package com.magnet.magnetchat;
  */
 public interface Constants {
 
+    String ACTION_CHAT = "com.magnet.magnetchat.CHAT";
+
     int CONVERSATION_PAGE_SIZE = 20;
 
     int MESSAGE_PAGE_SIZE = 30;

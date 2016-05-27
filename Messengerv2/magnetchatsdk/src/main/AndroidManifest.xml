@@ -43,7 +43,15 @@
         <activity
             android:name=".ui.activities.MMXChatActivity"
             android:label="@string/mmx.chat"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="com.magnet.magnetchat.CHAT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--<category android:name="android.intent.category.BROWSABLE" />-->
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".ui.activities.MMXChatDetailsActivity"
@@ -65,7 +73,6 @@
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
                 <category android:name="com.magnet.magnetchat" />
             </intent-filter>
         </receiver>
