@@ -39,7 +39,8 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> {
     }
 
     public long getVotesCount() {
-        return obj.getCount();
+        Long aLong = obj.getCount();
+        return aLong != null ? aLong : 0;
     }
 
     public String getVoteText() {

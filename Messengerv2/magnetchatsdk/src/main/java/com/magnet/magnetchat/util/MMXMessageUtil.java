@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.util;
 
 import android.location.Location;
+import android.support.annotation.Nullable;
 
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.max.android.Attachment;
@@ -197,5 +198,30 @@ public class MMXMessageUtil {
                 .append("&zoom=18&size=480x300&sensor=false&markers=color:blue%7Clabel:S%7C")
                 .append(lat).append(',').append(lon)
                 .toString();
+    }
+
+    @Nullable
+    public static String getMessageShortDesc(MMXMessageWrapper wrapper, String defTextMapMessage, String defPhotoMessage, String defPollMessage, String defVideoMessage, String defPollAnswer) {
+        switch (wrapper.getType()) {
+            case MMXMessageWrapper.TYPE_MAP_ANOTHER:
+            case MMXMessageWrapper.TYPE_MAP_MY:
+                return defTextMapMessage == null ? "Map message" : defTextMapMessage;
+            case MMXMessageWrapper.TYPE_PHOTO_ANOTHER:
+            case MMXMessageWrapper.TYPE_PHOTO_MY:
+                return defPhotoMessage == null ? "Photo message" : defPhotoMessage;
+            case MMXMessageWrapper.TYPE_POLL_ANOTHER:
+            case MMXMessageWrapper.TYPE_POLL_MY:
+                return defPollMessage == null ? "Poll message" : defPollMessage;
+            case MMXMessageWrapper.TYPE_VIDEO_ANOTHER:
+            case MMXMessageWrapper.TYPE_VIDEO_MY:
+                return defVideoMessage == null ? "Video message" : defVideoMessage;
+            case MMXMessageWrapper.TYPE_TEXT_ANOTHER:
+            case MMXMessageWrapper.TYPE_TEXT_MY:
+                return wrapper.getTextMessage();
+            case MMXMessageWrapper.TYPE_VOTE_ANSWER:
+                return defPollAnswer == null ? "Poll answer" : defPollAnswer;
+        }
+
+        return null;
     }
 }

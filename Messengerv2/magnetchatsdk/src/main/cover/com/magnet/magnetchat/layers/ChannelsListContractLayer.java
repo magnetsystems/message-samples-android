@@ -16,14 +16,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.model.Chat;
+import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.Message;
+import com.magnet.magnetchat.model.converters.BaseConverter;
 import com.magnet.magnetchat.ui.views.channels.AbstractChannelsView;
 import com.magnet.magnetchat.ui.custom.AdapteredRecyclerView;
 import com.magnet.magnetchat.ui.custom.CircleNameView;
 import com.magnet.magnetchat.ui.views.channels.DefaultChannelsView;
 import com.magnet.magnetchat.util.Logger;
+import com.magnet.magnetchat.util.MMXMessageUtil;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -408,6 +412,8 @@ public interface ChannelsListContractLayer {
      */
     class ChannelObject extends AdapteredRecyclerView.BaseObject {
 
+        private BaseConverter<MMXMessage, MMXMessageWrapper> converter;
+
         private static final String K_NO_AVAILABLE = "Not available";
         private static final String K_NO_MESSAGES = "No messages";
 
@@ -421,6 +427,7 @@ public interface ChannelsListContractLayer {
         private String textLocationMessage;
 
         public ChannelObject(ChannelDetail channelDetail) {
+            converter = ChatSDK.getMmxObjectConverterFactory().createMMXMessageConverter();
             this.channelDetail = channelDetail;
             this.channelName = getChannelName(channelDetail);
             updateChannelMessage(channelDetail);
@@ -494,19 +501,10 @@ public interface ChannelsListContractLayer {
                 List<MMXMessage> messages = channelDetail.getMessages();
                 if (messages != null && messages.size() > 0) {
                     MMXMessage mmxMessage = messages.get(messages.size() - 1);
-                    if (mmxMessage != null && mmxMessage.getContent() != null && mmxMessage.getContent().containsKey(Message.TAG_TYPE)) {
-                        Message message = Message.createMessageFrom(mmxMessage);
-                        if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
-                            lastMessage = textPhotoMessage;
-                        } else if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
-                            lastMessage = textLocationMessage;
-                        } else if (message != null
-                                && message.getText() != null
-                                && message.getText().isEmpty() != true) {
-                            lastMessage = message.getText();
-                        }
+                    if (mmxMessage != null) {
+                        MMXMessageWrapper wrapper = converter.convert(mmxMessage);
+                        String desc = MMXMessageUtil.getMessageShortDesc(wrapper, textLocationMessage, textPhotoMessage, null, null, null);
+                        lastMessage = desc;
                     }
                 }
             }
@@ -542,29 +540,11 @@ public interface ChannelsListContractLayer {
          */
         public void updateChannelMessage(@Nullable final MMXMessage mmxMessage) {
             if (mmxMessage != null) {
-                Message message = Message.createMessageFrom(mmxMessage);
+//                Message message = Message.createMessageFrom(mmxMessage);
+                MMXMessageWrapper message = converter.convert(mmxMessage);
                 if (message != null) {
-
-                    lastTimeActive = message.getCreateTime();
-
-                    /**
-                     * try-catch - is fast fix
-                     */
-                    try {
-                        if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_PHOTO)) {
-                            lastMessage = textPhotoMessage;
-                        } else if (message != null
-                                && message.getType().equalsIgnoreCase(Message.TYPE_MAP)) {
-                            lastMessage = textLocationMessage;
-                        } else if (message != null
-                                && message.getText() != null
-                                && message.getText().isEmpty() != true) {
-                            lastMessage = message.getText();
-                        }
-                    } catch (Exception ex) {
-                        Logger.error(getClass().getSimpleName(), ex);
-                    }
+                    lastTimeActive = message.getPublishDate();
+                    lastMessage = MMXMessageUtil.getMessageShortDesc(message, textLocationMessage, textPhotoMessage, null, null, null);
                 }
 
                 if (lastMessage == null) {
