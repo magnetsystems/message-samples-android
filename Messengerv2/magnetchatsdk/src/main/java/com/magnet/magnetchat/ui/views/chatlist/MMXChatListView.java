@@ -184,7 +184,7 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
         }
     };
 
-    public void onCreatePoll() {
+    public void onCreatedPoll() {
         presenter.onCreatedPoll();
     }
 }

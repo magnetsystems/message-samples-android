@@ -106,7 +106,7 @@ public class MMXChatActivity extends MMXBaseActivity implements ChatListContract
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        chatFragment.onActivityResult(requestCode, resultCode, data);
+        chatFragment.onActivityResult(requestCode & 0xFF, resultCode, data);
     }
 
     @Override
