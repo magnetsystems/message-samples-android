@@ -3,7 +3,9 @@ package com.magnet.magnetchat.persistence.impl;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
+import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
 import com.magnet.magnetchat.persistence.core.BaseSharedPreferenceRepository;
 
@@ -20,7 +22,7 @@ class AppScopePendingStateRepositoryImpl extends BaseSharedPreferenceRepository 
 
     @Override
     public void putString(@NonNull String key, @NonNull String string) {
-        putString(key, string);
+        getPreferences().edit().putString(key, string).commit();
     }
 
     @Override
@@ -83,5 +85,16 @@ class AppScopePendingStateRepositoryImpl extends BaseSharedPreferenceRepository 
     @Override
     public void setNeedToUpdateChannel(boolean isNeedUpdate) {
         putBool(NEED_UPDATE_CHANNELS, isNeedUpdate);
+    }
+
+    @Override
+    public void setActiveChannel(@Nullable String idChannel) {
+        putString(Constants.TAG_CHANNEL, idChannel);
+    }
+
+    @Nullable
+    @Override
+    public String getActiveChannel() {
+        return getPreferences().getString(Constants.TAG_CHANNEL, null);
     }
 }

@@ -228,9 +228,16 @@ public class ChatSDK {
         public boolean onMessageReceived(MMXMessage mmxMessage) {
             Logger.debug("onMessageReceived", mmxMessage);
             ChatManager.getInstance().handleIncomingMessage(mmxMessage, null);
+            MMXChannel channel = mmxMessage.getChannel();
+
+            String activeChannel = ChatSDK.getMMXPersistenceFactory().getAppScopePendingStateRepository().getActiveChannel();
+            if (channel != null && activeChannel != null && activeChannel.equals(channel.getIdentifier())) {
+                return false;
+            }
+
             if ((mmxMessage.getSender() != null)
                     && (!mmxMessage.getSender().getUserIdentifier().equals(User.getCurrentUserId()))) {
-                if (mmxMessage.getChannel() != null) {
+                if (channel != null) {
                     messageNotification(mmxMessage.getChannel(), mmxMessage.getSender().getDisplayName());
                 } else {
 //                    messageNotification("", mmxMessage.getSender().getDisplayName());

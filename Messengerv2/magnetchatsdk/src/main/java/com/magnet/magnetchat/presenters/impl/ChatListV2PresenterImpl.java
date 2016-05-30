@@ -39,6 +39,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     private LazyLoadUtil lazyLoadUtil;
     private ChatListContract.MMXChannelListener channelListener;
     private final AppScopePendingStateRepository repository;
+    private boolean isStarted = false;
 
     public ChatListV2PresenterImpl(ChatListContract.View view, BaseConverter<MMXMessage, MMXMessageWrapper> converter, AppScopePendingStateRepository repository) {
         this.view = view;
@@ -75,6 +76,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
             public void onSuccessCreated(MMXChannel channel) {
                 repository.setNeedToUpdateChannel(true);
                 loadDetails(channel);
+                setChannelName(channel.getIdentifier());
             }
 
             @Override
@@ -150,8 +152,27 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
 
     @Override
     public void onStart() {
+        isStarted = true;
         MMX.registerListener(eventListener);
         updateChannel();
+        if (channel != null) {
+            setChannelName(channel.getObj().getChannel().getIdentifier());
+        }
+    }
+
+    @Override
+    public void onStop() {
+        MMX.unregisterListener(eventListener);
+        setChannelName(null);
+        isStarted = false;
+    }
+
+    private void setChannelName(String channelName) {
+        if (isStarted) {
+            repository.setActiveChannel(channelName);
+        } else {
+            repository.setActiveChannel(null);
+        }
     }
 
     /**
@@ -175,11 +196,6 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
                 }
             });
         }
-    }
-
-    @Override
-    public void onStop() {
-        MMX.unregisterListener(eventListener);
     }
 
     @Override
