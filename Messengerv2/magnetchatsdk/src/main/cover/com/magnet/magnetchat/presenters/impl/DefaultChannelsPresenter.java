@@ -7,7 +7,6 @@ import android.util.Log;
 import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.presenters.ChannelsListContract;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
-import com.magnet.magnetchat.persistence.impl.PersistenceComponentImpl;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.MMXChannel;
@@ -31,9 +30,9 @@ class DefaultChannelsPresenter implements ChannelsListContract.Presenter {
     private final ChannelsListContract.View view;
     private AppScopePendingStateRepository repository;
 
-    public DefaultChannelsPresenter(ChannelsListContract.View view) {
+    public DefaultChannelsPresenter(ChannelsListContract.View view, AppScopePendingStateRepository repository) {
         this.view = view;
-        repository = new PersistenceComponentImpl(view.getCurrentContext()).getApplicationPendingStateRepository();
+        this.repository = repository;
     }
 
     /**

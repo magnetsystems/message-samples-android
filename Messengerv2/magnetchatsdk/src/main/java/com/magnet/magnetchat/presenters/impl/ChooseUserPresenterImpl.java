@@ -3,6 +3,7 @@ package com.magnet.magnetchat.presenters.impl;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.helpers.ChannelHelper;
@@ -10,7 +11,6 @@ import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.presenters.ChooseUserContract;
 import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
-import com.magnet.magnetchat.persistence.impl.PersistenceComponentImpl;
 import com.magnet.magnetchat.ui.activities.ChatActivity;
 import com.magnet.magnetchat.ui.adapters.BaseSortedAdapter;
 import com.magnet.magnetchat.util.Logger;
@@ -42,7 +42,7 @@ public class ChooseUserPresenterImpl implements ChooseUserContract.Presenter {
     }
 
     public ChooseUserPresenterImpl(ChooseUserContract.View view, String channelName) {
-        appStateRepository = new PersistenceComponentImpl(view.getActivity()).getApplicationPendingStateRepository();
+        appStateRepository = ChatSDK.getMMXPersistenceFactory().getAppScopePendingStateRepository();
         this.mView = view;
         if (null != channelName) {
             mConversation = ChatManager.getInstance().getConversationByName(channelName);

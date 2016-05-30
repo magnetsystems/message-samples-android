@@ -16,6 +16,8 @@ import com.magnet.magnetchat.core.managers.SharedPreferenceManager;
 import com.magnet.magnetchat.helpers.UserHelper;
 import com.magnet.magnetchat.model.converters.factories.MMXObjectConverterFactory;
 import com.magnet.magnetchat.model.converters.impl.DefaultMMXObjectConverterFactory;
+import com.magnet.magnetchat.persistence.core.MMXPersistenceFactory;
+import com.magnet.magnetchat.persistence.impl.MMXPersistenceFactoryImpl;
 import com.magnet.magnetchat.presenters.chatlist.MMXMessagePresenterFactory;
 import com.magnet.magnetchat.presenters.core.MMXPresenterFactory;
 import com.magnet.magnetchat.presenters.impl.DefaultMMXPresenterFactory;
@@ -38,12 +40,14 @@ import java.util.Map;
  */
 public class ChatSDK {
 
+    private Context context;
     private MMXPresenterFactory mmxPresenterFactory;
     private MMXMessagePresenterFactory messagePresenterFactory;
     private MMXViewFactory mmxViewFactory;
     private MMXObjectConverterFactory mmxObjectConverterFactory;
     private MMXListItemFactory mmxListItemFactory;
     private MMXBeanFactory mmxBeanFactory;
+    private MMXPersistenceFactory MMXPersistenceFactory;
 
 //    private Map<String, MMXPresenterFactory> mmxNamedPresenterFactories = new HashMap<>();
 //    private Map<String, MMXMessagePresenterFactory> mmxNamedMessagePresenterFactories = new HashMap<>();
@@ -55,8 +59,15 @@ public class ChatSDK {
 
     private static ChatSDK instance;
 
-    private ChatSDK() {
+    private ChatSDK(Context context) {
+        this.context = context;
+    }
 
+    private MMXPersistenceFactory getPrMMXPersistenceFactory() {
+        if (MMXPersistenceFactory == null) {
+            MMXPersistenceFactory = new MMXPersistenceFactoryImpl(context);
+        }
+        return MMXPersistenceFactory;
     }
 
     private MMXListItemFactory getPrMmxListItemFactory() {
@@ -120,6 +131,11 @@ public class ChatSDK {
         return null;
     }
 
+    public static MMXPersistenceFactory getMMXPersistenceFactory() {
+        throwMMXNotInitException();
+        return instance.getPrMMXPersistenceFactory();
+    }
+
     public static MMXMessagePresenterFactory getMMXMessagPresenterFactory() {
         throwMMXNotInitException();
         return instance.getMessagePresenterFactory();
@@ -157,7 +173,7 @@ public class ChatSDK {
     }
 
     public static void init(Application application) {
-        init(new ChatSDK(), application);
+        init(new ChatSDK(application), application);
     }
 
     private static void init(ChatSDK chatSDK, Application application) {
@@ -233,8 +249,8 @@ public class ChatSDK {
     public static class Builder {
         private ChatSDK sdk;
 
-        public Builder() {
-            sdk = new ChatSDK();
+        public Builder(Application application) {
+            sdk = new ChatSDK(application);
         }
 
 
