@@ -49,7 +49,8 @@ public abstract class MMXChatListView<T extends ViewProperty> extends BaseView<T
         uiRecyclerView.setLayoutManager(createLayoutManager());
 
         presenter = createChatPresenter(getMMXChatPresenterName());
-        if (presenter == null) presenter = ChatSDK.getPresenterFactory().createChatPresenter(this);
+        if (presenter == null)
+            presenter = ChatSDK.getPresenterFactory().createChatPresenter(getContext(), this);
 
     }
 

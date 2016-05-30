@@ -12,6 +12,7 @@ import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.model.MMXChannelWrapper;
 import com.magnet.magnetchat.model.MMXMessageWrapper;
 import com.magnet.magnetchat.model.converters.BaseConverter;
+import com.magnet.magnetchat.persistence.AppScopePendingStateRepository;
 import com.magnet.magnetchat.presenters.updated.ChatListContract;
 import com.magnet.magnetchat.util.LazyLoadUtil;
 import com.magnet.magnetchat.util.Logger;
@@ -37,11 +38,13 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
     private BaseConverter<MMXMessage, MMXMessageWrapper> converter;
     private LazyLoadUtil lazyLoadUtil;
     private ChatListContract.MMXChannelListener channelListener;
+    private final AppScopePendingStateRepository repository;
 
-    public ChatListV2PresenterImpl(ChatListContract.View view, BaseConverter<MMXMessage, MMXMessageWrapper> converter) {
+    public ChatListV2PresenterImpl(ChatListContract.View view, BaseConverter<MMXMessage, MMXMessageWrapper> converter, AppScopePendingStateRepository repository) {
         this.view = view;
         this.converter = converter;
         lazyLoadUtil = new LazyLoadUtil(Constants.MESSAGE_PAGE_SIZE, (int) (Constants.MESSAGE_PAGE_SIZE * 0.60), this);
+        this.repository = repository;
     }
 
     @Override
@@ -70,6 +73,7 @@ class ChatListV2PresenterImpl implements ChatListContract.Presenter, LazyLoadUti
         ChannelHelper.createChannelForUsers(list, new ChannelHelper.OnCreateChannelListener() {
             @Override
             public void onSuccessCreated(MMXChannel channel) {
+                repository.setNeedToUpdateChannel(true);
                 loadDetails(channel);
             }
 

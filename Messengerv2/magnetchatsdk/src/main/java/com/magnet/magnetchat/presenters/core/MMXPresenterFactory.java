@@ -1,5 +1,7 @@
 package com.magnet.magnetchat.presenters.core;
 
+import android.content.Context;
+
 import com.magnet.magnetchat.presenters.ChannelsListContract;
 import com.magnet.magnetchat.presenters.EditProfileContract;
 import com.magnet.magnetchat.presenters.LoginContract;
@@ -15,7 +17,7 @@ import com.magnet.magnetchat.presenters.updated.ChatListContract;
  */
 public interface MMXPresenterFactory {
 
-    ChatListContract.Presenter createChatPresenter(ChatListContract.View view);
+    ChatListContract.Presenter createChatPresenter(Context context, ChatListContract.View view);
 
     PostMMXMessageContract.Presenter createPostMessagePresenter(PostMMXMessageContract.View view);
 
