@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 
@@ -29,9 +30,7 @@ public class BitmapHelper {
     public static Uri storeImage(Bitmap image, int quality) {
         Uri uri = null;
         try {
-            String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
-            String timeStamp = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss").format(new Date());
-            String filePath = String.format("%s/DCIM%s.png", dcimPath, timeStamp);
+            String filePath = generatePathForPicture();
             File pictureFile = new File(filePath);
             if (pictureFile == null) {
                 Log.d("private void storeImage(Bitmap image)",
@@ -88,6 +87,11 @@ public class BitmapHelper {
             Logger.error("readBitmapFromAssets", null, e);
         }
         return null;
+    }
+
+    public static String generatePathForPicture() {
+        String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
+        return String.format("%s/IMG_%d.png", dcimPath, System.currentTimeMillis());
     }
 
     private static Bitmap readBitmapWithPreferSize(String path, int preferSize) {

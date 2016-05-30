@@ -50,6 +50,7 @@ public class MMXChatFragment extends MMXBaseFragment {
 
     private List<String> attachments;
     private GoogleApiClient googleApiClient;
+    private String picPath;
 
     @Override
     protected int getLayoutId() {
@@ -141,18 +142,13 @@ public class MMXChatFragment extends MMXBaseFragment {
         PostMMXMessageContract.Presenter presenter = getMessageContract();
         if (requestCode == Constants.MMX_RC_CREATE_POLL && resultCode == Activity.RESULT_OK) {
             mmxChatView.onCreatedPoll();
-        } else if (requestCode == Constants.MMX_RC_TAKE_PIC && resultCode == Activity.RESULT_OK) {
-            Bundle extras = intent.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Uri uri = BitmapHelper.storeImage(imageBitmap, 100);
-            if (uri != null) {
-                String path = uri.toString().replace("//", "/");
-                String mimeType = FileHelper.getMimeType(Max.getApplicationContext(), uri, path, Message.FILE_TYPE_PHOTO);
-
-                presenter.sendPhotoMessage(path, mimeType);
-            } else {
-                showMessage("Can't read picture");
+        } else if (requestCode == Constants.MMX_RC_TAKE_PIC) {
+            if (resultCode == Activity.RESULT_OK && picPath != null) {
+                Uri uri = Uri.parse(picPath);
+                String mimeType = FileHelper.getMimeType(Max.getApplicationContext(), uri, picPath, Message.FILE_TYPE_PHOTO);
+                presenter.sendPhotoMessage(picPath, mimeType);
             }
+            picPath = null;
         } else if (requestCode == Constants.MMX_RC_GET_PIC && resultCode == Activity.RESULT_OK) {
             Uri uri = intent.getData();
             String path = BitmapHelper.getBitmapPath(getContext(), uri);
@@ -185,7 +181,7 @@ public class MMXChatFragment extends MMXBaseFragment {
         int indexOf = attachments.indexOf(attachment);
         switch (indexOf) {
             case 0:
-                openChoosePicture();
+                openTakePicture();
                 break;
             case 1:
                 openGallery();
@@ -196,7 +192,6 @@ public class MMXChatFragment extends MMXBaseFragment {
             case 3:
                 openPollCreator();
                 break;
-
         }
     }
 
@@ -235,8 +230,10 @@ public class MMXChatFragment extends MMXBaseFragment {
         toast(s);
     }
 
-    protected void openChoosePicture() {
-        Intent intent = IntentHelper.photoCapture();
+    protected void openTakePicture() {
+        picPath = BitmapHelper.generatePathForPicture();
+        Intent intent = IntentHelper.photoCapture(picPath);
+
         getActivity().startActivityForResult(intent, Constants.MMX_RC_TAKE_PIC);
     }
 
