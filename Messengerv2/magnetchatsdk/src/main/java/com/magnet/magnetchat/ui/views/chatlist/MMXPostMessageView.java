@@ -122,10 +122,12 @@ public abstract class MMXPostMessageView<T extends ViewProperty> extends BaseVie
             }
             return true;
         } else if (requestCode == Constants.MMX_RC_GET_PIC && resultCode == Activity.RESULT_OK) {
-            String path = BitmapHelper.getBitmapPath(getContext(), intent.getData());
-            if(path != null){
-                presenter.sendPhotoMessage(path,Message.FILE_TYPE_PHOTO);
-            }else {
+            Uri uri = intent.getData();
+            String path = BitmapHelper.getBitmapPath(getContext(), uri);
+            if (path != null) {
+                String mimeType = FileHelper.getMimeType(Max.getApplicationContext(), uri, path, Message.FILE_TYPE_PHOTO);
+                presenter.sendPhotoMessage(path, mimeType);
+            } else {
                 showMessage("Cant read pic from gallery");
             }
             return true;
