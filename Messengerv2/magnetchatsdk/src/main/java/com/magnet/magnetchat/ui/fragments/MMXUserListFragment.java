@@ -8,6 +8,8 @@ import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.presenters.UserListContract;
 import com.magnet.magnetchat.ui.views.users.MMXUserListView;
 
+import java.util.ArrayList;
+
 /**
  * Created by aorehov on 12.05.16.
  */
@@ -16,6 +18,7 @@ public class MMXUserListFragment extends MMXBaseFragment {
     private MMXUserListView userListView;
     private UserListContract.OnSelectUserEvent eventListener;
     private UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener;
+    private ArrayList<String> pendingIds;
 
     @Override
     protected int getLayoutId() {
@@ -36,9 +39,14 @@ public class MMXUserListFragment extends MMXBaseFragment {
         return ChatSDK.getViewFactory().createMmxUserListView(getContext());
     }
 
+    public ArrayList<String> getUserIds() {
+        return userListView.getUserIds();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
+        setExcludeUserIds(pendingIds);
         userListView.onStart();
     }
 
@@ -89,5 +97,14 @@ public class MMXUserListFragment extends MMXBaseFragment {
 
     public void refresh() {
         if (userListView != null) userListView.refresh();
+    }
+
+    public void setExcludeUserIds(ArrayList<String> ids) {
+        if (userListView == null) {
+            pendingIds = ids;
+        } else if (ids != null) {
+            userListView.setExcludeUserIdsList(ids);
+            pendingIds = null;
+        }
     }
 }

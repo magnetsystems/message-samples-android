@@ -6,6 +6,8 @@ import com.magnet.magnetchat.model.MMXUserWrapper;
 import com.magnet.magnetchat.presenters.core.MMXInfoView;
 import com.magnet.magnetchat.presenters.core.MMXPresenter;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -35,6 +37,10 @@ public interface UserListContract {
         void doGetAllSelectedUsers();
 
         void setOnGetAllSelectedUsersListener(OnGetAllSelectedUsersListener onGetAllSelectedUsersListener);
+
+        void setExcludeUserIds(Collection<String> ids);
+
+        ArrayList<String> getUserIds();
 
     }
 

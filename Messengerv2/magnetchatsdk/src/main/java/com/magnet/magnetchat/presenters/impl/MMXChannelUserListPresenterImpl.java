@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.MMXAction;
+import com.magnet.magnetchat.callbacks.MMXAction2;
 import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.model.Chat;
@@ -18,7 +19,10 @@ import com.magnet.mmx.client.api.ChannelDetailOptions;
 import com.magnet.mmx.client.api.ListResult;
 import com.magnet.mmx.client.api.MMXChannel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -32,7 +36,8 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     private List<MMXUserWrapper> userWrappers;
     private MMXChannelWrapper mmxChannel;
     private boolean isStarted = false;
-    private final int PAGE_SIZE = 40;
+    private final int PAGE_SIZE = 50;
+    private Collection<String> userIds;
 
     public MMXChannelUserListPresenterImpl(UserListContract.View view, BaseConverter<User, MMXUserWrapper> converter) {
         this.lazyLoadUtil = new LazyLoadUtil(PAGE_SIZE, (int) (PAGE_SIZE * 0.35), lazyLoadingCallback);
@@ -69,6 +74,25 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     @Override
     public void setOnGetAllSelectedUsersListener(UserListContract.OnGetAllSelectedUsersListener onGetAllSelectedUsersListener) {
 // STUB
+    }
+
+    @Override
+    public void setExcludeUserIds(Collection<String> ids) {
+        this.userIds = ids;
+    }
+
+    @Override
+    public ArrayList<String> getUserIds() {
+        if (userWrappers != null && !userWrappers.isEmpty()) {
+            Iterator<MMXUserWrapper> iterator = userWrappers.iterator();
+            ArrayList<String> ids = new ArrayList<>(userWrappers.size());
+            while (iterator.hasNext()) {
+                MMXUserWrapper next = iterator.next();
+                ids.add(next.getObj().getUserIdentifier());
+            }
+            return ids;
+        }
+        return null;
     }
 
     public void setMMXChannel(MMXChannel mmxChannel) {
@@ -157,13 +181,20 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     }
 
     private void onUsersReceived(List<User> items) {
-        converter.convert(items, new MMXAction<List<MMXUserWrapper>>() {
-            @Override
-            public void call(List<MMXUserWrapper> action) {
-                userWrappers = action;
-                view.onPut(userWrappers);
-            }
-        });
+        converter
+                .filtre(new MMXAction2<User, Boolean>() {
+                    @Override
+                    public Boolean call(User action) {
+                        return userIds == null || !userIds.contains(action.getUserIdentifier());
+                    }
+                })
+                .convert(items, new MMXAction<List<MMXUserWrapper>>() {
+                    @Override
+                    public void call(List<MMXUserWrapper> action) {
+                        userWrappers = action;
+                        view.onPut(userWrappers);
+                    }
+                });
     }
 
     @Override
@@ -177,7 +208,7 @@ class MMXChannelUserListPresenterImpl implements UserListContract.Presenter {
     }
 
     private void loadUsers(int offset, int pageSize) {
-        if(mmxChannel == null) return;
+        if (mmxChannel == null) return;
         view.onLoading();
         mmxChannel.getObj().getChannel().getAllSubscribers(pageSize, offset, new MMXChannel.OnFinishedListener<ListResult<User>>() {
             @Override

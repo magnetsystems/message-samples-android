@@ -20,6 +20,8 @@ import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXChannel;
 
+import java.util.ArrayList;
+
 /**
  * See static method how to create activity intent;
  *
@@ -125,7 +127,8 @@ public class MMXChatDetailsActivity extends MMXBaseActivity implements CompoundB
             return true;
         } else if (item.getItemId() == R.id.mmx_add) {
             if (channel != null) {
-                Intent intent = MMXUsersActivity.createActivityIntent(this, channel);
+                ArrayList<String> ids = userListFragment.getUserIds();
+                Intent intent = MMXUsersActivity.createActivityIntent(this, channel, ids);
                 if (intent == null) return true;
                 startActivityForResult(intent, RC_ADD_USERS);
             }

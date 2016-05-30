@@ -25,6 +25,8 @@ public interface Constants {
 
     String TAG_CHANNEL_NAME = "mmx.channel.name";
 
+    String TAG_USER_IDS = "mmx.user.ids";
+
     String TAG_CREATE_WITH_RECIPIENTS = "mmx.channel.recipients";
 
     String MAP_URL = "https://www.google.com.ua/maps/@%f,%f,%dz?hl=en";

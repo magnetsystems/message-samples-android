@@ -14,7 +14,10 @@ import com.magnet.max.android.ApiError;
 import com.magnet.max.android.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by aorehov on 13.05.16.
@@ -23,7 +26,7 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
 
     private final String DEFAULT_USER_ORDER = "firstName:asc";
     private final String NAME_SEARCH_QUERY = "firstName:%s* OR lastName:%s*";
-    private static final int PAGE_SIZE = 40;
+    private static final int PAGE_SIZE = 50;
 
     private UserListContract.View view;
     private LazyLoadUtil lazyLoadUtil;
@@ -33,9 +36,11 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
     private int localSize;
     private String searchQuery = "";
     private boolean isSearch = false;
+    private Set<String> idsSet = new HashSet<>();
 
     private UserListContract.OnSelectUserEvent selectUserEvent;
     private UserListContract.OnGetAllSelectedUsersListener allUsersEventListener;
+    private Collection<String> userIds;
 
     public MMXAllUserListPresenter(UserListContract.View view, BaseConverter<User, MMXUserWrapper> converter) {
         this.view = view;
@@ -117,6 +122,16 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         this.allUsersEventListener = onGetAllSelectedUsersListener;
     }
 
+    @Override
+    public void setExcludeUserIds(Collection<String> ids) {
+        this.userIds = ids;
+    }
+
+    @Override
+    public ArrayList<String> getUserIds() {
+        return idsSet != null && !idsSet.isEmpty() ? new ArrayList<>(idsSet) : null;
+    }
+
     private void doSearch() {
         load(0);
     }
@@ -173,30 +188,38 @@ class MMXAllUserListPresenter implements UserListContract.Presenter, LazyLoadUti
         } else {
             userAmount = Integer.MAX_VALUE;
         }
-        converter
-                .filtre(new MMXAction2<User, Boolean>() {
-                    @Override
-                    public Boolean call(User action) {
-                        return !action.getUserIdentifier().equals(User.getCurrentUserId());
-                    }
-                })
+        converter.filtre(new MMXAction2<User, Boolean>() {
+            @Override
+            public Boolean call(User action) {
+                return !action.getUserIdentifier().equals(User.getCurrentUserId())
+                        && !(action.getUserName().equals("serveruser") && action.getEmail() == null)
+                        && !(userIds != null && userIds.contains(action.getUserIdentifier()));
+            }
+        })
                 .map(new MMXAction<MMXUserWrapper>() {
                     @Override
                     public void call(MMXUserWrapper action) {
                         action.setSelected(selected.contains(action));
                     }
-                }).convert(users, new MMXAction<List<MMXUserWrapper>>() {
-            @Override
-            public void call(List<MMXUserWrapper> action) {
-                view.onLoadingComplete();
-                lazyLoadUtil.onLoadingFinished();
-                if (!isReplace) {
-                    view.onPut(action);
-                } else {
-                    view.onSet(action);
-                }
-            }
-        });
+                })
+                .convert(users, new MMXAction<List<MMXUserWrapper>>() {
+                    @Override
+                    public void call(List<MMXUserWrapper> action) {
+                        view.onLoadingComplete();
+                        lazyLoadUtil.onLoadingFinished();
+                        if (!isReplace) {
+                            view.onPut(action);
+                        } else {
+                            view.onSet(action);
+                        }
+
+                        List<String> stringList = new ArrayList<String>();
+                        for (MMXUserWrapper u : action) {
+                            stringList.add(u.getObj().getUserIdentifier());
+                        }
+                        idsSet.addAll(stringList);
+                    }
+                });
     }
 
     private final ApiCallback<List<User>> callback = new ApiCallback<List<User>>() {

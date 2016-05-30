@@ -22,6 +22,8 @@ import com.magnet.magnetchat.ui.views.abs.BaseView;
 import com.magnet.magnetchat.ui.views.abs.ViewProperty;
 import com.magnet.mmx.client.api.MMXChannel;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,6 +68,14 @@ public abstract class MMXUserListView<T extends ViewProperty> extends BaseView<T
         presenter = createUserListPresenter(createUserListPresenterByName());
         if (presenter == null)
             presenter = ChatSDK.getPresenterFactory().createUserListPresenter(this);
+    }
+
+    public void setExcludeUserIdsList(Collection<String> ids) {
+        this.presenter.setExcludeUserIds(ids);
+    }
+
+    public ArrayList<String> getUserIds() {
+        return presenter.getUserIds();
     }
 
     protected abstract RecyclerViewTypedAdapter.OnItemCustomEventListener getCustomEventClickListener();

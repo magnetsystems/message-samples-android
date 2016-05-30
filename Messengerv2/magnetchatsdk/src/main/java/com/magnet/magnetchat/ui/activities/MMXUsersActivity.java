@@ -61,8 +61,10 @@ public class MMXUsersActivity extends MMXBaseActivity implements UserListContrac
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         mmxChannel = BundleHelper.readMMXChannelFromBundle(getIntent().getExtras());
+        ArrayList<String> ids = BundleHelper.getUsersIds(getIntent().getExtras());
 
         userListFragment = new MMXAllUserListFragment();
+        userListFragment.setExcludeUserIds(ids);
         userListFragment.setOnUserSelectEventListener(this);
         userListFragment.setOnGetAllSelectedUsersListener(this);
         replace(userListFragment, R.id.mmx_chat, userListFragment.getTag());
@@ -176,7 +178,21 @@ public class MMXUsersActivity extends MMXBaseActivity implements UserListContrac
      * @return instance of Intent if channel isn't null or null
      */
     public static Intent createActivityIntent(Context context, MMXChannel mmxChannel) {
+        return createActivityIntent(context, mmxChannel, null);
+    }
+
+    /**
+     * The method creates intent for MMXUsersActivity for channel MMXChannel
+     *
+     * @param context
+     * @param mmxChannel
+     * @param excludeUsersIds
+     * @return instance of Intent if channel isn't null or null
+     */
+    public static Intent createActivityIntent(Context context, MMXChannel mmxChannel, ArrayList<String> excludeUsersIds) {
         Bundle bundle = BundleHelper.packChannel(mmxChannel);
+        if (excludeUsersIds != null && !excludeUsersIds.isEmpty())
+            BundleHelper.packUserIds(bundle, excludeUsersIds);
         if (bundle == null) return null;
         Intent intent = new Intent(context, MMXUsersActivity.class);
         intent.putExtras(bundle);
