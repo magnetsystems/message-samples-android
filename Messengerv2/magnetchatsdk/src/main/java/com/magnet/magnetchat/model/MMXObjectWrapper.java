@@ -1,6 +1,7 @@
 package com.magnet.magnetchat.model;
 
 /**
+ * Basic typed object
  * Created by aorehov on 27.04.16.
  */
 public class MMXObjectWrapper<T> implements Typed {

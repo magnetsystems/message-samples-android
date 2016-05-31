@@ -47,7 +47,7 @@ public class ChatSDK {
     private MMXObjectConverterFactory mmxObjectConverterFactory;
     private MMXListItemFactory mmxListItemFactory;
     private MMXBeanFactory mmxBeanFactory;
-    private MMXPersistenceFactory MMXPersistenceFactory;
+    private MMXPersistenceFactory mmxPersistenceFactory;
 
     private Map<String, Object> namedFactories = new HashMap<>();
 
@@ -58,10 +58,10 @@ public class ChatSDK {
     }
 
     private MMXPersistenceFactory getPrMMXPersistenceFactory() {
-        if (MMXPersistenceFactory == null) {
-            MMXPersistenceFactory = new MMXPersistenceFactoryImpl(context);
+        if (mmxPersistenceFactory == null) {
+            mmxPersistenceFactory = new MMXPersistenceFactoryImpl(context);
         }
-        return MMXPersistenceFactory;
+        return mmxPersistenceFactory;
     }
 
     private MMXListItemFactory getPrMmxListItemFactory() {
@@ -246,6 +246,7 @@ public class ChatSDK {
         }
     };
 
+
     public static class Builder {
         private ChatSDK sdk;
 
@@ -281,6 +282,11 @@ public class ChatSDK {
 
         public Builder setMMXBeanFactory(MMXBeanFactory beanFactory) {
             sdk.mmxBeanFactory = beanFactory;
+            return this;
+        }
+
+        public Builder setMMXPersistenceFactory(MMXPersistenceFactory factory){
+            sdk.mmxPersistenceFactory = factory;
             return this;
         }
 

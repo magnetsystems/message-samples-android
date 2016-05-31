@@ -264,17 +264,4 @@ public class UserHelper {
         return str;
     }
 
-    public static List<UserProfile> convertToUserProfileList(List<? extends UserProfile> users) {
-        if(null != users && !users.isEmpty()) {
-            List<UserProfile> userProfiles = new ArrayList<>(users.size());
-            for(UserProfile up : users) {
-                userProfiles.add(up);
-            }
-
-            return userProfiles;
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
 }

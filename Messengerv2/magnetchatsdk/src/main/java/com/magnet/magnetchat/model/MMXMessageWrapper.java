@@ -147,6 +147,9 @@ public class MMXMessageWrapper extends MMXObjectWrapper<MMXMessage> {
     }
 
 
+    /**
+     * Default message item comparator
+     */
     public static final RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper> COMPARATOR = new RecyclerViewTypedAdapter.ItemComparator<MMXMessageWrapper>() {
         @Override
         public int compare(MMXMessageWrapper o1, MMXMessageWrapper o2) {

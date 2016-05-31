@@ -24,6 +24,11 @@ import java.util.List;
  */
 public class MMXObjectsHelper {
 
+    /**
+     * The method returns user's ids as array
+     * @param users
+     * @return
+     */
     public static List<String> convertToIdList(List<UserProfile> users) {
         ArrayList<String> list = new ArrayList();
         if (users != null) {
@@ -34,6 +39,12 @@ public class MMXObjectsHelper {
         return list;
     }
 
+    /**
+     * The method checks if message belongs to user
+     * @param currentUserId
+     * @param mmxMessage
+     * @return true if message belongs to current user
+     */
     public static boolean isMyMessage(String currentUserId, MMXMessage mmxMessage) {
         User sender = mmxMessage.getSender();
         boolean isMine = false;
@@ -43,6 +54,11 @@ public class MMXObjectsHelper {
         return isMine;
     }
 
+    /**
+     * The meethod downloads poll data if message is poll
+     * @param mmxMessage
+     * @param callback
+     */
     public static void loadPollFromMessage(@NonNull MMXMessage mmxMessage, @NonNull final ApiCallback<MMXPoll> callback) {
         MMXTypedPayload payload = mmxMessage.getPayload();
         if (payload == null || !(payload instanceof MMXPoll.MMXPollIdentifier)) {
@@ -89,7 +105,13 @@ public class MMXObjectsHelper {
         return name;
     }
 
-
+    /**
+     * Method returns google maps image url
+     * @param lat latitude
+     * @param lon longitude
+     * @param zoom zoom leve
+     * @return google maps picture url
+     */
     public static String getGoogleMapsUrl(double lat, double lon, int zoom) {
         return String.format(Constants.MAP_URL, lat, lon, zoom);
     }

@@ -16,47 +16,111 @@ import java.util.List;
 public interface UserListContract {
 
     interface Presenter extends MMXPresenter {
+
+        /**
+         * call this method if you need refresh the list of users
+         */
         void doRefresh();
 
+        /**
+         * call this method if you scroll user's list
+         */
         void onCurrentPosition(int localSize, int index);
 
+        /**
+         * call this method if you have clicked on item
+         */
         void doClickOn(MMXUserWrapper typed);
 
+        /**
+         * call init method
+         *
+         * @param bundle
+         */
         void onInit(Bundle bundle);
 
+        /**
+         * do search in the user's list
+         *
+         * @param query
+         */
         void search(String query);
 
-//        void setMMXChannel(MMXChannel mmxChannel);
-//
-//        void setMMXChannelDetails(ChannelDetail details);
-//
-//        void setMMXChannelWrapper(MMXChannelWrapper mmxChannelWrapper);
-
+        /**
+         * Set user's selector listener
+         *
+         * @param selectUserEvent
+         */
         void setSelectUserEvent(OnSelectUserEvent selectUserEvent);
 
+        /**
+         * if you call this method you will receive selected users into OnGetAllSelectedUsersListener
+         */
         void doGetAllSelectedUsers();
 
+        /**
+         * set selected user's callback into presenter
+         *
+         * @param onGetAllSelectedUsersListener
+         */
         void setOnGetAllSelectedUsersListener(OnGetAllSelectedUsersListener onGetAllSelectedUsersListener);
 
+        /**
+         * set user's ids which you don't want to display in list
+         *
+         * @param ids
+         */
         void setExcludeUserIds(Collection<String> ids);
 
+        /**
+         * @return the list of user's ids of the current list
+         */
         ArrayList<String> getUserIds();
 
     }
 
     interface View extends MMXInfoView {
+        /**
+         * You should add instance of MMXUserWrapper to current list
+         *
+         * @param wrapper
+         */
         void onPut(MMXUserWrapper wrapper);
 
+        /**
+         * you should remove instance of user from list
+         *
+         * @param wrapper
+         */
         void onDelete(MMXUserWrapper wrapper);
 
+        /**
+         * You should set new user's list
+         *
+         * @param wrapper
+         */
         void onSet(List<MMXUserWrapper> wrapper);
 
+        /**
+         * You should add received user's list to current ui list
+         *
+         * @param wrappers
+         */
         void onPut(List<MMXUserWrapper> wrappers);
 
+        /**
+         * called if user's list are loading
+         */
         void onLoading();
 
+        /**
+         * called if user's list has been loaded
+         */
         void onLoadingComplete();
 
+        /**
+         * called if can't load user's list
+         */
         void onCantLoadChannel();
 
     }

@@ -66,6 +66,11 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> {
         return false;
     }
 
+    /**
+     * the method returns selected answers
+     * @param options
+     * @return
+     */
     public static List<MMXPollOption> getVotedOrWithChangedState(Collection<MMXPollOptionWrapper> options) {
         if (options == null) return null;
 
@@ -79,6 +84,11 @@ public class MMXPollOptionWrapper extends MMXObjectWrapper<MMXPollOption> {
         return selectedOpts;
     }
 
+    /**
+     * The method converts MMXPollOption to string
+     * @param options
+     * @return
+     */
     public static List<String> getAnswersAsStringList(Collection<MMXPollOption> options) {
         if (options == null || options.isEmpty()) return Collections.EMPTY_LIST;
 

@@ -50,6 +50,14 @@ public class BitmapHelper {
 
     private static final int PREFER_SIZE = 800;
 
+
+    /**
+     * The method return image path from uri. if uri is media://
+     *
+     * @param context
+     * @param uri     media uri
+     * @return file path
+     */
     public static String getBitmapPath(Context context, Uri uri) {
         String[] colums = new String[]{MediaStore.Images.Media.DATA};
         Cursor query = context.getContentResolver().query(uri, colums, null, null, null);
@@ -61,6 +69,13 @@ public class BitmapHelper {
         return null;
     }
 
+    /**
+     * The method reads bitmap from uri path
+     *
+     * @param context
+     * @param uri     image uri
+     * @return instance of image
+     */
     public static Bitmap readBitmap(Context context, Uri uri) {
         if (!MediaStore.AUTHORITY.equals(uri.getAuthority())) {
             return readBitmapWithPreferSize(uri.getPath(), PREFER_SIZE);
@@ -74,6 +89,12 @@ public class BitmapHelper {
         return null;
     }
 
+    /**
+     * The method reads image by file path
+     *
+     * @param path file path
+     * @return instance of image
+     */
     public static Bitmap readBitmap(String path) {
         return readBitmapWithPreferSize(path, PREFER_SIZE);
     }
@@ -89,11 +110,24 @@ public class BitmapHelper {
         return null;
     }
 
+    /**
+     * The method generates path for image
+     * Needs for picture capture flow
+     *
+     * @return DCIM path
+     */
     public static String generatePathForPicture() {
         String dcimPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsolutePath();
         return String.format("%s/IMG_%d.png", dcimPath, System.currentTimeMillis());
     }
 
+    /**
+     * The method reads scaled instance of bitmap
+     *
+     * @param path       to image
+     * @param preferSize size what you want
+     * @return scaled instance of bitmap
+     */
     private static Bitmap readBitmapWithPreferSize(String path, int preferSize) {
         Logger.error("PATH_", "readBitmapWithPrefSize", path);
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -109,6 +143,13 @@ public class BitmapHelper {
         return bitmap;
     }
 
+    /**
+     * The method calculate scale rate for image from gallery
+     *
+     * @param options    info about image
+     * @param preferSize needed size of image
+     * @return scale rate
+     */
     private static int calculateScale(BitmapFactory.Options options, int preferSize) {
         int sampleSize = 1;
 

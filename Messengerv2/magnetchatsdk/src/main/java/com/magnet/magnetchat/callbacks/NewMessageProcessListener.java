@@ -4,8 +4,6 @@
 package com.magnet.magnetchat.callbacks;
 
 import com.magnet.magnetchat.model.Chat;
-import com.magnet.magnetchat.model.Message;
-import com.magnet.mmx.client.api.MMX;
 import com.magnet.mmx.client.api.MMXMessage;
 
 public interface NewMessageProcessListener {

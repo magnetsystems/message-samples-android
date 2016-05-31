@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The converter allow to convert one type to another
  * Created by aorehov on 28.04.16.
  */
 public abstract class BaseConverter<FROM, TO> {
@@ -17,11 +18,27 @@ public abstract class BaseConverter<FROM, TO> {
 
     public abstract TO convert(FROM from);
 
+    /**
+     * The method called after convert action
+     * You can to something with your objects
+     *
+     * @param mapper
+     * @param <T>
+     * @return
+     */
     public <T extends BaseConverter<FROM, TO>> T map(MMXAction<TO> mapper) {
         this.mapper = mapper;
         return (T) this;
     }
 
+    /**
+     * The method called before convert action
+     * In this method you can filter input data
+     *
+     * @param filter
+     * @param <T>
+     * @return true if you want to add to output data set
+     */
     public <T extends BaseConverter<FROM, TO>> T filtre(MMXAction2<FROM, Boolean> filter) {
         this.filter = filter;
         return (T) this;
@@ -94,12 +111,14 @@ public abstract class BaseConverter<FROM, TO> {
         return list;
     }
 
+    /**
+     * decorator call back
+     * You can make some changes based on previous item
+     *
+     * @param prev item with position i - 1
+     * @param to   item with position i
+     */
     protected void decorate(TO prev, TO to) {
 
     }
-
-    public boolean isEnableDecoration() {
-        return false;
-    }
-
 }

@@ -62,6 +62,10 @@ public class MMXUserWrapper extends MMXObjectWrapper<User> {
         return name;
     }
 
+    /**
+     * default MMXUserWrapper item comparator
+     * @see RecyclerViewTypedAdapter
+     */
     public final static RecyclerViewTypedAdapter.ItemComparator<MMXUserWrapper> ITEM_COMPARATOR = new RecyclerViewTypedAdapter.ItemComparator<MMXUserWrapper>() {
         @Override
         public int compare(MMXUserWrapper o1, MMXUserWrapper o2) {
