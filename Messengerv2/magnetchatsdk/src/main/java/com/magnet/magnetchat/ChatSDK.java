@@ -49,12 +49,6 @@ public class ChatSDK {
     private MMXBeanFactory mmxBeanFactory;
     private MMXPersistenceFactory MMXPersistenceFactory;
 
-//    private Map<String, MMXPresenterFactory> mmxNamedPresenterFactories = new HashMap<>();
-//    private Map<String, MMXMessagePresenterFactory> mmxNamedMessagePresenterFactories = new HashMap<>();
-//    private Map<String, MMXViewFactory> mmxNameViewFactories = new HashMap<>();
-//    private Map<String, MMXObjectConverterFactory> mmxNamedObjectConverterFactories = new HashMap<>();
-//    private Map<String, MMXListItemFactory> mmxNamedListItemFactories = new HashMap<>();
-
     private Map<String, Object> namedFactories = new HashMap<>();
 
     private static ChatSDK instance;
@@ -76,7 +70,6 @@ public class ChatSDK {
         }
         return mmxListItemFactory;
     }
-
 
     private MMXObjectConverterFactory getObjectConverterFactory() {
         if (mmxObjectConverterFactory == null) {
