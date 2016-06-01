@@ -131,7 +131,7 @@ public class ChatDetailsActivity extends MMXBaseActivity implements ChatDetailsC
 
 
     private void exit(String error) {
-        showMessage("Couldn't load channel due to " + error + ". Please try later");
+        snack(listView, "Couldn't load channel due to " + error + ". Please try later");
         finish();
     }
 

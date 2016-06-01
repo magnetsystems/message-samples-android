@@ -149,7 +149,7 @@ public class ChatActivity extends MMXBaseActivity implements ChatContract.View {
                 MMXChannel mmxChannel = currentConversation.getChannel();
                 uiPoll.setChannel(mmxChannel);
             } else {
-                showMessage("Can load the conversation");
+                snack(uiPollContainer, "Can load the conversation");
                 finish();
                 return;
             }
@@ -158,7 +158,7 @@ public class ChatActivity extends MMXBaseActivity implements ChatContract.View {
             if (recipients != null) {
                 mPresenter = new ChatPresenterImpl(this, recipients);
             } else {
-                showMessage("Can load the conversation");
+                snack(uiPollContainer, "Can load the conversation");
                 finish();
                 return;
             }
@@ -439,7 +439,7 @@ public class ChatActivity extends MMXBaseActivity implements ChatContract.View {
                 //    break;
             }
         } else {
-            showMessage("Can't do it without permission");
+            snack(uiPollContainer, "Can't do it without permission");
         }
     }
 
@@ -490,20 +490,20 @@ public class ChatActivity extends MMXBaseActivity implements ChatContract.View {
 
     private void sendLocation() {
         if (!Utils.isGooglePlayServiceInstalled()) {
-            showMessage("It seems Google play services is not available, can't use location API");
+            snack(uiPollContainer, "It seems Google play services is not available, can't use location API");
             return;
         }
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            showMessage("Location permission is not enabled");
+            snack(uiPollContainer, "Location permission is not enabled");
             return;
         }
         Location currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if (currentLocation != null) {
             mPresenter.onSendLocation(currentLocation);
         } else {
-            showMessage("Can't get location");
+            snack(uiPollContainer, "Can't get location");
         }
     }
 

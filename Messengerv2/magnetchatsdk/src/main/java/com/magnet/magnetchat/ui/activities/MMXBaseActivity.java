@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -79,6 +80,22 @@ public abstract class MMXBaseActivity extends AppCompatActivity implements View.
         }
     }
 
+    public void snack(View view, int resId) {
+        snack(view, resId, Snackbar.LENGTH_SHORT);
+    }
+
+    public void snack(View view, int resId, int duration) {
+        Snackbar.make(view, resId, duration).show();
+    }
+
+    public void snack(View view, CharSequence message, int duration) {
+        Snackbar.make(view, message, duration).show();
+    }
+
+    public void snack(View view, CharSequence message) {
+        snack(view, message, Snackbar.LENGTH_SHORT);
+    }
+
     private View getBaseView() {
         return (View) findViewById(getBaseViewID());
     }
@@ -107,16 +124,6 @@ public abstract class MMXBaseActivity extends AppCompatActivity implements View.
         }
         SnackNotificationHelper.show(getBaseView(), messages.toString().trim());
     }
-
-    /**
-     * Method which provide the show message form the resource
-     *
-     * @param stringRes current resource ID
-     */
-    public void showMessage(int stringRes) {
-        showMessage(getString(stringRes));
-    }
-
 
     /**
      * the methods are wrappers for toast notification
