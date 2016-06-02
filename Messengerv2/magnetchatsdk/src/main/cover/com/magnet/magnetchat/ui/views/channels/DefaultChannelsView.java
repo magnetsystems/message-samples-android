@@ -535,7 +535,7 @@ public class DefaultChannelsView extends AbstractChannelsView {
 }
 
 //SAMPLE TO CUSTOMIZE
-//    <...AbstractChannelsView
+//    <com.magnet.magnetchat.ui.views.channels.DefaultChannelsView
 //    android:id="@+id/viewChannels"
 //    android:layout_width="match_parent"
 //    android:layout_height="match_parent"

@@ -311,7 +311,7 @@ public class DefaultLoginView extends AbstractLoginView {
 
     //EXAMPLES:
     //CUSTOMIZATION THROUGH THE XML
-//    <com.magnet.magnetchat.ui.views.section.LoginView
+//    <com.magnet.magnetchat.ui.views.login.DefaultLoginView
 //    android:id="@+id/viewLogin"
 //    android:layout_width="match_parent"
 //    android:layout_height="wrap_content"
