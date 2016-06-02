@@ -69,7 +69,7 @@ public class MMXChatDetailsActivity extends MMXBaseActivity implements CompoundB
 
         channel = BundleHelper.readMMXChannelFromBundle(extras);
         presenter = ChatSDK.getPresenterFactory().createChannelSettingsPresenter(this);
-        presenter.setMMXChannel(channel);
+        presenter.setMMXChannelName(channel.getName());
         presenter.onCreate();
     }
 
@@ -168,11 +168,13 @@ public class MMXChatDetailsActivity extends MMXBaseActivity implements CompoundB
 
     @Override
     public void onLoading() {
+        if(uiMute == null) return;
         uiMute.setEnabled(false);
     }
 
     @Override
     public void onLoadingCompleted() {
+        if(uiMute == null) return;
         uiMute.setEnabled(true);
     }
 

@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.callbacks.MMXAction;
+import com.magnet.magnetchat.core.managers.ChatManager;
+import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -91,6 +93,15 @@ class MMXChannelPresenterImpl implements MMXChannelSettingsContract.Presenter {
 
     @Override
     public void setMMXChannelName(String name) {
+        Chat byName = ChatManager.getInstance().getConversationByName(name);
+        if (byName != null) {
+            MMXChannel channel = byName.getChannel();
+            if (channel != null) {
+                setMMXChannel(channel);
+                return;
+            }
+        }
+
         loadByName(name);
     }
 
