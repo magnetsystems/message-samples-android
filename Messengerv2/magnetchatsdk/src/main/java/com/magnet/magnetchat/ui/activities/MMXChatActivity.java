@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
 import com.magnet.magnetchat.helpers.BundleHelper;
 import com.magnet.magnetchat.presenters.PostMMXMessageContract;
@@ -23,11 +24,11 @@ import java.util.List;
 
 /**
  * The MMXChatActivity displays and manage chat view
- * <p/>
+ * <p>
  * Use static method fot creation of activity instance
  *
  * @see MMXChatActivity.createIntent
- * <p/>
+ * <p>
  * Created by aorehov on 04.05.16.
  */
 public class MMXChatActivity extends MMXBaseActivity implements ChatListContract.ChannelNameListener {
@@ -121,7 +122,7 @@ public class MMXChatActivity extends MMXBaseActivity implements ChatListContract
                 MMXChannel channel = contract.getMMXChannel();
                 if (channel != null) {
 //                    Intent intent = ChatDetailsActivity.createIntentForChannel(this, channel);
-                    Intent intent = MMXChatDetailsActivity.createIntent(this, channel);
+                    Intent intent = ChatSDK.getMMXBeanFactory().createChatDetailsIntent(this, channel);
                     if (intent != null)
                         startActivity(intent);
                 }

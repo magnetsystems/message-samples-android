@@ -98,12 +98,7 @@ public class MMXChatFragment extends MMXBaseFragment {
             throw new IllegalArgumentException("MMXChannel or List of recipients cannot be null!");
         }
 
-        attachments = Arrays.asList(
-                getString(R.string.mmx_attachment_pic_take),
-                getString(R.string.mmx_attachment_pic_get),
-                getString(R.string.mmx_attachment_location),
-                getString(R.string.mmx_attachment_poll)
-        );
+        attachments = createAttachments();
 
         FrameLayout uiContainer = findView(containerView, R.id.container);
         mmxChatView = ChatSDK.getViewFactory().createMMXChatView(getContext());
@@ -121,6 +116,15 @@ public class MMXChatFragment extends MMXBaseFragment {
         mmxChatView.setListener(attachmentListener);
 
         googleApiClient = new GoogleApiClient.Builder(getContext()).addApi(LocationServices.API).build();
+    }
+
+    protected List<String> createAttachments() {
+        return Arrays.asList(
+                getString(R.string.mmx_attachment_pic_take),
+                getString(R.string.mmx_attachment_pic_get),
+                getString(R.string.mmx_attachment_location),
+                getString(R.string.mmx_attachment_poll)
+        );
     }
 
 
@@ -177,7 +181,6 @@ public class MMXChatFragment extends MMXBaseFragment {
     }
 
     protected void onAttachmentTypeReceived(String attachment) {
-
         int indexOf = attachments.indexOf(attachment);
         switch (indexOf) {
             case 0:

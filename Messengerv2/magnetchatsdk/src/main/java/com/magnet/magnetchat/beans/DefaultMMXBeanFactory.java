@@ -3,9 +3,11 @@ package com.magnet.magnetchat.beans;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 import com.magnet.magnetchat.Constants;
 import com.magnet.magnetchat.helpers.BundleHelper;
+import com.magnet.magnetchat.ui.activities.MMXChatDetailsActivity;
 import com.magnet.mmx.client.api.MMXChannel;
 
 /**
@@ -26,5 +28,11 @@ public class DefaultMMXBeanFactory implements MMXBeanFactory {
         intent.putExtras(bundle);
         return intent;
 //        return MMXChatActivity.createIntent(context, mmxChannel);
+    }
+
+    @Nullable
+    @Override
+    public Intent createChatDetailsIntent(Context context, MMXChannel mmxChannel) {
+        return MMXChatDetailsActivity.createIntent(context, mmxChannel);
     }
 }

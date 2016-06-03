@@ -2,6 +2,7 @@ package com.magnet.magnetchat.beans;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
 import com.magnet.mmx.client.api.MMXChannel;
 
@@ -13,11 +14,10 @@ public interface MMXBeanFactory {
 
     /**
      * The method returns date format pattern for messages
-     * @see com.magnet.magnetchat.model.converters.impl.DefaultMMXMessageDateConverter
-     * @see java.text.SimpleDateFormat
-     *
      *
      * @return
+     * @see com.magnet.magnetchat.model.converters.impl.DefaultMMXMessageDateConverter
+     * @see java.text.SimpleDateFormat
      */
     String messageDateFormat();
 
@@ -26,4 +26,12 @@ public interface MMXBeanFactory {
      * @return instance of intent or null if channel null or corrupted
      */
     Intent getMagnetChatIntent(Context context, MMXChannel mmxChannel);
+
+    /**
+     * The method return channel details intent
+     *
+     * @return intent of chat details activity or null
+     */
+    @Nullable
+    Intent createChatDetailsIntent(Context context, MMXChannel mmxChannel);
 }
