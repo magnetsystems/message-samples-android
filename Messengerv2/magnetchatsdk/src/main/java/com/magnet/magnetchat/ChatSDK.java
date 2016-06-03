@@ -230,7 +230,7 @@ public class ChatSDK {
 
             if ((mmxMessage.getSender() != null)
                     && (!mmxMessage.getSender().getUserIdentifier().equals(User.getCurrentUserId()))) {
-                if (channel != null) {
+                if (channel != null && !channel.isMuted()) {
                     messageNotification(mmxMessage.getChannel(), mmxMessage.getSender().getDisplayName());
                 } else {
 //                    messageNotification("", mmxMessage.getSender().getDisplayName());

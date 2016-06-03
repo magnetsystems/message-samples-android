@@ -14,7 +14,9 @@ import android.widget.CompoundButton;
 
 import com.magnet.magnetchat.ChatSDK;
 import com.magnet.magnetchat.R;
+import com.magnet.magnetchat.core.managers.ChatManager;
 import com.magnet.magnetchat.helpers.BundleHelper;
+import com.magnet.magnetchat.model.Chat;
 import com.magnet.magnetchat.presenters.MMXChannelSettingsContract;
 import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
 import com.magnet.max.android.User;

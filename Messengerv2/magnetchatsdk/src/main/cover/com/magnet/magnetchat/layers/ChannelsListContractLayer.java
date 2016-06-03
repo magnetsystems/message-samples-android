@@ -28,6 +28,7 @@ import com.magnet.magnetchat.ui.custom.CircleNameView;
 import com.magnet.magnetchat.ui.views.channels.DefaultChannelsView;
 import com.magnet.magnetchat.util.Logger;
 import com.magnet.magnetchat.util.MMXMessageUtil;
+import com.magnet.max.android.User;
 import com.magnet.max.android.UserProfile;
 import com.magnet.mmx.client.api.ChannelDetail;
 import com.magnet.mmx.client.api.MMXMessage;
@@ -281,7 +282,14 @@ public interface ChannelsListContractLayer {
             } else if (subscribersCount > 0) {
                 List<UserProfile> subscribers = channelDetail.getSubscribers();
                 if (subscribers != null && subscribers.size() > 0) {
-                    final UserProfile userProfile = subscribers.get(0);
+                    UserProfile usr;
+                    if (subscribers.size() > 1 && subscribers.get(0).getUserIdentifier().equals(User.getCurrentUserId())) {
+                        usr = subscribers.get(1);
+                    } else {
+                        usr = subscribers.get(0);
+                    }
+
+                    final UserProfile userProfile = usr;
                     if (userProfile != null) {
                         setUpCircleName(userProfile);
                         runOnMainThread(0, new OnActionPerformer() {

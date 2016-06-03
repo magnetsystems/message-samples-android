@@ -357,6 +357,10 @@ public abstract class MMXBaseActivity extends AppCompatActivity implements View.
         }, (int) (delayTime * 1000));
     }
 
+    protected void postDelay(Runnable runnable, int delayMS) {
+        MAIN_THREAD_HANDLER.postDelayed(runnable, delayMS);
+    }
+
     /**
      * Method which provide the get layout resource
      *
