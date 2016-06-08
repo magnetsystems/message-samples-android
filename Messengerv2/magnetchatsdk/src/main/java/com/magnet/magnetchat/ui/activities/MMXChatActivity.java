@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -102,7 +103,8 @@ public class MMXChatActivity extends MMXBaseActivity implements ChatListContract
     }
 
     void onSetName(CharSequence sequence) {
-        getSupportActionBar().setTitle(sequence);
+        ActionBar bar = getSupportActionBar();
+        if (bar != null) bar.setTitle(sequence);
     }
 
     @Override

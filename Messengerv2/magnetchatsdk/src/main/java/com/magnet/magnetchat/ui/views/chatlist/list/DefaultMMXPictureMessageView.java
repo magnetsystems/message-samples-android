@@ -128,9 +128,10 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
 
     @Override
     public void onPicture(String url) {
-        Glide.with(getContext())
-                .load(Uri.parse(url))
-                .placeholder(R.drawable.photo_msg)
-                .into(uiPic);
+        if (url != null)
+            Glide.with(getContext())
+                    .load(Uri.parse(url))
+                    .placeholder(R.drawable.photo_msg)
+                    .into(uiPic);
     }
 }
