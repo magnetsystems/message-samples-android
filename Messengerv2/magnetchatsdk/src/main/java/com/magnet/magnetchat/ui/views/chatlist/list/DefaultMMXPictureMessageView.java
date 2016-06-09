@@ -131,7 +131,8 @@ public abstract class DefaultMMXPictureMessageView extends AbstractMMXPictureMes
         if (url != null)
             Glide.with(getContext())
                     .load(Uri.parse(url))
-                    .placeholder(R.drawable.photo_msg)
+                    .error(R.drawable.photo_msg)
                     .into(uiPic);
+        else uiPic.setImageResource(R.drawable.photo_msg);
     }
 }
