@@ -20,7 +20,13 @@ import com.magnet.magntetchatapp.factories.FragmentFactory;
 import com.magnet.magntetchatapp.ui.activities.abs.BaseActivity;
 import com.magnet.magntetchatapp.ui.activities.section.edit.EditProfileActivity;
 import com.magnet.magntetchatapp.ui.activities.section.login.LoginActivity;
+import com.magnet.max.android.Attachment;
+import com.magnet.max.android.Max;
 import com.magnet.max.android.User;
+import com.magnet.mmx.client.api.MMX;
+import com.magnet.mmx.client.ext.poll.MMXApproval;
+import com.magnet.mmx.client.internal.survey.SurveyService;
+import com.magnet.mmx.client.internal.survey.model.Survey;
 
 import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;

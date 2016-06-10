@@ -84,7 +84,7 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
     @Override
     public void doRefresh() {
         view.onRefreshing();
-        pollMessageWrapper.getMmxPoll().refreshResults(new MMXChannel.OnFinishedListener<Void>() {
+        pollMessageWrapper.getMmxPoll().refreshResults(new MMX.OnFinishedListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 view.onRefreshingFinished();
@@ -92,7 +92,7 @@ class DefaultMMXPollPresenter extends BaseMMXMessagePresenterImpl<MMXPollContrac
             }
 
             @Override
-            public void onFailure(MMXChannel.FailureCode failureCode, Throwable throwable) {
+            public void onFailure(MMX.FailureCode failureCode, Throwable throwable) {
                 view.onRefreshingFinished();
                 view.showMessage("Can't update poll");
             }
