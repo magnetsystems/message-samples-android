@@ -20,10 +20,6 @@ import com.magnet.magnetchat.ui.fragments.MMXAllUserListFragment;
 import com.magnet.magnetchat.ui.fragments.MMXUserListFragment;
 import com.magnet.max.android.User;
 import com.magnet.mmx.client.api.MMXChannel;
-import com.magnet.mmx.client.ext.poll.ApprovalProperty;
-import com.magnet.mmx.client.ext.poll.MMXApproval;
-import com.magnet.mmx.client.internal.survey.model.ApprovalStatus;
-import com.magnet.mmx.client.internal.survey.model.ApprovalType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -164,16 +160,6 @@ public class MMXUsersActivity extends MMXBaseActivity implements UserListContrac
                     toast("Can't open chat. The list of users is empty!");
                     return;
                 }
-
-                MMXApproval.find();
-                MMXApproval.findApprovals();
-
-                MMXApproval approval = new MMXApproval.Builder()
-                        .build();
-
-                finish();
-                startActivity(intent);
-
             }
         } else {
             toast("Please select at least one user");
